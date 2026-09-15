@@ -5,6 +5,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="C:\libs\design-system\blazor\Design.csproj" />
+    <ProjectReference Include="..\..\libs\design-system\blazor\Design.csproj" />
   </ItemGroup>
 </Project>

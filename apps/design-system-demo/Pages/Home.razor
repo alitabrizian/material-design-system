@@ -3,46 +3,119 @@
 
 <PageTitle>Design System</PageTitle>
 
-<div class="hero">
-    <p class="eyebrow">Material Web + Blazor</p>
-    <h1>Build consistently.</h1>
-    <p class="intro">A small, composable design system for your Blazor applications.</p>
+<div class="catalog-shell">
+    <aside class="catalog-sidebar" aria-label="Design system navigation">
+        <a class="brand-lockup" href="/" aria-label="Workspace Design System home">
+            <span class="brand-mark">W</span>
+            <span>
+                <strong>Workspace</strong>
+                <small>Design system</small>
+            </span>
+        </a>
+
+        <nav class="side-nav" aria-label="Components">
+            <div class="component-menu">
+                @foreach (var componentTitle in componentMenu)
+                {
+                    <a class="nav-link @(componentTitle == "Button" ? "active" : string.Empty)" href="#components">@componentTitle</a>
+                }
+            </div>
+        </nav>
+
+    </aside>
+
+    <section class="catalog-content">
+
+        <div class="catalog-toolbar" aria-label="Component catalog tools">
+            <span class="search-icon" aria-hidden="true">⌕</span>
+            <input aria-label="Search components" placeholder="Search components" @bind="searchTerm" @bind:event="oninput" />
+        </div>
+
+        <div class="component-section">
+            @if (filteredComponents.Any())
+            {
+                <div class="component-grid" aria-live="polite">
+                    @foreach (var component in filteredComponents)
+                    {
+                        <a class="component-card @(component.Featured ? "featured" : string.Empty)" href="@component.Target">
+                            <span class="card-icon @(component.Featured ? "filled" : "outline")">@component.Icon</span>
+                            <span class="card-copy"><strong>@component.Name</strong><small>@component.Description</small></span>
+                            <span class="card-arrow">↗</span>
+                        </a>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="empty-search" role="status">
+                    <strong>No components found</strong>
+                    <span>Try a different search term.</span>
+                </div>
+            }
+        </div>
+    </section>
 </div>
 
-<DesignCard class="showcase">
-    <h2>Form controls</h2>
-    <div class="control-grid">
-        <DesignTextField Label="Name" @bind-Value="name" />
-        <DesignTextField Label="Email" Type="email" @bind-Value="email" />
-        <DesignCheckbox Label="Subscribe to updates" @bind-Checked="subscribed" />
-        <DesignSwitch Label="Enable notifications" @bind-Selected="notifications" />
-    </div>
-    <div class="actions">
-        <DesignButton OnClick="Save">Save changes</DesignButton>
-        <DesignButton Variant="Outlined" OnClick="Reset">Reset</DesignButton>
-        <DesignFab Label="Add item" Icon="+" OnClick="AddItem" />
-    </div>
-    @if (!string.IsNullOrWhiteSpace(message))
-    {
-        <p class="status">@message</p>
-    }
-</DesignCard>
-
 @code {
-    private string? name;
-    private string? email;
-    private bool subscribed;
-    private bool notifications = true;
-    private string? message;
+    private string searchTerm = string.Empty;
 
-    private void Save() => message = $"Saved {name ?? "your changes"}.";
-    private void Reset()
-    {
-        name = null;
-        email = null;
-        subscribed = false;
-        notifications = true;
-        message = "Form reset.";
-    }
-    private void AddItem() => message = "New item added.";
+    private static readonly IReadOnlyList<string> componentMenu =
+    [
+        "Autocomplete",
+        "Badge",
+        "Bottom Sheet",
+        "Button",
+        "Button Toggle",
+        "Card",
+        "Checkbox",
+        "Chips",
+        "Core",
+        "Datepicker",
+        "Dialog",
+        "Divider",
+        "Expansion Panel",
+        "Form Field",
+        "Grid List",
+        "Icon",
+        "Input",
+        "List",
+        "Menu",
+        "Paginator",
+        "Progress Bar",
+        "Progress Spinner",
+        "Radio Button",
+        "Ripples",
+        "Select",
+        "Sidenav",
+        "Slide Toggle",
+        "Slider",
+        "Snackbar",
+        "Sort Header",
+        "Stepper",
+        "Table",
+        "Tabs",
+        "Timepicker",
+        "Toolbar",
+        "Tooltip",
+        "Tree"
+    ];
+
+    private IEnumerable<ComponentItem> filteredComponents =>
+        string.IsNullOrWhiteSpace(searchTerm)
+            ? components
+            : components.Where(component =>
+                component.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                component.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
+
+    private static readonly IReadOnlyList<ComponentItem> components =
+    [
+        new("Button", "Trigger actions and commands.", "→", "#playground", true),
+        new("Text field", "Capture a single line of text.", "□", "#playground"),
+        new("Checkbox", "Select one or more options.", "✓", "#playground"),
+        new("Switch", "Toggle a setting on or off.", "◐", "#playground"),
+        new("Card", "Group related content together.", "▣", "#components"),
+        new("Floating action", "Highlight a primary action.", "+", "#components")
+    ];
+
+    private sealed record ComponentItem(string Name, string Description, string Icon, string Target, bool Featured = false);
 }

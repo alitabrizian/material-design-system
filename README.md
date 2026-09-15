@@ -49,6 +49,15 @@ dotnet build DesignSystem.sln
 dotnet run --project apps/design-system-demo/Design.Demo.csproj
 ```
 
+For Blazor hot reload during design-system development, use `dotnet watch`:
+
+```powershell
+dotnet watch --project apps/design-system-demo/Design.Demo.csproj run --no-launch-profile --urls http://127.0.0.1:5080
+```
+
+This watches Razor markup, C# code-behind, and CSS changes. Keep the browser at
+`http://127.0.0.1:5080`; supported edits update without a full manual restart.
+
 Initialize the Samamat submodule after cloning the workspace:
 
 ```bash
