@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Components;
+
 namespace Design.Components;
 
 public partial class DesignTextField
