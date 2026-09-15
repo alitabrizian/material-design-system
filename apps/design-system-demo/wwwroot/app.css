@@ -4,8 +4,8 @@
   --catalog-line: #dfe5eb;
   --catalog-panel: #ffffff;
   --catalog-soft: #f1f5f8;
-  --catalog-accent: #0b6b62;
-  --catalog-accent-soft: #d9f1eb;
+  --catalog-accent: #216bf3fc;
+  --catalog-accent-soft: #e1d9f1;
   --catalog-shadow: 0 16px 44px rgb(25 43 58 / 0.08);
 }
 
@@ -159,7 +159,6 @@ a {
 }
 
 .catalog-content {
-  width: min(100%, 76rem);
   padding: 4.5rem clamp(1.5rem, 5vw, 5rem) 5rem;
 }
 
@@ -232,9 +231,11 @@ h2 {
 }
 
 .search-icon {
-  color: var(--catalog-accent);
-  font-size: 1.25rem;
-  line-height: 1;
+    color: var(--catalog-accent);
+    font-size: 2rem;
+    line-height: 1;
+    position: relative;
+    top: -5px;
 }
 
 .catalog-toolbar input {
@@ -278,17 +279,18 @@ h2 {
 
 .component-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
   gap: 0.8rem;
 }
 
 .component-card {
   display: grid;
   position: relative;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: 0.85rem;
-  min-height: 7.5rem;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr auto;
+  align-items: start;
+  aspect-ratio: 1;
+  min-height: 0;
   padding: 1rem;
   border: 1px solid var(--catalog-line);
   border-radius: 0.65rem;
@@ -304,17 +306,16 @@ h2 {
 
 .component-card.featured {
   border-color: #a7d4cc;
-  background: linear-gradient(145deg, #ffffff 0%, #eefaf7 100%);
+  background: linear-gradient(145deg, #ffffff 0%, #2196f32e 100%);
 }
 
 .card-icon {
-  display: grid;
-  width: 2.3rem;
-  height: 2.3rem;
-  place-items: center;
-  border-radius: 0.55rem;
-  font-size: 1rem;
-  font-weight: 700;
+    display: grid;
+    width: 2.5rem;
+    height: 2.5rem;
+    place-items: center;
+    border-radius: 0.55rem;
+    font-size: 1.5rem;
 }
 
 .card-icon.filled {
@@ -332,19 +333,25 @@ h2 {
   display: block;
 }
 
+.card-copy {
+  align-self: center;
+}
+
 .card-copy strong {
   margin-bottom: 0.3rem;
-  font-size: 0.92rem;
+  font-size: clamp(1rem, 1.5vw, 1.2rem);
+  line-height: 1.15;
 }
 
 .card-copy small {
   color: var(--catalog-muted);
-  font-size: 0.72rem;
-  line-height: 1.45;
+  font-size: clamp(0.78rem, 1.1vw, 0.92rem);
+  line-height: 1.35;
 }
 
 .card-arrow {
-  align-self: start;
+  align-self: end;
+  justify-self: end;
   color: #9aa6b0;
   font-size: 0.9rem;
 }
@@ -431,7 +438,7 @@ h2 {
   }
 
   .component-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
   }
 }
 
