@@ -1,0 +1,12 @@
+@if (Variant == "Outlined")
+{
+    <md-outlined-button @attributes="AdditionalAttributes" disabled="@Disabled" type="@Type" @onclick="OnClick">
+        @ChildContent
+    </md-outlined-button>
+}
+else
+{
+    <md-filled-button @attributes="AdditionalAttributes" disabled="@Disabled" type="@Type" @onclick="OnClick">
+        @ChildContent
+    </md-filled-button>
+}

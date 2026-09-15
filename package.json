@@ -1,0 +1,20 @@
+{
+  "name": "workspace",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "npm@10.9.2",
+  "scripts": {
+    "build": "nx run pb-aquatic:build",
+    "serve": "nx run pb-aquatic:serve",
+    "lint": "nx run pb-aquatic:lint",
+    "test": "nx run pb-aquatic:test"
+  },
+  "dependencies": {
+    "@material/web": "2.5.0"
+  },
+  "devDependencies": {
+    "@nx/js": "^21.5.0",
+    "nx": "^21.5.0",
+    "typescript": "~5.9.2"
+  }
+}

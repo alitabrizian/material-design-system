@@ -1,0 +1,34 @@
+:root {
+  --md-sys-color-primary: #415f91;
+  --md-sys-color-on-primary: #ffffff;
+  --md-sys-color-surface: #f9f9ff;
+  --md-sys-color-surface-container-low: #f3f3fa;
+  --md-sys-color-on-surface: #191c20;
+  --md-sys-color-outline: #74777f;
+  --md-sys-typescale-body-medium-font: system-ui, sans-serif;
+}
+
+md-filled-button,
+md-outlined-button,
+md-outlined-text-field {
+  --md-sys-typescale-body-large-font: system-ui, sans-serif;
+}
+
+md-checkbox,
+md-switch {
+  --md-sys-typescale-label-large-font: system-ui, sans-serif;
+}
+
+.design-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+md-elevated-card {
+  display: block;
+  padding: 1.25rem;
+  border-radius: 0.75rem;
+  background: var(--md-sys-color-surface-container-low);
+  color: var(--md-sys-color-on-surface);
+}

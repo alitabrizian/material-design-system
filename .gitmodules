@@ -1,0 +1,4 @@
+[submodule "apps/samamat"]
+	path = apps/samamat
+	url = http://89.42.211.39/samamat/samamat.git
+	branch = chore/structure-initiations

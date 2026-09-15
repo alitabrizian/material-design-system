@@ -1,0 +1,48 @@
+@page "/"
+@rendermode InteractiveServer
+
+<PageTitle>Design System</PageTitle>
+
+<div class="hero">
+    <p class="eyebrow">Material Web + Blazor</p>
+    <h1>Build consistently.</h1>
+    <p class="intro">A small, composable design system for your Blazor applications.</p>
+</div>
+
+<DesignCard class="showcase">
+    <h2>Form controls</h2>
+    <div class="control-grid">
+        <DesignTextField Label="Name" @bind-Value="name" />
+        <DesignTextField Label="Email" Type="email" @bind-Value="email" />
+        <DesignCheckbox Label="Subscribe to updates" @bind-Checked="subscribed" />
+        <DesignSwitch Label="Enable notifications" @bind-Selected="notifications" />
+    </div>
+    <div class="actions">
+        <DesignButton OnClick="Save">Save changes</DesignButton>
+        <DesignButton Variant="Outlined" OnClick="Reset">Reset</DesignButton>
+        <DesignFab Label="Add item" Icon="+" OnClick="AddItem" />
+    </div>
+    @if (!string.IsNullOrWhiteSpace(message))
+    {
+        <p class="status">@message</p>
+    }
+</DesignCard>
+
+@code {
+    private string? name;
+    private string? email;
+    private bool subscribed;
+    private bool notifications = true;
+    private string? message;
+
+    private void Save() => message = $"Saved {name ?? "your changes"}.";
+    private void Reset()
+    {
+        name = null;
+        email = null;
+        subscribed = false;
+        notifications = true;
+        message = "Form reset.";
+    }
+    private void AddItem() => message = "New item added.";
+}
