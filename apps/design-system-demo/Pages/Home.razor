@@ -17,7 +17,7 @@
             <div class="component-menu">
                 @foreach (var componentTitle in componentMenu)
                 {
-                    <a class="nav-link @(componentTitle == "Button" ? "active" : string.Empty)" href="#components">@componentTitle</a>
+                    <a class="nav-link" href="#components">@componentTitle</a>
                 }
             </div>
         </nav>
@@ -40,7 +40,6 @@
                         <a class="component-card @(component.Featured ? "featured" : string.Empty)" href="@component.Target">
                             <span class="card-icon @(component.Featured ? "filled" : "outline")">@component.Icon</span>
                             <span class="card-copy"><strong>@component.Name</strong><small>@component.Description</small></span>
-                            <span class="card-arrow">↗</span>
                         </a>
                     }
                 </div>

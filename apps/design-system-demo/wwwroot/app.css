@@ -5,7 +5,7 @@
   --catalog-panel: #ffffff;
   --catalog-soft: #f1f5f8;
   --catalog-accent: #216bf3fc;
-  --catalog-accent-soft: #e1d9f1;
+  --catalog-accent-soft: #dbe3ef;
   --catalog-shadow: 0 16px 44px rgb(25 43 58 / 0.08);
 }
 
@@ -284,11 +284,12 @@ h2 {
 }
 
 .component-card {
-  display: grid;
+  display: flex;
   position: relative;
-  grid-template-columns: 1fr;
-  grid-template-rows: auto 1fr auto;
-  align-items: start;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9rem;
   aspect-ratio: 1;
   min-height: 0;
   padding: 1rem;
@@ -310,12 +311,13 @@ h2 {
 }
 
 .card-icon {
-    display: grid;
-    width: 2.5rem;
-    height: 2.5rem;
-    place-items: center;
-    border-radius: 0.55rem;
-    font-size: 1.5rem;
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 0.55rem;
+  font-size: 1.5rem;
 }
 
 .card-icon.filled {
@@ -334,7 +336,8 @@ h2 {
 }
 
 .card-copy {
-  align-self: center;
+  width: 100%;
+  text-align: center;
 }
 
 .card-copy strong {
