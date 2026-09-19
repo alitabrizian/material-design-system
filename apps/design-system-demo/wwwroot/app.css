@@ -55,7 +55,7 @@ a {
   top: 0;
   flex-direction: column;
   height: 100vh;
-  padding: 2rem 1.25rem 1.25rem;
+  padding-top: 1rem;
   border-right: 1px solid var(--catalog-line);
   background: rgb(255 255 255 / 0.84);
   backdrop-filter: blur(16px);
@@ -65,7 +65,7 @@ a {
   display: flex;
   align-items: center;
   gap: 0.7rem;
-  padding: 0 0.5rem 2.5rem;
+  padding: 0 1rem 1.5rem;
 }
 
 .brand-mark {
@@ -105,7 +105,7 @@ a {
 .component-menu {
   display: grid;
   gap: 0.15rem;
-  max-height: calc(100vh - 13rem);
+  max-height: calc(100vh - 8rem);
   overflow-y: auto;
   padding-right: 0.35rem;
   scrollbar-color: #c6d1d8 transparent;
