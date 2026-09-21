@@ -9,39 +9,61 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <div class="showcase">
-        <div class="playground-heading">
-            <div>
-                <span class="eyebrow">Component</span>
-                <h2>Timepicker</h2>
-            </div>
-            <div>
-                <span>Choose a time from a clock interface.</span>
-            </div>
-        </div>
-
+    <header class="doc-header">
+        <span class="eyebrow">Component</span>
+        <h1>Timepicker</h1>
         <p class="intro">
             The timepicker lets users enter or pick a time of day using the
             browser's native time input.
         </p>
+    </header>
 
-        <div class="control-grid">
+    <section class="doc-section">
+        <h2>Default</h2>
+        <p class="field-hint">Picking a time updates the status below.</p>
 
-            <fieldset class="playground-field">
-                <legend>Default</legend>
-                <p class="field-hint">Picking a time updates the status below.</p>
-                <Timepicker Label="Meeting time" value="@selectedTime" @onchange="@((ChangeEventArgs e) => selectedTime = e.Value?.ToString())" />
-                <span class="status">Selected: @(selectedTime ?? "—")</span>
-            </fieldset>
-
-            <fieldset class="playground-field">
-                <legend>Disabled</legend>
-                <p class="field-hint">A disabled timepicker cannot be changed.</p>
-                <Timepicker Label="Locked time" disabled />
-            </fieldset>
-
+        <div class="doc-example">
+            <PBTimepicker Label="Meeting time" value="@selectedTime" @onchange="@((ChangeEventArgs e) => selectedTime = e.Value?.ToString())" />
+            <span class="status">Selected: @(selectedTime ?? "—")</span>
         </div>
-    </div>
+
+        <CodeSnippet Code="@(
+@"<PBTimepicker Label=""Meeting time""
+    value=""@selectedTime""
+    @onchange=""@((ChangeEventArgs e) => selectedTime = e.Value?.ToString())"" />")" />
+    </section>
+
+    <section class="doc-section">
+        <h2>Disabled</h2>
+        <p class="field-hint">A disabled timepicker cannot be changed.</p>
+
+        <div class="doc-example">
+            <PBTimepicker Label="Locked time" disabled />
+        </div>
+
+        <CodeSnippet Code="@(@"<PBTimepicker Label=""Locked time"" disabled />")" />
+    </section>
+
+    <section class="doc-section">
+        <h2>API reference</h2>
+        <table class="doc-table">
+            <thead>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>Label</code></td><td><code>string?</code></td><td>Text rendered above the time field.</td></tr>
+                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;input type="time"&gt;</code>.</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="doc-section">
+        <div class="a11y-note">
+            <strong>Accessibility</strong>
+            Uses the browser's native time input, so keyboard entry and locale
+            formatting come from the platform.
+        </div>
+    </section>
 </div>
 
 @code {

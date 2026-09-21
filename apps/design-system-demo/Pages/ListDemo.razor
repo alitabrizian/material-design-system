@@ -9,44 +9,64 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <div class="showcase">
-        <div class="playground-heading">
-            <div>
-                <span class="eyebrow">Component</span>
-                <h2>List</h2>
-            </div>
-            <div>
-                <span>Present a vertical collection of items.</span>
-            </div>
-        </div>
-
+    <header class="doc-header">
+        <span class="eyebrow">Component</span>
+        <h1>List</h1>
         <p class="intro">
             A list presents a vertical collection of related items, such as
             navigation entries or search results.
         </p>
+    </header>
 
-        <div class="control-grid">
+    <section class="doc-section">
+        <h2>Recent activity</h2>
+        <p class="field-hint">A simple list of text items.</p>
 
-            <fieldset class="playground-field">
-                <legend>Recent activity</legend>
-                <p class="field-hint">A simple list of text items.</p>
-                <List>
-                    @foreach (var entry in activity)
-                    {
-                        <li>@entry</li>
-                    }
-                </List>
-            </fieldset>
-
+        <div class="doc-example">
+            <PBList>
+                @foreach (var entry in activity)
+                {
+                    <li>@entry</li>
+                }
+            </PBList>
         </div>
-    </div>
+
+        <CodeSnippet Code="@(
+@"<PBList>
+    @foreach (var entry in activity)
+    {
+        <li>@entry</li>
+    }
+</PBList>")" />
+    </section>
+
+    <section class="doc-section">
+        <h2>API reference</h2>
+        <table class="doc-table">
+            <thead>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The list items, typically <code>&lt;li&gt;</code> elements.</td></tr>
+                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;ul&gt;</code>.</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="doc-section">
+        <div class="a11y-note">
+            <strong>Accessibility</strong>
+            Renders a native <code>&lt;ul&gt;</code>, so use <code>&lt;li&gt;</code>
+            children to keep the list semantics assistive technology relies on.
+        </div>
+    </section>
 </div>
 
 @code {
     private static readonly string[] activity =
     [
-        "Ali updated the Autocomplete component",
-        "New demo page published for Badge",
+        "Ali updated the PBAutoComplete component",
+        "New demo page published for PBBadge",
         "Design tokens synced from Figma",
     ];
 }

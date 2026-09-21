@@ -9,30 +9,43 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <div class="showcase">
-        <div class="playground-heading">
-            <div>
-                <span class="eyebrow">Component</span>
-                <h2>Progress Spinner</h2>
-            </div>
-            <div>
-                <span>Show an indeterminate loading state.</span>
-            </div>
-        </div>
-
+    <header class="doc-header">
+        <span class="eyebrow">Component</span>
+        <h1>Progress Spinner</h1>
         <p class="intro">
             A progress spinner communicates that an operation is in progress when the
             duration is unknown.
         </p>
+    </header>
 
-        <div class="control-grid">
+    <section class="doc-section">
+        <h2>Loading</h2>
+        <p class="field-hint">An indeterminate spinner with an accessible label.</p>
 
-            <fieldset class="playground-field">
-                <legend>Loading</legend>
-                <p class="field-hint">An indeterminate spinner with an accessible label.</p>
-                <ProgressSpinner Label="Loading content" />
-            </fieldset>
-
+        <div class="doc-example">
+            <PBProgressSpinner Label="Loading content" />
         </div>
-    </div>
+
+        <CodeSnippet Code="@(@"<PBProgressSpinner Label=""Loading content"" />")" />
+    </section>
+
+    <section class="doc-section">
+        <h2>API reference</h2>
+        <table class="doc-table">
+            <thead>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>Label</code></td><td><code>string?</code></td><td>Rendered as <code>aria-label</code> on the spinner.</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="doc-section">
+        <div class="a11y-note">
+            <strong>Accessibility</strong>
+            Renders a native indeterminate <code>&lt;progress&gt;</code> element with
+            an <code>aria-label</code>, so it is announced without further markup.
+        </div>
+    </section>
 </div>

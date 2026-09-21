@@ -9,51 +9,74 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <div class="showcase">
-        <div class="playground-heading">
-            <div>
-                <span class="eyebrow">Component</span>
-                <h2>Tabs</h2>
-            </div>
-            <div>
-                <span>Switch between related views.</span>
-            </div>
-        </div>
-
+    <header class="doc-header">
+        <span class="eyebrow">Component</span>
+        <h1>Tabs</h1>
         <p class="intro">
             Tabs organize related content into separate views that share the same
             context.
         </p>
+    </header>
 
-        <div class="control-grid">
+    <section class="doc-section">
+        <h2>Account settings</h2>
+        <p class="field-hint">Selecting a tab swaps the panel below.</p>
 
-            <fieldset class="playground-field">
-                <legend>Account settings</legend>
-                <p class="field-hint">Selecting a tab swaps the panel below.</p>
-                <Tabs>
-                    @foreach (var tab in tabs)
-                    {
-                        <Button @onclick="() => activeTab = tab">@tab</Button>
-                    }
-                </Tabs>
-                <div style="padding-top:0.75rem;">
-                    @switch (activeTab)
-                    {
-                        case "Profile":
-                            <p style="margin:0;">Update your name, photo, and bio.</p>
-                            break;
-                        case "Security":
-                            <p style="margin:0;">Manage your password and two-factor authentication.</p>
-                            break;
-                        default:
-                            <p style="margin:0;">Manage connected apps and API tokens.</p>
-                            break;
-                    }
-                </div>
-            </fieldset>
-
+        <div class="doc-example">
+            <PBTabs>
+                @foreach (var tab in tabs)
+                {
+                    <PBButton @onclick="() => activeTab = tab">@tab</PBButton>
+                }
+            </PBTabs>
+            <div style="padding-top:0.75rem;">
+                @switch (activeTab)
+                {
+                    case "Profile":
+                        <p style="margin:0;">Update your name, photo, and bio.</p>
+                        break;
+                    case "Security":
+                        <p style="margin:0;">Manage your password and two-factor authentication.</p>
+                        break;
+                    default:
+                        <p style="margin:0;">Manage connected apps and API tokens.</p>
+                        break;
+                }
+            </div>
         </div>
-    </div>
+
+        <CodeSnippet Code="@(
+@"<PBTabs>
+    @foreach (var tab in tabs)
+    {
+        <PBButton @onclick=""() => activeTab = tab"">@tab</PBButton>
+    }
+</PBTabs>")" />
+    </section>
+
+    <section class="doc-section">
+        <h2>API reference</h2>
+        <table class="doc-table">
+            <thead>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The tab controls.</td></tr>
+                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;div role="tablist"&gt;</code>.</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="doc-section">
+        <div class="a11y-note">
+            <strong>Accessibility</strong>
+            The container has <code>role="tablist"</code>; the tab controls
+            themselves and their panels do not yet carry
+            <code>role="tab"</code>/<code>role="tabpanel"</code> and
+            <code>aria-selected</code>. Add those roles when wiring this into a real
+            page.
+        </div>
+    </section>
 </div>
 
 @code {

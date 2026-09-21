@@ -9,37 +9,58 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <div class="showcase">
-        <div class="playground-heading">
-            <div>
-                <span class="eyebrow">Component</span>
-                <h2>Grid List</h2>
-            </div>
-            <div>
-                <span>Arrange content in a structured grid.</span>
-            </div>
-        </div>
-
+    <header class="doc-header">
+        <span class="eyebrow">Component</span>
+        <h1>Grid List</h1>
         <p class="intro">
             A grid list arranges a collection of items into a uniform, structured
             grid.
         </p>
+    </header>
 
-        <div class="control-grid">
+    <section class="doc-section">
+        <h2>Photo grid</h2>
+        <p class="field-hint">Items are arranged edge to edge in a grid.</p>
 
-            <fieldset class="playground-field">
-                <legend>Photo grid</legend>
-                <p class="field-hint">Items are arranged edge to edge in a grid.</p>
-                <GridList style="display:grid; grid-template-columns:repeat(3, 1fr); gap:0.5rem;">
-                    @foreach (var label in tiles)
-                    {
-                        <div style="aspect-ratio:1; display:grid; place-items:center; background:var(--catalog-soft); border-radius:0.4rem;">@label</div>
-                    }
-                </GridList>
-            </fieldset>
-
+        <div class="doc-example">
+            <PBGridList style="display:grid; grid-template-columns:repeat(3, 1fr); gap:0.5rem;">
+                @foreach (var label in tiles)
+                {
+                    <div style="aspect-ratio:1; display:grid; place-items:center; background:var(--catalog-soft); border-radius:0.4rem;">@label</div>
+                }
+            </PBGridList>
         </div>
-    </div>
+
+        <CodeSnippet Code="@(
+@"<PBGridList style=""display:grid; grid-template-columns:repeat(3, 1fr); gap:0.5rem;"">
+    @foreach (var label in tiles)
+    {
+        <div>@label</div>
+    }
+</PBGridList>")" />
+    </section>
+
+    <section class="doc-section">
+        <h2>API reference</h2>
+        <table class="doc-table">
+            <thead>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The grid's tiles.</td></tr>
+                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;div&gt;</code>; used above to supply the grid layout via <code>style</code>.</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="doc-section">
+        <div class="a11y-note">
+            <strong>Accessibility</strong>
+            <code>PBGridList</code> does not currently apply <code>role="list"</code>/
+            <code>role="listitem"</code> semantics. If the tiles represent a
+            meaningful collection, add those roles via <code>AdditionalAttributes</code>.
+        </div>
+    </section>
 </div>
 
 @code {

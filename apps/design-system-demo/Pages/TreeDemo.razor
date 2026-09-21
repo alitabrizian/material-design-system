@@ -9,43 +9,67 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <div class="showcase">
-        <div class="playground-heading">
-            <div>
-                <span class="eyebrow">Component</span>
-                <h2>Tree</h2>
-            </div>
-            <div>
-                <span>Display hierarchical information.</span>
-            </div>
-        </div>
-
+    <header class="doc-header">
+        <span class="eyebrow">Component</span>
+        <h1>Tree</h1>
         <p class="intro">
             A tree displays hierarchical data, such as a file system or an
             organization chart.
         </p>
+    </header>
 
-        <div class="control-grid">
+    <section class="doc-section">
+        <h2>File explorer</h2>
+        <p class="field-hint">Nested lists represent parent-child relationships.</p>
 
-            <fieldset class="playground-field">
-                <legend>File explorer</legend>
-                <p class="field-hint">Nested lists represent parent-child relationships.</p>
-                <Tree>
-                    <li role="treeitem">
-                        libs
-                        <ul role="group">
-                            <li role="treeitem">design-system</li>
-                        </ul>
-                    </li>
-                    <li role="treeitem">
-                        apps
-                        <ul role="group">
-                            <li role="treeitem">design-system-demo</li>
-                        </ul>
-                    </li>
-                </Tree>
-            </fieldset>
-
+        <div class="doc-example">
+            <PBTree>
+                <li role="treeitem">
+                    libs
+                    <ul role="group">
+                        <li role="treeitem">design-system</li>
+                    </ul>
+                </li>
+                <li role="treeitem">
+                    apps
+                    <ul role="group">
+                        <li role="treeitem">design-system-demo</li>
+                    </ul>
+                </li>
+            </PBTree>
         </div>
-    </div>
+
+        <CodeSnippet Code="@(
+@"<PBTree>
+    <li role=""treeitem"">
+        libs
+        <ul role=""group"">
+            <li role=""treeitem"">design-system</li>
+        </ul>
+    </li>
+</PBTree>")" />
+    </section>
+
+    <section class="doc-section">
+        <h2>API reference</h2>
+        <table class="doc-table">
+            <thead>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The tree's <code>role="treeitem"</code> nodes.</td></tr>
+                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;ul role="tree"&gt;</code>.</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="doc-section">
+        <div class="a11y-note">
+            <strong>Accessibility</strong>
+            The root has <code>role="tree"</code>; give each item
+            <code>role="treeitem"</code> and each nested list
+            <code>role="group"</code> as shown, so assistive technology can navigate
+            the hierarchy.
+        </div>
+    </section>
 </div>

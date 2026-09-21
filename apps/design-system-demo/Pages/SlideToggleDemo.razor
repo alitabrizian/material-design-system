@@ -9,38 +9,58 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <div class="showcase">
-        <div class="playground-heading">
-            <div>
-                <span class="eyebrow">Component</span>
-                <h2>Slide Toggle</h2>
-            </div>
-            <div>
-                <span>Toggle a setting with a sliding control.</span>
-            </div>
+    <header class="doc-header">
+        <span class="eyebrow">Component</span>
+        <h1>Slide Toggle</h1>
+        <p class="intro">A slide toggle switches a single setting between an on and an off state.</p>
+    </header>
+
+    <section class="doc-section">
+        <h2>Dark mode</h2>
+        <p class="field-hint">Flipping the switch updates the status below.</p>
+
+        <div class="doc-example">
+            <PBSlideToggle Label="Enable dark mode" checked="@darkModeEnabled" @onchange="@((ChangeEventArgs e) => darkModeEnabled = (bool)e.Value!)" />
+            <span class="status">Dark mode: @(darkModeEnabled ? "on" : "off")</span>
         </div>
 
-        <p class="intro">
-            A slide toggle switches a single setting between an on and an off state.
-        </p>
+        <CodeSnippet Code="@(
+@"<PBSlideToggle Label=""Enable dark mode""
+    checked=""@darkModeEnabled""
+    @onchange=""@((ChangeEventArgs e) => darkModeEnabled = (bool)e.Value!)"" />")" />
+    </section>
 
-        <div class="control-grid">
+    <section class="doc-section">
+        <h2>Disabled</h2>
+        <p class="field-hint">A disabled toggle cannot be changed.</p>
 
-            <fieldset class="playground-field">
-                <legend>Dark mode</legend>
-                <p class="field-hint">Flipping the switch updates the status below.</p>
-                <SlideToggle Label="Enable dark mode" checked="@darkModeEnabled" @onchange="@((ChangeEventArgs e) => darkModeEnabled = (bool)e.Value!)" />
-                <span class="status">Dark mode: @(darkModeEnabled ? "on" : "off")</span>
-            </fieldset>
-
-            <fieldset class="playground-field">
-                <legend>Disabled</legend>
-                <p class="field-hint">A disabled toggle cannot be changed.</p>
-                <SlideToggle Label="Locked setting" disabled />
-            </fieldset>
-
+        <div class="doc-example">
+            <PBSlideToggle Label="Locked setting" disabled />
         </div>
-    </div>
+
+        <CodeSnippet Code="@(@"<PBSlideToggle Label=""Locked setting"" disabled />")" />
+    </section>
+
+    <section class="doc-section">
+        <h2>API reference</h2>
+        <table class="doc-table">
+            <thead>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>Label</code></td><td><code>string?</code></td><td>Text rendered next to the switch.</td></tr>
+                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;input type="checkbox" role="switch"&gt;</code>.</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="doc-section">
+        <div class="a11y-note">
+            <strong>Accessibility</strong>
+            Uses <code>role="switch"</code> on the checkbox input, so assistive
+            technology announces it as an on/off switch rather than a checkbox.
+        </div>
+    </section>
 </div>
 
 @code {

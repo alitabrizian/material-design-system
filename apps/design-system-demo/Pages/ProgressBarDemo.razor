@@ -9,42 +9,58 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <div class="showcase">
-        <div class="playground-heading">
-            <div>
-                <span class="eyebrow">Component</span>
-                <h2>Progress Bar</h2>
-            </div>
-            <div>
-                <span>Show progress across a horizontal track.</span>
+    <header class="doc-header">
+        <span class="eyebrow">Component</span>
+        <h1>Progress Bar</h1>
+        <p class="intro">A progress bar communicates the completion of a determinate operation.</p>
+    </header>
+
+    <section class="doc-section">
+        <h2>Determinate</h2>
+        <p class="field-hint">Use the buttons to advance the progress value.</p>
+
+        <div class="doc-example">
+            <PBProgressBar value="@progress" max="100" />
+            <span class="status">@progress%</span>
+            <div class="actions">
+                <PBButton @onclick="() => progress = Math.Max(0, progress - 10)">-10%</PBButton>
+                <PBButton @onclick="() => progress = Math.Min(100, progress + 10)">+10%</PBButton>
             </div>
         </div>
 
-        <p class="intro">
-            A progress bar communicates the completion of a determinate operation.
-        </p>
+        <CodeSnippet Code="@(@"<PBProgressBar value=""@progress"" max=""100"" />")" />
+    </section>
 
-        <div class="control-grid">
+    <section class="doc-section">
+        <h2>Indeterminate</h2>
+        <p class="field-hint">Omitting a value shows an indeterminate track.</p>
 
-            <fieldset class="playground-field">
-                <legend>Upload progress</legend>
-                <p class="field-hint">Use the buttons to advance the progress value.</p>
-                <ProgressBar value="@progress" max="100" />
-                <span class="status">@progress%</span>
-                <div class="actions">
-                    <Button @onclick="() => progress = Math.Max(0, progress - 10)">-10%</Button>
-                    <Button @onclick="() => progress = Math.Min(100, progress + 10)">+10%</Button>
-                </div>
-            </fieldset>
-
-            <fieldset class="playground-field">
-                <legend>Indeterminate</legend>
-                <p class="field-hint">Omitting a value shows an indeterminate track.</p>
-                <ProgressBar />
-            </fieldset>
-
+        <div class="doc-example">
+            <PBProgressBar />
         </div>
-    </div>
+
+        <CodeSnippet Code="@(@"<PBProgressBar />")" />
+    </section>
+
+    <section class="doc-section">
+        <h2>API reference</h2>
+        <table class="doc-table">
+            <thead>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;progress&gt;</code>, including <code>value</code> and <code>max</code>.</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="doc-section">
+        <div class="a11y-note">
+            <strong>Accessibility</strong>
+            Renders a native <code>&lt;progress&gt;</code> element, which exposes its
+            value to assistive technology automatically.
+        </div>
+    </section>
 </div>
 
 @code {

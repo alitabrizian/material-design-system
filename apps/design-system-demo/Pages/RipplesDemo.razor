@@ -9,35 +9,53 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <div class="showcase">
-        <div class="playground-heading">
-            <div>
-                <span class="eyebrow">Component</span>
-                <h2>Ripples</h2>
-            </div>
-            <div>
-                <span>Give interactions tactile visual feedback.</span>
-            </div>
-        </div>
-
+    <header class="doc-header">
+        <span class="eyebrow">Component</span>
+        <h1>Ripples</h1>
         <p class="intro">
             Ripples wrap an interactive element to give it tactile visual feedback
             when pressed.
         </p>
+    </header>
 
-        <div class="control-grid">
+    <section class="doc-section">
+        <h2>Wrapping a button</h2>
+        <p class="field-hint">Clicking updates the status below.</p>
 
-            <fieldset class="playground-field">
-                <legend>Wrapping a button</legend>
-                <p class="field-hint">Clicking updates the status below.</p>
-                <Ripples>
-                    <Button @onclick="() => tapCount++">Tap me</Button>
-                </Ripples>
-                <span class="status">Tapped @tapCount time(s)</span>
-            </fieldset>
-
+        <div class="doc-example">
+            <PBRipples>
+                <PBButton @onclick="() => tapCount++">Tap me</PBButton>
+            </PBRipples>
+            <span class="status">Tapped @tapCount time(s)</span>
         </div>
-    </div>
+
+        <CodeSnippet Code="@(
+@"<PBRipples>
+    <PBButton @onclick=""() => tapCount++"">Tap me</PBButton>
+</PBRipples>")" />
+    </section>
+
+    <section class="doc-section">
+        <h2>API reference</h2>
+        <table class="doc-table">
+            <thead>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The wrapped interactive element.</td></tr>
+                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;span&gt;</code>.</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="doc-section">
+        <div class="a11y-note">
+            <strong>Accessibility</strong>
+            Ripples is a purely visual effect wrapper; it does not change the
+            accessibility tree, so the wrapped element's own semantics (e.g. a
+            <code>&lt;button&gt;</code>) still apply.
+        </div>
+    </section>
 </div>
 
 @code {

@@ -9,47 +9,76 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <div class="showcase">
-        <div class="playground-heading">
-            <div>
-                <span class="eyebrow">Component</span>
-                <h2>Badge</h2>
-            </div>
-            <div>
-                <span>Show a compact value or status indicator.</span>
-            </div>
-        </div>
-
+    <header class="doc-header">
+        <span class="eyebrow">Component</span>
+        <h1>Badge</h1>
         <p class="intro">
-            A badge is a small label attached to another element to draw attention to a
-            count, a status, or a piece of contextual information.
+            A badge is a small label attached to another element to draw attention to
+            a count, a status, or a piece of contextual information.
         </p>
+    </header>
 
-        <div class="control-grid">
+    <section class="doc-section">
+        <h2>Text badge</h2>
+        <p class="field-hint">Use a short word to communicate status.</p>
 
-            <fieldset class="playground-field">
-                <legend>Text badge</legend>
-                <p class="field-hint">Use a short word to communicate status.</p>
-                <Badge>New</Badge>
-            </fieldset>
-
-            <fieldset class="playground-field">
-                <legend>Numeric badge</legend>
-                <p class="field-hint">Use a number to communicate a count.</p>
-                <Badge>12</Badge>
-            </fieldset>
-
-            <fieldset class="playground-field">
-                <legend>Badge next to an action</legend>
-                <p class="field-hint">Badges are commonly paired with a button or icon.</p>
-                <span style="display:inline-flex; align-items:center; gap:0.5rem;">
-                    <Button>Inbox</Button>
-                    <Badge>@unreadCount</Badge>
-                </span>
-            </fieldset>
-
+        <div class="doc-example">
+            <PBBadge>New</PBBadge>
         </div>
-    </div>
+
+        <CodeSnippet Code="@(@"<PBBadge>New</PBBadge>")" />
+    </section>
+
+    <section class="doc-section">
+        <h2>Numeric badge</h2>
+        <p class="field-hint">Use a number to communicate a count.</p>
+
+        <div class="doc-example">
+            <PBBadge>12</PBBadge>
+        </div>
+
+        <CodeSnippet Code="@(@"<PBBadge>12</PBBadge>")" />
+    </section>
+
+    <section class="doc-section">
+        <h2>Badge next to an action</h2>
+        <p class="field-hint">Badges are commonly paired with a button or icon.</p>
+
+        <div class="doc-example">
+            <span style="display:inline-flex; align-items:center; gap:0.5rem;">
+                <PBButton>Inbox</PBButton>
+                <PBBadge>@unreadCount</PBBadge>
+            </span>
+        </div>
+
+        <CodeSnippet Code="@(
+@"<PBButton>Inbox</PBButton>
+<PBBadge>@unreadCount</PBBadge>")" />
+    </section>
+
+    <section class="doc-section">
+        <h2>API reference</h2>
+        <table class="doc-table">
+            <thead>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>Label</code></td><td><code>string?</code></td><td>Optional accessible label.</td></tr>
+                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>Content rendered inside the badge (text or a number).</td></tr>
+                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;span&gt;</code>.</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="doc-section">
+        <div class="a11y-note">
+            <strong>Accessibility</strong>
+            A badge is decorative by default. When it conveys information not
+            otherwise available in the surrounding text (such as an unread count),
+            give it an accessible label via <code>AdditionalAttributes</code>, e.g.
+            <code>aria-label="4 unread"</code>.
+        </div>
+    </section>
 </div>
 
 @code {

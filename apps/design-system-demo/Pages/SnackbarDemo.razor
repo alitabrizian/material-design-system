@@ -9,40 +9,58 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <div class="showcase">
-        <div class="playground-heading">
-            <div>
-                <span class="eyebrow">Component</span>
-                <h2>Snackbar</h2>
-            </div>
-            <div>
-                <span>Give brief feedback after an action.</span>
-            </div>
-        </div>
-
+    <header class="doc-header">
+        <span class="eyebrow">Component</span>
+        <h1>Snackbar</h1>
         <p class="intro">
             A snackbar shows a brief, unobtrusive message about the result of an
             action.
         </p>
+    </header>
 
-        <div class="control-grid">
+    <section class="doc-section">
+        <h2>Save confirmation</h2>
+        <p class="field-hint">Trigger the snackbar with the button below.</p>
 
-            <fieldset class="playground-field">
-                <legend>Save confirmation</legend>
-                <p class="field-hint">Trigger the snackbar with the button below.</p>
-                <Button @onclick="() => isVisible = true">Save changes</Button>
+        <div class="doc-example">
+            <PBButton @onclick="() => isVisible = true">Save changes</PBButton>
 
-                @if (isVisible)
-                {
-                    <Snackbar>
-                        Changes saved.
-                        <Button @onclick="() => isVisible = false">Dismiss</Button>
-                    </Snackbar>
-                }
-            </fieldset>
-
+            @if (isVisible)
+            {
+                <PBSnackbar>
+                    Changes saved.
+                    <PBButton @onclick="() => isVisible = false">Dismiss</PBButton>
+                </PBSnackbar>
+            }
         </div>
-    </div>
+
+        <CodeSnippet Code="@(
+@"<PBSnackbar>
+    Changes saved.
+    <PBButton @onclick=""Dismiss"">Dismiss</PBButton>
+</PBSnackbar>")" />
+    </section>
+
+    <section class="doc-section">
+        <h2>API reference</h2>
+        <table class="doc-table">
+            <thead>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The message and any inline actions.</td></tr>
+                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;output role="status"&gt;</code>.</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="doc-section">
+        <div class="a11y-note">
+            <strong>Accessibility</strong>
+            Renders an <code>&lt;output role="status"&gt;</code>, which is announced
+            politely by screen readers as it appears, without stealing focus.
+        </div>
+    </section>
 </div>
 
 @code {

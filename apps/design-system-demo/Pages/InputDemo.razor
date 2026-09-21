@@ -9,38 +9,60 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <div class="showcase">
-        <div class="playground-heading">
-            <div>
-                <span class="eyebrow">Component</span>
-                <h2>Input</h2>
-            </div>
-            <div>
-                <span>Capture a value from the user.</span>
-            </div>
+    <header class="doc-header">
+        <span class="eyebrow">Component</span>
+        <h1>Input</h1>
+        <p class="intro">The input component captures a single line of text from the user.</p>
+    </header>
+
+    <section class="doc-section">
+        <h2>Default</h2>
+        <p class="field-hint">Typing updates the status below.</p>
+
+        <div class="doc-example">
+            <PBInput Label="Email address" placeholder="you@example.com" value="@email" @oninput="@((ChangeEventArgs e) => email = e.Value?.ToString())" />
+            <span class="status">Value: @(string.IsNullOrEmpty(email) ? "—" : email)</span>
         </div>
 
-        <p class="intro">
-            The input component captures a single line of text from the user.
-        </p>
+        <CodeSnippet Code="@(
+@"<PBInput Label=""Email address""
+    placeholder=""you@example.com""
+    value=""@email""
+    @oninput=""@((ChangeEventArgs e) => email = e.Value?.ToString())"" />")" />
+    </section>
 
-        <div class="control-grid">
+    <section class="doc-section">
+        <h2>Disabled</h2>
+        <p class="field-hint">A disabled input cannot be edited.</p>
 
-            <fieldset class="playground-field">
-                <legend>Default</legend>
-                <p class="field-hint">Typing updates the status below.</p>
-                <Input Label="Email address" placeholder="you@example.com" value="@email" @oninput="@((ChangeEventArgs e) => email = e.Value?.ToString())" />
-                <span class="status">Value: @(string.IsNullOrEmpty(email) ? "—" : email)</span>
-            </fieldset>
-
-            <fieldset class="playground-field">
-                <legend>Disabled</legend>
-                <p class="field-hint">A disabled input cannot be edited.</p>
-                <Input Label="Locked field" value="Read only" disabled />
-            </fieldset>
-
+        <div class="doc-example">
+            <PBInput Label="Locked field" value="Read only" disabled />
         </div>
-    </div>
+
+        <CodeSnippet Code="@(@"<PBInput Label=""Locked field"" value=""Read only"" disabled />")" />
+    </section>
+
+    <section class="doc-section">
+        <h2>API reference</h2>
+        <table class="doc-table">
+            <thead>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>Label</code></td><td><code>string?</code></td><td>Rendered as <code>aria-label</code> on the input.</td></tr>
+                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;input&gt;</code>.</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="doc-section">
+        <div class="a11y-note">
+            <strong>Accessibility</strong>
+            <code>Label</code> is applied as <code>aria-label</code> rather than a
+            visible <code>&lt;label&gt;</code> element; pair it with
+            <code>PBFormField</code> when a visible label is required.
+        </div>
+    </section>
 </div>
 
 @code {

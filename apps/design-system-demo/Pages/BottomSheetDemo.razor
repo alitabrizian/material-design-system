@@ -9,43 +9,67 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <div class="showcase">
-        <div class="playground-heading">
-            <div>
-                <span class="eyebrow">Component</span>
-                <h2>Bottom Sheet</h2>
-            </div>
-            <div>
-                <span>Present actions in a mobile-friendly panel.</span>
-            </div>
-        </div>
-
+    <header class="doc-header">
+        <span class="eyebrow">Component</span>
+        <h1>Bottom Sheet</h1>
         <p class="intro">
             A bottom sheet surfaces a focused set of actions or information without
-            leaving the current page. Toggle the button below to show or hide it.
+            leaving the current page.
         </p>
+    </header>
 
-        <div class="control-grid">
+    <section class="doc-section">
+        <h2>Action sheet</h2>
+        <p class="field-hint">Toggle the button below to show or hide the sheet.</p>
 
-            <fieldset class="playground-field">
-                <legend>Action sheet</legend>
-                <p class="field-hint">A bottom sheet listing a short set of actions.</p>
-                <Button @onclick="() => isOpen = !isOpen">@(isOpen ? "Hide sheet" : "Show sheet")</Button>
+        <div class="doc-example">
+            <PBButton @onclick="() => isOpen = !isOpen">@(isOpen ? "Hide sheet" : "Show sheet")</PBButton>
 
-                @if (isOpen)
-                {
-                    <BottomSheet Label="Share options">
-                        <List>
-                            <li>Copy link</li>
-                            <li>Send in a message</li>
-                            <li>Share to social</li>
-                        </List>
-                    </BottomSheet>
-                }
-            </fieldset>
-
+            @if (isOpen)
+            {
+                <PBBottomSheet Label="Share options">
+                    <PBList>
+                        <li>Copy link</li>
+                        <li>Send in a message</li>
+                        <li>Share to social</li>
+                    </PBList>
+                </PBBottomSheet>
+            }
         </div>
-    </div>
+
+        <CodeSnippet Code="@(
+@"<PBBottomSheet Label=""Share options"">
+    <PBList>
+        <li>Copy link</li>
+        <li>Send in a message</li>
+        <li>Share to social</li>
+    </PBList>
+</PBBottomSheet>")" />
+    </section>
+
+    <section class="doc-section">
+        <h2>API reference</h2>
+        <table class="doc-table">
+            <thead>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>Label</code></td><td><code>string?</code></td><td>Accessible label for the sheet region.</td></tr>
+                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The sheet's content, typically a list of actions.</td></tr>
+                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;section&gt;</code>.</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="doc-section">
+        <div class="a11y-note">
+            <strong>Accessibility</strong>
+            The sheet renders as a <code>&lt;section aria-label&gt;</code>. Showing and
+            hiding it is currently controlled entirely by the host page (via an
+            <code>@@if</code>), so make sure focus moves into the sheet when it opens
+            and back to the triggering control when it closes.
+        </div>
+    </section>
 </div>
 
 @code {

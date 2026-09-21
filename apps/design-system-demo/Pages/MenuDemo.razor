@@ -9,37 +9,57 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <div class="showcase">
-        <div class="playground-heading">
-            <div>
-                <span class="eyebrow">Component</span>
-                <h2>Menu</h2>
-            </div>
-            <div>
-                <span>Expose a list of contextual actions.</span>
-            </div>
-        </div>
-
+    <header class="doc-header">
+        <span class="eyebrow">Component</span>
+        <h1>Menu</h1>
         <p class="intro">
             A menu exposes a list of contextual actions, typically opened from a
             button or icon.
         </p>
+    </header>
 
-        <div class="control-grid">
+    <section class="doc-section">
+        <h2>Row actions</h2>
+        <p class="field-hint">A menu grouping a set of related actions.</p>
 
-            <fieldset class="playground-field">
-                <legend>Row actions</legend>
-                <p class="field-hint">A menu grouping a set of related actions.</p>
-                <Menu Label="Row actions">
-                    <Button @onclick='() => SelectAction("Edit")'>Edit</Button>
-                    <Button @onclick='() => SelectAction("Duplicate")'>Duplicate</Button>
-                    <Button @onclick='() => SelectAction("Delete")'>Delete</Button>
-                </Menu>
-                <span class="status">Last action: @(selectedAction ?? "—")</span>
-            </fieldset>
-
+        <div class="doc-example">
+            <PBMenu Label="Row actions">
+                <PBButton @onclick='() => SelectAction("Edit")'>Edit</PBButton>
+                <PBButton @onclick='() => SelectAction("Duplicate")'>Duplicate</PBButton>
+                <PBButton @onclick='() => SelectAction("Delete")'>Delete</PBButton>
+            </PBMenu>
+            <span class="status">Last action: @(selectedAction ?? "—")</span>
         </div>
-    </div>
+
+        <CodeSnippet Code="@(
+@"<PBMenu Label=""Row actions"">
+    <PBButton @onclick=""Edit"">Edit</PBButton>
+    <PBButton @onclick=""Duplicate"">Duplicate</PBButton>
+    <PBButton @onclick=""Delete"">Delete</PBButton>
+</PBMenu>")" />
+    </section>
+
+    <section class="doc-section">
+        <h2>API reference</h2>
+        <table class="doc-table">
+            <thead>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>Label</code></td><td><code>string?</code></td><td>Rendered as <code>aria-label</code> on the menu.</td></tr>
+                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The menu's actions.</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="doc-section">
+        <div class="a11y-note">
+            <strong>Accessibility</strong>
+            Renders a labeled <code>&lt;nav&gt;</code>. It does not yet implement the
+            <code>role="menu"</code>/<code>role="menuitem"</code> pattern with roving
+            keyboard focus; for now it behaves like a labeled group of buttons.
+        </div>
+    </section>
 </div>
 
 @code {

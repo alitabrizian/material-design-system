@@ -9,43 +9,65 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <div class="showcase">
-        <div class="playground-heading">
-            <div>
-                <span class="eyebrow">Component</span>
-                <h2>Dialog</h2>
-            </div>
-            <div>
-                <span>Focus attention on an important task.</span>
-            </div>
-        </div>
-
+    <header class="doc-header">
+        <span class="eyebrow">Component</span>
+        <h1>Dialog</h1>
         <p class="intro">
             A dialog interrupts the current flow to focus attention on a single task
             or piece of information.
         </p>
+    </header>
 
-        <div class="control-grid">
+    <section class="doc-section">
+        <h2>Confirmation dialog</h2>
+        <p class="field-hint">Toggle the dialog with the button below.</p>
 
-            <fieldset class="playground-field">
-                <legend>Confirmation dialog</legend>
-                <p class="field-hint">Toggle the dialog with the button below.</p>
-                <Button @onclick="() => isOpen = !isOpen">@(isOpen ? "Hide dialog" : "Show dialog")</Button>
+        <div class="doc-example">
+            <PBButton @onclick="() => isOpen = !isOpen">@(isOpen ? "Hide dialog" : "Show dialog")</PBButton>
 
-                @if (isOpen)
-                {
-                    <Dialog Label="Discard changes?">
-                        <p style="margin:0 0 0.75rem;">Your edits have not been saved.</p>
-                        <span style="display:inline-flex; gap:0.5rem;">
-                            <Button @onclick="() => isOpen = false">Cancel</Button>
-                            <Button @onclick="() => isOpen = false">Discard</Button>
-                        </span>
-                    </Dialog>
-                }
-            </fieldset>
-
+            @if (isOpen)
+            {
+                <PBDialog Label="Discard changes?">
+                    <p style="margin:0 0 0.75rem;">Your edits have not been saved.</p>
+                    <span style="display:inline-flex; gap:0.5rem;">
+                        <PBButton @onclick="() => isOpen = false">Cancel</PBButton>
+                        <PBButton @onclick="() => isOpen = false">Discard</PBButton>
+                    </span>
+                </PBDialog>
+            }
         </div>
-    </div>
+
+        <CodeSnippet Code="@(
+@"<PBDialog Label=""Discard changes?"">
+    <p>Your edits have not been saved.</p>
+    <PBButton @onclick=""Cancel"">Cancel</PBButton>
+    <PBButton @onclick=""Discard"">Discard</PBButton>
+</PBDialog>")" />
+    </section>
+
+    <section class="doc-section">
+        <h2>API reference</h2>
+        <table class="doc-table">
+            <thead>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>Label</code></td><td><code>string?</code></td><td>Rendered as the dialog's <code>&lt;h2&gt;</code> heading.</td></tr>
+                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The dialog's body content and actions.</td></tr>
+                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;dialog open&gt;</code>.</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="doc-section">
+        <div class="a11y-note">
+            <strong>Accessibility</strong>
+            Renders a native <code>&lt;dialog&gt;</code> element, always <code>open</code>
+            while present. The host page is responsible for mounting/unmounting it and
+            for moving focus into the dialog when it appears and back to the trigger
+            when it closes.
+        </div>
+    </section>
 </div>
 
 @code {

@@ -9,32 +9,48 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <div class="showcase">
-        <div class="playground-heading">
-            <div>
-                <span class="eyebrow">Component</span>
-                <h2>Tooltip</h2>
-            </div>
-            <div>
-                <span>Explain an element on hover or focus.</span>
-            </div>
+    <header class="doc-header">
+        <span class="eyebrow">Component</span>
+        <h1>Tooltip</h1>
+        <p class="intro">A tooltip shows a short explanation when the user hovers or focuses an element.</p>
+    </header>
+
+    <section class="doc-section">
+        <h2>Icon button</h2>
+        <p class="field-hint">Hover the button to reveal the tooltip text.</p>
+
+        <div class="doc-example">
+            <PBTooltip Label="Copy to clipboard">
+                <PBButton>⧉</PBButton>
+            </PBTooltip>
         </div>
 
-        <p class="intro">
-            A tooltip shows a short explanation when the user hovers or focuses an
-            element.
-        </p>
+        <CodeSnippet Code="@(
+@"<PBTooltip Label=""Copy to clipboard"">
+    <PBButton>⧉</PBButton>
+</PBTooltip>")" />
+    </section>
 
-        <div class="control-grid">
+    <section class="doc-section">
+        <h2>API reference</h2>
+        <table class="doc-table">
+            <thead>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>Label</code></td><td><code>string?</code></td><td>Rendered as the native <code>title</code> attribute.</td></tr>
+                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The element the tooltip is attached to.</td></tr>
+            </tbody>
+        </table>
+    </section>
 
-            <fieldset class="playground-field">
-                <legend>Icon button</legend>
-                <p class="field-hint">Hover the icon to reveal the tooltip text.</p>
-                <Tooltip Label="Copy to clipboard">
-                    <Button>⧉</Button>
-                </Tooltip>
-            </fieldset>
-
+    <section class="doc-section">
+        <div class="a11y-note">
+            <strong>Accessibility</strong>
+            Uses the native <code>title</code> attribute, which most screen readers
+            announce but which isn't keyboard-discoverable on its own; the wrapped
+            control's own focusability (e.g. a real <code>&lt;button&gt;</code>) is
+            what makes the tooltip reachable.
         </div>
-    </div>
+    </section>
 </div>

@@ -9,40 +9,62 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <div class="showcase">
-        <div class="playground-heading">
-            <div>
-                <span class="eyebrow">Component</span>
-                <h2>Table</h2>
-            </div>
-            <div>
-                <span>Display structured data in rows and columns.</span>
-            </div>
+    <header class="doc-header">
+        <span class="eyebrow">Component</span>
+        <h1>Table</h1>
+        <p class="intro">A table displays a structured collection of data across rows and columns.</p>
+    </header>
+
+    <section class="doc-section">
+        <h2>Team members</h2>
+        <p class="field-hint">Rows are supplied as child content.</p>
+
+        <div class="doc-example">
+            <PBTable>
+                @foreach (var member in members)
+                {
+                    <tr>
+                        <td>@member.Name</td>
+                        <td>@member.Role</td>
+                    </tr>
+                }
+            </PBTable>
         </div>
 
-        <p class="intro">
-            A table displays a structured collection of data across rows and
-            columns.
-        </p>
+        <CodeSnippet Code="@(
+@"<PBTable>
+    @foreach (var member in members)
+    {
+        <tr>
+            <td>@member.Name</td>
+            <td>@member.Role</td>
+        </tr>
+    }
+</PBTable>")" />
+    </section>
 
-        <div class="control-grid">
+    <section class="doc-section">
+        <h2>API reference</h2>
+        <table class="doc-table">
+            <thead>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The table's <code>&lt;tr&gt;</code> rows.</td></tr>
+                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;table&gt;</code>.</td></tr>
+            </tbody>
+        </table>
+    </section>
 
-            <fieldset class="playground-field">
-                <legend>Team members</legend>
-                <p class="field-hint">Rows are supplied as child content.</p>
-                <Table>
-                    @foreach (var member in members)
-                    {
-                        <tr>
-                            <td>@member.Name</td>
-                            <td>@member.Role</td>
-                        </tr>
-                    }
-                </Table>
-            </fieldset>
-
+    <section class="doc-section">
+        <div class="a11y-note">
+            <strong>Accessibility</strong>
+            <code>PBTable</code> wraps rows directly in <code>&lt;tbody&gt;</code>
+            with no header row markup yet; add a <code>&lt;thead&gt;</code> with
+            <code>&lt;th scope="col"&gt;</code> cells in real usage so column
+            headers are announced.
         </div>
-    </div>
+    </section>
 </div>
 
 @code {

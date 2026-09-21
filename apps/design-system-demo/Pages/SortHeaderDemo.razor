@@ -9,32 +9,47 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <div class="showcase">
-        <div class="playground-heading">
-            <div>
-                <span class="eyebrow">Component</span>
-                <h2>Sort Header</h2>
-            </div>
-            <div>
-                <span>Sort tabular data by a column.</span>
-            </div>
+    <header class="doc-header">
+        <span class="eyebrow">Component</span>
+        <h1>Sort Header</h1>
+        <p class="intro">A sort header lets the user toggle the sort direction of a table column.</p>
+    </header>
+
+    <section class="doc-section">
+        <h2>Table column</h2>
+        <p class="field-hint">Click the header to toggle the sort direction.</p>
+
+        <div class="doc-example">
+            <PBSortHeader Label="Name" @onclick="ToggleSort" />
+            <span class="status">Sort: @sortDirection</span>
         </div>
 
-        <p class="intro">
-            A sort header lets the user toggle the sort direction of a table column.
-        </p>
+        <CodeSnippet Code="@(@"<PBSortHeader Label=""Name"" @onclick=""ToggleSort"" />")" />
+    </section>
 
-        <div class="control-grid">
+    <section class="doc-section">
+        <h2>API reference</h2>
+        <table class="doc-table">
+            <thead>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>Label</code></td><td><code>string?</code></td><td>The column name; also used to build <code>aria-label="Sort {Label}"</code>.</td></tr>
+                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>Optional content (e.g. a sort icon) rendered before the label.</td></tr>
+                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;button&gt;</code>, including <code>@@onclick</code>.</td></tr>
+            </tbody>
+        </table>
+    </section>
 
-            <fieldset class="playground-field">
-                <legend>Table column</legend>
-                <p class="field-hint">Click the header to toggle the sort direction.</p>
-                <SortHeader Label="Name" @onclick="ToggleSort" />
-                <span class="status">Sort: @sortDirection</span>
-            </fieldset>
-
+    <section class="doc-section">
+        <div class="a11y-note">
+            <strong>Accessibility</strong>
+            Renders a native <code>&lt;button&gt;</code> labeled "Sort {column}".
+            The current sort direction is only reflected in on-screen text in this
+            demo — expose it via <code>aria-sort</code> on the owning table header
+            cell in real usage.
         </div>
-    </div>
+    </section>
 </div>
 
 @code {

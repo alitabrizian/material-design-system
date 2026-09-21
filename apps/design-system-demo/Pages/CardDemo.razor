@@ -9,46 +9,78 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <div class="showcase">
-        <div class="playground-heading">
-            <div>
-                <span class="eyebrow">Component</span>
-                <h2>Card</h2>
-            </div>
-            <div>
-                <span>Group related content together.</span>
-            </div>
-        </div>
-
+    <header class="doc-header">
+        <span class="eyebrow">Component</span>
+        <h1>Card</h1>
         <p class="intro">
             Cards group related content and actions into a single, self-contained
             surface.
         </p>
+    </header>
 
-        <div class="control-grid">
+    <section class="doc-section">
+        <h2>Basic card</h2>
+        <p class="field-hint">A card with a title, body copy, and an action.</p>
 
-            <fieldset class="playground-field">
-                <legend>Basic card</legend>
-                <p class="field-hint">A card with a title, body copy, and an action.</p>
-                <Card>
-                    <h3 style="margin:0 0 0.35rem;">Team standup</h3>
-                    <p style="margin:0 0 0.75rem;">Daily sync at 9:30 AM in the design system room.</p>
-                    <Button>Join</Button>
-                </Card>
-            </fieldset>
-
-            <fieldset class="playground-field">
-                <legend>Media card</legend>
-                <p class="field-hint">A card can hold arbitrary content, including lists.</p>
-                <Card>
-                    <h3 style="margin:0 0 0.35rem;">Release notes</h3>
-                    <List>
-                        <li>Autocomplete component shipped</li>
-                        <li>Dark mode groundwork started</li>
-                    </List>
-                </Card>
-            </fieldset>
-
+        <div class="doc-example">
+            <PBCard>
+                <h3 style="margin:0 0 0.35rem;">Team standup</h3>
+                <p style="margin:0 0 0.75rem;">Daily sync at 9:30 AM in the design system room.</p>
+                <PBButton>Join</PBButton>
+            </PBCard>
         </div>
-    </div>
+
+        <CodeSnippet Code="@(
+@"<PBCard>
+    <h3>Team standup</h3>
+    <p>Daily sync at 9:30 AM in the design system room.</p>
+    <PBButton>Join</PBButton>
+</PBCard>")" />
+    </section>
+
+    <section class="doc-section">
+        <h2>Media card</h2>
+        <p class="field-hint">A card can hold arbitrary content, including lists.</p>
+
+        <div class="doc-example">
+            <PBCard>
+                <h3 style="margin:0 0 0.35rem;">Release notes</h3>
+                <PBList>
+                    <li>Autocomplete component shipped</li>
+                    <li>Dark mode groundwork started</li>
+                </PBList>
+            </PBCard>
+        </div>
+
+        <CodeSnippet Code="@(
+@"<PBCard>
+    <h3>Release notes</h3>
+    <PBList>
+        <li>Autocomplete component shipped</li>
+        <li>Dark mode groundwork started</li>
+    </PBList>
+</PBCard>")" />
+    </section>
+
+    <section class="doc-section">
+        <h2>API reference</h2>
+        <table class="doc-table">
+            <thead>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The card's content.</td></tr>
+                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;article&gt;</code>.</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="doc-section">
+        <div class="a11y-note">
+            <strong>Accessibility</strong>
+            A card is a generic <code>&lt;article&gt;</code> container. Give it a
+            heading (as in the examples above) so assistive technology users can
+            navigate between cards by heading level.
+        </div>
+    </section>
 </div>

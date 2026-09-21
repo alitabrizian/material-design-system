@@ -9,31 +9,45 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <div class="showcase">
-        <div class="playground-heading">
-            <div>
-                <span class="eyebrow">Component</span>
-                <h2>Divider</h2>
-            </div>
-            <div>
-                <span>Separate related content sections.</span>
-            </div>
+    <header class="doc-header">
+        <span class="eyebrow">Component</span>
+        <h1>Divider</h1>
+        <p class="intro">A divider is a thin line that groups content into clear sections.</p>
+    </header>
+
+    <section class="doc-section">
+        <h2>Between two sections</h2>
+        <p class="field-hint">Use a divider to separate unrelated content.</p>
+
+        <div class="doc-example">
+            <p style="margin:0;">Account settings</p>
+            <PBDivider />
+            <p style="margin:0;">Notification preferences</p>
         </div>
 
-        <p class="intro">
-            A divider is a thin line that groups content into clear sections.
-        </p>
+        <CodeSnippet Code="@(
+@"<p>Account settings</p>
+<PBDivider />
+<p>Notification preferences</p>")" />
+    </section>
 
-        <div class="control-grid">
+    <section class="doc-section">
+        <h2>API reference</h2>
+        <table class="doc-table">
+            <thead>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;hr&gt;</code>.</td></tr>
+            </tbody>
+        </table>
+    </section>
 
-            <fieldset class="playground-field">
-                <legend>Between two sections</legend>
-                <p class="field-hint">Use a divider to separate unrelated content.</p>
-                <p style="margin:0;">Account settings</p>
-                <Divider />
-                <p style="margin:0;">Notification preferences</p>
-            </fieldset>
-
+    <section class="doc-section">
+        <div class="a11y-note">
+            <strong>Accessibility</strong>
+            Renders a native <code>&lt;hr&gt;</code>, which is announced as a
+            separator by assistive technology with no extra markup needed.
         </div>
-    </div>
+    </section>
 </div>

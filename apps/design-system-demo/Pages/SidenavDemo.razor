@@ -9,37 +9,59 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <div class="showcase">
-        <div class="playground-heading">
-            <div>
-                <span class="eyebrow">Component</span>
-                <h2>Sidenav</h2>
-            </div>
-            <div>
-                <span>Navigate through a vertical side panel.</span>
-            </div>
-        </div>
-
+    <header class="doc-header">
+        <span class="eyebrow">Component</span>
+        <h1>Sidenav</h1>
         <p class="intro">
             A sidenav is a vertical panel used to navigate between the sections of an
             application.
         </p>
+    </header>
 
-        <div class="control-grid">
+    <section class="doc-section">
+        <h2>Section navigation</h2>
+        <p class="field-hint">A compact vertical list of links.</p>
 
-            <fieldset class="playground-field">
-                <legend>Section navigation</legend>
-                <p class="field-hint">A compact vertical list of links.</p>
-                <Sidenav Label="Workspace sections" style="width:14rem; border:1px solid var(--catalog-line); border-radius:0.5rem; padding:0.5rem;">
-                    <List>
-                        <li>Overview</li>
-                        <li>Members</li>
-                        <li>Billing</li>
-                        <li>Settings</li>
-                    </List>
-                </Sidenav>
-            </fieldset>
-
+        <div class="doc-example">
+            <PBSidenav Label="Workspace sections" style="width:14rem; border:1px solid var(--catalog-line); border-radius:0.5rem; padding:0.5rem;">
+                <PBList>
+                    <li>Overview</li>
+                    <li>Members</li>
+                    <li>Billing</li>
+                    <li>Settings</li>
+                </PBList>
+            </PBSidenav>
         </div>
-    </div>
+
+        <CodeSnippet Code="@(
+@"<PBSidenav Label=""Workspace sections"">
+    <PBList>
+        <li>Overview</li>
+        <li>Members</li>
+        <li>Billing</li>
+        <li>Settings</li>
+    </PBList>
+</PBSidenav>")" />
+    </section>
+
+    <section class="doc-section">
+        <h2>API reference</h2>
+        <table class="doc-table">
+            <thead>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>Label</code></td><td><code>string?</code></td><td>Rendered as <code>aria-label</code> on the panel.</td></tr>
+                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The panel's navigation content.</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="doc-section">
+        <div class="a11y-note">
+            <strong>Accessibility</strong>
+            Renders a labeled <code>&lt;aside&gt;</code>, letting assistive
+            technology jump directly to the navigation landmark.
+        </div>
+    </section>
 </div>

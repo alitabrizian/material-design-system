@@ -9,40 +9,63 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <div class="showcase">
-        <div class="playground-heading">
-            <div>
-                <span class="eyebrow">Component</span>
-                <h2>Checkbox</h2>
-            </div>
-            <div>
-                <span>Select one or more options.</span>
-            </div>
-        </div>
-
+    <header class="doc-header">
+        <span class="eyebrow">Component</span>
+        <h1>Checkbox</h1>
         <p class="intro">
             Checkboxes let users select one or more items from a set of independent
             options.
         </p>
+    </header>
 
-        <div class="control-grid">
+    <section class="doc-section">
+        <h2>Preferences</h2>
+        <p class="field-hint">Each checkbox toggles independently.</p>
 
-            <fieldset class="playground-field">
-                <legend>Preferences</legend>
-                <p class="field-hint">Each checkbox toggles independently.</p>
-                <Checkbox Label="Email notifications" checked="@emailEnabled" @onchange="@((ChangeEventArgs e) => emailEnabled = (bool)e.Value!)" />
-                <Checkbox Label="SMS notifications" checked="@smsEnabled" @onchange="@((ChangeEventArgs e) => smsEnabled = (bool)e.Value!)" />
-                <span class="status">Email: @emailEnabled, SMS: @smsEnabled</span>
-            </fieldset>
-
-            <fieldset class="playground-field">
-                <legend>Disabled</legend>
-                <p class="field-hint">A disabled checkbox cannot be changed.</p>
-                <Checkbox Label="Locked setting" disabled />
-            </fieldset>
-
+        <div class="doc-example">
+            <PBCheckbox Label="Email notifications" checked="@emailEnabled" @onchange="@((ChangeEventArgs e) => emailEnabled = (bool)e.Value!)" />
+            <PBCheckbox Label="SMS notifications" checked="@smsEnabled" @onchange="@((ChangeEventArgs e) => smsEnabled = (bool)e.Value!)" />
+            <span class="status">Email: @emailEnabled, SMS: @smsEnabled</span>
         </div>
-    </div>
+
+        <CodeSnippet Code="@(
+@"<PBCheckbox Label=""Email notifications""
+    checked=""@emailEnabled""
+    @onchange=""@((ChangeEventArgs e) => emailEnabled = (bool)e.Value!)"" />")" />
+    </section>
+
+    <section class="doc-section">
+        <h2>Disabled</h2>
+        <p class="field-hint">A disabled checkbox cannot be changed.</p>
+
+        <div class="doc-example">
+            <PBCheckbox Label="Locked setting" disabled />
+        </div>
+
+        <CodeSnippet Code="@(@"<PBCheckbox Label=""Locked setting"" disabled />")" />
+    </section>
+
+    <section class="doc-section">
+        <h2>API reference</h2>
+        <table class="doc-table">
+            <thead>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>Label</code></td><td><code>string?</code></td><td>Text rendered next to the checkbox.</td></tr>
+                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;input type="checkbox"&gt;</code>, including <code>checked</code>, <code>disabled</code> and <code>@@onchange</code>.</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="doc-section">
+        <div class="a11y-note">
+            <strong>Accessibility</strong>
+            The label text and input are wrapped in a single <code>&lt;label&gt;</code>,
+            so clicking the text toggles the checkbox and it is announced with its
+            label automatically.
+        </div>
+    </section>
 </div>
 
 @code {

@@ -21,7 +21,7 @@ body {
   margin: 0;
   background: #f7f9fb;
   color: var(--catalog-ink);
-  font-family: "Segoe UI", sans-serif;
+  font-family: Roboto, "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 }
 
 body::before {
@@ -541,4 +541,103 @@ h2 { margin-top: 0; }
 .playground-field .status {
   display: block;
   margin-top: 0.5rem;
+}
+
+/* === Component documentation page === */
+.doc-header {
+  max-width: 44rem;
+  margin-bottom: 2.5rem;
+}
+
+.doc-header h1 {
+  font-size: clamp(2.2rem, 4vw, 3rem);
+}
+
+.doc-section {
+  margin-bottom: 2.5rem;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid var(--catalog-line);
+}
+
+.doc-section:last-of-type {
+  border-bottom: 0;
+}
+
+.doc-section h2 {
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.doc-section .field-hint {
+  max-width: 40rem;
+}
+
+.doc-example {
+  padding: 1.35rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--catalog-line);
+  border-radius: 0.65rem;
+  background: var(--catalog-panel);
+}
+
+.snippet {
+  margin: 0;
+  padding: 1rem 1.15rem;
+  overflow-x: auto;
+  border-radius: 0.55rem;
+  background: #182230;
+  color: #dbe3ef;
+  font-size: 0.8rem;
+  line-height: 1.55;
+}
+
+.snippet code {
+  font-family: "Cascadia Code", "Consolas", monospace;
+  white-space: pre;
+}
+
+.doc-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.doc-table th,
+.doc-table td {
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid var(--catalog-line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.doc-table th {
+  color: var(--catalog-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.doc-table code {
+  font-size: 0.8em;
+  color: var(--catalog-accent);
+}
+
+.a11y-note {
+  padding: 1rem 1.15rem;
+  border-radius: 0.55rem;
+  border: 1px solid var(--catalog-accent-soft);
+  background: #f4f7fd;
+  font-size: 0.85rem;
+  color: var(--catalog-ink);
+}
+
+.a11y-note strong {
+  display: block;
+  margin-bottom: 0.3rem;
+  color: var(--catalog-accent);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }

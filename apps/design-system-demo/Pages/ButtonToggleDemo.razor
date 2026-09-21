@@ -9,38 +9,58 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <div class="showcase">
-        <div class="playground-heading">
-            <div>
-                <span class="eyebrow">Component</span>
-                <h2>Button Toggle</h2>
-            </div>
-            <div>
-                <span>Switch between grouped on and off states.</span>
-            </div>
-        </div>
-
+    <header class="doc-header">
+        <span class="eyebrow">Component</span>
+        <h1>Button Toggle</h1>
         <p class="intro">
             A group of button toggles lets the user pick one option from a small,
             mutually exclusive set.
         </p>
+    </header>
 
-        <div class="control-grid">
+    <section class="doc-section">
+        <h2>View mode</h2>
+        <p class="field-hint">Only one option is treated as active at a time.</p>
 
-            <fieldset class="playground-field">
-                <legend>View mode</legend>
-                <p class="field-hint">Only one option is active at a time.</p>
-                <span style="display:inline-flex; gap:0.5rem;">
-                    @foreach (var option in viewOptions)
-                    {
-                        <ButtonToggle @onclick="() => selectedView = option" class="@(selectedView == option ? "is-selected" : null)">@option</ButtonToggle>
-                    }
-                </span>
-                <span class="status">Selected: @selectedView</span>
-            </fieldset>
-
+        <div class="doc-example">
+            <span style="display:inline-flex; gap:0.5rem;">
+                @foreach (var option in viewOptions)
+                {
+                    <PBButtonToggle @onclick="() => selectedView = option">@(option == selectedView ? $"✓ {option}" : option)</PBButtonToggle>
+                }
+            </span>
+            <span class="status">Selected: @selectedView</span>
         </div>
-    </div>
+
+        <CodeSnippet Code="@(
+@"@foreach (var option in viewOptions)
+{
+    <PBButtonToggle @onclick=""() => selectedView = option"">@option</PBButtonToggle>
+}")" />
+    </section>
+
+    <section class="doc-section">
+        <h2>API reference</h2>
+        <table class="doc-table">
+            <thead>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The toggle's label content.</td></tr>
+                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;button&gt;</code>.</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="doc-section">
+        <div class="a11y-note">
+            <strong>Accessibility</strong>
+            The rendered <code>&lt;button&gt;</code> has a hardcoded
+            <code>aria-pressed="false"</code>; it does not yet reflect selection state
+            to assistive technology. Track this as a follow-up in the design system
+            library rather than papering over it in the demo.
+        </div>
+    </section>
 </div>
 
 @code {

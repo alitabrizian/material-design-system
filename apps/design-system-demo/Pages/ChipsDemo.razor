@@ -9,37 +9,58 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <div class="showcase">
-        <div class="playground-heading">
-            <div>
-                <span class="eyebrow">Component</span>
-                <h2>Chips</h2>
-            </div>
-            <div>
-                <span>Display compact interactive selections.</span>
-            </div>
-        </div>
-
+    <header class="doc-header">
+        <span class="eyebrow">Component</span>
+        <h1>Chips</h1>
         <p class="intro">
             Chips represent a small piece of information, such as a filter or a tag,
             in a compact, interactive form.
         </p>
+    </header>
 
-        <div class="control-grid">
+    <section class="doc-section">
+        <h2>Filter chips</h2>
+        <p class="field-hint">A row of tags rendered as list items.</p>
 
-            <fieldset class="playground-field">
-                <legend>Filter chips</legend>
-                <p class="field-hint">A row of selectable filters.</p>
-                <Chips>
-                    @foreach (var tag in tags)
-                    {
-                        <span role="listitem">@tag</span>
-                    }
-                </Chips>
-            </fieldset>
-
+        <div class="doc-example">
+            <PBChips>
+                @foreach (var tag in tags)
+                {
+                    <span role="listitem">@tag</span>
+                }
+            </PBChips>
         </div>
-    </div>
+
+        <CodeSnippet Code="@(
+@"<PBChips>
+    @foreach (var tag in tags)
+    {
+        <span role=""listitem"">@tag</span>
+    }
+</PBChips>")" />
+    </section>
+
+    <section class="doc-section">
+        <h2>API reference</h2>
+        <table class="doc-table">
+            <thead>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The chip items, typically <code>role="listitem"</code> elements.</td></tr>
+                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;div role="list"&gt;</code>.</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="doc-section">
+        <div class="a11y-note">
+            <strong>Accessibility</strong>
+            The container uses <code>role="list"</code>; give each chip
+            <code>role="listitem"</code> as shown above so the set is announced as a
+            list of items.
+        </div>
+    </section>
 </div>
 
 @code {

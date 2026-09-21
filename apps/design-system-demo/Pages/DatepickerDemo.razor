@@ -9,39 +9,61 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <div class="showcase">
-        <div class="playground-heading">
-            <div>
-                <span class="eyebrow">Component</span>
-                <h2>Datepicker</h2>
-            </div>
-            <div>
-                <span>Choose a date from a calendar.</span>
-            </div>
-        </div>
-
+    <header class="doc-header">
+        <span class="eyebrow">Component</span>
+        <h1>Datepicker</h1>
         <p class="intro">
             The datepicker lets users enter or pick a calendar date using the
             browser's native date input.
         </p>
+    </header>
 
-        <div class="control-grid">
+    <section class="doc-section">
+        <h2>Default</h2>
+        <p class="field-hint">Selecting a date updates the status below.</p>
 
-            <fieldset class="playground-field">
-                <legend>Default</legend>
-                <p class="field-hint">Selecting a date updates the status below.</p>
-                <Datepicker Label="Start date" value="@selectedDate" @onchange="@((ChangeEventArgs e) => selectedDate = e.Value?.ToString())" />
-                <span class="status">Selected: @(selectedDate ?? "—")</span>
-            </fieldset>
-
-            <fieldset class="playground-field">
-                <legend>Disabled</legend>
-                <p class="field-hint">A disabled datepicker cannot be changed.</p>
-                <Datepicker Label="Locked date" disabled />
-            </fieldset>
-
+        <div class="doc-example">
+            <PBDatepicker Label="Start date" value="@selectedDate" @onchange="@((ChangeEventArgs e) => selectedDate = e.Value?.ToString())" />
+            <span class="status">Selected: @(selectedDate ?? "—")</span>
         </div>
-    </div>
+
+        <CodeSnippet Code="@(
+@"<PBDatepicker Label=""Start date""
+    value=""@selectedDate""
+    @onchange=""@((ChangeEventArgs e) => selectedDate = e.Value?.ToString())"" />")" />
+    </section>
+
+    <section class="doc-section">
+        <h2>Disabled</h2>
+        <p class="field-hint">A disabled datepicker cannot be changed.</p>
+
+        <div class="doc-example">
+            <PBDatepicker Label="Locked date" disabled />
+        </div>
+
+        <CodeSnippet Code="@(@"<PBDatepicker Label=""Locked date"" disabled />")" />
+    </section>
+
+    <section class="doc-section">
+        <h2>API reference</h2>
+        <table class="doc-table">
+            <thead>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>Label</code></td><td><code>string?</code></td><td>Text rendered above the date field.</td></tr>
+                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;input type="date"&gt;</code>.</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="doc-section">
+        <div class="a11y-note">
+            <strong>Accessibility</strong>
+            Uses the browser's native date input, so keyboard entry, screen reader
+            support, and locale formatting come from the platform.
+        </div>
+    </section>
 </div>
 
 @code {

@@ -1,93 +1,213 @@
 @page "/autocomplete"
 @rendermode InteractiveServer
-@using Design.Components
 
 <PageTitle>Autocomplete · Design System</PageTitle>
 
 <div class="catalog-content">
 
-        <div class="catalog-toolbar" aria-label="Component catalog tools">
-            <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
-        </div>
-
-        <div class="showcase">
-            <div class="playground-heading">
-                <div>
-                    <span class="eyebrow">Component</span>
-                    <h2>Autocomplete</h2>
-                </div>
-                <div>
-                    <span>Suggest relevant options as you type.</span>
-                </div>
-            </div>
-
-            <p class="intro">
-                The autocomplete is a text input enhanced by a panel of suggested options.
-                Type to filter the list, use arrow keys to navigate, Enter to select, and
-                Escape to dismiss the panel.
-            </p>
-
-            <div class="control-grid">
-
-                <!-- Simple autocomplete -->
-                <fieldset class="playground-field">
-                    <legend>Simple autocomplete</legend>
-                    <p class="field-hint">A basic list of string options filtered as you type.</p>
-                    <Autocomplete
-                        Label="Pick a fruit"
-                        Placeholder="Start typing..."
-                        @bind-SelectedOption="selectedFruit"
-                        Options="fruitOptions" />
-                    <span class="status">@selectedFruit</span>
-                </fieldset>
-
-                <!-- Custom filter -->
-                <fieldset class="playground-field">
-                    <legend>Custom filter</legend>
-                    <p class="field-hint">Filter options that <em>contain</em> the search text anywhere (not just at the start).</p>
-                    <Autocomplete
-                        Label="Find a country"
-                        Placeholder="Type a country name..."
-                        @bind-SelectedOption="selectedCountry"
-                        Options="countryOptions"
-                        Filter="ContainsFilter" />
-                    <span class="status">@selectedCountry</span>
-                </fieldset>
-
-                <!-- Complex objects -->
-                <fieldset class="playground-field">
-                    <legend>Complex objects</legend>
-                    <p class="field-hint">Display one property and use another as the selected value.</p>
-                    <Autocomplete
-                        Label="Choose a city"
-                        Placeholder="Type a city name..."
-                        @bind-SelectedOption="selectedCity"
-                        Options="cityOptions"
-                        DisplayProperty="Name"
-                        ValueProperty="Code" />
-                    <span class="status">Selected: @selectedCity?.Name ?? "—" (code: @selectedCity?.Code ?? "—")</span>
-                </fieldset>
-
-                <!-- Disabled state -->
-                <fieldset class="playground-field">
-                    <legend>Disabled state</legend>
-                    <p class="field-hint">The component is non-interactive when disabled.</p>
-                    <Autocomplete
-                        Label="Disabled input"
-                        Placeholder="Cannot type here"
-                        Options="fruitOptions"
-                        Enabled="false" />
-                    <span class="status">Disabled</span>
-                </fieldset>
-
-            </div>
-        </div>
+    <div class="catalog-toolbar" aria-label="Component catalog tools">
+        <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
+
+    <header class="doc-header">
+        <span class="eyebrow">Component</span>
+        <h1>Autocomplete</h1>
+        <p class="intro">
+            The autocomplete is a text input enhanced by a panel of suggested options.
+            Type to filter the list, use the arrow keys to navigate, Enter to select,
+            and Escape to dismiss the panel.
+        </p>
+    </header>
+
+    <section class="doc-section">
+        <h2>Simple autocomplete</h2>
+        <p class="field-hint">
+            Bind <code>SelectedOption</code> to a plain list of options. By default the
+            list is filtered to entries that start with the typed text.
+        </p>
+
+        <div class="doc-example">
+            <PBAutoComplete
+                Label="Pick a fruit"
+                Placeholder="Start typing..."
+                @bind-SelectedOption="selectedFruit"
+                Options="fruitOptions" />
+            <span class="status">Selected: @(selectedFruit ?? "—")</span>
+        </div>
+
+        <CodeSnippet Code="@(
+@"<PBAutoComplete
+    Label=""Pick a fruit""
+    Placeholder=""Start typing...""
+    @bind-SelectedOption=""selectedFruit""
+    Options=""fruitOptions"" />")" />
+    </section>
+
+    <section class="doc-section">
+        <h2>Adding a custom filter</h2>
+        <p class="field-hint">
+            Pass a <code>Filter</code> callback to control how the option list narrows
+            as the user types. This example matches the search text anywhere in the
+            option, not just at the start.
+        </p>
+
+        <div class="doc-example">
+            <PBAutoComplete
+                Label="Find a country"
+                Placeholder="Type a country name..."
+                @bind-SelectedOption="selectedCountry"
+                Options="countryOptions"
+                Filter="ContainsFilter" />
+            <span class="status">Selected: @(selectedCountry ?? "—")</span>
+        </div>
+
+        <CodeSnippet Code="@(
+@"<PBAutoComplete
+    Label=""Find a country""
+    Placeholder=""Type a country name...""
+    @bind-SelectedOption=""selectedCountry""
+    Options=""countryOptions""
+    Filter=""ContainsFilter"" />
+
+@code {
+    private static IEnumerable<string?> ContainsFilter(string input, IEnumerable<string?> options) =>
+        string.IsNullOrWhiteSpace(input)
+            ? options
+            : options.Where(o => o.Contains(input, StringComparison.OrdinalIgnoreCase));
+}")" />
+    </section>
+
+    <section class="doc-section">
+        <h2>Setting separate control and display values</h2>
+        <p class="field-hint">
+            When the options are objects rather than strings, use
+            <code>DisplayProperty</code> to choose what is shown in the panel and
+            <code>ValueProperty</code> to choose the underlying value.
+        </p>
+
+        <div class="doc-example">
+            <PBAutoComplete
+                Label="Choose a city"
+                Placeholder="Type a city name..."
+                @bind-SelectedOption="selectedCity"
+                Options="cityOptions"
+                DisplayProperty="Name"
+                ValueProperty="Code" />
+            <span class="status">Selected: @(selectedCity?.Name ?? "—") (code: @(selectedCity?.Code ?? "—"))</span>
+        </div>
+
+        <CodeSnippet Code="@(
+@"<PBAutoComplete
+    Label=""Choose a city""
+    Placeholder=""Type a city name...""
+    @bind-SelectedOption=""selectedCity""
+    Options=""cityOptions""
+    DisplayProperty=""Name""
+    ValueProperty=""Code"" />")" />
+    </section>
+
+    <section class="doc-section">
+        <h2>Require an option to be selected</h2>
+        <p class="field-hint">
+            <code>PBAutoComplete</code> does not currently enforce that the typed text
+            resolves to one of the supplied options — it is a free-text input with
+            suggestions. Until that validation is built into the component, gate the
+            dependent action on <code>SelectedOption</code> being set, as shown below.
+        </p>
+
+        <div class="doc-example">
+            <PBAutoComplete
+                Label="Pick a fruit to continue"
+                Placeholder="Start typing..."
+                @bind-SelectedOption="selectedRequiredFruit"
+                Options="fruitOptions" />
+            <div class="actions">
+                <PBButton disabled="@(selectedRequiredFruit is null)">Continue</PBButton>
+            </div>
+        </div>
+
+        <CodeSnippet Code="@(
+@"<PBAutoComplete
+    Label=""Pick a fruit to continue""
+    @bind-SelectedOption=""selectedFruit""
+    Options=""fruitOptions"" />
+
+<PBButton disabled=""@(selectedFruit is null)"">Continue</PBButton>")" />
+    </section>
+
+    <section class="doc-section">
+        <h2>Automatically highlighting the first option</h2>
+        <p class="field-hint">
+            The first option in the filtered list is highlighted automatically as you
+            type, so pressing Enter immediately selects the best match without an
+            extra arrow-key press.
+        </p>
+
+        <div class="doc-example">
+            <PBAutoComplete
+                Label="Type a country name"
+                Placeholder="Try 'united'..."
+                @bind-SelectedOption="selectedHighlightCountry"
+                Options="countryOptions" />
+            <span class="status">Selected: @(selectedHighlightCountry ?? "—")</span>
+        </div>
+
+        <CodeSnippet Code="@(
+@"<PBAutoComplete
+    Label=""Type a country name""
+    @bind-SelectedOption=""selectedCountry""
+    Options=""countryOptions"" />")" />
+    </section>
+
+    <section class="doc-section">
+        <h2>Disabled state</h2>
+        <p class="field-hint">Set <code>Enabled="false"</code> to make the input non-interactive.</p>
+
+        <div class="doc-example">
+            <PBAutoComplete Label="Disabled input" Placeholder="Cannot type here" Options="fruitOptions" Enabled="false" />
+        </div>
+
+        <CodeSnippet Code="@(
+@"<PBAutoComplete Label=""Disabled input"" Options=""fruitOptions"" Enabled=""false"" />")" />
+    </section>
+
+    <section class="doc-section">
+        <h2>API reference</h2>
+        <table class="doc-table">
+            <thead>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>Label</code></td><td><code>string?</code></td><td>Accessible label shown above the input.</td></tr>
+                <tr><td><code>Options</code></td><td><code>IEnumerable&lt;TItem&gt;?</code></td><td>The full set of selectable options.</td></tr>
+                <tr><td><code>SelectedOption</code></td><td><code>TItem?</code></td><td>The currently selected option. Supports <code>@@bind-SelectedOption</code>.</td></tr>
+                <tr><td><code>Placeholder</code></td><td><code>string?</code></td><td>Placeholder text shown in the empty input.</td></tr>
+                <tr><td><code>Enabled</code></td><td><code>bool</code></td><td>Whether the input accepts interaction. Defaults to <code>true</code>.</td></tr>
+                <tr><td><code>DisplayProperty</code></td><td><code>string?</code></td><td>Property name used to render each option's text.</td></tr>
+                <tr><td><code>ValueProperty</code></td><td><code>string?</code></td><td>Property name used as the option's underlying value.</td></tr>
+                <tr><td><code>Filter</code></td><td><code>Func&lt;string, IEnumerable&lt;TItem&gt;, IEnumerable&lt;TItem&gt;&gt;?</code></td><td>Custom filter run against the typed text.</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="doc-section">
+        <div class="a11y-note">
+            <strong>Accessibility</strong>
+            The input exposes <code>aria-expanded</code>, <code>aria-haspopup="listbox"</code>,
+            <code>aria-controls</code>, and <code>aria-activedescendant</code>. The panel
+            uses <code>role="listbox"</code> and each option uses
+            <code>role="option"</code> with <code>aria-selected</code>. Arrow keys move
+            the highlighted option, Enter selects it, and Escape closes the panel.
+        </div>
+    </section>
+</div>
 
 @code {
     private string? selectedFruit;
     private string? selectedCountry;
     private City? selectedCity;
+    private string? selectedRequiredFruit;
+    private string? selectedHighlightCountry;
 
     private static readonly IEnumerable<string> fruitOptions =
     [

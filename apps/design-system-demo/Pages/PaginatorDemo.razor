@@ -9,35 +9,53 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <div class="showcase">
-        <div class="playground-heading">
-            <div>
-                <span class="eyebrow">Component</span>
-                <h2>Paginator</h2>
-            </div>
-            <div>
-                <span>Move through a set of results.</span>
-            </div>
+    <header class="doc-header">
+        <span class="eyebrow">Component</span>
+        <h1>Paginator</h1>
+        <p class="intro">A paginator lets the user move between pages of a larger result set.</p>
+    </header>
+
+    <section class="doc-section">
+        <h2>Result pages</h2>
+        <p class="field-hint">Clicking a page control updates the status below.</p>
+
+        <div class="doc-example">
+            <PBPaginator>
+                <PBButton disabled="@(currentPage == 1)" @onclick="() => currentPage--">← Prev</PBButton>
+                <span>Page @currentPage of @totalPages</span>
+                <PBButton disabled="@(currentPage == totalPages)" @onclick="() => currentPage++">Next →</PBButton>
+            </PBPaginator>
         </div>
 
-        <p class="intro">
-            A paginator lets the user move between pages of a larger result set.
-        </p>
+        <CodeSnippet Code="@(
+@"<PBPaginator>
+    <PBButton disabled=""@(currentPage == 1)"" @onclick=""() => currentPage--"">← Prev</PBButton>
+    <span>Page @currentPage of @totalPages</span>
+    <PBButton disabled=""@(currentPage == totalPages)"" @onclick=""() => currentPage++"">Next →</PBButton>
+</PBPaginator>")" />
+    </section>
 
-        <div class="control-grid">
+    <section class="doc-section">
+        <h2>API reference</h2>
+        <table class="doc-table">
+            <thead>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The pagination controls.</td></tr>
+                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;nav aria-label="Pagination"&gt;</code>.</td></tr>
+            </tbody>
+        </table>
+    </section>
 
-            <fieldset class="playground-field">
-                <legend>Result pages</legend>
-                <p class="field-hint">Clicking a page updates the status below.</p>
-                <Paginator>
-                    <Button disabled="@(currentPage == 1)" @onclick="() => currentPage--">← Prev</Button>
-                    <span>Page @currentPage of @totalPages</span>
-                    <Button disabled="@(currentPage == totalPages)" @onclick="() => currentPage++">Next →</Button>
-                </Paginator>
-            </fieldset>
-
+    <section class="doc-section">
+        <div class="a11y-note">
+            <strong>Accessibility</strong>
+            The wrapping <code>&lt;nav&gt;</code> is labeled "Pagination"; disable
+            the previous/next controls at the ends of the range, as shown above,
+            rather than leaving them clickable with no effect.
         </div>
-    </div>
+    </section>
 </div>
 
 @code {

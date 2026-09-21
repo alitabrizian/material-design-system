@@ -9,39 +9,64 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <div class="showcase">
-        <div class="playground-heading">
-            <div>
-                <span class="eyebrow">Component</span>
-                <h2>Select</h2>
-            </div>
-            <div>
-                <span>Choose one value from a list.</span>
-            </div>
-        </div>
-
+    <header class="doc-header">
+        <span class="eyebrow">Component</span>
+        <h1>Select</h1>
         <p class="intro">
             The select component lets the user choose one value from a fixed list of
             options.
         </p>
+    </header>
 
-        <div class="control-grid">
+    <section class="doc-section">
+        <h2>Default</h2>
+        <p class="field-hint">Choosing an option updates the status below.</p>
 
-            <fieldset class="playground-field">
-                <legend>Default</legend>
-                <p class="field-hint">Choosing an option updates the status below.</p>
-                <Select Label="Role" value="@selectedRole" @onchange="@((ChangeEventArgs e) => selectedRole = e.Value?.ToString())">
-                    <option value="">Choose a role...</option>
-                    @foreach (var role in roles)
-                    {
-                        <option value="@role">@role</option>
-                    }
-                </Select>
-                <span class="status">Selected: @(string.IsNullOrEmpty(selectedRole) ? "—" : selectedRole)</span>
-            </fieldset>
-
+        <div class="doc-example">
+            <PBSelect Label="Role" value="@selectedRole" @onchange="@((ChangeEventArgs e) => selectedRole = e.Value?.ToString())">
+                <option value="">Choose a role...</option>
+                @foreach (var role in roles)
+                {
+                    <option value="@role">@role</option>
+                }
+            </PBSelect>
+            <span class="status">Selected: @(string.IsNullOrEmpty(selectedRole) ? "—" : selectedRole)</span>
         </div>
-    </div>
+
+        <CodeSnippet Code="@(
+@"<PBSelect Label=""Role""
+    value=""@selectedRole""
+    @onchange=""@((ChangeEventArgs e) => selectedRole = e.Value?.ToString())"">
+    <option value="""">Choose a role...</option>
+    @foreach (var role in roles)
+    {
+        <option value=""@role"">@role</option>
+    }
+</PBSelect>")" />
+    </section>
+
+    <section class="doc-section">
+        <h2>API reference</h2>
+        <table class="doc-table">
+            <thead>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>Label</code></td><td><code>string?</code></td><td>Text rendered above the select.</td></tr>
+                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The <code>&lt;option&gt;</code> elements.</td></tr>
+                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;select&gt;</code>.</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="doc-section">
+        <div class="a11y-note">
+            <strong>Accessibility</strong>
+            Renders a native <code>&lt;select&gt;</code> wrapped in a
+            <code>&lt;label&gt;</code>, giving it full keyboard and screen reader
+            support with no extra ARIA required.
+        </div>
+    </section>
 </div>
 
 @code {

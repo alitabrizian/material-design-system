@@ -9,39 +9,59 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <div class="showcase">
-        <div class="playground-heading">
-            <div>
-                <span class="eyebrow">Component</span>
-                <h2>Button</h2>
-            </div>
-            <div>
-                <span>Trigger actions and commands.</span>
-            </div>
-        </div>
-
+    <header class="doc-header">
+        <span class="eyebrow">Component</span>
+        <h1>Button</h1>
         <p class="intro">
             Buttons trigger an action or event, such as submitting a form or opening a
             dialog.
         </p>
+    </header>
 
-        <div class="control-grid">
+    <section class="doc-section">
+        <h2>Default</h2>
+        <p class="field-hint">Clicking increments the counter below.</p>
 
-            <fieldset class="playground-field">
-                <legend>Default</legend>
-                <p class="field-hint">Clicking increments the counter below.</p>
-                <Button @onclick="() => clickCount++">Click me</Button>
-                <span class="status">Clicked @clickCount time(s)</span>
-            </fieldset>
-
-            <fieldset class="playground-field">
-                <legend>Disabled</legend>
-                <p class="field-hint">A disabled button cannot be activated.</p>
-                <Button disabled>Unavailable</Button>
-            </fieldset>
-
+        <div class="doc-example">
+            <PBButton @onclick="() => clickCount++">Click me</PBButton>
+            <span class="status">Clicked @clickCount time(s)</span>
         </div>
-    </div>
+
+        <CodeSnippet Code="@(@"<PBButton @onclick=""() => clickCount++"">Click me</PBButton>")" />
+    </section>
+
+    <section class="doc-section">
+        <h2>Disabled</h2>
+        <p class="field-hint">A disabled button cannot be activated.</p>
+
+        <div class="doc-example">
+            <PBButton disabled>Unavailable</PBButton>
+        </div>
+
+        <CodeSnippet Code="@(@"<PBButton disabled>Unavailable</PBButton>")" />
+    </section>
+
+    <section class="doc-section">
+        <h2>API reference</h2>
+        <table class="doc-table">
+            <thead>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The button's label content.</td></tr>
+                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;button type="button"&gt;</code>, including <code>disabled</code> and <code>@@onclick</code>.</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="doc-section">
+        <div class="a11y-note">
+            <strong>Accessibility</strong>
+            Renders a native <code>&lt;button&gt;</code>, so it is keyboard-focusable
+            and activates on Enter/Space without extra work. Give icon-only buttons an
+            accessible name via <code>aria-label</code>.
+        </div>
+    </section>
 </div>
 
 @code {

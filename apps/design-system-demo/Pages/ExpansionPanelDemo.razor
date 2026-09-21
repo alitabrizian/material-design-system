@@ -9,46 +9,60 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <div class="showcase">
-        <div class="playground-heading">
-            <div>
-                <span class="eyebrow">Component</span>
-                <h2>Expansion Panel</h2>
-            </div>
-            <div>
-                <span>Reveal or hide additional content.</span>
-            </div>
-        </div>
-
+    <header class="doc-header">
+        <span class="eyebrow">Component</span>
+        <h1>Expansion Panel</h1>
         <p class="intro">
             An expansion panel hides secondary content behind a summary that the
             user can expand on demand.
         </p>
+    </header>
 
-        <div class="control-grid">
+    <section class="doc-section">
+        <h2>Frequently asked questions</h2>
+        <p class="field-hint">Click a summary to expand its panel. Panels expand independently.</p>
 
-            <fieldset class="playground-field">
-                <legend>Frequently asked question</legend>
-                <p class="field-hint">Click the summary to expand the panel.</p>
-                <ExpansionPanel Label="What is a design system?">
-                    <p style="margin:0;">
-                        A design system is a set of reusable components and guidelines that
-                        keep an application's UI consistent.
-                    </p>
-                </ExpansionPanel>
-            </fieldset>
-
-            <fieldset class="playground-field">
-                <legend>Second panel</legend>
-                <p class="field-hint">Panels expand independently of one another.</p>
-                <ExpansionPanel Label="How do I add a new component?">
-                    <p style="margin:0;">
-                        Add it to the design system library, then create a demo page
-                        under the Design System Demo app.
-                    </p>
-                </ExpansionPanel>
-            </fieldset>
-
+        <div class="doc-example">
+            <PBExpansionPanel Label="What is a design system?">
+                <p style="margin:0;">
+                    A design system is a set of reusable components and guidelines that
+                    keep an application's UI consistent.
+                </p>
+            </PBExpansionPanel>
+            <PBExpansionPanel Label="How do I add a new component?">
+                <p style="margin:0;">
+                    Add it to the design system library, then create a demo page under
+                    the Design System Demo app.
+                </p>
+            </PBExpansionPanel>
         </div>
-    </div>
+
+        <CodeSnippet Code="@(
+@"<PBExpansionPanel Label=""What is a design system?"">
+    <p>A design system is a set of reusable components and guidelines...</p>
+</PBExpansionPanel>")" />
+    </section>
+
+    <section class="doc-section">
+        <h2>API reference</h2>
+        <table class="doc-table">
+            <thead>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>Label</code></td><td><code>string?</code></td><td>The always-visible summary text.</td></tr>
+                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The content revealed when expanded.</td></tr>
+                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;details&gt;</code>.</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="doc-section">
+        <div class="a11y-note">
+            <strong>Accessibility</strong>
+            Built on the native <code>&lt;details&gt;</code>/<code>&lt;summary&gt;</code>
+            elements, which are keyboard-toggleable and expose expanded/collapsed
+            state to assistive technology without additional ARIA.
+        </div>
+    </section>
 </div>

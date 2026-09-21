@@ -9,41 +9,60 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <div class="showcase">
-        <div class="playground-heading">
-            <div>
-                <span class="eyebrow">Component</span>
-                <h2>Stepper</h2>
-            </div>
-            <div>
-                <span>Guide users through sequential steps.</span>
+    <header class="doc-header">
+        <span class="eyebrow">Component</span>
+        <h1>Stepper</h1>
+        <p class="intro">A stepper breaks a task into an ordered sequence of steps.</p>
+    </header>
+
+    <section class="doc-section">
+        <h2>Checkout</h2>
+        <p class="field-hint">Advance through the steps with the buttons below.</p>
+
+        <div class="doc-example">
+            <PBStepper>
+                @for (var i = 0; i < steps.Length; i++)
+                {
+                    var index = i;
+                    <li style="font-weight:@(index == currentStep ? 700 : 400);">@steps[index]</li>
+                }
+            </PBStepper>
+            <div class="actions">
+                <PBButton disabled="@(currentStep == 0)" @onclick="() => currentStep--">Back</PBButton>
+                <PBButton disabled="@(currentStep == steps.Length - 1)" @onclick="() => currentStep++">Next</PBButton>
             </div>
         </div>
 
-        <p class="intro">
-            A stepper breaks a task into an ordered sequence of steps.
-        </p>
+        <CodeSnippet Code="@(
+@"<PBStepper>
+    @foreach (var step in steps)
+    {
+        <li>@step</li>
+    }
+</PBStepper>")" />
+    </section>
 
-        <div class="control-grid">
+    <section class="doc-section">
+        <h2>API reference</h2>
+        <table class="doc-table">
+            <thead>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The step items, typically <code>&lt;li&gt;</code> elements.</td></tr>
+                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;ol&gt;</code>.</td></tr>
+            </tbody>
+        </table>
+    </section>
 
-            <fieldset class="playground-field">
-                <legend>Checkout</legend>
-                <p class="field-hint">Advance through the steps with the button below.</p>
-                <Stepper>
-                    @for (var i = 0; i < steps.Length; i++)
-                    {
-                        var index = i;
-                        <li style="font-weight:@(index == currentStep ? 700 : 400);">@steps[index]</li>
-                    }
-                </Stepper>
-                <div class="actions">
-                    <Button disabled="@(currentStep == 0)" @onclick="() => currentStep--">Back</Button>
-                    <Button disabled="@(currentStep == steps.Length - 1)" @onclick="() => currentStep++">Next</Button>
-                </div>
-            </fieldset>
-
+    <section class="doc-section">
+        <div class="a11y-note">
+            <strong>Accessibility</strong>
+            Renders a native ordered list (<code>&lt;ol&gt;</code>), giving step
+            numbers for free. The current-step styling above is visual only; expose
+            it with <code>aria-current="step"</code> in real usage.
         </div>
-    </div>
+    </section>
 </div>
 
 @code {

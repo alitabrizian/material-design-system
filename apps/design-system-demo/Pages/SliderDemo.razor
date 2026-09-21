@@ -9,33 +9,50 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <div class="showcase">
-        <div class="playground-heading">
-            <div>
-                <span class="eyebrow">Component</span>
-                <h2>Slider</h2>
-            </div>
-            <div>
-                <span>Select a value within a range.</span>
-            </div>
-        </div>
-
+    <header class="doc-header">
+        <span class="eyebrow">Component</span>
+        <h1>Slider</h1>
         <p class="intro">
             A slider lets the user select a numeric value from a continuous or
             stepped range.
         </p>
+    </header>
 
-        <div class="control-grid">
+    <section class="doc-section">
+        <h2>Volume</h2>
+        <p class="field-hint">Dragging the handle updates the status below.</p>
 
-            <fieldset class="playground-field">
-                <legend>Volume</legend>
-                <p class="field-hint">Dragging the handle updates the status below.</p>
-                <Slider Label="Volume" min="0" max="100" value="@volume" @oninput="@((ChangeEventArgs e) => volume = int.Parse(e.Value!.ToString()!))" />
-                <span class="status">@volume%</span>
-            </fieldset>
-
+        <div class="doc-example">
+            <PBSlider Label="Volume" min="0" max="100" value="@volume" @oninput="@((ChangeEventArgs e) => volume = int.Parse(e.Value!.ToString()!))" />
+            <span class="status">@volume%</span>
         </div>
-    </div>
+
+        <CodeSnippet Code="@(
+@"<PBSlider Label=""Volume"" min=""0"" max=""100""
+    value=""@volume""
+    @oninput=""@((ChangeEventArgs e) => volume = int.Parse(e.Value!.ToString()!))"" />")" />
+    </section>
+
+    <section class="doc-section">
+        <h2>API reference</h2>
+        <table class="doc-table">
+            <thead>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>Label</code></td><td><code>string?</code></td><td>Rendered as <code>aria-label</code> on the slider.</td></tr>
+                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;input type="range"&gt;</code>, including <code>min</code>, <code>max</code> and <code>value</code>.</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="doc-section">
+        <div class="a11y-note">
+            <strong>Accessibility</strong>
+            Renders a native <code>&lt;input type="range"&gt;</code>, so arrow keys
+            adjust the value and the current value is announced automatically.
+        </div>
+    </section>
 </div>
 
 @code {
