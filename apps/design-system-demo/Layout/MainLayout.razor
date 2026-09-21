@@ -1,5 +1,32 @@
 @inherits LayoutComponentBase
+@inject NavigationManager NavManager
 
-<main class="page-shell">
-    @Body
-</main>
+<div class="catalog-shell">
+    <aside class="catalog-sidebar" aria-label="Design system navigation">
+        <nav class="side-nav" aria-label="Components">
+            <div class="component-menu">
+                @foreach (var (title, target) in componentMenu)
+                {
+                    var isActive = NavManager.Uri.TrimEnd('/').EndsWith(target.TrimEnd('/'));
+                    <a class="nav-link @(isActive ? "active" : null)" href="@target">@title</a>
+                }
+            </div>
+        </nav>
+
+        <div class="sidebar-footer">
+            <span class="status-dot" aria-hidden="true"></span>
+            <span>v1.0.0</span>
+        </div>
+    </aside>
+
+    <main class="page-shell">
+        @Body
+    </main>
+</div>
+
+@code {
+    private static readonly IReadOnlyList<(string Title, string Target)> componentMenu =
+    [
+        ("Autocomplete", "/autocomplete"),
+    ];
+}

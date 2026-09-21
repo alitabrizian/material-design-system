@@ -25,6 +25,108 @@ md-switch {
   gap: 0.5rem;
 }
 
+/* === Autocomplete === */
+.mdc-autocomplete {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  width: 100%;
+  max-width: 28rem;
+  font-family: var(--md-sys-typescale-body-medium-font);
+}
+
+.mdc-autocomplete--disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.mdc-autocomplete__label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface);
+  letter-spacing: 0.01em;
+}
+
+.mdc-autocomplete__input-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.mdc-autocomplete__input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--md-sys-color-on-surface);
+  background: var(--md-sys-color-surface);
+  border: 1px solid var(--md-sys-color-outline);
+  border-radius: 0.375rem;
+  outline: none;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+  box-sizing: border-box;
+}
+
+.mdc-autocomplete__input::placeholder {
+  color: #8b97a3;
+}
+
+.mdc-autocomplete__input:focus {
+  border-color: var(--md-sys-color-primary);
+  box-shadow: 0 0 0 2px rgb(65 95 145 / 0.15);
+}
+
+.mdc-autocomplete__input:disabled {
+  background: var(--md-sys-color-surface-container-low);
+  cursor: default;
+}
+
+/* Panel */
+.mdc-autocomplete__panel {
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 0;
+  right: 0;
+  z-index: 10;
+  max-height: 240px;
+  overflow-y: auto;
+  background: var(--md-sys-color-surface);
+  border: 1px solid var(--md-sys-color-outline);
+  border-radius: 0.375rem;
+  box-shadow: 0 4px 12px rgb(25 43 58 / 0.12);
+  padding: 0.25rem 0;
+}
+
+.mdc-autocomplete__option {
+  padding: 0.625rem 1rem;
+  font-size: 0.9375rem;
+  color: var(--md-sys-color-on-surface);
+  cursor: pointer;
+  transition: background 80ms ease;
+  box-sizing: border-box;
+}
+
+.mdc-autocomplete__option:first-child {
+  border-radius: 0.25rem 0.25rem 0 0;
+}
+
+.mdc-autocomplete__option:last-child {
+  border-radius: 0 0 0.25rem 0.25rem;
+}
+
+.mdc-autocomplete__option--highlighted {
+  background: var(--md-sys-color-surface-container-low);
+  color: var(--md-sys-color-primary);
+}
+
+.mdc-autocomplete__option--selected {
+  font-weight: 600;
+  background: rgb(65 95 145 / 0.08);
+}
+
+/* === End Autocomplete === */
+
 md-elevated-card {
   display: block;
   padding: 1.25rem;
