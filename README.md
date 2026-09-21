@@ -9,6 +9,8 @@ package and managed as an Nx workspace.
 - `apps/design-system-demo`: standalone Blazor showcase for the design system.
 - `apps/samamat`: Samamat application as a Git submodule on
 	`chore/structure-initiations`.
+- `apps/remotion-videos`: Remotion (React) project that renders short demo
+	videos of the design-system components.
 - `libs/design-system/blazor`: reusable Blazor components and shared Material Web
 	resources.
 - `DesignSystem.sln`: solution for the workspace-level Blazor design-system code.
@@ -29,6 +31,27 @@ dotnet run --project apps/design-system-demo/Design.Demo.csproj
 
 Each Blazor component uses the standard two-file structure: `.razor` for
 component markup and `.razor.cs` for C# parameters and behavior.
+
+## Remotion Videos
+
+`apps/remotion-videos` renders short demo videos of the design-system
+components using [Remotion](https://www.remotion.dev/) (React + TypeScript).
+Each component gets its own composition under `src/compositions`, registered
+in `src/Root.tsx`.
+
+```bash
+npm install
+npx nx run remotion-videos:studio   # interactive preview/editor
+npx nx run remotion-videos:render   # renders AutocompleteDemo to out/autocomplete-demo.mp4
+```
+
+The first render downloads a headless Chrome build, so it can take a while. If
+that download is blocked on your network (e.g. a corporate proxy), point
+Remotion at an existing Chrome/Edge install instead:
+
+```bash
+npx nx run remotion-videos:render -- --browser-executable="C:\Program Files\Google\Chrome\Application\chrome.exe"
+```
 
 ## Nx and Tooling
 

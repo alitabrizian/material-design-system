@@ -5,3 +5,5 @@ coverage/
 bin/
 obj/
 .vs
+apps/remotion-videos/out/
+apps/remotion-videos/.remotion/
