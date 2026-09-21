@@ -1,0 +1,43 @@
+@page "/slider"
+@rendermode InteractiveServer
+
+<PageTitle>Slider · Design System</PageTitle>
+
+<div class="catalog-content">
+
+    <div class="catalog-toolbar" aria-label="Component catalog tools">
+        <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
+    </div>
+
+    <div class="showcase">
+        <div class="playground-heading">
+            <div>
+                <span class="eyebrow">Component</span>
+                <h2>Slider</h2>
+            </div>
+            <div>
+                <span>Select a value within a range.</span>
+            </div>
+        </div>
+
+        <p class="intro">
+            A slider lets the user select a numeric value from a continuous or
+            stepped range.
+        </p>
+
+        <div class="control-grid">
+
+            <fieldset class="playground-field">
+                <legend>Volume</legend>
+                <p class="field-hint">Dragging the handle updates the status below.</p>
+                <Slider Label="Volume" min="0" max="100" value="@volume" @oninput="@((ChangeEventArgs e) => volume = int.Parse(e.Value!.ToString()!))" />
+                <span class="status">@volume%</span>
+            </fieldset>
+
+        </div>
+    </div>
+</div>
+
+@code {
+    private int volume = 60;
+}

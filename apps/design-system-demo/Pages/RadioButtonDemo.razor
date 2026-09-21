@@ -1,0 +1,47 @@
+@page "/radio-button"
+@rendermode InteractiveServer
+
+<PageTitle>Radio Button · Design System</PageTitle>
+
+<div class="catalog-content">
+
+    <div class="catalog-toolbar" aria-label="Component catalog tools">
+        <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
+    </div>
+
+    <div class="showcase">
+        <div class="playground-heading">
+            <div>
+                <span class="eyebrow">Component</span>
+                <h2>Radio Button</h2>
+            </div>
+            <div>
+                <span>Choose one option from a group.</span>
+            </div>
+        </div>
+
+        <p class="intro">
+            Radio buttons let the user choose exactly one option from a mutually
+            exclusive set.
+        </p>
+
+        <div class="control-grid">
+
+            <fieldset class="playground-field">
+                <legend>Delivery speed</legend>
+                <p class="field-hint">Only one option can be selected at a time.</p>
+                @foreach (var option in speedOptions)
+                {
+                    <RadioButton Label="@option" name="delivery-speed" checked="@(selectedSpeed == option)" @onchange='() => selectedSpeed = option' />
+                }
+                <span class="status">Selected: @selectedSpeed</span>
+            </fieldset>
+
+        </div>
+    </div>
+</div>
+
+@code {
+    private static readonly string[] speedOptions = ["Standard", "Express", "Overnight"];
+    private string selectedSpeed = speedOptions[0];
+}

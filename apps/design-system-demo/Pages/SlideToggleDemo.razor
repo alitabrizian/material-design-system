@@ -1,0 +1,48 @@
+@page "/slide-toggle"
+@rendermode InteractiveServer
+
+<PageTitle>Slide Toggle · Design System</PageTitle>
+
+<div class="catalog-content">
+
+    <div class="catalog-toolbar" aria-label="Component catalog tools">
+        <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
+    </div>
+
+    <div class="showcase">
+        <div class="playground-heading">
+            <div>
+                <span class="eyebrow">Component</span>
+                <h2>Slide Toggle</h2>
+            </div>
+            <div>
+                <span>Toggle a setting with a sliding control.</span>
+            </div>
+        </div>
+
+        <p class="intro">
+            A slide toggle switches a single setting between an on and an off state.
+        </p>
+
+        <div class="control-grid">
+
+            <fieldset class="playground-field">
+                <legend>Dark mode</legend>
+                <p class="field-hint">Flipping the switch updates the status below.</p>
+                <SlideToggle Label="Enable dark mode" checked="@darkModeEnabled" @onchange="@((ChangeEventArgs e) => darkModeEnabled = (bool)e.Value!)" />
+                <span class="status">Dark mode: @(darkModeEnabled ? "on" : "off")</span>
+            </fieldset>
+
+            <fieldset class="playground-field">
+                <legend>Disabled</legend>
+                <p class="field-hint">A disabled toggle cannot be changed.</p>
+                <SlideToggle Label="Locked setting" disabled />
+            </fieldset>
+
+        </div>
+    </div>
+</div>
+
+@code {
+    private bool darkModeEnabled;
+}

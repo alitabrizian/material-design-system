@@ -1,0 +1,49 @@
+@page "/button"
+@rendermode InteractiveServer
+
+<PageTitle>Button · Design System</PageTitle>
+
+<div class="catalog-content">
+
+    <div class="catalog-toolbar" aria-label="Component catalog tools">
+        <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
+    </div>
+
+    <div class="showcase">
+        <div class="playground-heading">
+            <div>
+                <span class="eyebrow">Component</span>
+                <h2>Button</h2>
+            </div>
+            <div>
+                <span>Trigger actions and commands.</span>
+            </div>
+        </div>
+
+        <p class="intro">
+            Buttons trigger an action or event, such as submitting a form or opening a
+            dialog.
+        </p>
+
+        <div class="control-grid">
+
+            <fieldset class="playground-field">
+                <legend>Default</legend>
+                <p class="field-hint">Clicking increments the counter below.</p>
+                <Button @onclick="() => clickCount++">Click me</Button>
+                <span class="status">Clicked @clickCount time(s)</span>
+            </fieldset>
+
+            <fieldset class="playground-field">
+                <legend>Disabled</legend>
+                <p class="field-hint">A disabled button cannot be activated.</p>
+                <Button disabled>Unavailable</Button>
+            </fieldset>
+
+        </div>
+    </div>
+</div>
+
+@code {
+    private int clickCount;
+}

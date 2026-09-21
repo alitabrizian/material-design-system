@@ -1,0 +1,45 @@
+@page "/ripples"
+@rendermode InteractiveServer
+
+<PageTitle>Ripples · Design System</PageTitle>
+
+<div class="catalog-content">
+
+    <div class="catalog-toolbar" aria-label="Component catalog tools">
+        <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
+    </div>
+
+    <div class="showcase">
+        <div class="playground-heading">
+            <div>
+                <span class="eyebrow">Component</span>
+                <h2>Ripples</h2>
+            </div>
+            <div>
+                <span>Give interactions tactile visual feedback.</span>
+            </div>
+        </div>
+
+        <p class="intro">
+            Ripples wrap an interactive element to give it tactile visual feedback
+            when pressed.
+        </p>
+
+        <div class="control-grid">
+
+            <fieldset class="playground-field">
+                <legend>Wrapping a button</legend>
+                <p class="field-hint">Clicking updates the status below.</p>
+                <Ripples>
+                    <Button @onclick="() => tapCount++">Tap me</Button>
+                </Ripples>
+                <span class="status">Tapped @tapCount time(s)</span>
+            </fieldset>
+
+        </div>
+    </div>
+</div>
+
+@code {
+    private int tapCount;
+}

@@ -1,0 +1,51 @@
+@page "/checkbox"
+@rendermode InteractiveServer
+
+<PageTitle>Checkbox · Design System</PageTitle>
+
+<div class="catalog-content">
+
+    <div class="catalog-toolbar" aria-label="Component catalog tools">
+        <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
+    </div>
+
+    <div class="showcase">
+        <div class="playground-heading">
+            <div>
+                <span class="eyebrow">Component</span>
+                <h2>Checkbox</h2>
+            </div>
+            <div>
+                <span>Select one or more options.</span>
+            </div>
+        </div>
+
+        <p class="intro">
+            Checkboxes let users select one or more items from a set of independent
+            options.
+        </p>
+
+        <div class="control-grid">
+
+            <fieldset class="playground-field">
+                <legend>Preferences</legend>
+                <p class="field-hint">Each checkbox toggles independently.</p>
+                <Checkbox Label="Email notifications" checked="@emailEnabled" @onchange="@((ChangeEventArgs e) => emailEnabled = (bool)e.Value!)" />
+                <Checkbox Label="SMS notifications" checked="@smsEnabled" @onchange="@((ChangeEventArgs e) => smsEnabled = (bool)e.Value!)" />
+                <span class="status">Email: @emailEnabled, SMS: @smsEnabled</span>
+            </fieldset>
+
+            <fieldset class="playground-field">
+                <legend>Disabled</legend>
+                <p class="field-hint">A disabled checkbox cannot be changed.</p>
+                <Checkbox Label="Locked setting" disabled />
+            </fieldset>
+
+        </div>
+    </div>
+</div>
+
+@code {
+    private bool emailEnabled = true;
+    private bool smsEnabled;
+}

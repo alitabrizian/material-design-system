@@ -1,0 +1,52 @@
+@page "/list"
+@rendermode InteractiveServer
+
+<PageTitle>List · Design System</PageTitle>
+
+<div class="catalog-content">
+
+    <div class="catalog-toolbar" aria-label="Component catalog tools">
+        <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
+    </div>
+
+    <div class="showcase">
+        <div class="playground-heading">
+            <div>
+                <span class="eyebrow">Component</span>
+                <h2>List</h2>
+            </div>
+            <div>
+                <span>Present a vertical collection of items.</span>
+            </div>
+        </div>
+
+        <p class="intro">
+            A list presents a vertical collection of related items, such as
+            navigation entries or search results.
+        </p>
+
+        <div class="control-grid">
+
+            <fieldset class="playground-field">
+                <legend>Recent activity</legend>
+                <p class="field-hint">A simple list of text items.</p>
+                <List>
+                    @foreach (var entry in activity)
+                    {
+                        <li>@entry</li>
+                    }
+                </List>
+            </fieldset>
+
+        </div>
+    </div>
+</div>
+
+@code {
+    private static readonly string[] activity =
+    [
+        "Ali updated the Autocomplete component",
+        "New demo page published for Badge",
+        "Design tokens synced from Figma",
+    ];
+}

@@ -1,0 +1,51 @@
+@page "/icon"
+@rendermode InteractiveServer
+
+<PageTitle>Icon · Design System</PageTitle>
+
+<div class="catalog-content">
+
+    <div class="catalog-toolbar" aria-label="Component catalog tools">
+        <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
+    </div>
+
+    <div class="showcase">
+        <div class="playground-heading">
+            <div>
+                <span class="eyebrow">Component</span>
+                <h2>Icon</h2>
+            </div>
+            <div>
+                <span>Represent an action or concept visually.</span>
+            </div>
+        </div>
+
+        <p class="intro">
+            Icons are compact, glyph-based representations of an action, object, or
+            state.
+        </p>
+
+        <div class="control-grid">
+
+            <fieldset class="playground-field">
+                <legend>Standalone icons</legend>
+                <p class="field-hint">Each icon carries an accessible label.</p>
+                <span style="display:inline-flex; gap:1rem; font-size:1.4rem;">
+                    <Icon Label="Search">⌕</Icon>
+                    <Icon Label="Settings">⚙</Icon>
+                    <Icon Label="Favorite">★</Icon>
+                </span>
+            </fieldset>
+
+            <fieldset class="playground-field">
+                <legend>Icon with a button</legend>
+                <p class="field-hint">Icons commonly appear alongside text in a button.</p>
+                <Button>
+                    <Icon Label="">→</Icon>
+                    Continue
+                </Button>
+            </fieldset>
+
+        </div>
+    </div>
+</div>

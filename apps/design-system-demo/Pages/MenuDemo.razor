@@ -1,0 +1,49 @@
+@page "/menu"
+@rendermode InteractiveServer
+
+<PageTitle>Menu · Design System</PageTitle>
+
+<div class="catalog-content">
+
+    <div class="catalog-toolbar" aria-label="Component catalog tools">
+        <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
+    </div>
+
+    <div class="showcase">
+        <div class="playground-heading">
+            <div>
+                <span class="eyebrow">Component</span>
+                <h2>Menu</h2>
+            </div>
+            <div>
+                <span>Expose a list of contextual actions.</span>
+            </div>
+        </div>
+
+        <p class="intro">
+            A menu exposes a list of contextual actions, typically opened from a
+            button or icon.
+        </p>
+
+        <div class="control-grid">
+
+            <fieldset class="playground-field">
+                <legend>Row actions</legend>
+                <p class="field-hint">A menu grouping a set of related actions.</p>
+                <Menu Label="Row actions">
+                    <Button @onclick='() => SelectAction("Edit")'>Edit</Button>
+                    <Button @onclick='() => SelectAction("Duplicate")'>Duplicate</Button>
+                    <Button @onclick='() => SelectAction("Delete")'>Delete</Button>
+                </Menu>
+                <span class="status">Last action: @(selectedAction ?? "—")</span>
+            </fieldset>
+
+        </div>
+    </div>
+</div>
+
+@code {
+    private string? selectedAction;
+
+    private void SelectAction(string action) => selectedAction = action;
+}

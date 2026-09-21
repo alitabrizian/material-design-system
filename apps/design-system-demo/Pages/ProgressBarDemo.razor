@@ -1,0 +1,52 @@
+@page "/progress-bar"
+@rendermode InteractiveServer
+
+<PageTitle>Progress Bar · Design System</PageTitle>
+
+<div class="catalog-content">
+
+    <div class="catalog-toolbar" aria-label="Component catalog tools">
+        <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
+    </div>
+
+    <div class="showcase">
+        <div class="playground-heading">
+            <div>
+                <span class="eyebrow">Component</span>
+                <h2>Progress Bar</h2>
+            </div>
+            <div>
+                <span>Show progress across a horizontal track.</span>
+            </div>
+        </div>
+
+        <p class="intro">
+            A progress bar communicates the completion of a determinate operation.
+        </p>
+
+        <div class="control-grid">
+
+            <fieldset class="playground-field">
+                <legend>Upload progress</legend>
+                <p class="field-hint">Use the buttons to advance the progress value.</p>
+                <ProgressBar value="@progress" max="100" />
+                <span class="status">@progress%</span>
+                <div class="actions">
+                    <Button @onclick="() => progress = Math.Max(0, progress - 10)">-10%</Button>
+                    <Button @onclick="() => progress = Math.Min(100, progress + 10)">+10%</Button>
+                </div>
+            </fieldset>
+
+            <fieldset class="playground-field">
+                <legend>Indeterminate</legend>
+                <p class="field-hint">Omitting a value shows an indeterminate track.</p>
+                <ProgressBar />
+            </fieldset>
+
+        </div>
+    </div>
+</div>
+
+@code {
+    private int progress = 40;
+}

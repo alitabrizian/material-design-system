@@ -1,0 +1,54 @@
+@page "/expansion-panel"
+@rendermode InteractiveServer
+
+<PageTitle>Expansion Panel · Design System</PageTitle>
+
+<div class="catalog-content">
+
+    <div class="catalog-toolbar" aria-label="Component catalog tools">
+        <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
+    </div>
+
+    <div class="showcase">
+        <div class="playground-heading">
+            <div>
+                <span class="eyebrow">Component</span>
+                <h2>Expansion Panel</h2>
+            </div>
+            <div>
+                <span>Reveal or hide additional content.</span>
+            </div>
+        </div>
+
+        <p class="intro">
+            An expansion panel hides secondary content behind a summary that the
+            user can expand on demand.
+        </p>
+
+        <div class="control-grid">
+
+            <fieldset class="playground-field">
+                <legend>Frequently asked question</legend>
+                <p class="field-hint">Click the summary to expand the panel.</p>
+                <ExpansionPanel Label="What is a design system?">
+                    <p style="margin:0;">
+                        A design system is a set of reusable components and guidelines that
+                        keep an application's UI consistent.
+                    </p>
+                </ExpansionPanel>
+            </fieldset>
+
+            <fieldset class="playground-field">
+                <legend>Second panel</legend>
+                <p class="field-hint">Panels expand independently of one another.</p>
+                <ExpansionPanel Label="How do I add a new component?">
+                    <p style="margin:0;">
+                        Add it to the design system library, then create a demo page
+                        under the Design System Demo app.
+                    </p>
+                </ExpansionPanel>
+            </fieldset>
+
+        </div>
+    </div>
+</div>

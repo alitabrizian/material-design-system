@@ -1,0 +1,55 @@
+@page "/table"
+@rendermode InteractiveServer
+
+<PageTitle>Table · Design System</PageTitle>
+
+<div class="catalog-content">
+
+    <div class="catalog-toolbar" aria-label="Component catalog tools">
+        <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
+    </div>
+
+    <div class="showcase">
+        <div class="playground-heading">
+            <div>
+                <span class="eyebrow">Component</span>
+                <h2>Table</h2>
+            </div>
+            <div>
+                <span>Display structured data in rows and columns.</span>
+            </div>
+        </div>
+
+        <p class="intro">
+            A table displays a structured collection of data across rows and
+            columns.
+        </p>
+
+        <div class="control-grid">
+
+            <fieldset class="playground-field">
+                <legend>Team members</legend>
+                <p class="field-hint">Rows are supplied as child content.</p>
+                <Table>
+                    @foreach (var member in members)
+                    {
+                        <tr>
+                            <td>@member.Name</td>
+                            <td>@member.Role</td>
+                        </tr>
+                    }
+                </Table>
+            </fieldset>
+
+        </div>
+    </div>
+</div>
+
+@code {
+    private static readonly (string Name, string Role)[] members =
+    [
+        ("Ali Tabrizian", "Frontend Engineer"),
+        ("Jordan Lee", "Product Designer"),
+        ("Priya Nair", "Backend Engineer"),
+    ];
+}

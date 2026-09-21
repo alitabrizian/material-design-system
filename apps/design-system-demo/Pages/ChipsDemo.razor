@@ -1,0 +1,47 @@
+@page "/chips"
+@rendermode InteractiveServer
+
+<PageTitle>Chips · Design System</PageTitle>
+
+<div class="catalog-content">
+
+    <div class="catalog-toolbar" aria-label="Component catalog tools">
+        <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
+    </div>
+
+    <div class="showcase">
+        <div class="playground-heading">
+            <div>
+                <span class="eyebrow">Component</span>
+                <h2>Chips</h2>
+            </div>
+            <div>
+                <span>Display compact interactive selections.</span>
+            </div>
+        </div>
+
+        <p class="intro">
+            Chips represent a small piece of information, such as a filter or a tag,
+            in a compact, interactive form.
+        </p>
+
+        <div class="control-grid">
+
+            <fieldset class="playground-field">
+                <legend>Filter chips</legend>
+                <p class="field-hint">A row of selectable filters.</p>
+                <Chips>
+                    @foreach (var tag in tags)
+                    {
+                        <span role="listitem">@tag</span>
+                    }
+                </Chips>
+            </fieldset>
+
+        </div>
+    </div>
+</div>
+
+@code {
+    private static readonly string[] tags = ["Design", "Frontend", "Accessibility", "Blazor"];
+}

@@ -3,149 +3,43 @@
 
 <PageTitle>Design System</PageTitle>
 
-<div class="catalog-shell">
-    <aside class="catalog-sidebar" aria-label="Design system navigation">
-        <a class="brand-lockup" href="/" aria-label="Workspace Design System home">
-            <span class="brand-mark">W</span>
-            <span>
-                <strong>Workspace</strong>
-                <small>Design system</small>
-            </span>
-        </a>
+<div class="catalog-content">
 
-        <nav class="side-nav" aria-label="Components">
-            <div class="component-menu">
-                @foreach (var componentTitle in componentMenu)
+    <div class="catalog-toolbar" aria-label="Component catalog tools">
+        <span class="search-icon" aria-hidden="true">⌕</span>
+        <input aria-label="Search components" placeholder="Search components" @bind="searchTerm" @bind:event="oninput" />
+    </div>
+
+    <div class="component-section">
+        @if (filteredComponents.Any())
+        {
+            <div class="component-grid" aria-live="polite">
+                @foreach (var component in filteredComponents)
                 {
-                    <a class="nav-link" href="#components">@componentTitle</a>
+                    <a class="component-card @(component.Featured ? "featured" : string.Empty)" href="@component.Route">
+                        <span class="card-icon @(component.Featured ? "filled" : "outline")">@component.Icon</span>
+                        <span class="card-copy"><strong>@component.Name</strong><small>@component.Description</small></span>
+                    </a>
                 }
             </div>
-        </nav>
-
-    </aside>
-
-<section class="catalog-content">
-
-        <div class="catalog-toolbar" aria-label="Component catalog tools">
-            <span class="search-icon" aria-hidden="true">⌕</span>
-            <input aria-label="Search components" placeholder="Search components" @bind="searchTerm" @bind:event="oninput" />
-        </div>
-
-        <div class="component-section">
-            @if (filteredComponents.Any())
-            {
-                <div class="component-grid" aria-live="polite">
-                    @foreach (var component in filteredComponents)
-                    {
-                        <a class="component-card @(component.Featured ? "featured" : string.Empty)" href="@component.Target">
-                            <span class="card-icon @(component.Featured ? "filled" : "outline")">@component.Icon</span>
-                            <span class="card-copy"><strong>@component.Name</strong><small>@component.Description</small></span>
-                        </a>
-                    }
-                </div>
-            }
-            else
-            {
-                <div class="empty-search" role="status">
-                    <strong>No components found</strong>
-                    <span>Try a different search term.</span>
-                </div>
-            }
-        </div>
-    </section>
+        }
+        else
+        {
+            <div class="empty-search" role="status">
+                <strong>No components found</strong>
+                <span>Try a different search term.</span>
+            </div>
+        }
+    </div>
 </div>
 
 @code {
     private string searchTerm = string.Empty;
 
-    private static readonly IReadOnlyList<string> componentMenu =
-    [
-        "Autocomplete",
-        "Badge",
-        "Bottom Sheet",
-        "Button",
-        "Button Toggle",
-        "Card",
-        "Checkbox",
-        "Chips",
-        "Core",
-        "Datepicker",
-        "Dialog",
-        "Divider",
-        "Expansion Panel",
-        "Form Field",
-        "Grid List",
-        "Icon",
-        "Input",
-        "List",
-        "Menu",
-        "Paginator",
-        "Progress Bar",
-        "Progress Spinner",
-        "Radio Button",
-        "Ripples",
-        "Select",
-        "Sidenav",
-        "Slide Toggle",
-        "Slider",
-        "Snackbar",
-        "Sort Header",
-        "Stepper",
-        "Table",
-        "Tabs",
-        "Timepicker",
-        "Toolbar",
-        "Tooltip",
-        "Tree"
-    ];
-
-    private IEnumerable<ComponentItem> filteredComponents =>
+    private IEnumerable<ComponentCatalogItem> filteredComponents =>
         string.IsNullOrWhiteSpace(searchTerm)
-            ? components
-            : components.Where(component =>
+            ? ComponentCatalog.Items
+            : ComponentCatalog.Items.Where(component =>
                 component.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
                 component.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
-
-    private static readonly IReadOnlyList<ComponentItem> components =
-    [
-        new("Autocomplete", "Suggest relevant options as you type.", "⌕", "/autocomplete"),
-        new("Badge", "Show a compact value or status indicator.", "•", "#components"),
-        new("Bottom Sheet", "Present actions in a mobile-friendly panel.", "▔", "#components"),
-        new("Button", "Trigger actions and commands.", "→", "#components", true),
-        new("Button Toggle", "Switch between grouped on and off states.", "⇄", "#components"),
-        new("Card", "Group related content together.", "▣", "#components"),
-        new("Checkbox", "Select one or more options.", "✓", "#components"),
-        new("Chips", "Display compact interactive selections.", "●", "#components"),
-        new("Core", "Share foundational styles and behavior.", "◆", "#components"),
-        new("Datepicker", "Choose a date from a calendar.", "□", "#components"),
-        new("Dialog", "Focus attention on an important task.", "▢", "#components"),
-        new("Divider", "Separate related content sections.", "—", "#components"),
-        new("Expansion Panel", "Reveal or hide additional content.", "⌄", "#components"),
-        new("Form Field", "Combine labels, controls, and hints.", "▤", "#components"),
-        new("Grid List", "Arrange content in a structured grid.", "▦", "#components"),
-        new("Icon", "Represent an action or concept visually.", "✦", "#components"),
-        new("Input", "Capture a value from the user.", "|", "#components"),
-        new("List", "Present a vertical collection of items.", "☷", "#components"),
-        new("Menu", "Expose a list of contextual actions.", "☰", "#components"),
-        new("Paginator", "Move through a set of results.", "‹›", "#components"),
-        new("Progress Bar", "Show progress across a horizontal track.", "▰", "#components"),
-        new("Progress Spinner", "Show an indeterminate loading state.", "◌", "#components"),
-        new("Radio Button", "Choose one option from a group.", "◉", "#components"),
-        new("Ripples", "Give interactions tactile visual feedback.", "◎", "#components"),
-        new("Select", "Choose one value from a list.", "⌄", "#components"),
-        new("Sidenav", "Navigate through a vertical side panel.", "▐", "#components"),
-        new("Slide Toggle", "Toggle a setting with a sliding control.", "◐", "#components"),
-        new("Slider", "Select a value within a range.", "━", "#components"),
-        new("Snackbar", "Give brief feedback after an action.", "▰", "#components"),
-        new("Sort Header", "Sort tabular data by a column.", "↕", "#components"),
-        new("Stepper", "Guide users through sequential steps.", "1·2·3", "#components"),
-        new("Table", "Display structured data in rows and columns.", "▤", "#components"),
-        new("Tabs", "Switch between related views.", "☰", "#components"),
-        new("Timepicker", "Choose a time from a clock interface.", "◷", "#components"),
-        new("Toolbar", "Group navigation and actions in a bar.", "▬", "#components"),
-        new("Tooltip", "Explain an element on hover or focus.", "?", "#components"),
-        new("Tree", "Display hierarchical information.", "⌘", "#components")
-    ];
-
-    private sealed record ComponentItem(string Name, string Description, string Icon, string Target, bool Featured = false);
 }

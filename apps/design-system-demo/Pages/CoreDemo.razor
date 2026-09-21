@@ -1,0 +1,40 @@
+@page "/core"
+@rendermode InteractiveServer
+
+<PageTitle>Core · Design System</PageTitle>
+
+<div class="catalog-content">
+
+    <div class="catalog-toolbar" aria-label="Component catalog tools">
+        <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
+    </div>
+
+    <div class="showcase">
+        <div class="playground-heading">
+            <div>
+                <span class="eyebrow">Component</span>
+                <h2>Core</h2>
+            </div>
+            <div>
+                <span>Share foundational styles and behavior.</span>
+            </div>
+        </div>
+
+        <p class="intro">
+            Core is a lightweight section wrapper used to apply the design system's
+            foundational styles and behavior to a region of a page.
+        </p>
+
+        <div class="control-grid">
+
+            <fieldset class="playground-field">
+                <legend>Section wrapper</legend>
+                <p class="field-hint">Wraps arbitrary content in the shared foundation styles.</p>
+                <Core>
+                    <p style="margin:0;">Content rendered inside a Core section.</p>
+                </Core>
+            </fieldset>
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,50 @@
+@page "/snackbar"
+@rendermode InteractiveServer
+
+<PageTitle>Snackbar · Design System</PageTitle>
+
+<div class="catalog-content">
+
+    <div class="catalog-toolbar" aria-label="Component catalog tools">
+        <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
+    </div>
+
+    <div class="showcase">
+        <div class="playground-heading">
+            <div>
+                <span class="eyebrow">Component</span>
+                <h2>Snackbar</h2>
+            </div>
+            <div>
+                <span>Give brief feedback after an action.</span>
+            </div>
+        </div>
+
+        <p class="intro">
+            A snackbar shows a brief, unobtrusive message about the result of an
+            action.
+        </p>
+
+        <div class="control-grid">
+
+            <fieldset class="playground-field">
+                <legend>Save confirmation</legend>
+                <p class="field-hint">Trigger the snackbar with the button below.</p>
+                <Button @onclick="() => isVisible = true">Save changes</Button>
+
+                @if (isVisible)
+                {
+                    <Snackbar>
+                        Changes saved.
+                        <Button @onclick="() => isVisible = false">Dismiss</Button>
+                    </Snackbar>
+                }
+            </fieldset>
+
+        </div>
+    </div>
+</div>
+
+@code {
+    private bool isVisible;
+}

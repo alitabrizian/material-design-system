@@ -1,0 +1,52 @@
+@page "/stepper"
+@rendermode InteractiveServer
+
+<PageTitle>Stepper · Design System</PageTitle>
+
+<div class="catalog-content">
+
+    <div class="catalog-toolbar" aria-label="Component catalog tools">
+        <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
+    </div>
+
+    <div class="showcase">
+        <div class="playground-heading">
+            <div>
+                <span class="eyebrow">Component</span>
+                <h2>Stepper</h2>
+            </div>
+            <div>
+                <span>Guide users through sequential steps.</span>
+            </div>
+        </div>
+
+        <p class="intro">
+            A stepper breaks a task into an ordered sequence of steps.
+        </p>
+
+        <div class="control-grid">
+
+            <fieldset class="playground-field">
+                <legend>Checkout</legend>
+                <p class="field-hint">Advance through the steps with the button below.</p>
+                <Stepper>
+                    @for (var i = 0; i < steps.Length; i++)
+                    {
+                        var index = i;
+                        <li style="font-weight:@(index == currentStep ? 700 : 400);">@steps[index]</li>
+                    }
+                </Stepper>
+                <div class="actions">
+                    <Button disabled="@(currentStep == 0)" @onclick="() => currentStep--">Back</Button>
+                    <Button disabled="@(currentStep == steps.Length - 1)" @onclick="() => currentStep++">Next</Button>
+                </div>
+            </fieldset>
+
+        </div>
+    </div>
+</div>
+
+@code {
+    private static readonly string[] steps = ["Cart", "Shipping", "Payment", "Review"];
+    private int currentStep;
+}

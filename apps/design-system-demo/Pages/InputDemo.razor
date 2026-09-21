@@ -1,0 +1,48 @@
+@page "/input"
+@rendermode InteractiveServer
+
+<PageTitle>Input · Design System</PageTitle>
+
+<div class="catalog-content">
+
+    <div class="catalog-toolbar" aria-label="Component catalog tools">
+        <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
+    </div>
+
+    <div class="showcase">
+        <div class="playground-heading">
+            <div>
+                <span class="eyebrow">Component</span>
+                <h2>Input</h2>
+            </div>
+            <div>
+                <span>Capture a value from the user.</span>
+            </div>
+        </div>
+
+        <p class="intro">
+            The input component captures a single line of text from the user.
+        </p>
+
+        <div class="control-grid">
+
+            <fieldset class="playground-field">
+                <legend>Default</legend>
+                <p class="field-hint">Typing updates the status below.</p>
+                <Input Label="Email address" placeholder="you@example.com" value="@email" @oninput="@((ChangeEventArgs e) => email = e.Value?.ToString())" />
+                <span class="status">Value: @(string.IsNullOrEmpty(email) ? "—" : email)</span>
+            </fieldset>
+
+            <fieldset class="playground-field">
+                <legend>Disabled</legend>
+                <p class="field-hint">A disabled input cannot be edited.</p>
+                <Input Label="Locked field" value="Read only" disabled />
+            </fieldset>
+
+        </div>
+    </div>
+</div>
+
+@code {
+    private string? email;
+}

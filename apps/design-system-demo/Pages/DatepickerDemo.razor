@@ -1,0 +1,49 @@
+@page "/datepicker"
+@rendermode InteractiveServer
+
+<PageTitle>Datepicker · Design System</PageTitle>
+
+<div class="catalog-content">
+
+    <div class="catalog-toolbar" aria-label="Component catalog tools">
+        <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
+    </div>
+
+    <div class="showcase">
+        <div class="playground-heading">
+            <div>
+                <span class="eyebrow">Component</span>
+                <h2>Datepicker</h2>
+            </div>
+            <div>
+                <span>Choose a date from a calendar.</span>
+            </div>
+        </div>
+
+        <p class="intro">
+            The datepicker lets users enter or pick a calendar date using the
+            browser's native date input.
+        </p>
+
+        <div class="control-grid">
+
+            <fieldset class="playground-field">
+                <legend>Default</legend>
+                <p class="field-hint">Selecting a date updates the status below.</p>
+                <Datepicker Label="Start date" value="@selectedDate" @onchange="@((ChangeEventArgs e) => selectedDate = e.Value?.ToString())" />
+                <span class="status">Selected: @(selectedDate ?? "—")</span>
+            </fieldset>
+
+            <fieldset class="playground-field">
+                <legend>Disabled</legend>
+                <p class="field-hint">A disabled datepicker cannot be changed.</p>
+                <Datepicker Label="Locked date" disabled />
+            </fieldset>
+
+        </div>
+    </div>
+</div>
+
+@code {
+    private string? selectedDate;
+}

@@ -1,0 +1,40 @@
+@page "/tooltip"
+@rendermode InteractiveServer
+
+<PageTitle>Tooltip · Design System</PageTitle>
+
+<div class="catalog-content">
+
+    <div class="catalog-toolbar" aria-label="Component catalog tools">
+        <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
+    </div>
+
+    <div class="showcase">
+        <div class="playground-heading">
+            <div>
+                <span class="eyebrow">Component</span>
+                <h2>Tooltip</h2>
+            </div>
+            <div>
+                <span>Explain an element on hover or focus.</span>
+            </div>
+        </div>
+
+        <p class="intro">
+            A tooltip shows a short explanation when the user hovers or focuses an
+            element.
+        </p>
+
+        <div class="control-grid">
+
+            <fieldset class="playground-field">
+                <legend>Icon button</legend>
+                <p class="field-hint">Hover the icon to reveal the tooltip text.</p>
+                <Tooltip Label="Copy to clipboard">
+                    <Button>⧉</Button>
+                </Tooltip>
+            </fieldset>
+
+        </div>
+    </div>
+</div>

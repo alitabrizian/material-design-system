@@ -1,0 +1,47 @@
+@page "/grid-list"
+@rendermode InteractiveServer
+
+<PageTitle>Grid List · Design System</PageTitle>
+
+<div class="catalog-content">
+
+    <div class="catalog-toolbar" aria-label="Component catalog tools">
+        <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
+    </div>
+
+    <div class="showcase">
+        <div class="playground-heading">
+            <div>
+                <span class="eyebrow">Component</span>
+                <h2>Grid List</h2>
+            </div>
+            <div>
+                <span>Arrange content in a structured grid.</span>
+            </div>
+        </div>
+
+        <p class="intro">
+            A grid list arranges a collection of items into a uniform, structured
+            grid.
+        </p>
+
+        <div class="control-grid">
+
+            <fieldset class="playground-field">
+                <legend>Photo grid</legend>
+                <p class="field-hint">Items are arranged edge to edge in a grid.</p>
+                <GridList style="display:grid; grid-template-columns:repeat(3, 1fr); gap:0.5rem;">
+                    @foreach (var label in tiles)
+                    {
+                        <div style="aspect-ratio:1; display:grid; place-items:center; background:var(--catalog-soft); border-radius:0.4rem;">@label</div>
+                    }
+                </GridList>
+            </fieldset>
+
+        </div>
+    </div>
+</div>
+
+@code {
+    private static readonly string[] tiles = ["1", "2", "3", "4", "5", "6"];
+}

@@ -1,0 +1,53 @@
+@page "/dialog"
+@rendermode InteractiveServer
+
+<PageTitle>Dialog · Design System</PageTitle>
+
+<div class="catalog-content">
+
+    <div class="catalog-toolbar" aria-label="Component catalog tools">
+        <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
+    </div>
+
+    <div class="showcase">
+        <div class="playground-heading">
+            <div>
+                <span class="eyebrow">Component</span>
+                <h2>Dialog</h2>
+            </div>
+            <div>
+                <span>Focus attention on an important task.</span>
+            </div>
+        </div>
+
+        <p class="intro">
+            A dialog interrupts the current flow to focus attention on a single task
+            or piece of information.
+        </p>
+
+        <div class="control-grid">
+
+            <fieldset class="playground-field">
+                <legend>Confirmation dialog</legend>
+                <p class="field-hint">Toggle the dialog with the button below.</p>
+                <Button @onclick="() => isOpen = !isOpen">@(isOpen ? "Hide dialog" : "Show dialog")</Button>
+
+                @if (isOpen)
+                {
+                    <Dialog Label="Discard changes?">
+                        <p style="margin:0 0 0.75rem;">Your edits have not been saved.</p>
+                        <span style="display:inline-flex; gap:0.5rem;">
+                            <Button @onclick="() => isOpen = false">Cancel</Button>
+                            <Button @onclick="() => isOpen = false">Discard</Button>
+                        </span>
+                    </Dialog>
+                }
+            </fieldset>
+
+        </div>
+    </div>
+</div>
+
+@code {
+    private bool isOpen = true;
+}

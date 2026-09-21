@@ -1,0 +1,54 @@
+@page "/card"
+@rendermode InteractiveServer
+
+<PageTitle>Card · Design System</PageTitle>
+
+<div class="catalog-content">
+
+    <div class="catalog-toolbar" aria-label="Component catalog tools">
+        <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
+    </div>
+
+    <div class="showcase">
+        <div class="playground-heading">
+            <div>
+                <span class="eyebrow">Component</span>
+                <h2>Card</h2>
+            </div>
+            <div>
+                <span>Group related content together.</span>
+            </div>
+        </div>
+
+        <p class="intro">
+            Cards group related content and actions into a single, self-contained
+            surface.
+        </p>
+
+        <div class="control-grid">
+
+            <fieldset class="playground-field">
+                <legend>Basic card</legend>
+                <p class="field-hint">A card with a title, body copy, and an action.</p>
+                <Card>
+                    <h3 style="margin:0 0 0.35rem;">Team standup</h3>
+                    <p style="margin:0 0 0.75rem;">Daily sync at 9:30 AM in the design system room.</p>
+                    <Button>Join</Button>
+                </Card>
+            </fieldset>
+
+            <fieldset class="playground-field">
+                <legend>Media card</legend>
+                <p class="field-hint">A card can hold arbitrary content, including lists.</p>
+                <Card>
+                    <h3 style="margin:0 0 0.35rem;">Release notes</h3>
+                    <List>
+                        <li>Autocomplete component shipped</li>
+                        <li>Dark mode groundwork started</li>
+                    </List>
+                </Card>
+            </fieldset>
+
+        </div>
+    </div>
+</div>

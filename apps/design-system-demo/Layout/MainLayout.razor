@@ -1,14 +1,22 @@
 @inherits LayoutComponentBase
+@implements IDisposable
 @inject NavigationManager NavManager
 
 <div class="catalog-shell">
     <aside class="catalog-sidebar" aria-label="Design system navigation">
+        <a class="brand-lockup" href="/" aria-label="Workspace Design System home">
+            <span class="brand-mark">W</span>
+            <span>
+                <strong>Workspace</strong>
+                <small>Design system</small>
+            </span>
+        </a>
+
         <nav class="side-nav" aria-label="Components">
             <div class="component-menu">
-                @foreach (var (title, target) in componentMenu)
+                @foreach (var item in ComponentCatalog.Items)
                 {
-                    var isActive = NavManager.Uri.TrimEnd('/').EndsWith(target.TrimEnd('/'));
-                    <a class="nav-link @(isActive ? "active" : null)" href="@target">@title</a>
+                    <a class="nav-link @(IsActive(item.Route) ? "active" : null)" href="@item.Route">@item.Name</a>
                 }
             </div>
         </nav>
@@ -25,8 +33,18 @@
 </div>
 
 @code {
-    private static readonly IReadOnlyList<(string Title, string Target)> componentMenu =
-    [
-        ("Autocomplete", "/autocomplete"),
-    ];
+    protected override void OnInitialized()
+    {
+        NavManager.LocationChanged += OnLocationChanged;
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e) => StateHasChanged();
+
+    private bool IsActive(string route)
+    {
+        var currentPath = "/" + NavManager.ToBaseRelativePath(NavManager.Uri).TrimEnd('/');
+        return string.Equals(currentPath, route, StringComparison.OrdinalIgnoreCase);
+    }
+
+    public void Dispose() => NavManager.LocationChanged -= OnLocationChanged;
 }

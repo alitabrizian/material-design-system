@@ -1,0 +1,45 @@
+@page "/sort-header"
+@rendermode InteractiveServer
+
+<PageTitle>Sort Header · Design System</PageTitle>
+
+<div class="catalog-content">
+
+    <div class="catalog-toolbar" aria-label="Component catalog tools">
+        <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
+    </div>
+
+    <div class="showcase">
+        <div class="playground-heading">
+            <div>
+                <span class="eyebrow">Component</span>
+                <h2>Sort Header</h2>
+            </div>
+            <div>
+                <span>Sort tabular data by a column.</span>
+            </div>
+        </div>
+
+        <p class="intro">
+            A sort header lets the user toggle the sort direction of a table column.
+        </p>
+
+        <div class="control-grid">
+
+            <fieldset class="playground-field">
+                <legend>Table column</legend>
+                <p class="field-hint">Click the header to toggle the sort direction.</p>
+                <SortHeader Label="Name" @onclick="ToggleSort" />
+                <span class="status">Sort: @sortDirection</span>
+            </fieldset>
+
+        </div>
+    </div>
+</div>
+
+@code {
+    private string sortDirection = "ascending";
+
+    private void ToggleSort() =>
+        sortDirection = sortDirection == "ascending" ? "descending" : "ascending";
+}

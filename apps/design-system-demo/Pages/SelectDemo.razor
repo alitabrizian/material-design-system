@@ -1,0 +1,50 @@
+@page "/select"
+@rendermode InteractiveServer
+
+<PageTitle>Select · Design System</PageTitle>
+
+<div class="catalog-content">
+
+    <div class="catalog-toolbar" aria-label="Component catalog tools">
+        <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
+    </div>
+
+    <div class="showcase">
+        <div class="playground-heading">
+            <div>
+                <span class="eyebrow">Component</span>
+                <h2>Select</h2>
+            </div>
+            <div>
+                <span>Choose one value from a list.</span>
+            </div>
+        </div>
+
+        <p class="intro">
+            The select component lets the user choose one value from a fixed list of
+            options.
+        </p>
+
+        <div class="control-grid">
+
+            <fieldset class="playground-field">
+                <legend>Default</legend>
+                <p class="field-hint">Choosing an option updates the status below.</p>
+                <Select Label="Role" value="@selectedRole" @onchange="@((ChangeEventArgs e) => selectedRole = e.Value?.ToString())">
+                    <option value="">Choose a role...</option>
+                    @foreach (var role in roles)
+                    {
+                        <option value="@role">@role</option>
+                    }
+                </Select>
+                <span class="status">Selected: @(string.IsNullOrEmpty(selectedRole) ? "—" : selectedRole)</span>
+            </fieldset>
+
+        </div>
+    </div>
+</div>
+
+@code {
+    private static readonly string[] roles = ["Admin", "Editor", "Viewer"];
+    private string? selectedRole;
+}
