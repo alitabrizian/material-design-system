@@ -1,28 +1,166 @@
-:root {
-  --md-sys-color-primary: #415f91;
-  --md-sys-color-on-primary: #ffffff;
-  --md-sys-color-surface: #f9f9ff;
-  --md-sys-color-surface-container-low: #f3f3fa;
-  --md-sys-color-on-surface: #191c20;
-  --md-sys-color-outline: #74777f;
-  --md-sys-typescale-body-medium-font: system-ui, sans-serif;
-}
-
-md-filled-button,
-md-outlined-button,
-md-outlined-text-field {
-  --md-sys-typescale-body-large-font: system-ui, sans-serif;
-}
-
-md-checkbox,
-md-switch {
-  --md-sys-typescale-label-large-font: system-ui, sans-serif;
-}
+/*
+ * Material 3 design tokens (--md-sys-*) are defined once, canonically, in
+ * css/material-tokens.css (loaded before this file). This file only contains
+ * component-specific styles that consume those tokens via var(--md-sys-*).
+ */
 
 .design-check {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+/* === Button (PBButton) — Material 3 button appearances ===
+ * m3.material.io/components/buttons — filled, tonal, outlined, elevated, text.
+ * Every value below is a --md-sys-* token; state layers are approximated with
+ * color-mix() blending the container/label color at the token opacity.
+ */
+.pb-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 2.5rem;
+  padding: 0 1.5rem;
+  border: none;
+  border-radius: var(--md-sys-shape-corner-full);
+  background: transparent;
+  color: var(--md-sys-color-primary);
+  font-family: var(--md-sys-typescale-font-family);
+  font-size: var(--md-sys-typescale-label-large-size);
+  line-height: var(--md-sys-typescale-label-large-line-height);
+  font-weight: var(--md-sys-typescale-label-large-weight);
+  letter-spacing: var(--md-sys-typescale-label-large-tracking);
+  cursor: pointer;
+  box-shadow: var(--md-sys-elevation-level-0);
+  transition:
+    background-color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard),
+    box-shadow var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard),
+    border-color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+}
+
+.pb-button:focus-visible {
+  outline: 2px solid var(--md-sys-color-primary);
+  outline-offset: 2px;
+}
+
+.pb-button:disabled {
+  cursor: not-allowed;
+}
+
+.pb-button__icon {
+  display: inline-flex;
+  align-items: center;
+  font-size: 1.125rem;
+  line-height: 1;
+}
+
+.pb-button__label {
+  display: inline-flex;
+}
+
+/* Text — default appearance, lowest emphasis */
+.pb-button--text {
+  padding-inline: 0.75rem;
+}
+
+.pb-button--text:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--md-sys-color-primary) calc(var(--md-sys-state-hover-state-layer-opacity) * 100%), transparent);
+}
+
+.pb-button--text:active:not(:disabled) {
+  background: color-mix(in srgb, var(--md-sys-color-primary) calc(var(--md-sys-state-pressed-state-layer-opacity) * 100%), transparent);
+}
+
+.pb-button--text:disabled {
+  color: color-mix(in srgb, var(--md-sys-color-on-surface) 38%, transparent);
+}
+
+/* Filled — highest emphasis */
+.pb-button--filled {
+  background: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+}
+
+.pb-button--filled:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--md-sys-color-primary), var(--md-sys-color-on-primary) calc(var(--md-sys-state-hover-state-layer-opacity) * 100%));
+  box-shadow: var(--md-sys-elevation-level-1);
+}
+
+.pb-button--filled:active:not(:disabled) {
+  background: color-mix(in srgb, var(--md-sys-color-primary), var(--md-sys-color-on-primary) calc(var(--md-sys-state-pressed-state-layer-opacity) * 100%));
+  box-shadow: var(--md-sys-elevation-level-0);
+}
+
+.pb-button--filled:disabled {
+  background: color-mix(in srgb, var(--md-sys-color-on-surface) 12%, transparent);
+  color: color-mix(in srgb, var(--md-sys-color-on-surface) 38%, transparent);
+  box-shadow: var(--md-sys-elevation-level-0);
+}
+
+/* Tonal — filled tonal, medium emphasis */
+.pb-button--tonal {
+  background: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-on-secondary-container);
+}
+
+.pb-button--tonal:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--md-sys-color-secondary-container), var(--md-sys-color-on-secondary-container) calc(var(--md-sys-state-hover-state-layer-opacity) * 100%));
+  box-shadow: var(--md-sys-elevation-level-1);
+}
+
+.pb-button--tonal:active:not(:disabled) {
+  background: color-mix(in srgb, var(--md-sys-color-secondary-container), var(--md-sys-color-on-secondary-container) calc(var(--md-sys-state-pressed-state-layer-opacity) * 100%));
+  box-shadow: var(--md-sys-elevation-level-0);
+}
+
+.pb-button--tonal:disabled {
+  background: color-mix(in srgb, var(--md-sys-color-on-surface) 12%, transparent);
+  color: color-mix(in srgb, var(--md-sys-color-on-surface) 38%, transparent);
+  box-shadow: var(--md-sys-elevation-level-0);
+}
+
+/* Outlined — medium emphasis, needs attention but isn't primary */
+.pb-button--outlined {
+  background: transparent;
+  color: var(--md-sys-color-primary);
+  border: 1px solid var(--md-sys-color-outline);
+}
+
+.pb-button--outlined:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--md-sys-color-primary) calc(var(--md-sys-state-hover-state-layer-opacity) * 100%), transparent);
+}
+
+.pb-button--outlined:active:not(:disabled) {
+  background: color-mix(in srgb, var(--md-sys-color-primary) calc(var(--md-sys-state-pressed-state-layer-opacity) * 100%), transparent);
+}
+
+.pb-button--outlined:disabled {
+  color: color-mix(in srgb, var(--md-sys-color-on-surface) 38%, transparent);
+  border-color: color-mix(in srgb, var(--md-sys-color-on-surface) 12%, transparent);
+}
+
+/* Elevated — visual separation from a patterned background */
+.pb-button--elevated {
+  background: var(--md-sys-color-surface-container-low);
+  color: var(--md-sys-color-primary);
+  box-shadow: var(--md-sys-elevation-level-1);
+}
+
+.pb-button--elevated:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--md-sys-color-surface-container-low), var(--md-sys-color-primary) calc(var(--md-sys-state-hover-state-layer-opacity) * 100%));
+  box-shadow: var(--md-sys-elevation-level-2);
+}
+
+.pb-button--elevated:active:not(:disabled) {
+  background: color-mix(in srgb, var(--md-sys-color-surface-container-low), var(--md-sys-color-primary) calc(var(--md-sys-state-pressed-state-layer-opacity) * 100%));
+  box-shadow: var(--md-sys-elevation-level-1);
+}
+
+.pb-button--elevated:disabled {
+  background: color-mix(in srgb, var(--md-sys-color-on-surface) 12%, transparent);
+  color: color-mix(in srgb, var(--md-sys-color-on-surface) 38%, transparent);
+  box-shadow: var(--md-sys-elevation-level-0);
 }
 
 /* === Autocomplete === */
@@ -33,7 +171,7 @@ md-switch {
   gap: 0.375rem;
   width: 100%;
   max-width: 28rem;
-  font-family: var(--md-sys-typescale-body-medium-font);
+  font-family: var(--md-sys-typescale-font-family);
 }
 
 .mdc-autocomplete--disabled {
@@ -133,4 +271,92 @@ md-elevated-card {
   border-radius: 0.75rem;
   background: var(--md-sys-color-surface-container-low);
   color: var(--md-sys-color-on-surface);
+}
+
+/* === Menu (PBMenu) — trigger + dropdown panel, M3 tokens only === */
+.pb-menu {
+  position: relative;
+  display: inline-flex;
+}
+
+.pb-menu__trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-width: 2.5rem;
+  height: 2.5rem;
+  padding: 0 0.5rem;
+  border: none;
+  border-radius: var(--md-sys-shape-corner-full);
+  background: transparent;
+  color: inherit;
+  font-family: var(--md-sys-typescale-font-family);
+  font-size: var(--md-sys-typescale-label-large-size);
+  cursor: pointer;
+  transition: background-color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+}
+
+.pb-menu__trigger:hover {
+  background: color-mix(in srgb, var(--md-sys-color-on-surface) calc(var(--md-sys-state-hover-state-layer-opacity) * 100%), transparent);
+}
+
+.pb-menu__scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 25;
+  background: transparent;
+}
+
+.pb-menu__panel {
+  position: absolute;
+  top: calc(100% + 0.25rem);
+  right: 0;
+  z-index: 26;
+  min-width: 12rem;
+  padding: 0.5rem;
+  border-radius: var(--md-sys-shape-corner-small);
+  background: var(--md-sys-color-surface-container);
+  color: var(--md-sys-color-on-surface);
+  box-shadow: var(--md-sys-elevation-level-2);
+  display: grid;
+  gap: 0.15rem;
+}
+
+.pb-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+  padding: 0.55rem 0.65rem;
+  border: none;
+  border-radius: var(--md-sys-shape-corner-extra-small);
+  background: transparent;
+  color: var(--md-sys-color-on-surface);
+  font-family: var(--md-sys-typescale-font-family);
+  font-size: var(--md-sys-typescale-body-medium-size);
+  text-align: left;
+  cursor: pointer;
+}
+
+.pb-menu-item:hover {
+  background: color-mix(in srgb, var(--md-sys-color-on-surface) calc(var(--md-sys-state-hover-state-layer-opacity) * 100%), transparent);
+}
+
+.pb-menu-item__swatch {
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
+  border-radius: var(--md-sys-shape-corner-full);
+  border: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.pb-menu-item__label {
+  flex: 1 1 auto;
+}
+
+.pb-menu-item__check {
+  flex: 0 0 auto;
+  color: var(--md-sys-color-primary);
+  font-weight: 700;
 }

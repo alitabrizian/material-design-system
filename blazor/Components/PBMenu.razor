@@ -1,2 +1,15 @@
 @inherits WorkspaceComponentBase
-<nav class="workspace-menu" aria-label="@Label" @attributes="AdditionalAttributes">@ChildContent</nav>
+
+<div class="pb-menu" @attributes="AdditionalAttributes">
+    <button type="button" class="pb-menu__trigger" @onclick="ToggleAsync" aria-haspopup="menu" aria-expanded="@(IsOpen ? "true" : "false")" aria-label="@Label">
+        @Trigger
+    </button>
+
+    @if (IsOpen)
+    {
+        <div class="pb-menu__scrim" @onclick="CloseAsync"></div>
+        <div class="pb-menu__panel" role="menu" aria-label="@Label" @onkeydown="OnKeyDownAsync" tabindex="-1">
+            @ChildContent
+        </div>
+    }
+</div>

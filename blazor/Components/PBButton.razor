@@ -1,2 +1,12 @@
 @inherits WorkspaceComponentBase
-<button class="workspace-button" @attributes="AdditionalAttributes" type="button">@ChildContent</button>
+<button class="pb-button pb-button--@VariantClass" @attributes="AdditionalAttributes" type="@Type">
+    @if (IconStart is not null)
+    {
+        <span class="pb-button__icon pb-button__icon--start" aria-hidden="true">@IconStart</span>
+    }
+    <span class="pb-button__label">@ChildContent</span>
+    @if (IconEnd is not null)
+    {
+        <span class="pb-button__icon pb-button__icon--end" aria-hidden="true">@IconEnd</span>
+    }
+</button>
