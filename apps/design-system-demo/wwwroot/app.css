@@ -1,11 +1,17 @@
+/*
+ * These --catalog-* names are kept so none of the rules below need to change
+ * (no sidebar restyling), but they now resolve to the active M3 palette/mode
+ * via --md-sys-color-* instead of fixed hex, so the whole app (sidebar
+ * included) follows the theme controls in the top app bar.
+ */
 :root {
-  --catalog-ink: #182230;
-  --catalog-muted: #687586;
-  --catalog-line: #dfe5eb;
-  --catalog-panel: #ffffff;
-  --catalog-soft: #f1f5f8;
-  --catalog-accent: #216bf3fc;
-  --catalog-accent-soft: #dbe3ef;
+  --catalog-ink: var(--md-sys-color-on-surface);
+  --catalog-muted: var(--md-sys-color-on-surface-variant);
+  --catalog-line: var(--md-sys-color-outline-variant);
+  --catalog-panel: var(--md-sys-color-surface);
+  --catalog-soft: var(--md-sys-color-surface-container-low);
+  --catalog-accent: var(--md-sys-color-primary);
+  --catalog-accent-soft: var(--md-sys-color-primary-container);
   --catalog-shadow: 0 16px 44px rgb(25 43 58 / 0.08);
 }
 
@@ -19,7 +25,7 @@ html {
 
 body {
   margin: 0;
-  background: #f7f9fb;
+  background: var(--md-sys-color-background);
   color: var(--catalog-ink);
   font-family: Roboto, "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 }
@@ -43,6 +49,65 @@ a {
   min-height: 100vh;
 }
 
+/* === Top app bar — light/dark toggle + palette picker ===
+ * Uses --md-sys-* tokens (not --catalog-*) so it tracks the active M3 palette/mode.
+ */
+.pb-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  height: 3.5rem;
+  padding: 0 clamp(1.5rem, 5vw, 5rem);
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: var(--md-sys-color-surface-container);
+  color: var(--md-sys-color-on-surface);
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.pb-topbar__title {
+  font-family: var(--md-sys-typescale-font-family);
+  font-size: var(--md-sys-typescale-title-medium-size);
+  line-height: var(--md-sys-typescale-title-medium-line-height);
+  font-weight: var(--md-sys-typescale-title-medium-weight);
+  letter-spacing: var(--md-sys-typescale-title-medium-tracking);
+}
+
+.pb-topbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.pb-topbar__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: none;
+  border-radius: var(--md-sys-shape-corner-full);
+  background: transparent;
+  color: var(--md-sys-color-on-surface);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+}
+
+.pb-topbar__icon:hover {
+  background: color-mix(in srgb, var(--md-sys-color-on-surface) calc(var(--md-sys-state-hover-state-layer-opacity) * 100%), transparent);
+}
+
+/* The palette picker's trigger is icon-only, sized to match the mode toggle. */
+.pb-topbar .pb-menu__trigger {
+  padding: 0;
+  font-size: 1.5rem;
+  color: var(--md-sys-color-on-surface);
+}
+
 .catalog-shell {
   display: grid;
   grid-template-columns: 15.5rem minmax(0, 1fr);
@@ -56,9 +121,8 @@ a {
   flex-direction: column;
   height: 100vh;
   padding-top: 1rem;
-  border-right: 1px solid var(--catalog-line);
-  background: rgb(255 255 255 / 0.84);
-  backdrop-filter: blur(16px);
+  border-right: 1px solid var(--md-sys-color-outline-variant);
+  background: var(--md-sys-color-surface-container);
 }
 
 .brand-lockup {
@@ -122,7 +186,7 @@ a {
 }
 
 .nav-link {
-  padding: 0.65rem 0.7rem;
+  padding: 0.75rem 1rem;
   border-radius: 0.55rem;
   color: var(--catalog-muted);
   font-size: 0.85rem;
@@ -161,7 +225,7 @@ a {
 }
 
 .catalog-content {
-  padding: 4.5rem clamp(1.5rem, 5vw, 5rem) 5rem;
+  padding: 3rem clamp(1.5rem, 5vw, 5rem) 5rem;
 }
 
 .eyebrow,
@@ -308,8 +372,8 @@ h2 {
 }
 
 .component-card.featured {
-  border-color: #a7d4cc;
-  background: linear-gradient(145deg, #ffffff 0%, #2196f32e 100%);
+  border-color: var(--md-sys-color-primary);
+  background: linear-gradient(145deg, var(--md-sys-color-surface-container-low) 0%, var(--md-sys-color-primary-container) 100%);
 }
 
 .card-icon {
@@ -367,7 +431,7 @@ h2 {
   padding: 3rem 1.5rem;
   border: 1px dashed var(--catalog-line);
   border-radius: 0.65rem;
-  background: rgb(255 255 255 / 0.72);
+  background: var(--md-sys-color-surface-container-low);
   color: var(--catalog-muted);
   text-align: center;
 }
@@ -543,14 +607,40 @@ h2 { margin-top: 0; }
   margin-top: 0.5rem;
 }
 
-/* === Component documentation page === */
+/* === Component documentation page ===
+ * Spacing/typography fixed once here (PageHeader.razor is the single markup
+ * source every page uses) rather than per page:
+ *   - title: --md-sys-typescale-headline-large
+ *   - description: --md-sys-typescale-body-large / on-surface-variant
+ *   - 16px gap title->description, 32px gap description->first example
+ */
 .doc-header {
   max-width: 44rem;
-  margin-bottom: 2.5rem;
+  margin-bottom: 2rem;
+}
+
+.doc-header .eyebrow {
+  margin-bottom: 0.5rem;
 }
 
 .doc-header h1 {
-  font-size: clamp(2.2rem, 4vw, 3rem);
+  font-family: var(--md-sys-typescale-font-family);
+  font-size: var(--md-sys-typescale-headline-large-size);
+  line-height: var(--md-sys-typescale-headline-large-line-height);
+  font-weight: var(--md-sys-typescale-headline-large-weight);
+  letter-spacing: var(--md-sys-typescale-headline-large-tracking);
+  color: var(--md-sys-color-on-surface);
+  margin: 0 0 1rem;
+}
+
+.doc-header .intro {
+  font-family: var(--md-sys-typescale-font-family);
+  font-size: var(--md-sys-typescale-body-large-size);
+  line-height: var(--md-sys-typescale-body-large-line-height);
+  font-weight: var(--md-sys-typescale-body-large-weight);
+  letter-spacing: var(--md-sys-typescale-body-large-tracking);
+  color: var(--md-sys-color-on-surface-variant);
+  margin: 0;
 }
 
 .doc-section {
@@ -626,18 +716,150 @@ h2 { margin-top: 0; }
 .a11y-note {
   padding: 1rem 1.15rem;
   border-radius: 0.55rem;
-  border: 1px solid var(--catalog-accent-soft);
-  background: #f4f7fd;
+  border: 1px solid var(--md-sys-color-outline-variant);
+  background: var(--md-sys-color-surface-container);
   font-size: 0.85rem;
-  color: var(--catalog-ink);
+  color: var(--md-sys-color-on-surface);
 }
 
 .a11y-note strong {
   display: block;
   margin-bottom: 0.3rem;
-  color: var(--catalog-accent);
+  color: var(--md-sys-color-primary);
   font-size: 0.7rem;
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
+
+/* === Example card === */
+.example-card {
+  margin-bottom: 1.25rem;
+  border: 1px solid var(--catalog-line);
+  border-radius: 0.65rem;
+  background: var(--catalog-panel);
+  overflow: hidden;
+}
+
+.example-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--catalog-line);
+}
+
+.example-card-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--catalog-ink);
+}
+
+.example-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+  flex: 0 0 auto;
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0.4rem;
+  background: transparent;
+  color: var(--catalog-muted);
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.icon-btn:hover {
+  background: var(--catalog-soft);
+  color: var(--catalog-accent);
+}
+
+.icon-btn.is-active {
+  color: var(--catalog-accent);
+  background: var(--catalog-accent-soft);
+}
+
+.example-tabs {
+  display: flex;
+  gap: 0.6rem;
+  padding: 0 1rem;
+  border-bottom: 1px solid var(--catalog-line);
+  background: var(--catalog-soft);
+}
+
+.example-tab {
+  padding: 0.6rem 0.1rem;
+  margin-bottom: -1px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--catalog-muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-family: "Cascadia Code", "Consolas", monospace;
+  cursor: pointer;
+}
+
+.example-tab:hover {
+  color: var(--catalog-ink);
+}
+
+.example-tab.active {
+  color: var(--catalog-accent);
+  border-bottom-color: var(--catalog-accent);
+}
+
+.example-code-panel {
+  position: relative;
+  padding: 1rem 1.15rem;
+  background: var(--catalog-ink);
+  overflow-x: auto;
+}
+
+.example-code-panel pre {
+  margin: 0;
+}
+
+.example-code-panel code {
+  font-family: "Cascadia Code", "Consolas", monospace;
+  font-size: 0.8rem;
+  line-height: 1.55;
+  color: var(--catalog-panel);
+  white-space: pre;
+}
+
+.example-code-copy {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.75rem;
+  color: #b9c3d6;
+}
+
+.example-code-copy:hover {
+  background: rgb(255 255 255 / 0.1);
+  color: #ffffff;
+}
+
+.example-live {
+  padding: 1.35rem;
+}
+
+.example-live.with-code {
+  border-top: 1px solid var(--catalog-line);
+}
+
+.tok-comment { color: #6a9955; }
+.tok-string { color: #ce9178; }
+.tok-tag { color: #c586c0; }
+.tok-razor { color: #4fc1ff; }
+.tok-keyword { color: #569cd6; }
+.tok-property { color: #9cdcfe; }

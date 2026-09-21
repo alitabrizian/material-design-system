@@ -9,30 +9,23 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <header class="doc-header">
-        <span class="eyebrow">Component</span>
-        <h1>Ripples</h1>
-        <p class="intro">
-            Ripples wrap an interactive element to give it tactile visual feedback
-            when pressed.
-        </p>
-    </header>
+    <PageHeader Title="Ripples">
+        Ripples wrap an interactive element to give it tactile visual feedback
+        when pressed.
+    </PageHeader>
 
     <section class="doc-section">
-        <h2>Wrapping a button</h2>
         <p class="field-hint">Clicking updates the status below.</p>
 
-        <div class="doc-example">
+        <ExampleCard Title="Wrapping a button" RazorCode="@(
+@"<PBRipples>
+    <PBButton @onclick=""() => tapCount++"">Tap me</PBButton>
+</PBRipples>")">
             <PBRipples>
                 <PBButton @onclick="() => tapCount++">Tap me</PBButton>
             </PBRipples>
             <span class="status">Tapped @tapCount time(s)</span>
-        </div>
-
-        <CodeSnippet Code="@(
-@"<PBRipples>
-    <PBButton @onclick=""() => tapCount++"">Tap me</PBButton>
-</PBRipples>")" />
+        </ExampleCard>
     </section>
 
     <section class="doc-section">

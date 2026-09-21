@@ -9,49 +9,53 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <header class="doc-header">
-        <span class="eyebrow">Component</span>
-        <h1>Autocomplete</h1>
-        <p class="intro">
-            The autocomplete is a text input enhanced by a panel of suggested options.
-            Type to filter the list, use the arrow keys to navigate, Enter to select,
-            and Escape to dismiss the panel.
-        </p>
-    </header>
+    <PageHeader Title="Autocomplete">
+        The autocomplete is a text input enhanced by a panel of suggested options.
+        Type to filter the list, use the arrow keys to navigate, Enter to select,
+        and Escape to dismiss the panel.
+    </PageHeader>
 
     <section class="doc-section">
-        <h2>Simple autocomplete</h2>
         <p class="field-hint">
             Bind <code>SelectedOption</code> to a plain list of options. By default the
             list is filtered to entries that start with the typed text.
         </p>
 
-        <div class="doc-example">
+        <ExampleCard Title="Simple autocomplete" RazorCode="@(
+@"<PBAutoComplete
+    Label=""Pick a fruit""
+    Placeholder=""Start typing...""
+    @bind-SelectedOption=""selectedFruit""
+    Options=""fruitOptions"" />")">
             <PBAutoComplete
                 Label="Pick a fruit"
                 Placeholder="Start typing..."
                 @bind-SelectedOption="selectedFruit"
                 Options="fruitOptions" />
             <span class="status">Selected: @(selectedFruit ?? "—")</span>
-        </div>
-
-        <CodeSnippet Code="@(
-@"<PBAutoComplete
-    Label=""Pick a fruit""
-    Placeholder=""Start typing...""
-    @bind-SelectedOption=""selectedFruit""
-    Options=""fruitOptions"" />")" />
+        </ExampleCard>
     </section>
 
     <section class="doc-section">
-        <h2>Adding a custom filter</h2>
         <p class="field-hint">
             Pass a <code>Filter</code> callback to control how the option list narrows
             as the user types. This example matches the search text anywhere in the
             option, not just at the start.
         </p>
 
-        <div class="doc-example">
+        <ExampleCard Title="Adding a custom filter"
+            RazorCode="@(
+@"<PBAutoComplete
+    Label=""Find a country""
+    Placeholder=""Type a country name...""
+    @bind-SelectedOption=""selectedCountry""
+    Options=""countryOptions""
+    Filter=""ContainsFilter"" />")"
+            CSharpCode="@(
+@"private static IEnumerable<string?> ContainsFilter(string input, IEnumerable<string?> options) =>
+    string.IsNullOrWhiteSpace(input)
+        ? options
+        : options.Where(o => o.Contains(input, StringComparison.OrdinalIgnoreCase));")">
             <PBAutoComplete
                 Label="Find a country"
                 Placeholder="Type a country name..."
@@ -59,33 +63,24 @@
                 Options="countryOptions"
                 Filter="ContainsFilter" />
             <span class="status">Selected: @(selectedCountry ?? "—")</span>
-        </div>
-
-        <CodeSnippet Code="@(
-@"<PBAutoComplete
-    Label=""Find a country""
-    Placeholder=""Type a country name...""
-    @bind-SelectedOption=""selectedCountry""
-    Options=""countryOptions""
-    Filter=""ContainsFilter"" />
-
-@code {
-    private static IEnumerable<string?> ContainsFilter(string input, IEnumerable<string?> options) =>
-        string.IsNullOrWhiteSpace(input)
-            ? options
-            : options.Where(o => o.Contains(input, StringComparison.OrdinalIgnoreCase));
-}")" />
+        </ExampleCard>
     </section>
 
     <section class="doc-section">
-        <h2>Setting separate control and display values</h2>
         <p class="field-hint">
             When the options are objects rather than strings, use
             <code>DisplayProperty</code> to choose what is shown in the panel and
             <code>ValueProperty</code> to choose the underlying value.
         </p>
 
-        <div class="doc-example">
+        <ExampleCard Title="Setting separate control and display values" RazorCode="@(
+@"<PBAutoComplete
+    Label=""Choose a city""
+    Placeholder=""Type a city name...""
+    @bind-SelectedOption=""selectedCity""
+    Options=""cityOptions""
+    DisplayProperty=""Name""
+    ValueProperty=""Code"" />")">
             <PBAutoComplete
                 Label="Choose a city"
                 Placeholder="Type a city name..."
@@ -94,20 +89,10 @@
                 DisplayProperty="Name"
                 ValueProperty="Code" />
             <span class="status">Selected: @(selectedCity?.Name ?? "—") (code: @(selectedCity?.Code ?? "—"))</span>
-        </div>
-
-        <CodeSnippet Code="@(
-@"<PBAutoComplete
-    Label=""Choose a city""
-    Placeholder=""Type a city name...""
-    @bind-SelectedOption=""selectedCity""
-    Options=""cityOptions""
-    DisplayProperty=""Name""
-    ValueProperty=""Code"" />")" />
+        </ExampleCard>
     </section>
 
     <section class="doc-section">
-        <h2>Require an option to be selected</h2>
         <p class="field-hint">
             <code>PBAutoComplete</code> does not currently enforce that the typed text
             resolves to one of the supplied options — it is a free-text input with
@@ -115,7 +100,13 @@
             dependent action on <code>SelectedOption</code> being set, as shown below.
         </p>
 
-        <div class="doc-example">
+        <ExampleCard Title="Require an autocomplete option to be selected" RazorCode="@(
+@"<PBAutoComplete
+    Label=""Pick a fruit to continue""
+    @bind-SelectedOption=""selectedFruit""
+    Options=""fruitOptions"" />
+
+<PBButton disabled=""@(selectedFruit is null)"">Continue</PBButton>")">
             <PBAutoComplete
                 Label="Pick a fruit to continue"
                 Placeholder="Start typing..."
@@ -124,51 +115,36 @@
             <div class="actions">
                 <PBButton disabled="@(selectedRequiredFruit is null)">Continue</PBButton>
             </div>
-        </div>
-
-        <CodeSnippet Code="@(
-@"<PBAutoComplete
-    Label=""Pick a fruit to continue""
-    @bind-SelectedOption=""selectedFruit""
-    Options=""fruitOptions"" />
-
-<PBButton disabled=""@(selectedFruit is null)"">Continue</PBButton>")" />
+        </ExampleCard>
     </section>
 
     <section class="doc-section">
-        <h2>Automatically highlighting the first option</h2>
         <p class="field-hint">
             The first option in the filtered list is highlighted automatically as you
             type, so pressing Enter immediately selects the best match without an
             extra arrow-key press.
         </p>
 
-        <div class="doc-example">
+        <ExampleCard Title="Automatically highlighting the first option" RazorCode="@(
+@"<PBAutoComplete
+    Label=""Type a country name""
+    @bind-SelectedOption=""selectedCountry""
+    Options=""countryOptions"" />")">
             <PBAutoComplete
                 Label="Type a country name"
                 Placeholder="Try 'united'..."
                 @bind-SelectedOption="selectedHighlightCountry"
                 Options="countryOptions" />
             <span class="status">Selected: @(selectedHighlightCountry ?? "—")</span>
-        </div>
-
-        <CodeSnippet Code="@(
-@"<PBAutoComplete
-    Label=""Type a country name""
-    @bind-SelectedOption=""selectedCountry""
-    Options=""countryOptions"" />")" />
+        </ExampleCard>
     </section>
 
     <section class="doc-section">
-        <h2>Disabled state</h2>
         <p class="field-hint">Set <code>Enabled="false"</code> to make the input non-interactive.</p>
 
-        <div class="doc-example">
+        <ExampleCard Title="Disabled state" RazorCode="@(@"<PBAutoComplete Label=""Disabled input"" Options=""fruitOptions"" Enabled=""false"" />")">
             <PBAutoComplete Label="Disabled input" Placeholder="Cannot type here" Options="fruitOptions" Enabled="false" />
-        </div>
-
-        <CodeSnippet Code="@(
-@"<PBAutoComplete Label=""Disabled input"" Options=""fruitOptions"" Enabled=""false"" />")" />
+        </ExampleCard>
     </section>
 
     <section class="doc-section">

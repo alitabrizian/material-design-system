@@ -9,35 +9,28 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <header class="doc-header">
-        <span class="eyebrow">Component</span>
-        <h1>Radio Button</h1>
-        <p class="intro">
-            Radio buttons let the user choose exactly one option from a mutually
-            exclusive set.
-        </p>
-    </header>
+    <PageHeader Title="Radio Button">
+        Radio buttons let the user choose exactly one option from a mutually
+        exclusive set.
+    </PageHeader>
 
     <section class="doc-section">
-        <h2>Delivery speed</h2>
         <p class="field-hint">Only one option can be selected at a time.</p>
 
-        <div class="doc-example">
-            @foreach (var option in speedOptions)
-            {
-                <PBRadioButton Label="@option" name="delivery-speed" checked="@(selectedSpeed == option)" @onchange='() => selectedSpeed = option' />
-            }
-            <span class="status">Selected: @selectedSpeed</span>
-        </div>
-
-        <CodeSnippet Code="@(
+        <ExampleCard Title="Delivery speed" RazorCode="@(
 @"@foreach (var option in speedOptions)
 {
     <PBRadioButton Label=""@option""
         name=""delivery-speed""
         checked=""@(selectedSpeed == option)""
         @onchange=""() => selectedSpeed = option"" />
-}")" />
+}")">
+            @foreach (var option in speedOptions)
+            {
+                <PBRadioButton Label="@option" name="delivery-speed" checked="@(selectedSpeed == option)" @onchange='() => selectedSpeed = option' />
+            }
+            <span class="status">Selected: @selectedSpeed</span>
+        </ExampleCard>
     </section>
 
     <section class="doc-section">

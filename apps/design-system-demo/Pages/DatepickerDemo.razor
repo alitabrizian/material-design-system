@@ -9,39 +9,29 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <header class="doc-header">
-        <span class="eyebrow">Component</span>
-        <h1>Datepicker</h1>
-        <p class="intro">
-            The datepicker lets users enter or pick a calendar date using the
-            browser's native date input.
-        </p>
-    </header>
+    <PageHeader Title="Datepicker">
+        The datepicker lets users enter or pick a calendar date using the
+        browser's native date input.
+    </PageHeader>
 
     <section class="doc-section">
-        <h2>Default</h2>
         <p class="field-hint">Selecting a date updates the status below.</p>
 
-        <div class="doc-example">
-            <PBDatepicker Label="Start date" value="@selectedDate" @onchange="@((ChangeEventArgs e) => selectedDate = e.Value?.ToString())" />
-            <span class="status">Selected: @(selectedDate ?? "—")</span>
-        </div>
-
-        <CodeSnippet Code="@(
+        <ExampleCard Title="Default" RazorCode="@(
 @"<PBDatepicker Label=""Start date""
     value=""@selectedDate""
-    @onchange=""@((ChangeEventArgs e) => selectedDate = e.Value?.ToString())"" />")" />
+    @onchange=""@((ChangeEventArgs e) => selectedDate = e.Value?.ToString())"" />")">
+            <PBDatepicker Label="Start date" value="@selectedDate" @onchange="@((ChangeEventArgs e) => selectedDate = e.Value?.ToString())" />
+            <span class="status">Selected: @(selectedDate ?? "—")</span>
+        </ExampleCard>
     </section>
 
     <section class="doc-section">
-        <h2>Disabled</h2>
         <p class="field-hint">A disabled datepicker cannot be changed.</p>
 
-        <div class="doc-example">
+        <ExampleCard Title="Disabled" RazorCode="@(@"<PBDatepicker Label=""Locked date"" disabled />")">
             <PBDatepicker Label="Locked date" disabled />
-        </div>
-
-        <CodeSnippet Code="@(@"<PBDatepicker Label=""Locked date"" disabled />")" />
+        </ExampleCard>
     </section>
 
     <section class="doc-section">

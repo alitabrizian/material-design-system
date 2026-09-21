@@ -1,0 +1,10 @@
+<header class="doc-header">
+    <span class="eyebrow">Component</span>
+    <h1>@Title</h1>
+    <p class="intro">@ChildContent</p>
+</header>
+
+@code {
+    [Parameter, EditorRequired] public string Title { get; set; } = string.Empty;
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+}

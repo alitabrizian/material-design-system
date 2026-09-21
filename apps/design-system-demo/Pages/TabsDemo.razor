@@ -9,20 +9,21 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <header class="doc-header">
-        <span class="eyebrow">Component</span>
-        <h1>Tabs</h1>
-        <p class="intro">
-            Tabs organize related content into separate views that share the same
-            context.
-        </p>
-    </header>
+    <PageHeader Title="Tabs">
+        Tabs organize related content into separate views that share the same
+        context.
+    </PageHeader>
 
     <section class="doc-section">
-        <h2>Account settings</h2>
         <p class="field-hint">Selecting a tab swaps the panel below.</p>
 
-        <div class="doc-example">
+        <ExampleCard Title="Account settings" RazorCode="@(
+@"<PBTabs>
+    @foreach (var tab in tabs)
+    {
+        <PBButton @onclick=""() => activeTab = tab"">@tab</PBButton>
+    }
+</PBTabs>")">
             <PBTabs>
                 @foreach (var tab in tabs)
                 {
@@ -43,15 +44,7 @@
                         break;
                 }
             </div>
-        </div>
-
-        <CodeSnippet Code="@(
-@"<PBTabs>
-    @foreach (var tab in tabs)
-    {
-        <PBButton @onclick=""() => activeTab = tab"">@tab</PBButton>
-    }
-</PBTabs>")" />
+        </ExampleCard>
     </section>
 
     <section class="doc-section">

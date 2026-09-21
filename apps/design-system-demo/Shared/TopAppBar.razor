@@ -1,0 +1,100 @@
+@inject ThemeState Theme
+@inject IJSRuntime JS
+@implements IAsyncDisposable
+
+<header class="pb-topbar">
+    <span class="pb-topbar__title">@Title</span>
+
+    <div class="pb-topbar__actions">
+        <button
+            type="button"
+            class="pb-topbar__icon"
+            title="@(Theme.Mode == ThemeState.DarkMode ? "Switch to light mode" : "Switch to dark mode")"
+            aria-label="Toggle color mode"
+            @onclick="ToggleModeAsync">
+            <span class="material-icons" aria-hidden="true">@(Theme.Mode == ThemeState.DarkMode ? "dark_mode" : "light_mode")</span>
+        </button>
+
+        <PBMenu Label="Color palette" @bind-IsOpen="paletteMenuOpen">
+            <Trigger>
+                <span class="material-icons" aria-hidden="true">palette</span>
+            </Trigger>
+            <ChildContent>
+                @foreach (var palette in ThemeState.Palettes)
+                {
+                    <button type="button" class="pb-menu-item" @onclick="() => SelectPaletteAsync(palette.Key)">
+                        <span class="pb-menu-item__swatch" style="background:@palette.Seed;"></span>
+                        <span class="pb-menu-item__label">@palette.Name</span>
+                        @if (Theme.Palette == palette.Key)
+                        {
+                            <span class="pb-menu-item__check" aria-hidden="true">✓</span>
+                        }
+                    </button>
+                }
+            </ChildContent>
+        </PBMenu>
+    </div>
+</header>
+
+@code {
+    [Parameter] public string Title { get; set; } = string.Empty;
+
+    private bool paletteMenuOpen;
+    private IJSObjectReference? module;
+
+    protected override void OnInitialized()
+    {
+        Theme.Changed += OnThemeChanged;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+            return;
+
+        // JS interop is unavailable during static prerendering, so the very first
+        // paint uses ThemeState's default (light/purple) for the icon/checkmark.
+        // The <html data-theme>/[data-palette] attributes are already correct from
+        // App.razor's inline FOUC script, so page colors never flash; only this
+        // brief correction of the toggle icon/checkmark happens post-render.
+        module = await JS.InvokeAsync<IJSObjectReference>("import", "/js/theme.js");
+
+        var stored = await module.InvokeAsync<Dictionary<string, string?>>("getStoredTheme");
+        Theme.Initialize(stored.GetValueOrDefault("theme"), stored.GetValueOrDefault("palette"));
+        StateHasChanged();
+    }
+
+    private void OnThemeChanged() => InvokeAsync(StateHasChanged);
+
+    private Task ToggleModeAsync()
+    {
+        Theme.ToggleMode();
+        return PersistAndApplyAsync();
+    }
+
+    private Task SelectPaletteAsync(string key)
+    {
+        Theme.SetPalette(key);
+        paletteMenuOpen = false;
+        return PersistAndApplyAsync();
+    }
+
+    private async Task PersistAndApplyAsync()
+    {
+        if (module is null)
+            return;
+
+        await module.InvokeVoidAsync("applyTheme", Theme.Mode, Theme.Palette);
+        await module.InvokeVoidAsync("setStoredTheme", Theme.Mode, Theme.Palette);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        Theme.Changed -= OnThemeChanged;
+
+        if (module is not null)
+        {
+            await module.DisposeAsync();
+        }
+    }
+}

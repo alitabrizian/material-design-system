@@ -9,36 +9,35 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <header class="doc-header">
-        <span class="eyebrow">Component</span>
-        <h1>Form Field</h1>
-        <p class="intro">
-            A form field pairs a label with a single form control, giving the control
-            an accessible name.
-        </p>
-    </header>
+    <PageHeader Title="Form Field">
+        A form field pairs a label with a single form control, giving the control
+        an accessible name.
+    </PageHeader>
 
     <section class="doc-section">
-        <h2>Wrapping an input</h2>
         <p class="field-hint">The label is associated with the wrapped control.</p>
 
-        <div class="doc-example">
+        <ExampleCard Title="Wrapping an input" RazorCode="@(
+@"<PBFormField Label=""Display name"">
+    <input placeholder=""Jane Doe"" />
+</PBFormField>")">
             <PBFormField Label="Display name">
                 <input placeholder="Jane Doe" />
             </PBFormField>
-        </div>
-
-        <CodeSnippet Code="@(
-@"<PBFormField Label=""Display name"">
-    <input placeholder=""Jane Doe"" />
-</PBFormField>")" />
+        </ExampleCard>
     </section>
 
     <section class="doc-section">
-        <h2>Wrapping a select</h2>
         <p class="field-hint">Form field works with any control as child content.</p>
 
-        <div class="doc-example">
+        <ExampleCard Title="Wrapping a select" RazorCode="@(
+@"<PBFormField Label=""Role"">
+    <select>
+        <option>Admin</option>
+        <option>Editor</option>
+        <option>Viewer</option>
+    </select>
+</PBFormField>")">
             <PBFormField Label="Role">
                 <select>
                     <option>Admin</option>
@@ -46,16 +45,7 @@
                     <option>Viewer</option>
                 </select>
             </PBFormField>
-        </div>
-
-        <CodeSnippet Code="@(
-@"<PBFormField Label=""Role"">
-    <select>
-        <option>Admin</option>
-        <option>Editor</option>
-        <option>Viewer</option>
-    </select>
-</PBFormField>")" />
+        </ExampleCard>
     </section>
 
     <section class="doc-section">

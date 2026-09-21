@@ -9,28 +9,21 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <header class="doc-header">
-        <span class="eyebrow">Component</span>
-        <h1>Slider</h1>
-        <p class="intro">
-            A slider lets the user select a numeric value from a continuous or
-            stepped range.
-        </p>
-    </header>
+    <PageHeader Title="Slider">
+        A slider lets the user select a numeric value from a continuous or
+        stepped range.
+    </PageHeader>
 
     <section class="doc-section">
-        <h2>Volume</h2>
         <p class="field-hint">Dragging the handle updates the status below.</p>
 
-        <div class="doc-example">
-            <PBSlider Label="Volume" min="0" max="100" value="@volume" @oninput="@((ChangeEventArgs e) => volume = int.Parse(e.Value!.ToString()!))" />
-            <span class="status">@volume%</span>
-        </div>
-
-        <CodeSnippet Code="@(
+        <ExampleCard Title="Volume" RazorCode="@(
 @"<PBSlider Label=""Volume"" min=""0"" max=""100""
     value=""@volume""
-    @oninput=""@((ChangeEventArgs e) => volume = int.Parse(e.Value!.ToString()!))"" />")" />
+    @oninput=""@((ChangeEventArgs e) => volume = int.Parse(e.Value!.ToString()!))"" />")">
+            <PBSlider Label="Volume" min="0" max="100" value="@volume" @oninput="@((ChangeEventArgs e) => volume = int.Parse(e.Value!.ToString()!))" />
+            <span class="status">@volume%</span>
+        </ExampleCard>
     </section>
 
     <section class="doc-section">

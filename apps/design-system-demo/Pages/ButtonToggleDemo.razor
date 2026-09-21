@@ -9,20 +9,19 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <header class="doc-header">
-        <span class="eyebrow">Component</span>
-        <h1>Button Toggle</h1>
-        <p class="intro">
-            A group of button toggles lets the user pick one option from a small,
-            mutually exclusive set.
-        </p>
-    </header>
+    <PageHeader Title="Button Toggle">
+        A group of button toggles lets the user pick one option from a small,
+        mutually exclusive set.
+    </PageHeader>
 
     <section class="doc-section">
-        <h2>View mode</h2>
         <p class="field-hint">Only one option is treated as active at a time.</p>
 
-        <div class="doc-example">
+        <ExampleCard Title="View mode" RazorCode="@(
+@"@foreach (var option in viewOptions)
+{
+    <PBButtonToggle @onclick=""() => selectedView = option"">@option</PBButtonToggle>
+}")">
             <span style="display:inline-flex; gap:0.5rem;">
                 @foreach (var option in viewOptions)
                 {
@@ -30,13 +29,7 @@
                 }
             </span>
             <span class="status">Selected: @selectedView</span>
-        </div>
-
-        <CodeSnippet Code="@(
-@"@foreach (var option in viewOptions)
-{
-    <PBButtonToggle @onclick=""() => selectedView = option"">@option</PBButtonToggle>
-}")" />
+        </ExampleCard>
     </section>
 
     <section class="doc-section">

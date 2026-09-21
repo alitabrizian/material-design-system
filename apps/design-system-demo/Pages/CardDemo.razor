@@ -9,40 +9,39 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <header class="doc-header">
-        <span class="eyebrow">Component</span>
-        <h1>Card</h1>
-        <p class="intro">
-            Cards group related content and actions into a single, self-contained
-            surface.
-        </p>
-    </header>
+    <PageHeader Title="Card">
+        Cards group related content and actions into a single, self-contained
+        surface.
+    </PageHeader>
 
     <section class="doc-section">
-        <h2>Basic card</h2>
         <p class="field-hint">A card with a title, body copy, and an action.</p>
 
-        <div class="doc-example">
+        <ExampleCard Title="Basic card" RazorCode="@(
+@"<PBCard>
+    <h3>Team standup</h3>
+    <p>Daily sync at 9:30 AM in the design system room.</p>
+    <PBButton>Join</PBButton>
+</PBCard>")">
             <PBCard>
                 <h3 style="margin:0 0 0.35rem;">Team standup</h3>
                 <p style="margin:0 0 0.75rem;">Daily sync at 9:30 AM in the design system room.</p>
                 <PBButton>Join</PBButton>
             </PBCard>
-        </div>
-
-        <CodeSnippet Code="@(
-@"<PBCard>
-    <h3>Team standup</h3>
-    <p>Daily sync at 9:30 AM in the design system room.</p>
-    <PBButton>Join</PBButton>
-</PBCard>")" />
+        </ExampleCard>
     </section>
 
     <section class="doc-section">
-        <h2>Media card</h2>
         <p class="field-hint">A card can hold arbitrary content, including lists.</p>
 
-        <div class="doc-example">
+        <ExampleCard Title="Media card" RazorCode="@(
+@"<PBCard>
+    <h3>Release notes</h3>
+    <PBList>
+        <li>Autocomplete component shipped</li>
+        <li>Dark mode groundwork started</li>
+    </PBList>
+</PBCard>")">
             <PBCard>
                 <h3 style="margin:0 0 0.35rem;">Release notes</h3>
                 <PBList>
@@ -50,16 +49,7 @@
                     <li>Dark mode groundwork started</li>
                 </PBList>
             </PBCard>
-        </div>
-
-        <CodeSnippet Code="@(
-@"<PBCard>
-    <h3>Release notes</h3>
-    <PBList>
-        <li>Autocomplete component shipped</li>
-        <li>Dark mode groundwork started</li>
-    </PBList>
-</PBCard>")" />
+        </ExampleCard>
     </section>
 
     <section class="doc-section">

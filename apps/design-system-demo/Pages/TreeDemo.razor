@@ -9,20 +9,23 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <header class="doc-header">
-        <span class="eyebrow">Component</span>
-        <h1>Tree</h1>
-        <p class="intro">
-            A tree displays hierarchical data, such as a file system or an
-            organization chart.
-        </p>
-    </header>
+    <PageHeader Title="Tree">
+        A tree displays hierarchical data, such as a file system or an
+        organization chart.
+    </PageHeader>
 
     <section class="doc-section">
-        <h2>File explorer</h2>
         <p class="field-hint">Nested lists represent parent-child relationships.</p>
 
-        <div class="doc-example">
+        <ExampleCard Title="File explorer" RazorCode="@(
+@"<PBTree>
+    <li role=""treeitem"">
+        libs
+        <ul role=""group"">
+            <li role=""treeitem"">design-system</li>
+        </ul>
+    </li>
+</PBTree>")">
             <PBTree>
                 <li role="treeitem">
                     libs
@@ -37,17 +40,7 @@
                     </ul>
                 </li>
             </PBTree>
-        </div>
-
-        <CodeSnippet Code="@(
-@"<PBTree>
-    <li role=""treeitem"">
-        libs
-        <ul role=""group"">
-            <li role=""treeitem"">design-system</li>
-        </ul>
-    </li>
-</PBTree>")" />
+        </ExampleCard>
     </section>
 
     <section class="doc-section">

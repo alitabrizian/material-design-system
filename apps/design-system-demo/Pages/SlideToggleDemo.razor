@@ -9,36 +9,26 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <header class="doc-header">
-        <span class="eyebrow">Component</span>
-        <h1>Slide Toggle</h1>
-        <p class="intro">A slide toggle switches a single setting between an on and an off state.</p>
-    </header>
+    <PageHeader Title="Slide Toggle">A slide toggle switches a single setting between an on and an off state.</PageHeader>
 
     <section class="doc-section">
-        <h2>Dark mode</h2>
         <p class="field-hint">Flipping the switch updates the status below.</p>
 
-        <div class="doc-example">
-            <PBSlideToggle Label="Enable dark mode" checked="@darkModeEnabled" @onchange="@((ChangeEventArgs e) => darkModeEnabled = (bool)e.Value!)" />
-            <span class="status">Dark mode: @(darkModeEnabled ? "on" : "off")</span>
-        </div>
-
-        <CodeSnippet Code="@(
+        <ExampleCard Title="Dark mode" RazorCode="@(
 @"<PBSlideToggle Label=""Enable dark mode""
     checked=""@darkModeEnabled""
-    @onchange=""@((ChangeEventArgs e) => darkModeEnabled = (bool)e.Value!)"" />")" />
+    @onchange=""@((ChangeEventArgs e) => darkModeEnabled = (bool)e.Value!)"" />")">
+            <PBSlideToggle Label="Enable dark mode" checked="@darkModeEnabled" @onchange="@((ChangeEventArgs e) => darkModeEnabled = (bool)e.Value!)" />
+            <span class="status">Dark mode: @(darkModeEnabled ? "on" : "off")</span>
+        </ExampleCard>
     </section>
 
     <section class="doc-section">
-        <h2>Disabled</h2>
         <p class="field-hint">A disabled toggle cannot be changed.</p>
 
-        <div class="doc-example">
+        <ExampleCard Title="Disabled" RazorCode="@(@"<PBSlideToggle Label=""Locked setting"" disabled />")">
             <PBSlideToggle Label="Locked setting" disabled />
-        </div>
-
-        <CodeSnippet Code="@(@"<PBSlideToggle Label=""Locked setting"" disabled />")" />
+        </ExampleCard>
     </section>
 
     <section class="doc-section">

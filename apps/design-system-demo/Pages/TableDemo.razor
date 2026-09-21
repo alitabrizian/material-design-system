@@ -9,17 +9,21 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <header class="doc-header">
-        <span class="eyebrow">Component</span>
-        <h1>Table</h1>
-        <p class="intro">A table displays a structured collection of data across rows and columns.</p>
-    </header>
+    <PageHeader Title="Table">A table displays a structured collection of data across rows and columns.</PageHeader>
 
     <section class="doc-section">
-        <h2>Team members</h2>
         <p class="field-hint">Rows are supplied as child content.</p>
 
-        <div class="doc-example">
+        <ExampleCard Title="Team members" RazorCode="@(
+@"<PBTable>
+    @foreach (var member in members)
+    {
+        <tr>
+            <td>@member.Name</td>
+            <td>@member.Role</td>
+        </tr>
+    }
+</PBTable>")">
             <PBTable>
                 @foreach (var member in members)
                 {
@@ -29,18 +33,7 @@
                     </tr>
                 }
             </PBTable>
-        </div>
-
-        <CodeSnippet Code="@(
-@"<PBTable>
-    @foreach (var member in members)
-    {
-        <tr>
-            <td>@member.Name</td>
-            <td>@member.Role</td>
-        </tr>
-    }
-</PBTable>")" />
+        </ExampleCard>
     </section>
 
     <section class="doc-section">

@@ -9,17 +9,18 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <header class="doc-header">
-        <span class="eyebrow">Component</span>
-        <h1>Stepper</h1>
-        <p class="intro">A stepper breaks a task into an ordered sequence of steps.</p>
-    </header>
+    <PageHeader Title="Stepper">A stepper breaks a task into an ordered sequence of steps.</PageHeader>
 
     <section class="doc-section">
-        <h2>Checkout</h2>
         <p class="field-hint">Advance through the steps with the buttons below.</p>
 
-        <div class="doc-example">
+        <ExampleCard Title="Checkout" RazorCode="@(
+@"<PBStepper>
+    @foreach (var step in steps)
+    {
+        <li>@step</li>
+    }
+</PBStepper>")">
             <PBStepper>
                 @for (var i = 0; i < steps.Length; i++)
                 {
@@ -31,15 +32,7 @@
                 <PBButton disabled="@(currentStep == 0)" @onclick="() => currentStep--">Back</PBButton>
                 <PBButton disabled="@(currentStep == steps.Length - 1)" @onclick="() => currentStep++">Next</PBButton>
             </div>
-        </div>
-
-        <CodeSnippet Code="@(
-@"<PBStepper>
-    @foreach (var step in steps)
-    {
-        <li>@step</li>
-    }
-</PBStepper>")" />
+        </ExampleCard>
     </section>
 
     <section class="doc-section">

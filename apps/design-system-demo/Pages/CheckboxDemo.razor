@@ -9,40 +9,30 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <header class="doc-header">
-        <span class="eyebrow">Component</span>
-        <h1>Checkbox</h1>
-        <p class="intro">
-            Checkboxes let users select one or more items from a set of independent
-            options.
-        </p>
-    </header>
+    <PageHeader Title="Checkbox">
+        Checkboxes let users select one or more items from a set of independent
+        options.
+    </PageHeader>
 
     <section class="doc-section">
-        <h2>Preferences</h2>
         <p class="field-hint">Each checkbox toggles independently.</p>
 
-        <div class="doc-example">
+        <ExampleCard Title="Preferences" RazorCode="@(
+@"<PBCheckbox Label=""Email notifications""
+    checked=""@emailEnabled""
+    @onchange=""@((ChangeEventArgs e) => emailEnabled = (bool)e.Value!)"" />")">
             <PBCheckbox Label="Email notifications" checked="@emailEnabled" @onchange="@((ChangeEventArgs e) => emailEnabled = (bool)e.Value!)" />
             <PBCheckbox Label="SMS notifications" checked="@smsEnabled" @onchange="@((ChangeEventArgs e) => smsEnabled = (bool)e.Value!)" />
             <span class="status">Email: @emailEnabled, SMS: @smsEnabled</span>
-        </div>
-
-        <CodeSnippet Code="@(
-@"<PBCheckbox Label=""Email notifications""
-    checked=""@emailEnabled""
-    @onchange=""@((ChangeEventArgs e) => emailEnabled = (bool)e.Value!)"" />")" />
+        </ExampleCard>
     </section>
 
     <section class="doc-section">
-        <h2>Disabled</h2>
         <p class="field-hint">A disabled checkbox cannot be changed.</p>
 
-        <div class="doc-example">
+        <ExampleCard Title="Disabled" RazorCode="@(@"<PBCheckbox Label=""Locked setting"" disabled />")">
             <PBCheckbox Label="Locked setting" disabled />
-        </div>
-
-        <CodeSnippet Code="@(@"<PBCheckbox Label=""Locked setting"" disabled />")" />
+        </ExampleCard>
     </section>
 
     <section class="doc-section">

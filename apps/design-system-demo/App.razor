@@ -4,6 +4,19 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <base href="/" />
+    <script>
+        (function () {
+            var theme = localStorage.getItem("theme");
+            var palette = localStorage.getItem("palette") || "purple";
+            if (theme !== "light" && theme !== "dark") {
+                theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+            }
+            document.documentElement.setAttribute("data-theme", theme);
+            document.documentElement.setAttribute("data-palette", palette);
+        })();
+    </script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <link rel="stylesheet" href="_content/Design/css/material-tokens.css" />
     <link rel="stylesheet" href="_content/Design/design-system.css" />
     <link rel="stylesheet" href="app.css" />
     <script type="module" src="_content/Design/design-system.js"></script>

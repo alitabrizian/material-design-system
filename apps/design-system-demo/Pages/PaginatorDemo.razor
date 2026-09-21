@@ -9,30 +9,23 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <header class="doc-header">
-        <span class="eyebrow">Component</span>
-        <h1>Paginator</h1>
-        <p class="intro">A paginator lets the user move between pages of a larger result set.</p>
-    </header>
+    <PageHeader Title="Paginator">A paginator lets the user move between pages of a larger result set.</PageHeader>
 
     <section class="doc-section">
-        <h2>Result pages</h2>
         <p class="field-hint">Clicking a page control updates the status below.</p>
 
-        <div class="doc-example">
+        <ExampleCard Title="Result pages" RazorCode="@(
+@"<PBPaginator>
+    <PBButton disabled=""@(currentPage == 1)"" @onclick=""() => currentPage--"">← Prev</PBButton>
+    <span>Page @currentPage of @totalPages</span>
+    <PBButton disabled=""@(currentPage == totalPages)"" @onclick=""() => currentPage++"">Next →</PBButton>
+</PBPaginator>")">
             <PBPaginator>
                 <PBButton disabled="@(currentPage == 1)" @onclick="() => currentPage--">← Prev</PBButton>
                 <span>Page @currentPage of @totalPages</span>
                 <PBButton disabled="@(currentPage == totalPages)" @onclick="() => currentPage++">Next →</PBButton>
             </PBPaginator>
-        </div>
-
-        <CodeSnippet Code="@(
-@"<PBPaginator>
-    <PBButton disabled=""@(currentPage == 1)"" @onclick=""() => currentPage--"">← Prev</PBButton>
-    <span>Page @currentPage of @totalPages</span>
-    <PBButton disabled=""@(currentPage == totalPages)"" @onclick=""() => currentPage++"">Next →</PBButton>
-</PBPaginator>")" />
+        </ExampleCard>
     </section>
 
     <section class="doc-section">

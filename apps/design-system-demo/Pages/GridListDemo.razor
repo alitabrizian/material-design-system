@@ -9,35 +9,28 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <header class="doc-header">
-        <span class="eyebrow">Component</span>
-        <h1>Grid List</h1>
-        <p class="intro">
-            A grid list arranges a collection of items into a uniform, structured
-            grid.
-        </p>
-    </header>
+    <PageHeader Title="Grid List">
+        A grid list arranges a collection of items into a uniform, structured
+        grid.
+    </PageHeader>
 
     <section class="doc-section">
-        <h2>Photo grid</h2>
         <p class="field-hint">Items are arranged edge to edge in a grid.</p>
 
-        <div class="doc-example">
+        <ExampleCard Title="Photo grid" RazorCode="@(
+@"<PBGridList style=""display:grid; grid-template-columns:repeat(3, 1fr); gap:0.5rem;"">
+    @foreach (var label in tiles)
+    {
+        <div>@label</div>
+    }
+</PBGridList>")">
             <PBGridList style="display:grid; grid-template-columns:repeat(3, 1fr); gap:0.5rem;">
                 @foreach (var label in tiles)
                 {
                     <div style="aspect-ratio:1; display:grid; place-items:center; background:var(--catalog-soft); border-radius:0.4rem;">@label</div>
                 }
             </PBGridList>
-        </div>
-
-        <CodeSnippet Code="@(
-@"<PBGridList style=""display:grid; grid-template-columns:repeat(3, 1fr); gap:0.5rem;"">
-    @foreach (var label in tiles)
-    {
-        <div>@label</div>
-    }
-</PBGridList>")" />
+        </ExampleCard>
     </section>
 
     <section class="doc-section">

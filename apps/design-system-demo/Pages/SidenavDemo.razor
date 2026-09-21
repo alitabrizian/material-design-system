@@ -9,20 +9,23 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <header class="doc-header">
-        <span class="eyebrow">Component</span>
-        <h1>Sidenav</h1>
-        <p class="intro">
-            A sidenav is a vertical panel used to navigate between the sections of an
-            application.
-        </p>
-    </header>
+    <PageHeader Title="Sidenav">
+        A sidenav is a vertical panel used to navigate between the sections of an
+        application.
+    </PageHeader>
 
     <section class="doc-section">
-        <h2>Section navigation</h2>
         <p class="field-hint">A compact vertical list of links.</p>
 
-        <div class="doc-example">
+        <ExampleCard Title="Section navigation" RazorCode="@(
+@"<PBSidenav Label=""Workspace sections"">
+    <PBList>
+        <li>Overview</li>
+        <li>Members</li>
+        <li>Billing</li>
+        <li>Settings</li>
+    </PBList>
+</PBSidenav>")">
             <PBSidenav Label="Workspace sections" style="width:14rem; border:1px solid var(--catalog-line); border-radius:0.5rem; padding:0.5rem;">
                 <PBList>
                     <li>Overview</li>
@@ -31,17 +34,7 @@
                     <li>Settings</li>
                 </PBList>
             </PBSidenav>
-        </div>
-
-        <CodeSnippet Code="@(
-@"<PBSidenav Label=""Workspace sections"">
-    <PBList>
-        <li>Overview</li>
-        <li>Members</li>
-        <li>Billing</li>
-        <li>Settings</li>
-    </PBList>
-</PBSidenav>")" />
+        </ExampleCard>
     </section>
 
     <section class="doc-section">

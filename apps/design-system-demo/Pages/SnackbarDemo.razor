@@ -9,20 +9,19 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <header class="doc-header">
-        <span class="eyebrow">Component</span>
-        <h1>Snackbar</h1>
-        <p class="intro">
-            A snackbar shows a brief, unobtrusive message about the result of an
-            action.
-        </p>
-    </header>
+    <PageHeader Title="Snackbar">
+        A snackbar shows a brief, unobtrusive message about the result of an
+        action.
+    </PageHeader>
 
     <section class="doc-section">
-        <h2>Save confirmation</h2>
         <p class="field-hint">Trigger the snackbar with the button below.</p>
 
-        <div class="doc-example">
+        <ExampleCard Title="Save confirmation" RazorCode="@(
+@"<PBSnackbar>
+    Changes saved.
+    <PBButton @onclick=""Dismiss"">Dismiss</PBButton>
+</PBSnackbar>")">
             <PBButton @onclick="() => isVisible = true">Save changes</PBButton>
 
             @if (isVisible)
@@ -32,13 +31,7 @@
                     <PBButton @onclick="() => isVisible = false">Dismiss</PBButton>
                 </PBSnackbar>
             }
-        </div>
-
-        <CodeSnippet Code="@(
-@"<PBSnackbar>
-    Changes saved.
-    <PBButton @onclick=""Dismiss"">Dismiss</PBButton>
-</PBSnackbar>")" />
+        </ExampleCard>
     </section>
 
     <section class="doc-section">

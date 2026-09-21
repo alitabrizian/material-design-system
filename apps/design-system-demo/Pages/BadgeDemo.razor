@@ -9,51 +9,38 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <header class="doc-header">
-        <span class="eyebrow">Component</span>
-        <h1>Badge</h1>
-        <p class="intro">
-            A badge is a small label attached to another element to draw attention to
-            a count, a status, or a piece of contextual information.
-        </p>
-    </header>
+    <PageHeader Title="Badge">
+        A badge is a small label attached to another element to draw attention to
+        a count, a status, or a piece of contextual information.
+    </PageHeader>
 
     <section class="doc-section">
-        <h2>Text badge</h2>
         <p class="field-hint">Use a short word to communicate status.</p>
 
-        <div class="doc-example">
+        <ExampleCard Title="Text badge" RazorCode="@(@"<PBBadge>New</PBBadge>")">
             <PBBadge>New</PBBadge>
-        </div>
-
-        <CodeSnippet Code="@(@"<PBBadge>New</PBBadge>")" />
+        </ExampleCard>
     </section>
 
     <section class="doc-section">
-        <h2>Numeric badge</h2>
         <p class="field-hint">Use a number to communicate a count.</p>
 
-        <div class="doc-example">
+        <ExampleCard Title="Numeric badge" RazorCode="@(@"<PBBadge>12</PBBadge>")">
             <PBBadge>12</PBBadge>
-        </div>
-
-        <CodeSnippet Code="@(@"<PBBadge>12</PBBadge>")" />
+        </ExampleCard>
     </section>
 
     <section class="doc-section">
-        <h2>Badge next to an action</h2>
         <p class="field-hint">Badges are commonly paired with a button or icon.</p>
 
-        <div class="doc-example">
+        <ExampleCard Title="Badge next to an action" RazorCode="@(
+@"<PBButton>Inbox</PBButton>
+<PBBadge>@unreadCount</PBBadge>")">
             <span style="display:inline-flex; align-items:center; gap:0.5rem;">
                 <PBButton>Inbox</PBButton>
                 <PBBadge>@unreadCount</PBBadge>
             </span>
-        </div>
-
-        <CodeSnippet Code="@(
-@"<PBButton>Inbox</PBButton>
-<PBBadge>@unreadCount</PBBadge>")" />
+        </ExampleCard>
     </section>
 
     <section class="doc-section">

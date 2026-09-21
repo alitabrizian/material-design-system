@@ -9,22 +9,15 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <header class="doc-header">
-        <span class="eyebrow">Component</span>
-        <h1>Sort Header</h1>
-        <p class="intro">A sort header lets the user toggle the sort direction of a table column.</p>
-    </header>
+    <PageHeader Title="Sort Header">A sort header lets the user toggle the sort direction of a table column.</PageHeader>
 
     <section class="doc-section">
-        <h2>Table column</h2>
         <p class="field-hint">Click the header to toggle the sort direction.</p>
 
-        <div class="doc-example">
+        <ExampleCard Title="Table column" RazorCode="@(@"<PBSortHeader Label=""Name"" @onclick=""ToggleSort"" />")">
             <PBSortHeader Label="Name" @onclick="ToggleSort" />
             <span class="status">Sort: @sortDirection</span>
-        </div>
-
-        <CodeSnippet Code="@(@"<PBSortHeader Label=""Name"" @onclick=""ToggleSort"" />")" />
+        </ExampleCard>
     </section>
 
     <section class="doc-section">

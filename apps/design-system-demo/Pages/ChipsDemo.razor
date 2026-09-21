@@ -9,35 +9,28 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <header class="doc-header">
-        <span class="eyebrow">Component</span>
-        <h1>Chips</h1>
-        <p class="intro">
-            Chips represent a small piece of information, such as a filter or a tag,
-            in a compact, interactive form.
-        </p>
-    </header>
+    <PageHeader Title="Chips">
+        Chips represent a small piece of information, such as a filter or a tag,
+        in a compact, interactive form.
+    </PageHeader>
 
     <section class="doc-section">
-        <h2>Filter chips</h2>
         <p class="field-hint">A row of tags rendered as list items.</p>
 
-        <div class="doc-example">
+        <ExampleCard Title="Filter chips" RazorCode="@(
+@"<PBChips>
+    @foreach (var tag in tags)
+    {
+        <span role=""listitem"">@tag</span>
+    }
+</PBChips>")">
             <PBChips>
                 @foreach (var tag in tags)
                 {
                     <span role="listitem">@tag</span>
                 }
             </PBChips>
-        </div>
-
-        <CodeSnippet Code="@(
-@"<PBChips>
-    @foreach (var tag in tags)
-    {
-        <span role=""listitem"">@tag</span>
-    }
-</PBChips>")" />
+        </ExampleCard>
     </section>
 
     <section class="doc-section">

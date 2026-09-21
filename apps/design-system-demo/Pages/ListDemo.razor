@@ -9,35 +9,28 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <header class="doc-header">
-        <span class="eyebrow">Component</span>
-        <h1>List</h1>
-        <p class="intro">
-            A list presents a vertical collection of related items, such as
-            navigation entries or search results.
-        </p>
-    </header>
+    <PageHeader Title="List">
+        A list presents a vertical collection of related items, such as
+        navigation entries or search results.
+    </PageHeader>
 
     <section class="doc-section">
-        <h2>Recent activity</h2>
         <p class="field-hint">A simple list of text items.</p>
 
-        <div class="doc-example">
+        <ExampleCard Title="Recent activity" RazorCode="@(
+@"<PBList>
+    @foreach (var entry in activity)
+    {
+        <li>@entry</li>
+    }
+</PBList>")">
             <PBList>
                 @foreach (var entry in activity)
                 {
                     <li>@entry</li>
                 }
             </PBList>
-        </div>
-
-        <CodeSnippet Code="@(
-@"<PBList>
-    @foreach (var entry in activity)
-    {
-        <li>@entry</li>
-    }
-</PBList>")" />
+        </ExampleCard>
     </section>
 
     <section class="doc-section">

@@ -9,36 +9,67 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <header class="doc-header">
-        <span class="eyebrow">Component</span>
-        <h1>Button</h1>
-        <p class="intro">
-            Buttons trigger an action or event, such as submitting a form or opening a
-            dialog.
-        </p>
-    </header>
+    <PageHeader Title="Button">
+        Buttons trigger an action or event, such as submitting a form or opening a
+        dialog. <code>PBButton</code> renders a native <code>&lt;button&gt;</code>
+        in one of the five Material 3 appearances: text (default), filled, tonal,
+        outlined, and elevated.
+    </PageHeader>
 
     <section class="doc-section">
-        <h2>Default</h2>
-        <p class="field-hint">Clicking increments the counter below.</p>
+        <p class="field-hint">
+            Each appearance communicates a different emphasis level, from text (lowest)
+            to filled (highest). Hover, focus, and press states are all handled by CSS —
+            try interacting with the buttons below. The last button in each row shows
+            the disabled state.
+        </p>
 
-        <div class="doc-example">
-            <PBButton @onclick="() => clickCount++">Click me</PBButton>
+        <ExampleCard Title="Button overview" RazorCode="@(
+@"<PBButton Variant=""PBButtonVariant.Text"">Text</PBButton>
+<PBButton Variant=""PBButtonVariant.Filled"">Filled</PBButton>
+<PBButton Variant=""PBButtonVariant.Tonal"">Tonal</PBButton>
+<PBButton Variant=""PBButtonVariant.Outlined"">Outlined</PBButton>
+<PBButton Variant=""PBButtonVariant.Elevated"">Elevated</PBButton>")">
+            <div style="display:grid; gap:1rem;">
+                @foreach (var variant in variants)
+                {
+                    <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;">
+                        <PBButton Variant="variant" @onclick="() => clickCount++">@variant</PBButton>
+                        <PBButton Variant="variant" disabled>@variant</PBButton>
+                    </div>
+                }
+            </div>
             <span class="status">Clicked @clickCount time(s)</span>
-        </div>
-
-        <CodeSnippet Code="@(@"<PBButton @onclick=""() => clickCount++"">Click me</PBButton>")" />
+        </ExampleCard>
     </section>
 
     <section class="doc-section">
-        <h2>Disabled</h2>
-        <p class="field-hint">A disabled button cannot be activated.</p>
+        <p class="field-hint">
+            Icons can be projected before the label via <code>IconStart</code>, after it
+            via <code>IconEnd</code>, or both at once.
+        </p>
 
-        <div class="doc-example">
-            <PBButton disabled>Unavailable</PBButton>
-        </div>
+        <ExampleCard Title="Icon positioning" RazorCode="@(
+@"<PBButton Variant=""PBButtonVariant.Filled"">
+    <IconStart>★</IconStart>
+    <ChildContent>Like</ChildContent>
+</PBButton>
 
-        <CodeSnippet Code="@(@"<PBButton disabled>Unavailable</PBButton>")" />
+<PBButton Variant=""PBButtonVariant.Outlined"">
+    <ChildContent>Send</ChildContent>
+    <IconEnd>→</IconEnd>
+</PBButton>")">
+            <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;">
+                <PBButton Variant="PBButtonVariant.Filled">
+                    <IconStart>★</IconStart>
+                    <ChildContent>Like</ChildContent>
+                </PBButton>
+                <PBButton Variant="PBButtonVariant.Outlined">
+                    <ChildContent>Send</ChildContent>
+                    <IconEnd>→</IconEnd>
+                </PBButton>
+            </div>
+        </ExampleCard>
     </section>
 
     <section class="doc-section">
@@ -48,8 +79,12 @@
                 <tr><th>Property</th><th>Type</th><th>Description</th></tr>
             </thead>
             <tbody>
+                <tr><td><code>Variant</code></td><td><code>PBButtonVariant</code></td><td>One of <code>Text</code> (default), <code>Filled</code>, <code>Tonal</code>, <code>Outlined</code>, <code>Elevated</code>.</td></tr>
+                <tr><td><code>Type</code></td><td><code>string</code></td><td>The native <code>type</code> attribute. Defaults to <code>"button"</code>.</td></tr>
+                <tr><td><code>IconStart</code></td><td><code>RenderFragment?</code></td><td>Icon rendered before the label.</td></tr>
+                <tr><td><code>IconEnd</code></td><td><code>RenderFragment?</code></td><td>Icon rendered after the label.</td></tr>
                 <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The button's label content.</td></tr>
-                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;button type="button"&gt;</code>, including <code>disabled</code> and <code>@@onclick</code>.</td></tr>
+                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;button&gt;</code>, including <code>disabled</code> and <code>@@onclick</code>.</td></tr>
             </tbody>
         </table>
     </section>
@@ -58,12 +93,22 @@
         <div class="a11y-note">
             <strong>Accessibility</strong>
             Renders a native <code>&lt;button&gt;</code>, so it is keyboard-focusable
-            and activates on Enter/Space without extra work. Give icon-only buttons an
-            accessible name via <code>aria-label</code>.
+            and activates on Enter/Space without extra work, and a native
+            <code>disabled</code> button is correctly excluded from the focus order.
+            Give icon-only buttons an accessible name via <code>aria-label</code>.
         </div>
     </section>
 </div>
 
 @code {
     private int clickCount;
+
+    private static readonly PBButtonVariant[] variants =
+    [
+        PBButtonVariant.Text,
+        PBButtonVariant.Filled,
+        PBButtonVariant.Tonal,
+        PBButtonVariant.Outlined,
+        PBButtonVariant.Elevated,
+    ];
 }

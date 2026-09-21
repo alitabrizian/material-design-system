@@ -9,34 +9,33 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <header class="doc-header">
-        <span class="eyebrow">Component</span>
-        <h1>Menu</h1>
-        <p class="intro">
-            A menu exposes a list of contextual actions, typically opened from a
-            button or icon.
-        </p>
-    </header>
+    <PageHeader Title="Menu">
+        A menu exposes a list of contextual actions behind a trigger button. It
+        opens on click and closes on selection, outside click, or Escape.
+    </PageHeader>
 
     <section class="doc-section">
-        <h2>Row actions</h2>
         <p class="field-hint">A menu grouping a set of related actions.</p>
 
-        <div class="doc-example">
-            <PBMenu Label="Row actions">
-                <PBButton @onclick='() => SelectAction("Edit")'>Edit</PBButton>
-                <PBButton @onclick='() => SelectAction("Duplicate")'>Duplicate</PBButton>
-                <PBButton @onclick='() => SelectAction("Delete")'>Delete</PBButton>
+        <ExampleCard Title="Row actions" RazorCode="@(
+@"<PBMenu Label=""Row actions"" @bind-IsOpen=""isOpen"">
+    <Trigger>Actions</Trigger>
+    <ChildContent>
+        <button @onclick=""Edit"">Edit</button>
+        <button @onclick=""Duplicate"">Duplicate</button>
+        <button @onclick=""Delete"">Delete</button>
+    </ChildContent>
+</PBMenu>")">
+            <PBMenu Label="Row actions" @bind-IsOpen="isOpen">
+                <Trigger>Actions ▾</Trigger>
+                <ChildContent>
+                    <button type="button" class="pb-menu-item" @onclick='() => SelectAction("Edit")'>Edit</button>
+                    <button type="button" class="pb-menu-item" @onclick='() => SelectAction("Duplicate")'>Duplicate</button>
+                    <button type="button" class="pb-menu-item" @onclick='() => SelectAction("Delete")'>Delete</button>
+                </ChildContent>
             </PBMenu>
             <span class="status">Last action: @(selectedAction ?? "—")</span>
-        </div>
-
-        <CodeSnippet Code="@(
-@"<PBMenu Label=""Row actions"">
-    <PBButton @onclick=""Edit"">Edit</PBButton>
-    <PBButton @onclick=""Duplicate"">Duplicate</PBButton>
-    <PBButton @onclick=""Delete"">Delete</PBButton>
-</PBMenu>")" />
+        </ExampleCard>
     </section>
 
     <section class="doc-section">
@@ -46,7 +45,9 @@
                 <tr><th>Property</th><th>Type</th><th>Description</th></tr>
             </thead>
             <tbody>
-                <tr><td><code>Label</code></td><td><code>string?</code></td><td>Rendered as <code>aria-label</code> on the menu.</td></tr>
+                <tr><td><code>Label</code></td><td><code>string?</code></td><td>Accessible name for the trigger button and the menu panel.</td></tr>
+                <tr><td><code>Trigger</code></td><td><code>RenderFragment?</code></td><td>Content of the button that opens the menu.</td></tr>
+                <tr><td><code>IsOpen</code></td><td><code>bool</code></td><td>Whether the panel is open. Supports <code>@@bind-IsOpen</code>.</td></tr>
                 <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The menu's actions.</td></tr>
             </tbody>
         </table>
@@ -55,15 +56,21 @@
     <section class="doc-section">
         <div class="a11y-note">
             <strong>Accessibility</strong>
-            Renders a labeled <code>&lt;nav&gt;</code>. It does not yet implement the
-            <code>role="menu"</code>/<code>role="menuitem"</code> pattern with roving
-            keyboard focus; for now it behaves like a labeled group of buttons.
+            The trigger has <code>aria-haspopup="menu"</code> and
+            <code>aria-expanded</code>. The panel uses <code>role="menu"</code>.
+            Escape closes the menu and returns focus to the trigger; clicking outside
+            the panel (a full-viewport scrim) also closes it.
         </div>
     </section>
 </div>
 
 @code {
+    private bool isOpen;
     private string? selectedAction;
 
-    private void SelectAction(string action) => selectedAction = action;
+    private void SelectAction(string action)
+    {
+        selectedAction = action;
+        isOpen = false;
+    }
 }

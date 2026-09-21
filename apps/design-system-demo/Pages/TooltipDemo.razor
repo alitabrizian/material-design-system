@@ -9,26 +9,19 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <header class="doc-header">
-        <span class="eyebrow">Component</span>
-        <h1>Tooltip</h1>
-        <p class="intro">A tooltip shows a short explanation when the user hovers or focuses an element.</p>
-    </header>
+    <PageHeader Title="Tooltip">A tooltip shows a short explanation when the user hovers or focuses an element.</PageHeader>
 
     <section class="doc-section">
-        <h2>Icon button</h2>
         <p class="field-hint">Hover the button to reveal the tooltip text.</p>
 
-        <div class="doc-example">
+        <ExampleCard Title="Icon button" RazorCode="@(
+@"<PBTooltip Label=""Copy to clipboard"">
+    <PBButton>⧉</PBButton>
+</PBTooltip>")">
             <PBTooltip Label="Copy to clipboard">
                 <PBButton>⧉</PBButton>
             </PBTooltip>
-        </div>
-
-        <CodeSnippet Code="@(
-@"<PBTooltip Label=""Copy to clipboard"">
-    <PBButton>⧉</PBButton>
-</PBTooltip>")" />
+        </ExampleCard>
     </section>
 
     <section class="doc-section">

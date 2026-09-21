@@ -28,6 +28,7 @@
     </aside>
 
     <main class="page-shell">
+        <TopAppBar Title="@CurrentTitle" />
         @Body
     </main>
 </div>
@@ -45,6 +46,9 @@
         var currentPath = "/" + NavManager.ToBaseRelativePath(NavManager.Uri).TrimEnd('/');
         return string.Equals(currentPath, route, StringComparison.OrdinalIgnoreCase);
     }
+
+    private string CurrentTitle =>
+        ComponentCatalog.Items.FirstOrDefault(item => IsActive(item.Route))?.Name ?? "Design System";
 
     public void Dispose() => NavManager.LocationChanged -= OnLocationChanged;
 }

@@ -9,29 +9,22 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <header class="doc-header">
-        <span class="eyebrow">Component</span>
-        <h1>Core</h1>
-        <p class="intro">
-            Core is a lightweight section wrapper used to apply the design system's
-            foundational styles and behavior to a region of a page.
-        </p>
-    </header>
+    <PageHeader Title="Core">
+        Core is a lightweight section wrapper used to apply the design system's
+        foundational styles and behavior to a region of a page.
+    </PageHeader>
 
     <section class="doc-section">
-        <h2>Section wrapper</h2>
         <p class="field-hint">Wraps arbitrary content in the shared foundation styles.</p>
 
-        <div class="doc-example">
+        <ExampleCard Title="Section wrapper" RazorCode="@(
+@"<PBCore>
+    <p>Content rendered inside a PBCore section.</p>
+</PBCore>")">
             <PBCore>
                 <p style="margin:0;">Content rendered inside a PBCore section.</p>
             </PBCore>
-        </div>
-
-        <CodeSnippet Code="@(
-@"<PBCore>
-    <p>Content rendered inside a PBCore section.</p>
-</PBCore>")" />
+        </ExampleCard>
     </section>
 
     <section class="doc-section">

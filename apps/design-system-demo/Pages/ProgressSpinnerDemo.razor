@@ -9,24 +9,17 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <header class="doc-header">
-        <span class="eyebrow">Component</span>
-        <h1>Progress Spinner</h1>
-        <p class="intro">
-            A progress spinner communicates that an operation is in progress when the
-            duration is unknown.
-        </p>
-    </header>
+    <PageHeader Title="Progress Spinner">
+        A progress spinner communicates that an operation is in progress when the
+        duration is unknown.
+    </PageHeader>
 
     <section class="doc-section">
-        <h2>Loading</h2>
         <p class="field-hint">An indeterminate spinner with an accessible label.</p>
 
-        <div class="doc-example">
+        <ExampleCard Title="Loading" RazorCode="@(@"<PBProgressSpinner Label=""Loading content"" />")">
             <PBProgressSpinner Label="Loading content" />
-        </div>
-
-        <CodeSnippet Code="@(@"<PBProgressSpinner Label=""Loading content"" />")" />
+        </ExampleCard>
     </section>
 
     <section class="doc-section">

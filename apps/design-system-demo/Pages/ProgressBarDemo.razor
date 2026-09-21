@@ -9,37 +9,27 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <header class="doc-header">
-        <span class="eyebrow">Component</span>
-        <h1>Progress Bar</h1>
-        <p class="intro">A progress bar communicates the completion of a determinate operation.</p>
-    </header>
+    <PageHeader Title="Progress Bar">A progress bar communicates the completion of a determinate operation.</PageHeader>
 
     <section class="doc-section">
-        <h2>Determinate</h2>
         <p class="field-hint">Use the buttons to advance the progress value.</p>
 
-        <div class="doc-example">
+        <ExampleCard Title="Determinate" RazorCode="@(@"<PBProgressBar value=""@progress"" max=""100"" />")">
             <PBProgressBar value="@progress" max="100" />
             <span class="status">@progress%</span>
             <div class="actions">
                 <PBButton @onclick="() => progress = Math.Max(0, progress - 10)">-10%</PBButton>
                 <PBButton @onclick="() => progress = Math.Min(100, progress + 10)">+10%</PBButton>
             </div>
-        </div>
-
-        <CodeSnippet Code="@(@"<PBProgressBar value=""@progress"" max=""100"" />")" />
+        </ExampleCard>
     </section>
 
     <section class="doc-section">
-        <h2>Indeterminate</h2>
         <p class="field-hint">Omitting a value shows an indeterminate track.</p>
 
-        <div class="doc-example">
+        <ExampleCard Title="Indeterminate" RazorCode="@(@"<PBProgressBar />")">
             <PBProgressBar />
-        </div>
-
-        <CodeSnippet Code="@(@"<PBProgressBar />")" />
+        </ExampleCard>
     </section>
 
     <section class="doc-section">

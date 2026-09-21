@@ -9,26 +9,19 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <header class="doc-header">
-        <span class="eyebrow">Component</span>
-        <h1>Divider</h1>
-        <p class="intro">A divider is a thin line that groups content into clear sections.</p>
-    </header>
+    <PageHeader Title="Divider">A divider is a thin line that groups content into clear sections.</PageHeader>
 
     <section class="doc-section">
-        <h2>Between two sections</h2>
         <p class="field-hint">Use a divider to separate unrelated content.</p>
 
-        <div class="doc-example">
+        <ExampleCard Title="Between two sections" RazorCode="@(
+@"<p>Account settings</p>
+<PBDivider />
+<p>Notification preferences</p>")">
             <p style="margin:0;">Account settings</p>
             <PBDivider />
             <p style="margin:0;">Notification preferences</p>
-        </div>
-
-        <CodeSnippet Code="@(
-@"<p>Account settings</p>
-<PBDivider />
-<p>Notification preferences</p>")" />
+        </ExampleCard>
     </section>
 
     <section class="doc-section">

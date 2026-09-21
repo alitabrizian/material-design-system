@@ -9,20 +9,18 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <header class="doc-header">
-        <span class="eyebrow">Component</span>
-        <h1>Expansion Panel</h1>
-        <p class="intro">
-            An expansion panel hides secondary content behind a summary that the
-            user can expand on demand.
-        </p>
-    </header>
+    <PageHeader Title="Expansion Panel">
+        An expansion panel hides secondary content behind a summary that the
+        user can expand on demand.
+    </PageHeader>
 
     <section class="doc-section">
-        <h2>Frequently asked questions</h2>
         <p class="field-hint">Click a summary to expand its panel. Panels expand independently.</p>
 
-        <div class="doc-example">
+        <ExampleCard Title="Frequently asked questions" RazorCode="@(
+@"<PBExpansionPanel Label=""What is a design system?"">
+    <p>A design system is a set of reusable components and guidelines...</p>
+</PBExpansionPanel>")">
             <PBExpansionPanel Label="What is a design system?">
                 <p style="margin:0;">
                     A design system is a set of reusable components and guidelines that
@@ -35,12 +33,7 @@
                     the Design System Demo app.
                 </p>
             </PBExpansionPanel>
-        </div>
-
-        <CodeSnippet Code="@(
-@"<PBExpansionPanel Label=""What is a design system?"">
-    <p>A design system is a set of reusable components and guidelines...</p>
-</PBExpansionPanel>")" />
+        </ExampleCard>
     </section>
 
     <section class="doc-section">

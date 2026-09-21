@@ -9,20 +9,20 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <header class="doc-header">
-        <span class="eyebrow">Component</span>
-        <h1>Dialog</h1>
-        <p class="intro">
-            A dialog interrupts the current flow to focus attention on a single task
-            or piece of information.
-        </p>
-    </header>
+    <PageHeader Title="Dialog">
+        A dialog interrupts the current flow to focus attention on a single task
+        or piece of information.
+    </PageHeader>
 
     <section class="doc-section">
-        <h2>Confirmation dialog</h2>
         <p class="field-hint">Toggle the dialog with the button below.</p>
 
-        <div class="doc-example">
+        <ExampleCard Title="Confirmation dialog" RazorCode="@(
+@"<PBDialog Label=""Discard changes?"">
+    <p>Your edits have not been saved.</p>
+    <PBButton @onclick=""Cancel"">Cancel</PBButton>
+    <PBButton @onclick=""Discard"">Discard</PBButton>
+</PBDialog>")">
             <PBButton @onclick="() => isOpen = !isOpen">@(isOpen ? "Hide dialog" : "Show dialog")</PBButton>
 
             @if (isOpen)
@@ -35,14 +35,7 @@
                     </span>
                 </PBDialog>
             }
-        </div>
-
-        <CodeSnippet Code="@(
-@"<PBDialog Label=""Discard changes?"">
-    <p>Your edits have not been saved.</p>
-    <PBButton @onclick=""Cancel"">Cancel</PBButton>
-    <PBButton @onclick=""Discard"">Discard</PBButton>
-</PBDialog>")" />
+        </ExampleCard>
     </section>
 
     <section class="doc-section">

@@ -9,20 +9,20 @@
         <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
     </div>
 
-    <header class="doc-header">
-        <span class="eyebrow">Component</span>
-        <h1>Toolbar</h1>
-        <p class="intro">
-            A toolbar groups navigation and actions into a single horizontal bar,
-            typically at the top of a page or panel.
-        </p>
-    </header>
+    <PageHeader Title="Toolbar">
+        A toolbar groups navigation and actions into a single horizontal bar,
+        typically at the top of a page or panel.
+    </PageHeader>
 
     <section class="doc-section">
-        <h2>Document toolbar</h2>
         <p class="field-hint">Actions are laid out left to right.</p>
 
-        <div class="doc-example">
+        <ExampleCard Title="Document toolbar" RazorCode="@(
+@"<PBToolbar>
+    <strong>Untitled document</strong>
+    <PBButton>Share</PBButton>
+    <PBButton>Save</PBButton>
+</PBToolbar>")">
             <PBToolbar style="display:flex; align-items:center; justify-content:space-between; gap:0.5rem;">
                 <strong>Untitled document</strong>
                 <span style="display:inline-flex; gap:0.5rem;">
@@ -30,14 +30,7 @@
                     <PBButton>Save</PBButton>
                 </span>
             </PBToolbar>
-        </div>
-
-        <CodeSnippet Code="@(
-@"<PBToolbar>
-    <strong>Untitled document</strong>
-    <PBButton>Share</PBButton>
-    <PBButton>Save</PBButton>
-</PBToolbar>")" />
+        </ExampleCard>
     </section>
 
     <section class="doc-section">

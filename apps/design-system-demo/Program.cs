@@ -1,8 +1,10 @@
 using Design.Demo;
+using Design.Demo.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+builder.Services.AddSingleton<ThemeState>();
 
 var app = builder.Build();
 
