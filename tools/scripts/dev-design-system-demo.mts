@@ -6,7 +6,7 @@
  *   1. build the design tokens package (libs/design-system/tokens)
  *   2. pack the design-system-blazor library into local-nuget-feed, evicting
  *      any stale NuGet global-packages cache entry first (see
- *      pack-design-system-blazor.mts for why that eviction is needed)
+ *      libs/design-system/blazor/scripts/pack.mts for why that eviction is needed)
  *   3. hand off to `dotnet watch` for the demo app
  *
  * Known limitation: unlike the old ProjectReference setup, `dotnet watch`
@@ -25,7 +25,7 @@ if (generate.status !== 0) {
   process.exit(generate.status ?? 1);
 }
 
-const pack = spawnSync("node", ["tools/scripts/pack-design-system-blazor.mts"], {
+const pack = spawnSync("node", ["libs/design-system/blazor/scripts/pack.mts"], {
   stdio: "inherit",
 });
 if (pack.status !== 0) {

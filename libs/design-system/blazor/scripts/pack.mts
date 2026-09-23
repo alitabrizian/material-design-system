@@ -6,8 +6,8 @@
  * into the global-packages cache (~/.nuget/packages/...) -- restoring the
  * same version again after a local repack does NOT re-copy the new content,
  * it just reuses whatever was cached from the FIRST pack. Since this
- * project's version stays fixed at 0.1.0 during local dev, every consumer
- * (design-system-demo, samamat, ...) would silently keep running stale
+ * project's version stays fixed at 0.1.0 during local dev, every local
+ * consumer (design-system-demo, ...) would silently keep running stale
  * component code after any change here, no matter which path triggers the
  * pack (`nx run design-system-blazor:pack` directly, `nx run
  * design-system-demo:serve`'s dependsOn, or the .claude/launch.json dev
@@ -18,6 +18,10 @@ import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const libraryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const localFeed = path.resolve(libraryRoot, "../../../local-nuget-feed");
 
 const cachedPackageDir = path.join(os.homedir(), ".nuget", "packages", "partobita.designsystem.blazor", "0.1.0");
 if (fs.existsSync(cachedPackageDir)) {
@@ -26,7 +30,7 @@ if (fs.existsSync(cachedPackageDir)) {
 
 const pack = spawnSync(
   "dotnet",
-  ["pack", "Design.csproj", "--configuration", "Release", "--output", "../../../local-nuget-feed"],
-  { cwd: "libs/design-system/blazor", stdio: "inherit" }
+  ["pack", "Design.csproj", "--configuration", "Release", "--output", localFeed],
+  { cwd: libraryRoot, stdio: "inherit" }
 );
 process.exit(pack.status ?? 1);
