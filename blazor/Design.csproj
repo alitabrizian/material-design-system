@@ -6,12 +6,38 @@
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
-  <ItemGroup>
-    <SupportedPlatform Include="browser" />
-  </ItemGroup>
+  <PropertyGroup>
+    <PackageId>PartoBita.DesignSystem.Blazor</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>Parto Bita</Authors>
+    <Description>Material 3 (PB-prefixed) Blazor component library and design tokens.</Description>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <!--
+      Without this, the _content/{X}/... static web asset path segment defaults to the assembly
+      name ("Design") when consumed via ProjectReference, but to the NuGet PackageId
+      ("PartoBita.DesignSystem.Blazor") when consumed via PackageReference to the packed nupkg,
+      silently breaking every _content/Design/... link the moment a consumer switches from a
+      source reference to the real package. Pinning it keeps the asset path stable either way.
+    -->
+    <StaticWebAssetBasePath>_content/Design</StaticWebAssetBasePath>
+  </PropertyGroup>
 
   <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <SupportedPlatform Include="browser" />
+    <!-- Nx project config, not library content: the default RCL content glob would otherwise pack it. -->
+    <Content Remove="project.json" />
+    <None Remove="project.json" />
+  </ItemGroup>
+
+  <!--
+    Explicit component-model packages instead of <FrameworkReference Include="Microsoft.AspNetCore.App" />:
+    this library only touches Microsoft.AspNetCore.Components(.Web) APIs, and FrameworkReference to the full
+    ASP.NET Core shared framework is not supported by Blazor WebAssembly consumers. Package references keep
+    the library consumable from both Blazor Server and Blazor WebAssembly apps.
+  -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components" Version="8.0.31" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.31" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,4 +48,22 @@
   <ItemGroup>
     <Content Update="wwwroot\**" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" Condition="Exists('README.md')" />
+  </ItemGroup>
+
+  <!--
+    Guard against packing without the generated color-role tokens (wwwroot/css/tokens.css,
+    wwwroot/data/palettes.json). These are produced by `nx run tokens:generate-palettes`
+    (tools/scripts/generate-palettes.mts) and are gitignored, not checked in. The Nx `pack`
+    target for this project declares dependsOn: ["tokens:generate-palettes"], but this target
+    fails loudly instead of silently shipping an empty/stale package if that step was skipped
+    (e.g. running `dotnet pack` directly instead of through Nx).
+  -->
+  <Target Name="EnsureTokensGenerated" BeforeTargets="Pack">
+    <Error
+      Condition="!Exists('wwwroot/css/tokens.css') OR !Exists('wwwroot/data/palettes.json')"
+      Text="wwwroot/css/tokens.css and/or wwwroot/data/palettes.json are missing. Run 'npx nx run tokens:generate-palettes' before packing." />
+  </Target>
 </Project>
