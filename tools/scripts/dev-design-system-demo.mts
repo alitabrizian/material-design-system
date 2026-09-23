@@ -3,7 +3,7 @@
  * (.claude/launch.json). `dotnet watch` is started directly here rather than
  * via `nx run design-system-demo:serve`, so it never goes through Nx's
  * `dependsOn` wiring -- this script fills that gap manually:
- *   1. regenerate the palette tokens
+ *   1. build the design tokens package (libs/design-system/tokens)
  *   2. pack the design-system-blazor library into local-nuget-feed, evicting
  *      any stale NuGet global-packages cache entry first (see
  *      pack-design-system-blazor.mts for why that eviction is needed)
@@ -18,7 +18,7 @@
 
 import { spawnSync } from "node:child_process";
 
-const generate = spawnSync("node", ["tools/scripts/generate-palettes.mts"], {
+const generate = spawnSync("node", ["libs/design-system/tokens/scripts/build-tokens.mts"], {
   stdio: "inherit",
 });
 if (generate.status !== 0) {

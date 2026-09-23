@@ -4,7 +4,7 @@ namespace Design.Demo.Services;
 /// Holds the demo app's current theme. Each theme is a fixed two-hue
 /// (primary + tertiary) M3 palette locked to a single light or dark mode --
 /// there is no independent light/dark toggle, matching Angular Material's
-/// own prebuilt theme set. See tools/scripts/generate-palettes.mts for the
+/// own prebuilt theme set. See libs/design-system/tokens/scripts/build-tokens.mts for the
 /// actual --md-sys-color-* token generation and
 /// css/tokens.css for the resulting values per theme.
 /// Registered as a singleton; the top app bar is the only component that

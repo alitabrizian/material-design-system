@@ -1,0 +1,14 @@
+{
+  "name": "@partobita/design-tokens",
+  "version": "0.1.0",
+  "description": "Framework-neutral Material 3 design tokens (CSS custom properties) shared by the PartoBita Blazor and Angular design systems.",
+  "license": "UNLICENSED",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    "./css/tokens.css": "./dist/css/tokens.css",
+    "./css/material-tokens.css": "./dist/css/material-tokens.css",
+    "./data/palettes.json": "./dist/data/palettes.json"
+  }
+}

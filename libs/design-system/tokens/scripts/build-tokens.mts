@@ -6,16 +6,13 @@
  * prebuilt theme set), using the real HCT tonal-palette algorithm from
  * @material/material-color-utilities.
  *
- * Output (written into the design-system library's OWN wwwroot, so it ships
- * as a static web asset inside the PartoBita.DesignSystem.Blazor NuGet
- * package -- consuming apps get it automatically via `_content/Design/...`,
- * with zero Node/npm/package.json awareness of their own):
- *   - libs/design-system/blazor/wwwroot/css/tokens.css
- *   - libs/design-system/blazor/wwwroot/data/palettes.json
- *
- * Palette-independent tokens (typescale/shape/elevation/motion/state) live
- * in the static libs/design-system/blazor/wwwroot/css/material-tokens.css
- * instead, which this script does not touch.
+ * Output goes ONLY into this package's own dist/ -- this script knows nothing
+ * about Blazor or Angular. Each framework package pulls from dist/ itself
+ * (the Blazor library syncs it at build time, see Design.csproj):
+ *   - dist/css/tokens.css           generated color roles, per theme
+ *   - dist/css/material-tokens.css  copied as-is from src/ (typescale/shape/
+ *                                   elevation/motion/state, hand-authored)
+ *   - dist/data/palettes.json       theme metadata for non-CSS consumers
  *
  * Note: @material/material-color-utilities@0.4.0's own barrel export
  * (the "." entry point) transitively imports a file with a missing ".js"
@@ -32,7 +29,9 @@ import path from "node:path";
 import fs from "node:fs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const repoRoot = path.resolve(__dirname, "../..");
+const packageRoot = path.resolve(__dirname, "..");
+const repoRoot = path.resolve(packageRoot, "../../..");
+const distRoot = path.join(packageRoot, "dist");
 
 const corePaletteModule = path.join(
   repoRoot,
@@ -248,13 +247,13 @@ for (const [key, def] of Object.entries(THEMES)) {
 const cssParts: string[] = [
   "/**",
   " * GENERATED FILE -- do not edit by hand.",
-  " * Produced by tools/scripts/generate-palettes.mts (nx run tokens:generate-palettes)",
+  " * Produced by libs/design-system/tokens/scripts/build-tokens.mts (nx run tokens:build)",
   " * from @material/material-color-utilities. Re-run the Nx target to regenerate.",
   " *",
   " * --md-sys-color-* roles for the 4 fixed themes (each its own two-hue",
   " * primary+tertiary palette, locked to one light/dark mode). Palette-",
-  " * independent tokens (typescale/shape/elevation/motion/state) live in the",
-  " * static libs/design-system/blazor/wwwroot/css/material-tokens.css instead.",
+  " * independent tokens (typescale/shape/elevation/motion/state) live in",
+  " * material-tokens.css instead.",
   " */",
   "",
 ];
@@ -267,13 +266,16 @@ for (const key of keys) {
   cssParts.push("");
 }
 
-const cssOutputPath = path.join(repoRoot, "libs/design-system/blazor/wwwroot/css/tokens.css");
-const jsonOutputPath = path.join(repoRoot, "libs/design-system/blazor/wwwroot/data/palettes.json");
+const cssOutputPath = path.join(distRoot, "css/tokens.css");
+const staticCssOutputPath = path.join(distRoot, "css/material-tokens.css");
+const jsonOutputPath = path.join(distRoot, "data/palettes.json");
 
+fs.rmSync(distRoot, { recursive: true, force: true });
 fs.mkdirSync(path.dirname(cssOutputPath), { recursive: true });
 fs.mkdirSync(path.dirname(jsonOutputPath), { recursive: true });
 
 fs.writeFileSync(cssOutputPath, cssParts.join("\n").trimEnd() + "\n", "utf8");
+fs.copyFileSync(path.join(packageRoot, "src/material-tokens.css"), staticCssOutputPath);
 fs.writeFileSync(
   jsonOutputPath,
   JSON.stringify(
@@ -298,5 +300,6 @@ fs.writeFileSync(
 );
 
 console.log(`Wrote ${path.relative(repoRoot, cssOutputPath)}`);
+console.log(`Wrote ${path.relative(repoRoot, staticCssOutputPath)}`);
 console.log(`Wrote ${path.relative(repoRoot, jsonOutputPath)}`);
 console.log(`Generated ${keys.length} themes x ${ROLE_TO_VAR.length} tokens.`);

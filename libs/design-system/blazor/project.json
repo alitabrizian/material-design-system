@@ -2,10 +2,11 @@
   "name": "design-system-blazor",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
+  "implicitDependencies": ["tokens"],
   "targets": {
     "build": {
       "executor": "nx:run-commands",
-      "dependsOn": ["tokens:generate-palettes"],
+      "dependsOn": ["^build"],
       "options": {
         "command": "dotnet build Design.csproj",
         "cwd": "libs/design-system/blazor"
@@ -13,7 +14,7 @@
     },
     "pack": {
       "executor": "nx:run-commands",
-      "dependsOn": ["tokens:generate-palettes"],
+      "dependsOn": ["^build"],
       "options": {
         "command": "node tools/scripts/pack-design-system-blazor.mts",
         "cwd": "{workspaceRoot}"
