@@ -16,7 +16,7 @@
       "executor": "nx:run-commands",
       "dependsOn": ["^build"],
       "options": {
-        "command": "node tools/scripts/pack-design-system-blazor.mts",
+        "command": "node libs/design-system/blazor/scripts/pack.mts",
         "cwd": "{workspaceRoot}"
       },
       "outputs": ["{workspaceRoot}/local-nuget-feed"]
