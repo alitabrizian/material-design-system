@@ -1,2 +1,2 @@
 @inherits WorkspaceComponentBase
-<article class="workspace-card" @attributes="AdditionalAttributes">@ChildContent</article>
+<article class="workspace-card workspace-card--@(Variant.ToString().ToLowerInvariant())" @attributes="AdditionalAttributes">@ChildContent</article>

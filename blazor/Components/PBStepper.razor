@@ -1,2 +1,2 @@
 @inherits WorkspaceComponentBase
-<ol class="workspace-stepper" @attributes="AdditionalAttributes">@ChildContent</ol>
+<ol class="workspace-stepper workspace-stepper--@(Orientation.ToString().ToLowerInvariant())" @attributes="AdditionalAttributes">@ChildContent</ol>

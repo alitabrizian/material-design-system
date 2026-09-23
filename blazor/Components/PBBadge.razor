@@ -1,2 +1,2 @@
 @inherits WorkspaceComponentBase
-<span class="workspace-badge" @attributes="AdditionalAttributes">@ChildContent</span>
+<span class="workspace-badge workspace-badge--@(Variant.ToString().ToLowerInvariant()) workspace-badge--@(Size.ToString().ToLowerInvariant()) @(Overlay ? "workspace-badge--overlay" : "")" @attributes="AdditionalAttributes">@(Variant == PBBadgeVariant.Dot ? null : ChildContent)</span>

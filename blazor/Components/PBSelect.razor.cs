@@ -1,2 +1,2 @@
 namespace Design.Components;
-public partial class PBSelect : WorkspaceComponentBase { }
+public partial class PBSelect : WorkspaceFieldComponentBase { }
