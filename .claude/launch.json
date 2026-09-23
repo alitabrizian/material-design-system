@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "design-system-demo",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["tools/scripts/dev-design-system-demo.mts"],
+      "port": 5080
+    }
+  ]
+}

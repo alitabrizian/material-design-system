@@ -9,7 +9,7 @@ public static class ComponentCatalog
         new("Autocomplete", "/autocomplete", "⌕", "Suggest relevant options as you type."),
         new("Badge", "/badge", "•", "Show a compact value or status indicator."),
         new("Bottom Sheet", "/bottom-sheet", "▔", "Present actions in a mobile-friendly panel."),
-        new("Button", "/button", "→", "Trigger actions and commands.", true),
+        new("Button", "/button", "→", "Trigger actions and commands."),
         new("Button Toggle", "/button-toggle", "⇄", "Switch between grouped on and off states."),
         new("Card", "/card", "▣", "Group related content together."),
         new("Checkbox", "/checkbox", "✓", "Select one or more options."),

@@ -1,0 +1,24 @@
+{
+  "name": "design-system-demo",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["design-system-blazor:pack"],
+      "options": {
+        "command": "dotnet build Design.Demo.csproj",
+        "cwd": "apps/design-system-demo"
+      }
+    },
+    "serve": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["design-system-blazor:pack"],
+      "options": {
+        "command": "dotnet run --project Design.Demo.csproj",
+        "cwd": "apps/design-system-demo"
+      }
+    }
+  },
+  "tags": ["type:app", "scope:design-system"]
+}

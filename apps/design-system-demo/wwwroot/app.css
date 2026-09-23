@@ -732,12 +732,15 @@ h2 { margin-top: 0; }
   text-transform: uppercase;
 }
 
-/* === Example card === */
+/* === Example card ===
+   Matches Angular Material's doc-example card: near-invisible outline, no
+   distinct panel fill (the card blends into the page background instead of
+   standing out as a separate surface). */
 .example-card {
   margin-bottom: 1.25rem;
   border: 1px solid var(--catalog-line);
   border-radius: 0.65rem;
-  background: var(--catalog-panel);
+  background: transparent;
   overflow: hidden;
 }
 
@@ -752,8 +755,8 @@ h2 { margin-top: 0; }
 
 .example-card-title {
   font-size: 0.92rem;
-  font-weight: 700;
-  color: var(--catalog-ink);
+  font-weight: 400;
+  color: var(--catalog-muted);
 }
 
 .example-card-actions {

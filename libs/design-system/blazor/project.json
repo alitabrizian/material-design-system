@@ -1,0 +1,25 @@
+{
+  "name": "design-system-blazor",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["tokens:generate-palettes"],
+      "options": {
+        "command": "dotnet build Design.csproj",
+        "cwd": "libs/design-system/blazor"
+      }
+    },
+    "pack": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["tokens:generate-palettes"],
+      "options": {
+        "command": "node tools/scripts/pack-design-system-blazor.mts",
+        "cwd": "{workspaceRoot}"
+      },
+      "outputs": ["{workspaceRoot}/local-nuget-feed"]
+    }
+  },
+  "tags": ["type:lib", "scope:design-system"]
+}

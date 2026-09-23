@@ -1,2 +1,2 @@
 @inherits WorkspaceComponentBase
-<button class="workspace-button-toggle" @attributes="AdditionalAttributes" type="button" aria-pressed="false">@ChildContent</button>
+<button class="workspace-button-toggle" @attributes="AdditionalAttributes" type="button" aria-pressed="@(Pressed ? "true" : "false")">@ChildContent</button>

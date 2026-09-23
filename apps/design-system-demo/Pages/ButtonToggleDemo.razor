@@ -20,12 +20,12 @@
         <ExampleCard Title="View mode" RazorCode="@(
 @"@foreach (var option in viewOptions)
 {
-    <PBButtonToggle @onclick=""() => selectedView = option"">@option</PBButtonToggle>
+    <PBButtonToggle Pressed=""@(option == selectedView)"" @onclick=""() => selectedView = option"">@option</PBButtonToggle>
 }")">
             <span style="display:inline-flex; gap:0.5rem;">
                 @foreach (var option in viewOptions)
                 {
-                    <PBButtonToggle @onclick="() => selectedView = option">@(option == selectedView ? $"✓ {option}" : option)</PBButtonToggle>
+                    <PBButtonToggle Pressed="@(option == selectedView)" @onclick="() => selectedView = option">@option</PBButtonToggle>
                 }
             </span>
             <span class="status">Selected: @selectedView</span>
@@ -39,6 +39,7 @@
                 <tr><th>Property</th><th>Type</th><th>Description</th></tr>
             </thead>
             <tbody>
+                <tr><td><code>Pressed</code></td><td><code>bool</code></td><td>Whether this toggle is the active selection. Drives both the visual (tonal fill) and <code>aria-pressed</code>.</td></tr>
                 <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The toggle's label content.</td></tr>
                 <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;button&gt;</code>.</td></tr>
             </tbody>
@@ -48,10 +49,8 @@
     <section class="doc-section">
         <div class="a11y-note">
             <strong>Accessibility</strong>
-            The rendered <code>&lt;button&gt;</code> has a hardcoded
-            <code>aria-pressed="false"</code>; it does not yet reflect selection state
-            to assistive technology. Track this as a follow-up in the design system
-            library rather than papering over it in the demo.
+            <code>aria-pressed</code> reflects the real <code>Pressed</code> parameter,
+            so assistive technology correctly announces the active option.
         </div>
     </section>
 </div>
