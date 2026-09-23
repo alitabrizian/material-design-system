@@ -54,16 +54,31 @@
   </ItemGroup>
 
   <!--
-    Guard against packing without the generated color-role tokens (wwwroot/css/tokens.css,
-    wwwroot/data/palettes.json). These are produced by `nx run tokens:generate-palettes`
-    (tools/scripts/generate-palettes.mts) and are gitignored, not checked in. The Nx `pack`
-    target for this project declares dependsOn: ["tokens:generate-palettes"], but this target
-    fails loudly instead of silently shipping an empty/stale package if that step was skipped
-    (e.g. running `dotnet pack` directly instead of through Nx).
+    Design tokens are owned by the framework-neutral libs/design-system/tokens package, not by
+    this library. Its build output (dist/css/*.css, dist/data/palettes.json) is copied into
+    wwwroot here on every build, so it ships as ordinary static web assets under
+    _content/Design/..., so consumers see no difference. The copies are gitignored.
+
+    The copied files are also (re)declared as Content items: wwwroot's default glob is evaluated
+    before any target runs, so on a first build the freshly copied files would otherwise be
+    missing from the static web assets manifest.
   -->
-  <Target Name="EnsureTokensGenerated" BeforeTargets="Pack">
+  <PropertyGroup>
+    <DesignTokensDist>$(MSBuildThisFileDirectory)..\tokens\dist\</DesignTokensDist>
+  </PropertyGroup>
+
+  <Target Name="SyncDesignTokens" BeforeTargets="BeforeBuild">
     <Error
-      Condition="!Exists('wwwroot/css/tokens.css') OR !Exists('wwwroot/data/palettes.json')"
-      Text="wwwroot/css/tokens.css and/or wwwroot/data/palettes.json are missing. Run 'npx nx run tokens:generate-palettes' before packing." />
+      Condition="!Exists('$(DesignTokensDist)css\tokens.css')"
+      Text="Design tokens not built ($(DesignTokensDist) is missing). Run 'npx nx run tokens:build' first." />
+    <ItemGroup>
+      <_DesignTokenFile Include="$(DesignTokensDist)**\*" />
+      <_DesignTokenCopy Include="@(_DesignTokenFile->'wwwroot\%(RecursiveDir)%(Filename)%(Extension)')" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_DesignTokenFile)" DestinationFiles="@(_DesignTokenCopy)" SkipUnchangedFiles="true" />
+    <ItemGroup>
+      <Content Remove="@(_DesignTokenCopy)" />
+      <Content Include="@(_DesignTokenCopy)" CopyToOutputDirectory="PreserveNewest" />
+    </ItemGroup>
   </Target>
 </Project>

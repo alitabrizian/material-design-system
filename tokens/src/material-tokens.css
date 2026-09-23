@@ -5,13 +5,10 @@
  * Web / material-components uses).
  *
  * Color roles (--md-sys-color-*) are NOT in this file — they are generated
- * (6 seed palettes x light/dark) by `nx run tokens:generate-palettes`
- * (tools/scripts/generate-palettes.mts, using the real HCT tonal-palette
- * algorithm from @material/material-color-utilities) straight into
- * apps/design-system-demo/wwwroot/css/tokens.css. That file is gitignored
- * and regenerated on every build (see libs/design-system/tokens/project.json
- * and libs/design-system/tokens/README.md) — Blazor consumes it as a plain
- * static asset and has no awareness of package.json/npm/Node at runtime.
+ * per theme into dist/css/tokens.css by `nx run tokens:build`
+ * (scripts/build-tokens.mts, using the real HCT tonal-palette algorithm from
+ * @material/material-color-utilities). This file is copied verbatim to
+ * dist/css/material-tokens.css by the same build.
  *
  * Everything in *this* file is palette-independent and hand-authored, so it
  * stays static:

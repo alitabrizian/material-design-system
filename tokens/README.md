@@ -1,69 +1,55 @@
-# design-system tokens (Nx project: `tokens`)
+# @partobita/design-tokens (Nx project: `tokens`)
 
-Generates the Material 3 color-role tokens (`--md-sys-color-*`) for the 4
-fixed Angular-Material-style themes — Rose & Red (light), Azure & Blue
-(light), Magenta & Violet (dark), Cyan & Orange (dark) — each its own
-two-hue (primary + tertiary seed) palette locked to a single mode, using the
-HCT tonal-palette algorithm in [`@material/material-color-utilities`](https://www.npmjs.com/package/@material/material-color-utilities)
-(Google, Apache-2.0). There is no independent light/dark toggle; picking a
-theme picks its mode too.
+Framework-neutral Material 3 design tokens — plain CSS custom properties
+(`--md-sys-*`) — and the single source of truth for every PartoBita design
+system package. It knows nothing about Blazor or Angular; each framework
+package consumes its `dist/` output.
 
-This directory has no source of its own — it exists only to register the
-`generate-palettes` Nx target (see [`project.json`](./project.json)), which
-runs [`tools/scripts/generate-palettes.mts`](../../../tools/scripts/generate-palettes.mts).
-
-## What it produces
-
-- `libs/design-system/blazor/wwwroot/css/tokens.css` — `--md-sys-color-*`
-  custom properties for all 4 themes, selected via a single `[data-theme]`
-  attribute on `<html>` (values: `rose-red`, `azure-blue`, `magenta-violet`,
-  `cyan-orange`).
-- `libs/design-system/blazor/wwwroot/data/palettes.json` — the same theme
-  metadata as JSON (name, mode, primary/tertiary seed hex), for anything
-  that needs the raw values outside CSS.
-
-Both files live inside the **design-system library's own** `wwwroot`, not any
-app's — they ship as static web assets inside the `PartoBita.DesignSystem.Blazor`
-NuGet package (see [`libs/design-system/blazor/project.json`](../blazor/project.json)),
-so every consuming app gets them automatically via `_content/Design/...`
-without knowing this generator exists.
-
-Both files are **generated and gitignored** — never edit them by hand, and
-don't commit them. Run the Nx target to (re)produce them:
-
-```bash
-npx nx run tokens:generate-palettes
+```
+libs/design-system/tokens  ──► libs/design-system/blazor  (NuGet: PartoBita.DesignSystem.Blazor)
+                           └─► Angular theme package      (npm, later)
 ```
 
-## How consumers get these files
+## Layout
 
-The `libs/design-system/blazor` project's `build`/`pack` Nx targets declare
-`dependsOn: ["tokens:generate-palettes"]`, so Nx always regenerates the two
-files before building or packing the library. Once packed into the NuGet
-package, any consuming Blazor app (Server or WebAssembly) gets
-`_content/Design/css/tokens.css` for free via a plain `PackageReference` —
-**it has no runtime or build-time dependency on Node, npm, `package.json`,
-or `material-color-utilities`.** If you build the library's `.csproj`
-directly with `dotnet build`/`dotnet pack` (bypassing Nx), make sure the two
-generated files already exist on disk first (run the Nx target once, or
-restore them from a previous Nx build) — the library's own `pack` target
-also fails loudly if they're missing or stale, as a guard against silently
-shipping an empty/outdated package.
+| Path | What | Committed? |
+| --- | --- | --- |
+| `scripts/build-tokens.mts` | Generates the color roles for the 4 themes with the HCT algorithm from `@material/material-color-utilities` | yes |
+| `src/material-tokens.css` | Hand-authored, theme-independent tokens: typescale, shape, elevation, motion, state layers | yes |
+| `dist/css/tokens.css` | Generated `--md-sys-color-*` per theme, selected by `<html data-theme="...">` (`rose-red`, `azure-blue`, `magenta-violet`, `cyan-orange`) | no |
+| `dist/css/material-tokens.css` | Copy of `src/material-tokens.css` | no |
+| `dist/data/palettes.json` | Theme metadata (name, mode, seed colors) for non-CSS consumers | no |
 
-## Palette-independent tokens
+## Build
 
-Everything that isn't a color role — typography, shape, elevation, motion,
-state-layer opacities — is static and hand-authored, and lives in
-[`libs/design-system/blazor/wwwroot/css/material-tokens.css`](../blazor/wwwroot/css/material-tokens.css)
-instead. That file is not touched by this generator.
+```bash
+npx nx run tokens:build
+```
+
+You rarely need to run it by hand: `design-system-blazor:build`/`pack` depend
+on it through the Nx graph (`implicitDependencies` + `dependsOn: ["^build"]`).
+
+## Consumers
+
+- **Blazor** — `libs/design-system/blazor/Design.csproj` copies `dist/` into its
+  `wwwroot/` on every build (`SyncDesignTokens` target), so the files ship inside
+  the NuGet package as `_content/Design/css/tokens.css` etc. Apps using the
+  NuGet package need no Node/npm at all.
+- **Angular (later)** — this folder is already an npm package (`package.json`,
+  `files: ["dist"]`). Publish it with `npm publish` from here after
+  `nx run tokens:build`, then import the CSS in the Angular app and theme
+  Angular Material from the same variables.
+
+## Versioning
+
+The version lives in `package.json`. Bump it whenever token values change, and
+bump the Blazor package too, since it embeds a copy of these files.
 
 ## Why the direct-file-import workaround in the script
 
 `@material/material-color-utilities@0.4.0`'s own barrel export (`"."` entry
 point) transitively imports a file with a missing `.js` extension in a
 relative import, which Node's ESM resolver rejects — and the package's
-`exports` map only declares `"."`, so a normal deep import
-(`@material/material-color-utilities/palettes/core_palette.js`) is blocked
-too. The script works around both by importing the compiled file directly
-off disk via a `file://` URL (a filesystem import, not package-specifier
-resolution), which bypasses the `exports` map entirely.
+`exports` map only declares `"."`, so a normal deep import is blocked too.
+The script imports the compiled file directly off disk via a `file://` URL,
+which bypasses the `exports` map entirely.
