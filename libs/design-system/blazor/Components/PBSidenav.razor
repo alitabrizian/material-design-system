@@ -1,2 +1,13 @@
 @inherits WorkspaceComponentBase
-<aside class="workspace-sidenav" aria-label="@Label" @attributes="AdditionalAttributes">@ChildContent</aside>
+@if (Mode == PBSidenavMode.Over)
+{
+    @if (Opened)
+    {
+        <div class="workspace-sidenav-scrim" @onclick="CloseAsync"></div>
+    }
+    <aside class="workspace-sidenav workspace-sidenav--over @(Opened ? "workspace-sidenav--open" : "")" aria-label="@Label" @attributes="AdditionalAttributes">@ChildContent</aside>
+}
+else
+{
+    <aside class="workspace-sidenav" aria-label="@Label" @attributes="AdditionalAttributes">@ChildContent</aside>
+}

@@ -6,13 +6,13 @@
     <base href="/" />
     <script>
         (function () {
+            var validThemes = ["rose-red", "azure-blue", "magenta-violet", "cyan-orange"];
             var theme = localStorage.getItem("theme");
-            var palette = localStorage.getItem("palette") || "purple";
-            if (theme !== "light" && theme !== "dark") {
-                theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+            if (validThemes.indexOf(theme) === -1) {
+                var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+                theme = prefersDark ? "magenta-violet" : "rose-red";
             }
             document.documentElement.setAttribute("data-theme", theme);
-            document.documentElement.setAttribute("data-palette", palette);
         })();
     </script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />

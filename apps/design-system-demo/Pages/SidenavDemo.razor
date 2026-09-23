@@ -5,10 +5,6 @@
 
 <div class="catalog-content">
 
-    <div class="catalog-toolbar" aria-label="Component catalog tools">
-        <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
-    </div>
-
     <PageHeader Title="Sidenav">
         A sidenav is a vertical panel used to navigate between the sections of an
         application.
@@ -38,12 +34,38 @@
     </section>
 
     <section class="doc-section">
+        <p class="field-hint"><code>Mode="PBSidenavMode.Over"</code> renders the panel as a fixed drawer over the whole viewport with a dismissible scrim — click the button, then the scrim (or press Escape's equivalent, clicking outside) to close it.</p>
+
+        <ExampleCard Title="Over mode (drawer)" RazorCode="@(
+@"<PBButton @onclick=""() => drawerOpen = true"">Open drawer</PBButton>
+<PBSidenav Mode=""PBSidenavMode.Over"" Opened=""drawerOpen"" OpenedChanged=""@(v => drawerOpen = v)"" Label=""Workspace sections"">
+    <PBList>
+        <li>Overview</li>
+        <li>Members</li>
+    </PBList>
+</PBSidenav>")">
+            <PBButton @onclick="() => drawerOpen = true">Open drawer</PBButton>
+            <PBSidenav Mode="PBSidenavMode.Over" Opened="drawerOpen" OpenedChanged="@((bool v) => drawerOpen = v)" Label="Workspace sections" style="width:14rem; padding:0.5rem;">
+                <PBList>
+                    <li>Overview</li>
+                    <li>Members</li>
+                    <li>Billing</li>
+                    <li>Settings</li>
+                </PBList>
+            </PBSidenav>
+        </ExampleCard>
+    </section>
+
+    <section class="doc-section">
         <h2>API reference</h2>
         <table class="doc-table">
             <thead>
                 <tr><th>Property</th><th>Type</th><th>Description</th></tr>
             </thead>
             <tbody>
+                <tr><td><code>Mode</code></td><td><code>PBSidenavMode</code></td><td><code>Standard</code> (default, static panel) or <code>Over</code> (fixed drawer + scrim).</td></tr>
+                <tr><td><code>Opened</code></td><td><code>bool</code></td><td>Whether the drawer is visible. Only meaningful in <code>Over</code> mode.</td></tr>
+                <tr><td><code>OpenedChanged</code></td><td><code>EventCallback&lt;bool&gt;</code></td><td>Raised with <code>false</code> when the scrim is clicked, for <code>@@bind-Opened</code>.</td></tr>
                 <tr><td><code>Label</code></td><td><code>string?</code></td><td>Rendered as <code>aria-label</code> on the panel.</td></tr>
                 <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The panel's navigation content.</td></tr>
             </tbody>
@@ -58,3 +80,7 @@
         </div>
     </section>
 </div>
+
+@code {
+    private bool drawerOpen;
+}

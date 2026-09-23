@@ -5,10 +5,6 @@
 
 <div class="catalog-content">
 
-    <div class="catalog-toolbar" aria-label="Component catalog tools">
-        <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
-    </div>
-
     <PageHeader Title="Stepper">A stepper breaks a task into an ordered sequence of steps.</PageHeader>
 
     <section class="doc-section">
@@ -36,12 +32,30 @@
     </section>
 
     <section class="doc-section">
+        <p class="field-hint"><code>Orientation="PBStepperOrientation.Vertical"</code> stacks the steps with the connector line running down instead of across.</p>
+
+        <ExampleCard Title="Vertical" RazorCode="@(
+@"<PBStepper Orientation=""PBStepperOrientation.Vertical"">
+    <li>Cart</li>
+    <li>Shipping</li>
+    <li>Payment</li>
+</PBStepper>")">
+            <PBStepper Orientation="PBStepperOrientation.Vertical">
+                <li>Cart</li>
+                <li>Shipping</li>
+                <li>Payment</li>
+            </PBStepper>
+        </ExampleCard>
+    </section>
+
+    <section class="doc-section">
         <h2>API reference</h2>
         <table class="doc-table">
             <thead>
                 <tr><th>Property</th><th>Type</th><th>Description</th></tr>
             </thead>
             <tbody>
+                <tr><td><code>Orientation</code></td><td><code>PBStepperOrientation</code></td><td><code>Horizontal</code> (default) or <code>Vertical</code>.</td></tr>
                 <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The step items, typically <code>&lt;li&gt;</code> elements.</td></tr>
                 <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;ol&gt;</code>.</td></tr>
             </tbody>

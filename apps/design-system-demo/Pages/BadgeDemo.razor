@@ -5,41 +5,75 @@
 
 <div class="catalog-content">
 
-    <div class="catalog-toolbar" aria-label="Component catalog tools">
-        <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
-    </div>
-
     <PageHeader Title="Badge">
-        A badge is a small label attached to another element to draw attention to
-        a count, a status, or a piece of contextual information.
+        A badge consists of a small circle, typically containing a number or
+        short set of characters, that appears in proximity to another element
+        to draw attention to a count, a status, or a piece of contextual
+        information.
     </PageHeader>
 
     <section class="doc-section">
-        <p class="field-hint">Use a short word to communicate status.</p>
+        <p class="field-hint">Badges must always be applied to a <code>position: relative</code> wrapper around the element they annotate.</p>
 
-        <ExampleCard Title="Text badge" RazorCode="@(@"<PBBadge>New</PBBadge>")">
-            <PBBadge>New</PBBadge>
-        </ExampleCard>
-    </section>
+        <ExampleCard Title="Badge overview" RazorCode="@(
+@"<span class=""anchor"">Text with a badge<PBBadge Overlay=""true"">4</PBBadge></span>
 
-    <section class="doc-section">
-        <p class="field-hint">Use a number to communicate a count.</p>
+<span class=""anchor"">Text with small badge<PBBadge Overlay=""true"" Size=""PBBadgeSize.Small"">1</PBBadge></span>
 
-        <ExampleCard Title="Numeric badge" RazorCode="@(@"<PBBadge>12</PBBadge>")">
-            <PBBadge>12</PBBadge>
-        </ExampleCard>
-    </section>
+<span class=""anchor"">Text with large badge<PBBadge Overlay=""true"" Size=""PBBadgeSize.Large"">1</PBBadge></span>
 
-    <section class="doc-section">
-        <p class="field-hint">Badges are commonly paired with a button or icon.</p>
+<span class=""anchor"">
+    <PBButton Variant=""PBButtonVariant.Elevated"">Action</PBButton>
+    <PBBadge Overlay=""true"" style=""left:-0.5rem; right:auto;"">8</PBBadge>
+</span>
 
-        <ExampleCard Title="Badge next to an action" RazorCode="@(
-@"<PBButton>Inbox</PBButton>
-<PBBadge>@unreadCount</PBBadge>")">
-            <span style="display:inline-flex; align-items:center; gap:0.5rem;">
-                <PBButton>Inbox</PBButton>
-                <PBBadge>@unreadCount</PBBadge>
-            </span>
+<span class=""anchor"">
+    <PBButton Variant=""PBButtonVariant.Elevated"" @onclick=""() => showBadge = !showBadge"">@(showBadge ? ""Hide"" : ""Show"")</PBButton>
+    @if (showBadge)
+    {
+        <PBBadge Overlay=""true"">7</PBBadge>
+    }
+</span>
+
+<span class=""anchor"">
+    <span class=""material-icons"" aria-hidden=""true"">home</span>
+    <PBBadge Overlay=""true"">15</PBBadge>
+</span>")">
+            <div class="badge-overview-grid">
+                <div class="badge-overview-row">
+                    <span class="anchor">Text with a badge<PBBadge Overlay="true">4</PBBadge></span>
+                </div>
+                <div class="badge-overview-row">
+                    <span class="anchor">Text with small badge<PBBadge Overlay="true" Size="PBBadgeSize.Small">1</PBBadge></span>
+                </div>
+                <div class="badge-overview-row">
+                    <span class="anchor">Text with large badge<PBBadge Overlay="true" Size="PBBadgeSize.Large">1</PBBadge></span>
+                </div>
+                <div class="badge-overview-row">
+                    <span>Button with a badge on the left</span>
+                    <span class="anchor">
+                        <PBButton Variant="PBButtonVariant.Elevated">Action</PBButton>
+                        <PBBadge Overlay="true" style="left:-0.5rem; right:auto;">8</PBBadge>
+                    </span>
+                </div>
+                <div class="badge-overview-row">
+                    <span>Button toggles badge visibility</span>
+                    <span class="anchor">
+                        <PBButton Variant="PBButtonVariant.Elevated" @onclick="() => showBadge = !showBadge">@(showBadge ? "Hide" : "Show")</PBButton>
+                        @if (showBadge)
+                        {
+                            <PBBadge Overlay="true">7</PBBadge>
+                        }
+                    </span>
+                </div>
+                <div class="badge-overview-row">
+                    <span>Icon with a badge</span>
+                    <span class="anchor">
+                        <span class="material-icons" aria-hidden="true">home</span>
+                        <PBBadge Overlay="true">15</PBBadge>
+                    </span>
+                </div>
+            </div>
         </ExampleCard>
     </section>
 
@@ -50,9 +84,12 @@
                 <tr><th>Property</th><th>Type</th><th>Description</th></tr>
             </thead>
             <tbody>
+                <tr><td><code>Variant</code></td><td><code>PBBadgeVariant</code></td><td><code>Standard</code> (default, shows content) or <code>Dot</code> (small indicator, no content).</td></tr>
+                <tr><td><code>Size</code></td><td><code>PBBadgeSize</code></td><td><code>Small</code>, <code>Medium</code> (default), or <code>Large</code>.</td></tr>
+                <tr><td><code>Overlay</code></td><td><code>bool</code></td><td>Positions the badge in the top-right corner of a <code>position: relative</code> wrapper instead of inline.</td></tr>
                 <tr><td><code>Label</code></td><td><code>string?</code></td><td>Optional accessible label.</td></tr>
-                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>Content rendered inside the badge (text or a number).</td></tr>
-                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;span&gt;</code>.</td></tr>
+                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>Content rendered inside the badge (text or a number). Ignored for the <code>Dot</code> variant.</td></tr>
+                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;span&gt;</code> — e.g. a <code>style</code> override to reposition the overlay.</td></tr>
             </tbody>
         </table>
     </section>
@@ -69,5 +106,5 @@
 </div>
 
 @code {
-    private int unreadCount = 4;
+    private bool showBadge = true;
 }

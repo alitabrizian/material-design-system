@@ -5,10 +5,6 @@
 
 <div class="catalog-content">
 
-    <div class="catalog-toolbar" aria-label="Component catalog tools">
-        <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
-    </div>
-
     <PageHeader Title="Tabs">
         Tabs organize related content into separate views that share the same
         context.
@@ -21,16 +17,18 @@
 @"<PBTabs>
     @foreach (var tab in tabs)
     {
-        <PBButton @onclick=""() => activeTab = tab"">@tab</PBButton>
+        <button type=""button"" role=""tab"" class=""@TabClass(tab)""
+            aria-selected=""@(tab == activeTab)"" @onclick=""() => activeTab = tab"">@tab</button>
     }
 </PBTabs>")">
             <PBTabs>
                 @foreach (var tab in tabs)
                 {
-                    <PBButton @onclick="() => activeTab = tab">@tab</PBButton>
+                    <button type="button" role="tab" class="@TabClass(tab)"
+                        aria-selected="@(tab == activeTab ? "true" : "false")" @onclick="() => activeTab = tab">@tab</button>
                 }
             </PBTabs>
-            <div style="padding-top:0.75rem;">
+            <div role="tabpanel" style="padding-top:0.75rem;">
                 @switch (activeTab)
                 {
                     case "Profile":
@@ -63,11 +61,9 @@
     <section class="doc-section">
         <div class="a11y-note">
             <strong>Accessibility</strong>
-            The container has <code>role="tablist"</code>; the tab controls
-            themselves and their panels do not yet carry
-            <code>role="tab"</code>/<code>role="tabpanel"</code> and
-            <code>aria-selected</code>. Add those roles when wiring this into a real
-            page.
+            The container has <code>role="tablist"</code>, each tab has
+            <code>role="tab"</code> and <code>aria-selected</code>, and the content
+            region has <code>role="tabpanel"</code>.
         </div>
     </section>
 </div>
@@ -75,4 +71,6 @@
 @code {
     private static readonly string[] tabs = ["Profile", "Security", "Integrations"];
     private string activeTab = tabs[0];
+
+    private string TabClass(string tab) => tab == activeTab ? "workspace-tab workspace-tab--active" : "workspace-tab";
 }

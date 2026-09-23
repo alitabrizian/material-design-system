@@ -2,7 +2,11 @@ using Microsoft.AspNetCore.Components;
 
 namespace Design.Components;
 
-/// <summary>The five Material 3 button appearances (m3.material.io/components/buttons).</summary>
+/// <summary>
+/// The five Material 3 button appearances (m3.material.io/components/buttons),
+/// plus the icon button and the three FAB shapes
+/// (m3.material.io/components/floating-action-button).
+/// </summary>
 public enum PBButtonVariant
 {
     Text,
@@ -10,6 +14,10 @@ public enum PBButtonVariant
     Tonal,
     Outlined,
     Elevated,
+    Icon,
+    Fab,
+    MiniFab,
+    ExtendedFab,
 }
 
 public partial class PBButton : WorkspaceComponentBase
@@ -30,6 +38,10 @@ public partial class PBButton : WorkspaceComponentBase
         PBButtonVariant.Tonal => "tonal",
         PBButtonVariant.Outlined => "outlined",
         PBButtonVariant.Elevated => "elevated",
+        PBButtonVariant.Icon => "icon",
+        PBButtonVariant.Fab => "fab",
+        PBButtonVariant.MiniFab => "fab-mini",
+        PBButtonVariant.ExtendedFab => "fab-extended",
         _ => "text",
     };
 }

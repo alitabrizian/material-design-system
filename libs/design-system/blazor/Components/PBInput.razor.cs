@@ -1,2 +1,2 @@
 namespace Design.Components;
-public partial class PBInput : WorkspaceComponentBase { }
+public partial class PBInput : WorkspaceFieldComponentBase { }

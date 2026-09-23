@@ -1,9 +1,12 @@
 # design-system tokens (Nx project: `tokens`)
 
-Generates the Material 3 color-role tokens (`--md-sys-color-*`) for all 6 seed
-palettes, in both light and dark mode, from real seed colors using the HCT
-tonal-palette algorithm in [`@material/material-color-utilities`](https://www.npmjs.com/package/@material/material-color-utilities)
-(Google, Apache-2.0).
+Generates the Material 3 color-role tokens (`--md-sys-color-*`) for the 4
+fixed Angular-Material-style themes — Rose & Red (light), Azure & Blue
+(light), Magenta & Violet (dark), Cyan & Orange (dark) — each its own
+two-hue (primary + tertiary seed) palette locked to a single mode, using the
+HCT tonal-palette algorithm in [`@material/material-color-utilities`](https://www.npmjs.com/package/@material/material-color-utilities)
+(Google, Apache-2.0). There is no independent light/dark toggle; picking a
+theme picks its mode too.
 
 This directory has no source of its own — it exists only to register the
 `generate-palettes` Nx target (see [`project.json`](./project.json)), which
@@ -12,10 +15,11 @@ runs [`tools/scripts/generate-palettes.mts`](../../../tools/scripts/generate-pal
 ## What it produces
 
 - `libs/design-system/blazor/wwwroot/css/tokens.css` — `--md-sys-color-*`
-  custom properties for all 6 palettes × light/dark, selected via
-  `[data-palette]` / `[data-theme]` attributes on `<html>`.
-- `libs/design-system/blazor/wwwroot/data/palettes.json` — the same role
-  values as JSON (seed hex, per-palette light/dark role maps), for anything
+  custom properties for all 4 themes, selected via a single `[data-theme]`
+  attribute on `<html>` (values: `rose-red`, `azure-blue`, `magenta-violet`,
+  `cyan-orange`).
+- `libs/design-system/blazor/wwwroot/data/palettes.json` — the same theme
+  metadata as JSON (name, mode, primary/tertiary seed hex), for anything
   that needs the raw values outside CSS.
 
 Both files live inside the **design-system library's own** `wwwroot`, not any

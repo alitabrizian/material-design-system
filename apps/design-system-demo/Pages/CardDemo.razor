@@ -5,10 +5,6 @@
 
 <div class="catalog-content">
 
-    <div class="catalog-toolbar" aria-label="Component catalog tools">
-        <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
-    </div>
-
     <PageHeader Title="Card">
         Cards group related content and actions into a single, self-contained
         surface.
@@ -53,12 +49,28 @@
     </section>
 
     <section class="doc-section">
+        <p class="field-hint">Three variants: elevated (shadow), filled (tonal surface), and outlined (border) — the default.</p>
+
+        <ExampleCard Title="Variants" RazorCode="@(
+@"<PBCard Variant=""PBCardVariant.Elevated"">Elevated</PBCard>
+<PBCard Variant=""PBCardVariant.Filled"">Filled</PBCard>
+<PBCard Variant=""PBCardVariant.Outlined"">Outlined</PBCard>")">
+            <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+                <PBCard Variant="PBCardVariant.Elevated" style="flex:1 1 10rem;">Elevated</PBCard>
+                <PBCard Variant="PBCardVariant.Filled" style="flex:1 1 10rem;">Filled</PBCard>
+                <PBCard Variant="PBCardVariant.Outlined" style="flex:1 1 10rem;">Outlined</PBCard>
+            </div>
+        </ExampleCard>
+    </section>
+
+    <section class="doc-section">
         <h2>API reference</h2>
         <table class="doc-table">
             <thead>
                 <tr><th>Property</th><th>Type</th><th>Description</th></tr>
             </thead>
             <tbody>
+                <tr><td><code>Variant</code></td><td><code>PBCardVariant</code></td><td>One of <code>Elevated</code>, <code>Filled</code>, <code>Outlined</code> (default).</td></tr>
                 <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The card's content.</td></tr>
                 <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;article&gt;</code>.</td></tr>
             </tbody>

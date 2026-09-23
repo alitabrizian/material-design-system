@@ -1,2 +1,8 @@
 namespace Design.Components;
-public partial class PBCard : WorkspaceComponentBase { }
+
+public enum PBCardVariant { Elevated, Filled, Outlined }
+
+public partial class PBCard : WorkspaceComponentBase
+{
+    [Parameter] public PBCardVariant Variant { get; set; } = PBCardVariant.Outlined;
+}

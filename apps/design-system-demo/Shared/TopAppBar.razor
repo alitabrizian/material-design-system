@@ -6,29 +6,22 @@
     <span class="pb-topbar__title">@Title</span>
 
     <div class="pb-topbar__actions">
-        <button
-            type="button"
-            class="pb-topbar__icon"
-            title="@(Theme.Mode == ThemeState.DarkMode ? "Switch to light mode" : "Switch to dark mode")"
-            aria-label="Toggle color mode"
-            @onclick="ToggleModeAsync">
-            <span class="material-icons" aria-hidden="true">@(Theme.Mode == ThemeState.DarkMode ? "dark_mode" : "light_mode")</span>
-        </button>
-
-        <PBMenu Label="Color palette" @bind-IsOpen="paletteMenuOpen">
+        <PBMenu Label="Theme" @bind-IsOpen="themeMenuOpen">
             <Trigger>
                 <span class="material-icons" aria-hidden="true">palette</span>
             </Trigger>
             <ChildContent>
-                @foreach (var palette in ThemeState.Palettes)
+                @foreach (var theme in ThemeState.Themes)
                 {
-                    <button type="button" class="pb-menu-item" @onclick="() => SelectPaletteAsync(palette.Key)">
-                        <span class="pb-menu-item__swatch" style="background:@palette.Seed;"></span>
-                        <span class="pb-menu-item__label">@palette.Name</span>
-                        @if (Theme.Palette == palette.Key)
-                        {
-                            <span class="pb-menu-item__check" aria-hidden="true">✓</span>
-                        }
+                    var selected = Theme.Theme == theme.Key;
+                    <button type="button" role="menuitemradio" aria-checked="@(selected ? "true" : "false")"
+                        class="pb-menu-item @(selected ? "pb-menu-item--selected" : "")" @onclick="() => SelectThemeAsync(theme.Key)">
+                        <span class="pb-menu-item__radio" aria-hidden="true"></span>
+                        <span class="pb-menu-item__label">@theme.Name</span>
+                        <span class="pb-menu-item__swatch--theme" aria-hidden="true">
+                            <span style="background:@theme.PrimarySeed;"></span>
+                            <span style="background:@theme.TertiarySeed;"></span>
+                        </span>
                     </button>
                 }
             </ChildContent>
@@ -39,7 +32,7 @@
 @code {
     [Parameter] public string Title { get; set; } = string.Empty;
 
-    private bool paletteMenuOpen;
+    private bool themeMenuOpen;
     private IJSObjectReference? module;
 
     protected override void OnInitialized()
@@ -53,29 +46,23 @@
             return;
 
         // JS interop is unavailable during static prerendering, so the very first
-        // paint uses ThemeState's default (light/purple) for the icon/checkmark.
-        // The <html data-theme>/[data-palette] attributes are already correct from
-        // App.razor's inline FOUC script, so page colors never flash; only this
-        // brief correction of the toggle icon/checkmark happens post-render.
+        // paint uses ThemeState's default (Rose & Red) for the checkmark. The
+        // <html data-theme> attribute is already correct from App.razor's inline
+        // FOUC script, so page colors never flash; only this brief correction of
+        // the menu's selected-radio state happens post-render.
         module = await JS.InvokeAsync<IJSObjectReference>("import", "/js/theme.js");
 
-        var stored = await module.InvokeAsync<Dictionary<string, string?>>("getStoredTheme");
-        Theme.Initialize(stored.GetValueOrDefault("theme"), stored.GetValueOrDefault("palette"));
+        var stored = await module.InvokeAsync<string?>("getStoredTheme");
+        Theme.Initialize(stored);
         StateHasChanged();
     }
 
     private void OnThemeChanged() => InvokeAsync(StateHasChanged);
 
-    private Task ToggleModeAsync()
+    private Task SelectThemeAsync(string key)
     {
-        Theme.ToggleMode();
-        return PersistAndApplyAsync();
-    }
-
-    private Task SelectPaletteAsync(string key)
-    {
-        Theme.SetPalette(key);
-        paletteMenuOpen = false;
+        Theme.SetTheme(key);
+        themeMenuOpen = false;
         return PersistAndApplyAsync();
     }
 
@@ -84,8 +71,8 @@
         if (module is null)
             return;
 
-        await module.InvokeVoidAsync("applyTheme", Theme.Mode, Theme.Palette);
-        await module.InvokeVoidAsync("setStoredTheme", Theme.Mode, Theme.Palette);
+        await module.InvokeVoidAsync("applyTheme", Theme.Theme);
+        await module.InvokeVoidAsync("setStoredTheme", Theme.Theme);
     }
 
     public async ValueTask DisposeAsync()

@@ -163,12 +163,95 @@
   box-shadow: var(--md-sys-elevation-level-0);
 }
 
-/* === Autocomplete === */
+/* Icon button — m3.material.io/components/icon-buttons: a 40x40 circle,
+ * transparent by default, state layer only (no elevation). */
+.pb-button--icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border-radius: var(--md-sys-shape-corner-full);
+  background: transparent;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.pb-button--icon:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--md-sys-color-on-surface-variant) calc(var(--md-sys-state-hover-state-layer-opacity) * 100%), transparent);
+}
+
+.pb-button--icon:active:not(:disabled) {
+  background: color-mix(in srgb, var(--md-sys-color-on-surface-variant) calc(var(--md-sys-state-pressed-state-layer-opacity) * 100%), transparent);
+}
+
+.pb-button--icon:disabled {
+  color: color-mix(in srgb, var(--md-sys-color-on-surface) 38%, transparent);
+}
+
+/* FAB / Mini FAB / Extended FAB — m3.material.io/components/floating-action-button.
+ * Default (unthemed) container color role is primary-container. */
+.pb-button--fab,
+.pb-button--fab-mini,
+.pb-button--fab-extended {
+  padding: 0;
+  border-radius: var(--md-sys-shape-corner-large);
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+  box-shadow: var(--md-sys-elevation-level-3);
+}
+
+.pb-button--fab {
+  width: 3.5rem;
+  height: 3.5rem;
+}
+
+.pb-button--fab-mini {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--md-sys-shape-corner-medium);
+}
+
+.pb-button--fab-extended {
+  height: 3.5rem;
+  padding-inline: 1.25rem;
+  border-radius: var(--md-sys-shape-corner-large);
+}
+
+.pb-button--fab:hover:not(:disabled),
+.pb-button--fab-mini:hover:not(:disabled),
+.pb-button--fab-extended:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--md-sys-color-primary-container), var(--md-sys-color-on-primary-container) calc(var(--md-sys-state-hover-state-layer-opacity) * 100%));
+  box-shadow: var(--md-sys-elevation-level-4);
+}
+
+.pb-button--fab:active:not(:disabled),
+.pb-button--fab-mini:active:not(:disabled),
+.pb-button--fab-extended:active:not(:disabled) {
+  background: color-mix(in srgb, var(--md-sys-color-primary-container), var(--md-sys-color-on-primary-container) calc(var(--md-sys-state-pressed-state-layer-opacity) * 100%));
+  box-shadow: var(--md-sys-elevation-level-3);
+}
+
+.pb-button--fab:disabled,
+.pb-button--fab-mini:disabled,
+.pb-button--fab-extended:disabled {
+  background: color-mix(in srgb, var(--md-sys-color-on-surface) 12%, transparent);
+  color: color-mix(in srgb, var(--md-sys-color-on-surface) 38%, transparent);
+  box-shadow: var(--md-sys-elevation-level-0);
+}
+
+.pb-button--fab .pb-button__icon,
+.pb-button--fab-mini .pb-button__icon {
+  font-size: 1.5rem;
+}
+
+/* === Autocomplete ===
+ * Shares the .workspace-field-control floating-label mechanics (see the
+ * Form fields section below) via that class living alongside
+ * .mdc-autocomplete__input-container.
+ */
 .mdc-autocomplete {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 0.375rem;
+  gap: 0.25rem;
   width: 100%;
   max-width: 28rem;
   font-family: var(--md-sys-typescale-font-family);
@@ -179,13 +262,6 @@
   pointer-events: none;
 }
 
-.mdc-autocomplete__label {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--md-sys-color-on-surface);
-  letter-spacing: 0.01em;
-}
-
 .mdc-autocomplete__input-container {
   position: relative;
   display: flex;
@@ -194,7 +270,7 @@
 
 .mdc-autocomplete__input {
   width: 100%;
-  padding: 0.9rem 1rem 0.5rem;
+  padding: 1.75rem 1rem 0.5rem;
   font-size: 1rem;
   font-family: inherit;
   color: var(--md-sys-color-on-surface);
@@ -208,6 +284,10 @@
 }
 
 .mdc-autocomplete__input::placeholder {
+  color: transparent;
+}
+
+.mdc-autocomplete__input:focus::placeholder {
   color: var(--md-sys-color-on-surface-variant);
 }
 
@@ -232,16 +312,49 @@
   z-index: 10;
   max-height: 240px;
   overflow-y: auto;
-  background: var(--md-sys-color-surface);
-  border: 1px solid var(--md-sys-color-outline);
-  border-radius: 0.375rem;
-  box-shadow: 0 4px 12px rgb(25 43 58 / 0.12);
+  /* Same fill as the input (surface-container-highest), not surface -- the
+     field and its dropdown are one continuous filled shape in M3, not two
+     different tones stacked on top of each other. */
+  background: var(--md-sys-color-surface-container-highest);
   padding: 0.25rem 0;
+  transform-origin: top;
+  animation: workspace-panel-in var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-emphasized-decelerate);
+  scrollbar-width: thin;
+  scrollbar-color: var(--md-sys-color-outline-variant) transparent;
+}
+
+.mdc-autocomplete__panel::-webkit-scrollbar {
+  width: 8px;
+}
+
+.mdc-autocomplete__panel::-webkit-scrollbar-thumb {
+  background: var(--md-sys-color-outline-variant);
+  border-radius: var(--md-sys-shape-corner-full);
+}
+
+.mdc-autocomplete__panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* m3.material.io/styles/motion — overlay panels (autocomplete, menu, select)
+   fade in and grow from their anchor edge rather than just appearing. */
+@keyframes workspace-panel-in {
+  from {
+    opacity: 0;
+    transform: scaleY(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: scaleY(1);
+  }
 }
 
 .mdc-autocomplete__option {
-  padding: 0.625rem 1rem;
-  font-size: 0.9375rem;
+  display: flex;
+  align-items: center;
+  min-height: 3rem;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
   color: var(--md-sys-color-on-surface);
   cursor: pointer;
   transition: background 80ms ease;
@@ -276,24 +389,25 @@
 .workspace-field {
   display: flex;
   flex-direction: column;
-  gap: 0.375rem;
+  gap: 0.25rem;
   width: 100%;
   max-width: 28rem;
   font-family: var(--md-sys-typescale-font-family);
 }
 
-.workspace-field > span:first-child {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--md-sys-color-on-surface);
-  letter-spacing: 0.01em;
+/* .workspace-field-control is the positioning context for the floating
+   label; PBAutoComplete's .mdc-autocomplete__input-container carries this
+   class too so it shares every rule below. */
+.workspace-field-control {
+  position: relative;
+  display: block;
 }
 
 .workspace-input,
-.workspace-field select,
-.workspace-field input {
+.workspace-field-control select,
+.workspace-field-control input {
   width: 100%;
-  padding: 0.9rem 1rem 0.5rem;
+  padding: 1.75rem 1rem 0.5rem;
   font-size: 1rem;
   font-family: inherit;
   color: var(--md-sys-color-on-surface);
@@ -312,34 +426,103 @@
 }
 
 .workspace-input::placeholder,
-.workspace-field select::placeholder,
-.workspace-field input::placeholder {
+.workspace-field-control select::placeholder,
+.workspace-field-control input::placeholder {
+  color: transparent;
+}
+
+.workspace-input:focus::placeholder,
+.workspace-field-control select:focus::placeholder,
+.workspace-field-control input:focus::placeholder {
   color: var(--md-sys-color-on-surface-variant);
 }
 
 .workspace-input:focus,
-.workspace-field select:focus,
-.workspace-field input:focus {
+.workspace-field-control select:focus,
+.workspace-field-control input:focus {
   border-bottom: 2px solid var(--md-sys-color-primary);
   padding-bottom: calc(0.5rem - 1px);
 }
 
 .workspace-input:disabled,
-.workspace-field select:disabled,
-.workspace-field input:disabled {
+.workspace-field-control select:disabled,
+.workspace-field-control input:disabled {
   background: color-mix(in srgb, var(--md-sys-color-on-surface) 4%, transparent);
   border-bottom-color: color-mix(in srgb, var(--md-sys-color-on-surface) 38%, transparent);
   color: color-mix(in srgb, var(--md-sys-color-on-surface) 38%, transparent);
   cursor: default;
 }
 
-.workspace-field select {
+.workspace-field-control select {
   cursor: pointer;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2349454f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 0.75rem center;
   background-size: 1.1rem;
   padding-right: 2.25rem;
+}
+
+/* Floating label — m3.material.io/components/text-fields#specs
+ * Rests centered in the field until the input is focused or has a value
+ * (:not(:placeholder-shown), which requires the input to always carry a
+ * placeholder attribute, even an empty/space one -- PBInput/PBAutoComplete
+ * default to placeholder=" " when the caller doesn't supply a real one).
+ * <select>/date/time inputs always show a value or format skeleton, so
+ * their label is unconditionally floated instead of state-dependent.
+ */
+.workspace-field-label {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--md-sys-color-on-surface-variant);
+  font-size: var(--md-sys-typescale-body-large-size);
+  transform-origin: left top;
+  pointer-events: none;
+  white-space: nowrap;
+  transition: top 120ms ease, transform 120ms ease, color 120ms ease;
+}
+
+.workspace-field-control input:focus ~ .workspace-field-label,
+.workspace-field-control input:not(:placeholder-shown) ~ .workspace-field-label,
+.workspace-field-control select ~ .workspace-field-label,
+.workspace-field-control input[type="date"] ~ .workspace-field-label,
+.workspace-field-control input[type="time"] ~ .workspace-field-label {
+  top: 0.4rem;
+  transform: translateY(0) scale(0.75);
+}
+
+.workspace-field-control input:focus ~ .workspace-field-label {
+  color: var(--md-sys-color-primary);
+}
+
+.workspace-field-control input:disabled ~ .workspace-field-label,
+.workspace-field-control select:disabled ~ .workspace-field-label {
+  color: color-mix(in srgb, var(--md-sys-color-on-surface) 38%, transparent);
+}
+
+/* Error / supporting text — m3.material.io/components/text-fields#error-state */
+.workspace-field-hint {
+  padding: 0 1rem;
+  font-size: var(--md-sys-typescale-body-small-size);
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.workspace-field-hint--error {
+  color: var(--md-sys-color-error);
+}
+
+.workspace-field-control--error input,
+.workspace-field-control--error select {
+  border-bottom-color: var(--md-sys-color-error);
+}
+
+.workspace-field-control--error .workspace-field-label {
+  color: var(--md-sys-color-error);
+}
+
+.workspace-field-control--error input:focus ~ .workspace-field-label {
+  color: var(--md-sys-color-error);
 }
 
 /* === Selection controls (PBCheckbox, PBRadioButton, PBSlideToggle) ===
@@ -521,6 +704,8 @@
   box-shadow: var(--md-sys-elevation-level-2);
   display: grid;
   gap: 0.15rem;
+  transform-origin: top;
+  animation: workspace-panel-in var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-emphasized-decelerate);
 }
 
 .pb-menu-item {
@@ -561,15 +746,77 @@
   font-weight: 700;
 }
 
-/* === Card (PBCard) — m3.material.io/components/cards, outlined variant === */
+/* Theme-picker radio menu item: a radio dot + a two-band swatch (primary on
+ * top, tertiary on bottom) standing in for the whole theme at a glance. */
+.pb-menu-item__radio {
+  width: 1.125rem;
+  height: 1.125rem;
+  flex: 0 0 auto;
+  border-radius: var(--md-sys-shape-corner-full);
+  border: 2px solid var(--md-sys-color-outline);
+  display: grid;
+  place-items: center;
+}
+
+.pb-menu-item__radio::after {
+  content: "";
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: var(--md-sys-shape-corner-full);
+  background: var(--md-sys-color-primary);
+  transform: scale(0);
+  transition: transform var(--md-sys-motion-duration-short2) var(--md-sys-motion-easing-standard);
+}
+
+.pb-menu-item--selected .pb-menu-item__radio {
+  border-color: var(--md-sys-color-primary);
+}
+
+.pb-menu-item--selected .pb-menu-item__radio::after {
+  transform: scale(1);
+}
+
+.pb-menu-item__swatch--theme {
+  width: 1.75rem;
+  height: 1.75rem;
+  flex: 0 0 auto;
+  border-radius: var(--md-sys-shape-corner-extra-small);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.pb-menu-item__swatch--theme span {
+  flex: 1 1 0;
+}
+
+/* === Card (PBCard) — m3.material.io/components/cards
+ * Three variants: elevated (shadow, no border), filled (tonal surface, no
+ * border/shadow), outlined (border, no shadow) — same shape/padding for all.
+ */
 .workspace-card {
   display: block;
   padding: 1.25rem;
-  border: 1px solid var(--md-sys-color-outline-variant);
   border-radius: var(--md-sys-shape-corner-medium);
-  background: var(--md-sys-color-surface);
   color: var(--md-sys-color-on-surface);
   font-family: var(--md-sys-typescale-font-family);
+}
+
+.workspace-card--elevated {
+  border: none;
+  background: var(--md-sys-color-surface-container-low);
+  box-shadow: var(--md-sys-elevation-level-1);
+}
+
+.workspace-card--filled {
+  border: none;
+  background: var(--md-sys-color-surface-container-highest);
+}
+
+.workspace-card--outlined {
+  border: 1px solid var(--md-sys-color-outline-variant);
+  background: var(--md-sys-color-surface);
 }
 
 /* === Expansion Panel (PBExpansionPanel) === */
@@ -693,16 +940,44 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 1.25rem;
-  height: 1.25rem;
-  padding: 0 0.4rem;
+  min-width: 1rem;
+  height: 1rem;
+  padding: 0 0.3rem;
   border-radius: var(--md-sys-shape-corner-full);
   background: var(--md-sys-color-error);
   color: var(--md-sys-color-on-error);
   font-family: var(--md-sys-typescale-font-family);
   font-size: var(--md-sys-typescale-label-small-size);
   font-weight: 500;
-  line-height: 1;
+  line-height: 1rem;
+}
+
+.workspace-badge--dot {
+  min-width: 0.5rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  padding: 0;
+}
+
+.workspace-badge--small {
+  min-width: 0.375rem;
+  width: 0.375rem;
+  height: 0.375rem;
+  padding: 0;
+  font-size: 0;
+}
+
+.workspace-badge--large {
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 0.4rem;
+  font-size: 0.75rem;
+}
+
+.workspace-badge--overlay {
+  position: absolute;
+  top: 0.5rem;
+  right: -1rem;
 }
 
 /* === Chips (PBChips) — m3.material.io/components/chips === */
@@ -715,6 +990,7 @@
 .workspace-chips > [role="listitem"] {
   display: inline-flex;
   align-items: center;
+  gap: 0.35rem;
   height: 2rem;
   padding: 0 0.9rem;
   border: 1px solid var(--md-sys-color-outline);
@@ -723,33 +999,95 @@
   color: var(--md-sys-color-on-surface-variant);
   font-family: var(--md-sys-typescale-font-family);
   font-size: var(--md-sys-typescale-label-large-size);
+  cursor: pointer;
+  transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
 }
 
-/* === Progress Bar (PBProgressBar) — m3.material.io/components/progress-indicators === */
+/* Filter chip, selected — tonal fill, no border, matches the checkmark prefix added in markup. */
+.workspace-chips > [role="listitem"].workspace-chip--selected {
+  border-color: transparent;
+  background: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-on-secondary-container);
+}
+
+/* Input chip — represents something already chosen; filled, with a trailing remove control. */
+.workspace-chips > [role="listitem"].workspace-chip--input {
+  border-color: transparent;
+  background: var(--md-sys-color-surface-container-low);
+  color: var(--md-sys-color-on-surface);
+  cursor: default;
+}
+
+.workspace-chip__remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.1rem;
+  height: 1.1rem;
+  margin-left: 0.15rem;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  font-size: 0.9rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.workspace-chip__remove:hover {
+  background: color-mix(in srgb, var(--md-sys-color-on-surface) calc(var(--md-sys-state-hover-state-layer-opacity) * 100%), transparent);
+}
+
+/* Assist chip — suggested action, same outlined base as the default chip (kept as its own class for clarity/intent). */
+.workspace-chips > [role="listitem"].workspace-chip--assist {
+  border-color: var(--md-sys-color-outline-variant);
+}
+
+/* === Progress Bar (PBProgressBar) — m3.material.io/components/progress-indicators
+ * div-based (not native <progress>, which has no cross-browser way to show
+ * a buffer segment or a smooth indeterminate animation) with determinate,
+ * indeterminate, and buffered variants.
+ */
 .workspace-progress {
+  position: relative;
   display: block;
   width: 100%;
   height: 0.25rem;
-  border: none;
   border-radius: var(--md-sys-shape-corner-full);
-  overflow: hidden;
-  appearance: none;
-}
-
-.workspace-progress::-webkit-progress-bar {
   background: var(--md-sys-color-surface-container-highest);
-  border-radius: var(--md-sys-shape-corner-full);
+  overflow: hidden;
 }
 
-.workspace-progress::-webkit-progress-value {
+.workspace-progress__buffer {
+  position: absolute;
+  inset: 0 auto 0 0;
+  height: 100%;
+  background: color-mix(in srgb, var(--md-sys-color-primary) 30%, transparent);
+  border-radius: inherit;
+}
+
+.workspace-progress__track {
+  position: absolute;
+  inset: 0 auto 0 0;
+  height: 100%;
   background: var(--md-sys-color-primary);
-  border-radius: var(--md-sys-shape-corner-full);
+  border-radius: inherit;
   transition: width 160ms ease;
 }
 
-.workspace-progress::-moz-progress-bar {
-  background: var(--md-sys-color-primary);
-  border-radius: var(--md-sys-shape-corner-full);
+.workspace-progress--indeterminate .workspace-progress__track {
+  width: 40% !important;
+  animation: workspace-progress-indeterminate 1.2s ease-in-out infinite;
+}
+
+@keyframes workspace-progress-indeterminate {
+  0% {
+    left: -40%;
+  }
+  100% {
+    left: 100%;
+  }
 }
 
 /* === Progress Spinner (PBProgressSpinner) — indeterminate circular ring === */
@@ -790,6 +1128,51 @@
 
 .workspace-list > li:not(:last-child) {
   border-bottom: 1px solid var(--md-sys-color-outline-variant);
+}
+
+/* Two/three-line item with leading icon and trailing meta text. */
+.workspace-list-item {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.workspace-list-item__icon {
+  display: grid;
+  flex: 0 0 auto;
+  width: 2.5rem;
+  height: 2.5rem;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--md-sys-color-surface-container-highest);
+  font-size: 1.25rem;
+}
+
+.workspace-list-item__content {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.workspace-list-item__title {
+  font-size: var(--md-sys-typescale-body-large-size);
+  color: var(--md-sys-color-on-surface);
+}
+
+.workspace-list-item__subtitle {
+  overflow: hidden;
+  font-size: var(--md-sys-typescale-body-medium-size);
+  color: var(--md-sys-color-on-surface-variant);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.workspace-list-item__trailing {
+  flex: 0 0 auto;
+  color: var(--md-sys-color-on-surface-variant);
+  font-size: var(--md-sys-typescale-label-medium-size);
 }
 
 /* === Table (PBTable) — m3.material.io/components/data-tables === */
@@ -862,11 +1245,37 @@
   background: color-mix(in srgb, var(--md-sys-color-on-surface) calc(var(--md-sys-state-hover-state-layer-opacity) * 100%), transparent);
 }
 
-/* === Tabs (PBTabs) — layout only, PBButton supplies its own styling === */
+/* === Tabs (PBTabs) — m3.material.io/components/tabs
+ * .workspace-tabs is just the flex row + baseline track; each .workspace-tab
+ * carries its own 2px active indicator so no JS position-tracking is needed.
+ */
 .workspace-tabs {
   display: flex;
   gap: 0.25rem;
   border-bottom: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.workspace-tab {
+  position: relative;
+  padding: 0.9rem 1rem;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--md-sys-color-on-surface-variant);
+  font-family: var(--md-sys-typescale-font-family);
+  font-size: var(--md-sys-typescale-label-large-size);
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 120ms ease, border-color 160ms var(--md-sys-motion-easing-standard);
+}
+
+.workspace-tab:hover {
+  color: var(--md-sys-color-on-surface);
+}
+
+.workspace-tab--active {
+  color: var(--md-sys-color-primary);
+  border-bottom-color: var(--md-sys-color-primary);
 }
 
 /* === Stepper (PBStepper) — m3.material.io/components/... (horizontal, numbered) === */
@@ -911,6 +1320,33 @@
   background: var(--md-sys-color-outline-variant);
 }
 
+/* Vertical orientation: numbered circle pinned top-left of each step, text
+   flows to its right, connector line runs down instead of across. */
+.workspace-stepper--vertical {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+}
+
+.workspace-stepper--vertical > li {
+  position: relative;
+  padding: 0 0 1.5rem 2.25rem;
+}
+
+.workspace-stepper--vertical > li::before {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.workspace-stepper--vertical > li:not(:last-child)::after {
+  position: absolute;
+  left: 0.75rem;
+  top: 1.5rem;
+  width: 1px;
+  height: calc(100% - 1.5rem);
+}
+
 /* === Sidenav (PBSidenav) === */
 .workspace-sidenav {
   display: flex;
@@ -938,6 +1374,30 @@
 
 .workspace-sidenav li:hover {
   background: color-mix(in srgb, var(--md-sys-color-on-surface) calc(var(--md-sys-state-hover-state-layer-opacity) * 100%), transparent);
+}
+
+/* "Over" mode — a fixed drawer that slides in above content, plus a scrim
+   that dismisses it on click. */
+.workspace-sidenav--over {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 50;
+  height: 100vh;
+  box-shadow: var(--md-sys-elevation-level-1);
+  transform: translateX(-100%);
+  transition: transform var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-standard);
+}
+
+.workspace-sidenav--over.workspace-sidenav--open {
+  transform: translateX(0);
+}
+
+.workspace-sidenav-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 49;
+  background: color-mix(in srgb, var(--md-sys-color-scrim) 32%, transparent);
 }
 
 /* === Toolbar (PBToolbar) === */
@@ -1010,7 +1470,13 @@
   line-height: 1;
 }
 
-/* === Ripples (PBRipples) — lightweight CSS-only approximation (no click-position tracking) === */
+/* === Ripples (PBRipples) ===
+ * The actual state-layer ripple (m3.material.io/foundations/interaction/states)
+ * is real and pointer-position-aware -- see design-system.js, which listens
+ * for pointerdown on this and several other interactive classes and injects
+ * a .workspace-ripple-effect span at the click coordinates. This class only
+ * needs to establish the clipping container.
+ */
 .workspace-ripples {
   position: relative;
   display: inline-flex;
@@ -1018,21 +1484,20 @@
   border-radius: inherit;
 }
 
-.workspace-ripples::after {
-  content: "";
+.workspace-ripple-effect {
   position: absolute;
-  inset: 0;
   border-radius: 50%;
-  background: color-mix(in srgb, var(--md-sys-color-on-surface) 24%, transparent);
+  background: color-mix(in srgb, currentColor 24%, transparent);
   transform: scale(0);
-  opacity: 0;
-  transition: transform 260ms ease, opacity 260ms ease;
+  animation: workspace-ripple-anim 500ms ease-out;
+  pointer-events: none;
 }
 
-.workspace-ripples:active::after {
-  transform: scale(2);
-  opacity: 1;
-  transition: transform 0ms, opacity 0ms;
+@keyframes workspace-ripple-anim {
+  to {
+    transform: scale(1);
+    opacity: 0;
+  }
 }
 
 /* === Core (PBCore) — generic foundational-styles wrapper, intentionally minimal === */
@@ -1070,14 +1535,31 @@
 }
 
 /* === Bottom Sheet (PBBottomSheet) — m3.material.io/components/bottom-sheets === */
+.workspace-bottom-sheet-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 49;
+  background: color-mix(in srgb, var(--md-sys-color-scrim) 32%, transparent);
+  animation: workspace-scrim-in var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-standard);
+}
+
 .workspace-bottom-sheet {
-  display: block;
-  padding: 1.5rem;
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  z-index: 50;
+  width: min(32rem, 100vw);
+  max-width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 0.5rem 1rem;
   border-radius: var(--md-sys-shape-corner-extra-large) var(--md-sys-shape-corner-extra-large) 0 0;
   background: var(--md-sys-color-surface-container-low);
   color: var(--md-sys-color-on-surface);
   box-shadow: var(--md-sys-elevation-level-3);
   font-family: var(--md-sys-typescale-font-family);
+  transform: translate(-50%, 0);
+  animation: workspace-bottom-sheet-in var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized-decelerate);
 }
 
 .workspace-bottom-sheet::before {
@@ -1085,7 +1567,25 @@
   display: block;
   width: 2rem;
   height: 0.25rem;
-  margin: 0 auto 1rem;
+  margin: 1rem auto;
   border-radius: var(--md-sys-shape-corner-full);
   background: var(--md-sys-color-outline-variant);
+}
+
+@keyframes workspace-bottom-sheet-in {
+  from {
+    transform: translate(-50%, 100%);
+  }
+  to {
+    transform: translate(-50%, 0);
+  }
+}
+
+@keyframes workspace-scrim-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }

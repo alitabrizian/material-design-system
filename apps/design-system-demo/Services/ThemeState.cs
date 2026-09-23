@@ -1,60 +1,45 @@
 namespace Design.Demo.Services;
 
 /// <summary>
-/// Holds the demo app's current color mode and palette (see
-/// css/material-tokens.css for the actual --md-sys-color-* token values per
-/// palette/mode). Registered as a singleton; the top app bar is the only
-/// component that mutates it, but any component can subscribe to
-/// <see cref="Changed"/>.
+/// Holds the demo app's current theme. Each theme is a fixed two-hue
+/// (primary + tertiary) M3 palette locked to a single light or dark mode --
+/// there is no independent light/dark toggle, matching Angular Material's
+/// own prebuilt theme set. See tools/scripts/generate-palettes.mts for the
+/// actual --md-sys-color-* token generation and
+/// css/tokens.css for the resulting values per theme.
+/// Registered as a singleton; the top app bar is the only component that
+/// mutates it, but any component can subscribe to <see cref="Changed"/>.
 /// </summary>
 public sealed class ThemeState
 {
-    public const string LightMode = "light";
-    public const string DarkMode = "dark";
-    public const string DefaultPalette = "purple";
+    public const string DefaultTheme = "rose-red";
 
-    public static readonly IReadOnlyList<PaletteOption> Palettes =
+    public static readonly IReadOnlyList<ThemeOption> Themes =
     [
-        new("purple", "Purple", "#6750A4"),
-        new("blue", "Blue", "#0B57D0"),
-        new("green", "Green", "#006E1C"),
-        new("orange", "Orange", "#8B5000"),
-        new("red", "Red", "#B3261E"),
-        new("teal", "Teal", "#006A6A"),
+        new("rose-red", "Rose & Red", "#E3184F", "#B3261E", IsDark: false),
+        new("azure-blue", "Azure & Blue", "#0091EA", "#0B57D0", IsDark: false),
+        new("magenta-violet", "Magenta & Violet", "#D500F9", "#673AB7", IsDark: true),
+        new("cyan-orange", "Cyan & Orange", "#00BCD4", "#F57C00", IsDark: true),
     ];
 
-    public string Mode { get; private set; } = LightMode;
-
-    public string Palette { get; private set; } = DefaultPalette;
+    public string Theme { get; private set; } = DefaultTheme;
 
     public event Action? Changed;
 
-    /// <summary>Seeds Mode/Palette from already-resolved values (e.g. read from the DOM/localStorage) without raising Changed.</summary>
-    public void Initialize(string? mode, string? palette)
+    /// <summary>Seeds Theme from an already-resolved value (e.g. read from the DOM/localStorage) without raising Changed.</summary>
+    public void Initialize(string? theme)
     {
-        Mode = mode == DarkMode ? DarkMode : LightMode;
-        Palette = Palettes.Any(p => p.Key == palette) ? palette! : DefaultPalette;
+        Theme = Themes.Any(t => t.Key == theme) ? theme! : DefaultTheme;
     }
 
-    public void ToggleMode() => SetMode(Mode == DarkMode ? LightMode : DarkMode);
-
-    public void SetMode(string mode)
+    public void SetTheme(string theme)
     {
-        if (mode != LightMode && mode != DarkMode || mode == Mode)
+        if (theme == Theme || !Themes.Any(t => t.Key == theme))
             return;
 
-        Mode = mode;
+        Theme = theme;
         Changed?.Invoke();
     }
 
-    public void SetPalette(string palette)
-    {
-        if (palette == Palette || !Palettes.Any(p => p.Key == palette))
-            return;
-
-        Palette = palette;
-        Changed?.Invoke();
-    }
-
-    public sealed record PaletteOption(string Key, string Name, string Seed);
+    public sealed record ThemeOption(string Key, string Name, string PrimarySeed, string TertiarySeed, bool IsDark);
 }

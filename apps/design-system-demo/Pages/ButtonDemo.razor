@@ -5,10 +5,6 @@
 
 <div class="catalog-content">
 
-    <div class="catalog-toolbar" aria-label="Component catalog tools">
-        <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
-    </div>
-
     <PageHeader Title="Button">
         Buttons trigger an action or event, such as submitting a form or opening a
         dialog. <code>PBButton</code> renders a native <code>&lt;button&gt;</code>
@@ -73,13 +69,56 @@
     </section>
 
     <section class="doc-section">
+        <p class="field-hint">
+            Icon buttons and FABs (floating action buttons) use the same
+            <code>PBButton</code> component with an icon-only <code>Variant</code> —
+            just pass <code>IconStart</code> and no <code>ChildContent</code> (except
+            for <code>ExtendedFab</code>, which keeps its label).
+        </p>
+
+        <ExampleCard Title="Icon button and FABs" RazorCode="@(
+@"<PBButton Variant=""PBButtonVariant.Icon"" aria-label=""Favorite"">
+    <IconStart>♡</IconStart>
+</PBButton>
+
+<PBButton Variant=""PBButtonVariant.MiniFab"" aria-label=""Add"">
+    <IconStart>+</IconStart>
+</PBButton>
+
+<PBButton Variant=""PBButtonVariant.Fab"" aria-label=""Compose"">
+    <IconStart>✎</IconStart>
+</PBButton>
+
+<PBButton Variant=""PBButtonVariant.ExtendedFab"">
+    <IconStart>+</IconStart>
+    <ChildContent>Compose</ChildContent>
+</PBButton>")">
+            <div style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
+                <PBButton Variant="PBButtonVariant.Icon" aria-label="Favorite">
+                    <IconStart>♡</IconStart>
+                </PBButton>
+                <PBButton Variant="PBButtonVariant.MiniFab" aria-label="Add">
+                    <IconStart>+</IconStart>
+                </PBButton>
+                <PBButton Variant="PBButtonVariant.Fab" aria-label="Compose">
+                    <IconStart>✎</IconStart>
+                </PBButton>
+                <PBButton Variant="PBButtonVariant.ExtendedFab">
+                    <IconStart>+</IconStart>
+                    <ChildContent>Compose</ChildContent>
+                </PBButton>
+            </div>
+        </ExampleCard>
+    </section>
+
+    <section class="doc-section">
         <h2>API reference</h2>
         <table class="doc-table">
             <thead>
                 <tr><th>Property</th><th>Type</th><th>Description</th></tr>
             </thead>
             <tbody>
-                <tr><td><code>Variant</code></td><td><code>PBButtonVariant</code></td><td>One of <code>Text</code> (default), <code>Filled</code>, <code>Tonal</code>, <code>Outlined</code>, <code>Elevated</code>.</td></tr>
+                <tr><td><code>Variant</code></td><td><code>PBButtonVariant</code></td><td>One of <code>Text</code> (default), <code>Filled</code>, <code>Tonal</code>, <code>Outlined</code>, <code>Elevated</code>, <code>Icon</code>, <code>Fab</code>, <code>MiniFab</code>, <code>ExtendedFab</code>.</td></tr>
                 <tr><td><code>Type</code></td><td><code>string</code></td><td>The native <code>type</code> attribute. Defaults to <code>"button"</code>.</td></tr>
                 <tr><td><code>IconStart</code></td><td><code>RenderFragment?</code></td><td>Icon rendered before the label.</td></tr>
                 <tr><td><code>IconEnd</code></td><td><code>RenderFragment?</code></td><td>Icon rendered after the label.</td></tr>

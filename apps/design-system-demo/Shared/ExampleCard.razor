@@ -88,10 +88,11 @@
 
     private void SelectTab(string tab) => activeTab = tab;
 
+    private string ExampleUrl => Nav.Uri.Split('#')[0] + "#" + ResolvedId;
+
     private async Task CopyLink()
     {
-        var url = Nav.ToAbsoluteUri("#" + ResolvedId).ToString();
-        await JS.InvokeVoidAsync("navigator.clipboard.writeText", url);
+        await JS.InvokeVoidAsync("navigator.clipboard.writeText", ExampleUrl);
     }
 
     private async Task CopyCode()
@@ -101,8 +102,7 @@
 
     private async Task OpenInNew()
     {
-        var url = Nav.ToAbsoluteUri("#" + ResolvedId).ToString();
-        await JS.InvokeVoidAsync("open", url, "_blank");
+        await JS.InvokeVoidAsync("open", ExampleUrl, "_blank");
     }
 
     private static string Slugify(string value)

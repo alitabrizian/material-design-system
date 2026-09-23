@@ -5,10 +5,6 @@
 
 <div class="catalog-content">
 
-    <div class="catalog-toolbar" aria-label="Component catalog tools">
-        <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
-    </div>
-
     <PageHeader Title="List">
         A list presents a vertical collection of related items, such as
         navigation entries or search results.
@@ -28,6 +24,39 @@
                 @foreach (var entry in activity)
                 {
                     <li>@entry</li>
+                }
+            </PBList>
+        </ExampleCard>
+    </section>
+
+    <section class="doc-section">
+        <p class="field-hint">A two-line item with a leading icon and trailing meta text.</p>
+
+        <ExampleCard Title="Two-line with icon" RazorCode="@(
+@"<PBList>
+    @foreach (var msg in messages)
+    {
+        <li class=""workspace-list-item"">
+            <span class=""workspace-list-item__icon"">@msg.Icon</span>
+            <span class=""workspace-list-item__content"">
+                <span class=""workspace-list-item__title"">@msg.Title</span>
+                <span class=""workspace-list-item__subtitle"">@msg.Subtitle</span>
+            </span>
+            <span class=""workspace-list-item__trailing"">@msg.Time</span>
+        </li>
+    }
+</PBList>")">
+            <PBList>
+                @foreach (var msg in messages)
+                {
+                    <li class="workspace-list-item">
+                        <span class="workspace-list-item__icon">@msg.Icon</span>
+                        <span class="workspace-list-item__content">
+                            <span class="workspace-list-item__title">@msg.Title</span>
+                            <span class="workspace-list-item__subtitle">@msg.Subtitle</span>
+                        </span>
+                        <span class="workspace-list-item__trailing">@msg.Time</span>
+                    </li>
                 }
             </PBList>
         </ExampleCard>
@@ -61,5 +90,13 @@
         "Ali updated the PBAutoComplete component",
         "New demo page published for PBBadge",
         "Design tokens synced from Figma",
+    ];
+
+    private sealed record Message(string Icon, string Title, string Subtitle, string Time);
+
+    private static readonly Message[] messages =
+    [
+        new("👤", "Sara Ahmadi", "Can you review the PR when you get a chance?", "9:41"),
+        new("📎", "Kian Rostami", "Attached the updated token spreadsheet.", "Yesterday"),
     ];
 }

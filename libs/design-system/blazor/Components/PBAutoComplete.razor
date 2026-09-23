@@ -1,13 +1,12 @@
-@inherits WorkspaceComponentBase
+@inherits WorkspaceFieldComponentBase
 @typeparam TItem
 
 <div class="mdc-autocomplete @(Enabled ? "" : "mdc-autocomplete--disabled")">
-    <label class="mdc-autocomplete__label">@Label</label>
-    <div class="mdc-autocomplete__input-container">
+    <div class="mdc-autocomplete__input-container workspace-field-control @(ErrorText is not null ? "workspace-field-control--error" : "")">
         <input
             type="text"
             class="mdc-autocomplete__input"
-            placeholder="@Placeholder"
+            placeholder="@(Placeholder ?? " ")"
             value="@InputValue"
             disabled="@(!Enabled)"
             aria-label="@Label"
@@ -18,8 +17,9 @@
             @oninput="OnInputChanged"
             @onkeydown="OnKeyPressed"
             @onfocus="OpenPanel"
-            @onclick="TogglePanel"
+            @onblur="ClosePanel"
             @attributes="AdditionalAttributes" />
+        <span class="workspace-field-label">@Label</span>
 
         @if (PanelOpen && FilteredOptions.Any())
         {
@@ -42,13 +42,18 @@
                         role="option"
                         aria-selected="@isSelected"
                         @onmouseenter="() => { HighlightedIndex = optionIdx; UpdateActiveOptionId(); StateHasChanged(); }"
-                        @onclick="() => SelectOption(option)">
+                        @onmousedown="() => SelectOption(option)"
+                        @onmousedown:preventDefault="true">
                         @GetDisplayText(option)
                     </div>
                 }
             </div>
         }
     </div>
+    @if (FieldHintText is not null)
+    {
+        <span class="@FieldHintClass">@FieldHintText</span>
+    }
 </div>
 
 @code {
@@ -136,12 +141,6 @@
         HighlightedIndex = 0;
         ActiveOptionId = null;
         StateHasChanged();
-    }
-
-    private void TogglePanel()
-    {
-        if (PanelOpen) ClosePanel();
-        else OpenPanel();
     }
 
     private async Task OnInputChanged(ChangeEventArgs e)

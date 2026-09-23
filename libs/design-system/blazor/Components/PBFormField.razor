@@ -1,2 +1,11 @@
-@inherits WorkspaceComponentBase
-<label class="workspace-field"><span>@Label</span>@ChildContent</label>
+@inherits WorkspaceFieldComponentBase
+<div class="workspace-field">
+    <label class="workspace-field-control @(ErrorText is not null ? "workspace-field-control--error" : "")">
+        @ChildContent
+        <span class="workspace-field-label">@Label</span>
+    </label>
+    @if (FieldHintText is not null)
+    {
+        <span class="@FieldHintClass">@FieldHintText</span>
+    }
+</div>

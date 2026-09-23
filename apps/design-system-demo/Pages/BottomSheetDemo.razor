@@ -5,31 +5,32 @@
 
 <div class="catalog-content">
 
-    <div class="catalog-toolbar" aria-label="Component catalog tools">
-        <a class="nav-link" href="/" aria-label="Back to catalog">← All components</a>
-    </div>
-
     <PageHeader Title="Bottom Sheet">
         A bottom sheet surfaces a focused set of actions or information without
         leaving the current page.
     </PageHeader>
 
     <section class="doc-section">
-        <p class="field-hint">Toggle the button below to show or hide the sheet.</p>
+        <p class="field-hint">Click the button below to open the sheet — it slides up from the bottom of the screen with a scrim behind it. Click the scrim or press Escape to dismiss it.</p>
 
         <ExampleCard Title="Action sheet" RazorCode="@(
-@"<PBBottomSheet Label=""Share options"">
-    <PBList>
-        <li>Copy link</li>
-        <li>Send in a message</li>
-        <li>Share to social</li>
-    </PBList>
-</PBBottomSheet>")">
-            <PBButton @onclick="() => isOpen = !isOpen">@(isOpen ? "Hide sheet" : "Show sheet")</PBButton>
+@"<PBButton @onclick=""() => isOpen = true"">Open</PBButton>
+
+@if (isOpen)
+{
+    <PBBottomSheet Label=""Share options"" Dismissed=""() => isOpen = false"">
+        <PBList>
+            <li>Copy link</li>
+            <li>Send in a message</li>
+            <li>Share to social</li>
+        </PBList>
+    </PBBottomSheet>
+}")">
+            <PBButton Variant="PBButtonVariant.Elevated" @onclick="() => isOpen = true">Open</PBButton>
 
             @if (isOpen)
             {
-                <PBBottomSheet Label="Share options">
+                <PBBottomSheet Label="Share options" Dismissed="() => isOpen = false">
                     <PBList>
                         <li>Copy link</li>
                         <li>Send in a message</li>
@@ -48,6 +49,7 @@
             </thead>
             <tbody>
                 <tr><td><code>Label</code></td><td><code>string?</code></td><td>Accessible label for the sheet region.</td></tr>
+                <tr><td><code>Dismissed</code></td><td><code>EventCallback</code></td><td>Raised when the scrim is clicked or Escape is pressed — remove the sheet from your <code>@@if</code> in response.</td></tr>
                 <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The sheet's content, typically a list of actions.</td></tr>
                 <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;section&gt;</code>.</td></tr>
             </tbody>
@@ -57,14 +59,15 @@
     <section class="doc-section">
         <div class="a11y-note">
             <strong>Accessibility</strong>
-            The sheet renders as a <code>&lt;section aria-label&gt;</code>. Showing and
-            hiding it is currently controlled entirely by the host page (via an
-            <code>@@if</code>), so make sure focus moves into the sheet when it opens
-            and back to the triggering control when it closes.
+            The sheet renders as a <code>&lt;section aria-label&gt;</code> with a
+            dismissible scrim, and closes on Escape. Whether it's shown at all is
+            still controlled by the host page (via an <code>@@if</code>), so make
+            sure focus moves into the sheet when it opens and back to the
+            triggering control when it closes.
         </div>
     </section>
 </div>
 
 @code {
-    private bool isOpen = true;
+    private bool isOpen;
 }

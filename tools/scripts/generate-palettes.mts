@@ -1,7 +1,10 @@
 /**
- * Generates the Material 3 color-role tokens (--md-sys-color-*) for all 6
- * seed palettes, in both light and dark mode, using the real HCT tonal-
- * palette algorithm from @material/material-color-utilities.
+ * Generates the Material 3 color-role tokens (--md-sys-color-*) for the 4
+ * fixed Angular-Material-style two-hue themes (each theme has its own
+ * primary + tertiary seed color and a single fixed light/dark mode -- there
+ * is no independent light/dark toggle, matching Angular Material's own
+ * prebuilt theme set), using the real HCT tonal-palette algorithm from
+ * @material/material-color-utilities.
  *
  * Output (written into the design-system library's OWN wwwroot, so it ships
  * as a static web asset inside the PartoBita.DesignSystem.Blazor NuGet
@@ -10,11 +13,9 @@
  *   - libs/design-system/blazor/wwwroot/css/tokens.css
  *   - libs/design-system/blazor/wwwroot/data/palettes.json
  *
- * Palette list, seed colors, and the tone-per-role mapping are unchanged
- * from the original hand-generated tokens (see
- * libs/design-system/blazor/wwwroot/css/material-tokens.css for the
- * palette-independent typography/shape/elevation/motion/state tokens,
- * which this script does not touch).
+ * Palette-independent tokens (typescale/shape/elevation/motion/state) live
+ * in the static libs/design-system/blazor/wwwroot/css/material-tokens.css
+ * instead, which this script does not touch.
  *
  * Note: @material/material-color-utilities@0.4.0's own barrel export
  * (the "." entry point) transitively imports a file with a missing ".js"
@@ -62,22 +63,21 @@ interface CorePaletteInstance {
   n2: TonalPalette; // neutral-variant (outline)
 }
 
-const SEEDS: Record<string, number> = {
-  purple: 0x6750a4,
-  blue: 0x0b57d0,
-  green: 0x006e1c,
-  orange: 0x8b5000,
-  red: 0xb3261e,
-  teal: 0x006a6a,
-};
+interface ThemeDef {
+  name: string;
+  mode: "light" | "dark";
+  primary: number;
+  tertiary: number;
+}
 
-const PALETTE_NAMES: Record<string, string> = {
-  purple: "Purple",
-  blue: "Blue",
-  green: "Green",
-  orange: "Orange",
-  red: "Red",
-  teal: "Teal",
+// The 4 fixed themes (Angular Material's own prebuilt-theme naming/pairing):
+// each is its own two-hue palette (primary + tertiary seed) locked to a
+// single light or dark mode -- not independently togglable.
+const THEMES: Record<string, ThemeDef> = {
+  "rose-red": { name: "Rose & Red", mode: "light", primary: 0xe3184f, tertiary: 0xb3261e },
+  "azure-blue": { name: "Azure & Blue", mode: "light", primary: 0x0091ea, tertiary: 0x0b57d0 },
+  "magenta-violet": { name: "Magenta & Violet", mode: "dark", primary: 0xd500f9, tertiary: 0x673ab7 },
+  "cyan-orange": { name: "Cyan & Orange", mode: "dark", primary: 0x00bcd4, tertiary: 0xf57c00 },
 };
 
 function toHex(argb: number): string {
@@ -149,7 +149,7 @@ function rolesForMode(cp: CorePaletteInstance, mode: "light" | "dark"): ColorRol
     errorContainer: t(cp.error, isDark ? 30 : 90),
     onErrorContainer: t(cp.error, isDark ? 90 : 10),
 
-    surface: t(cp.n1, isDark ? 10 : 98),
+    surface: isDark ? "#2d2d2d" : t(cp.n1, 98),
     onSurface: t(cp.n1, isDark ? 90 : 10),
     surfaceVariant: t(cp.n2, isDark ? 30 : 90),
     onSurfaceVariant: t(cp.n2, isDark ? 80 : 30),
@@ -236,15 +236,13 @@ function cssBlock(selector: string, roles: ColorRoles): string {
   return lines.join("\n");
 }
 
-const palettes: Record<string, { light: ColorRoles; dark: ColorRoles; seed: string }> = {};
+const DEFAULT_THEME = "rose-red";
 
-for (const [key, seed] of Object.entries(SEEDS)) {
-  const cp: CorePaletteInstance = CorePalette.of(seed);
-  palettes[key] = {
-    seed: toHex(seed),
-    light: rolesForMode(cp, "light"),
-    dark: rolesForMode(cp, "dark"),
-  };
+const themes: Record<string, { def: ThemeDef; roles: ColorRoles }> = {};
+
+for (const [key, def] of Object.entries(THEMES)) {
+  const cp: CorePaletteInstance = CorePalette.fromColors({ primary: def.primary, tertiary: def.tertiary });
+  themes[key] = { def, roles: rolesForMode(cp, def.mode) };
 }
 
 const cssParts: string[] = [
@@ -253,23 +251,19 @@ const cssParts: string[] = [
   " * Produced by tools/scripts/generate-palettes.mts (nx run tokens:generate-palettes)",
   " * from @material/material-color-utilities. Re-run the Nx target to regenerate.",
   " *",
-  " * --md-sys-color-* roles for all 6 palettes x light/dark. Palette-independent",
-  " * tokens (typescale/shape/elevation/motion/state) live in the static",
-  " * libs/design-system/blazor/wwwroot/css/material-tokens.css instead.",
+  " * --md-sys-color-* roles for the 4 fixed themes (each its own two-hue",
+  " * primary+tertiary palette, locked to one light/dark mode). Palette-",
+  " * independent tokens (typescale/shape/elevation/motion/state) live in the",
+  " * static libs/design-system/blazor/wwwroot/css/material-tokens.css instead.",
   " */",
   "",
 ];
 
-const keys = Object.keys(SEEDS);
+const keys = Object.keys(THEMES);
 for (const key of keys) {
-  const selector = key === "purple" ? `:root,\n[data-palette="${key}"]` : `[data-palette="${key}"]`;
-  cssParts.push(`/* ${PALETTE_NAMES[key]} — light */`);
-  cssParts.push(cssBlock(selector, palettes[key].light));
-  cssParts.push("");
-}
-for (const key of keys) {
-  cssParts.push(`/* ${PALETTE_NAMES[key]} — dark */`);
-  cssParts.push(cssBlock(`[data-palette="${key}"][data-theme="dark"]`, palettes[key].dark));
+  const selector = key === DEFAULT_THEME ? `:root,\n[data-theme="${key}"]` : `[data-theme="${key}"]`;
+  cssParts.push(`/* ${THEMES[key].name} — ${THEMES[key].mode} */`);
+  cssParts.push(cssBlock(selector, themes[key].roles));
   cssParts.push("");
 }
 
@@ -282,10 +276,27 @@ fs.mkdirSync(path.dirname(jsonOutputPath), { recursive: true });
 fs.writeFileSync(cssOutputPath, cssParts.join("\n").trimEnd() + "\n", "utf8");
 fs.writeFileSync(
   jsonOutputPath,
-  JSON.stringify({ default: "purple", palettes: { names: PALETTE_NAMES, ...palettes } }, null, 2) + "\n",
+  JSON.stringify(
+    {
+      default: DEFAULT_THEME,
+      themes: Object.fromEntries(
+        keys.map((key) => [
+          key,
+          {
+            name: THEMES[key].name,
+            mode: THEMES[key].mode,
+            primarySeed: toHex(THEMES[key].primary),
+            tertiarySeed: toHex(THEMES[key].tertiary),
+          },
+        ])
+      ),
+    },
+    null,
+    2
+  ) + "\n",
   "utf8"
 );
 
 console.log(`Wrote ${path.relative(repoRoot, cssOutputPath)}`);
 console.log(`Wrote ${path.relative(repoRoot, jsonOutputPath)}`);
-console.log(`Generated ${keys.length} palettes x 2 modes x ${ROLE_TO_VAR.length} tokens.`);
+console.log(`Generated ${keys.length} themes x ${ROLE_TO_VAR.length} tokens.`);
