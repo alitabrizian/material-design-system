@@ -1,12 +1,35 @@
 @inherits WorkspaceComponentBase
-<button class="pb-button pb-button--@VariantClass" @attributes="AdditionalAttributes" type="@Type">
-    @if (IconStart is not null)
-    {
-        <span class="pb-button__icon pb-button__icon--start" aria-hidden="true">@IconStart</span>
-    }
-    <span class="pb-button__label">@ChildContent</span>
-    @if (IconEnd is not null)
-    {
-        <span class="pb-button__icon pb-button__icon--end" aria-hidden="true">@IconEnd</span>
-    }
-</button>
+@if (Href is not null)
+{
+    <a class="@CssClass"
+       href="@(Disabled ? null : Href)"
+       aria-disabled="@(Disabled ? "true" : null)"
+       tabindex="@(Disabled && !DisabledInteractive ? -1 : (int?)null)"
+       @attributes="ForwardedAttributes">@Content</a>
+}
+else
+{
+    <button class="@CssClass"
+            type="@Type"
+            disabled="@(Disabled && !DisabledInteractive)"
+            aria-disabled="@(Disabled && DisabledInteractive ? "true" : null)"
+            @attributes="ForwardedAttributes">@Content</button>
+}
+
+@code {
+    private RenderFragment Content => @<text>
+        @if (IconStart is not null)
+        {
+            <span class="pb-button__icon pb-button__icon--start" aria-hidden="true">@IconStart</span>
+        }
+        <span class="pb-button__label">@ChildContent</span>
+        @if (IconEnd is not null)
+        {
+            <span class="pb-button__icon pb-button__icon--end" aria-hidden="true">@IconEnd</span>
+        }
+        @if (ShowProgress)
+        {
+            <span class="pb-button__progress">@ProgressIndicator</span>
+        }
+    </text>;
+}

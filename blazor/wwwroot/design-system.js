@@ -4,7 +4,7 @@
 // Blazor-rendered content without per-element wiring.
 const RIPPLE_TARGETS = [
   ".pb-button",
-  ".workspace-button-toggle",
+  ".pb-button-toggle",
   ".pb-menu-item",
   ".workspace-chips [role=\"listitem\"]",
   ".workspace-tab",
