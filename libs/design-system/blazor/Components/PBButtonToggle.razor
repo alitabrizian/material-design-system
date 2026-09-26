@@ -1,2 +1,19 @@
 @inherits WorkspaceComponentBase
-<button class="workspace-button-toggle" @attributes="AdditionalAttributes" type="button" aria-pressed="@(Pressed ? "true" : "false")">@ChildContent</button>
+@implements IDisposable
+<button @ref="button"
+        type="button"
+        class="pb-button-toggle @(IsChecked ? "pb-button-toggle--checked" : null) @(ShowsIndicator ? "pb-button-toggle--indicator" : null)"
+        role="@(IsRadio ? "radio" : null)"
+        aria-checked="@(IsRadio ? (IsChecked ? "true" : "false") : null)"
+        aria-pressed="@(IsRadio ? null : (IsChecked ? "true" : "false"))"
+        tabindex="@(Group?.IsTabStop(this) == false ? -1 : 0)"
+        disabled="@IsDisabled"
+        @onclick="OnClickAsync"
+        @onkeydown="OnKeyDownAsync"
+        @attributes="AdditionalAttributes">
+    @if (ShowsIndicator)
+    {
+        <span class="pb-button-toggle__check" aria-hidden="true"></span>
+    }
+    <span class="pb-button-toggle__label">@ChildContent</span>
+</button>

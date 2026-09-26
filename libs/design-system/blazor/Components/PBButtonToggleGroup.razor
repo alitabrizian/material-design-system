@@ -1,0 +1,8 @@
+@inherits WorkspaceComponentBase
+<div class="pb-button-toggle-group"
+     role="@(Multiple ? "group" : "radiogroup")"
+     aria-label="@Label"
+     aria-disabled="@(Disabled ? "true" : "false")"
+     @attributes="AdditionalAttributes">
+    <CascadingValue Value="this" IsFixed="true">@ChildContent</CascadingValue>
+</div>

@@ -56,11 +56,12 @@
       "id": "button-toggle",
       "title": "Button Toggle",
       "route": "/button-toggle",
-      "example": "View mode",
+      "example": "Button toggle selection mode",
       "steps": [
-        { "action": "click", "target": "button:has-text(\"Grid\")", "caption": "Switch between related options" },
-        { "action": "click", "target": "button:has-text(\"Board\")" },
-        { "action": "click", "target": "button:has-text(\"List\")" }
+        { "action": "click", "target": ".pb-button-toggle:has-text(\"Green\")", "caption": "Pick one option from a group" },
+        { "action": "click", "target": ".pb-button-toggle:has-text(\"Blue\")" },
+        { "action": "click", "target": ".pb-button-toggle:has-text(\"Flour\")", "caption": "Or allow several at once" },
+        { "action": "click", "target": ".pb-button-toggle:has-text(\"Sugar\")" }
       ]
     },
     {
