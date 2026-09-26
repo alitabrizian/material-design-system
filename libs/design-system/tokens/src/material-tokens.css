@@ -25,6 +25,7 @@
  *   5. Elevation            (--md-sys-elevation-level-*)
  *   6. Motion               (--md-sys-motion-*)
  *   7. State layers         (--md-sys-state-*)
+ *   8. Spacing              (--md-sys-spacing-*)
  */
 
 /* ==========================================================================
@@ -187,4 +188,19 @@
   --md-sys-state-focus-state-layer-opacity: 0.12;
   --md-sys-state-pressed-state-layer-opacity: 0.12;
   --md-sys-state-dragged-state-layer-opacity: 0.16;
+}
+
+/* ==========================================================================
+   8. SPACING — 4dp-grid scale for gaps between components
+   M3 lays everything out on a 4dp grid (m3.material.io/foundations/layout);
+   named like the shape scale so components never hardcode spacing.
+   ========================================================================== */
+
+:root {
+  --md-sys-spacing-none: 0px;
+  --md-sys-spacing-extra-small: 0.25rem;
+  --md-sys-spacing-small: 0.5rem;
+  --md-sys-spacing-medium: 0.75rem;
+  --md-sys-spacing-large: 1rem;
+  --md-sys-spacing-extra-large: 1.5rem;
 }

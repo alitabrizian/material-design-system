@@ -14,18 +14,22 @@
         <p class="field-hint">Only one option can be selected at a time.</p>
 
         <ExampleCard Title="Delivery speed" RazorCode="@(
-@"@foreach (var option in speedOptions)
-{
-    <PBRadioButton Label=""@option""
-        name=""delivery-speed""
-        checked=""@(selectedSpeed == option)""
-        @onchange=""() => selectedSpeed = option"" />
-}")">
-            @foreach (var option in speedOptions)
-            {
-                <PBRadioButton Label="@option" name="delivery-speed" checked="@(selectedSpeed == option)" @onchange='() => selectedSpeed = option' />
-            }
-            <span class="status">Selected: @selectedSpeed</span>
+@"<PBRadioGroup Label=""Delivery speed"">
+    @foreach (var option in speedOptions)
+    {
+        <PBRadioButton Label=""@option""
+            name=""delivery-speed""
+            checked=""@(selectedSpeed == option)""
+            @onchange=""() => selectedSpeed = option"" />
+    }
+</PBRadioGroup>")">
+            <PBRadioGroup Label="Delivery speed">
+                @foreach (var option in speedOptions)
+                {
+                    <PBRadioButton Label="@option" name="delivery-speed" checked="@(selectedSpeed == option)" @onchange='() => selectedSpeed = option' />
+                }
+            </PBRadioGroup>
+            <p class="status">Selected: @selectedSpeed</p>
         </ExampleCard>
     </section>
 
@@ -36,6 +40,7 @@
                 <tr><th>Property</th><th>Type</th><th>Description</th></tr>
             </thead>
             <tbody>
+                <tr><td><code>PBRadioGroup.Label</code></td><td><code>string?</code></td><td>Accessible name of the group (<code>aria-label</code> on the <code>role="radiogroup"</code> container), which lays options out with consistent spacing.</td></tr>
                 <tr><td><code>Label</code></td><td><code>string?</code></td><td>Text rendered next to the radio.</td></tr>
                 <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;input type="radio"&gt;</code>, including <code>name</code>, <code>checked</code> and <code>@@onchange</code>.</td></tr>
             </tbody>
