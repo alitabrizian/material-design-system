@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@material/web": "2.5.0",
+    "@remotion/google-fonts": "4.0.526",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "remotion": "^4.0.526"
@@ -24,6 +25,7 @@
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "nx": "^21.5.0",
+    "playwright-core": "^1.63.0",
     "typescript": "~5.9.2"
   }
 }

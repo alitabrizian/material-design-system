@@ -6,6 +6,7 @@ bin/
 obj/
 .vs
 apps/remotion-videos/out/
+apps/remotion-videos/public/recordings/
 apps/remotion-videos/.remotion/
 
 # Copied from libs/design-system/tokens/dist by Design.csproj's SyncDesignTokens target

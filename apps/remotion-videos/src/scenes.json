@@ -1,0 +1,393 @@
+{
+  "theme": "rose-red",
+  "baseUrl": "http://127.0.0.1:5080",
+  "scenes": [
+    {
+      "id": "autocomplete",
+      "title": "Autocomplete",
+      "route": "/autocomplete",
+      "example": "Simple autocomplete",
+      "steps": [
+        { "action": "type", "target": "input", "text": "Ma", "caption": "Type to filter the options" },
+        { "action": "wait", "ms": 600 },
+        { "action": "click", "target": ".mdc-autocomplete__option >> nth=0", "caption": "Pick a match from the panel" }
+      ]
+    },
+    {
+      "id": "badge",
+      "title": "Badge",
+      "route": "/badge",
+      "example": "Badge overview",
+      "steps": [
+        { "action": "wait", "ms": 1600, "caption": "Badges attach a count or status to any element" },
+        { "action": "click", "target": "button:has-text(\"Hide\")", "caption": "Toggle a badge's visibility" },
+        { "action": "wait", "ms": 700 },
+        { "action": "click", "target": "button:has-text(\"Show\")" }
+      ]
+    },
+    {
+      "id": "bottom-sheet",
+      "title": "Bottom Sheet",
+      "route": "/bottom-sheet",
+      "example": "Action sheet",
+      "zoom": 1.1,
+      "captions": "top",
+      "steps": [
+        { "action": "click", "target": "button:has-text(\"Open\")", "caption": "The sheet slides up from the bottom of the screen" },
+        { "action": "wait", "ms": 1400 },
+        { "action": "click", "target": ".workspace-bottom-sheet-scrim", "position": { "x": 640, "y": 140 }, "caption": "Tap the scrim to dismiss it" }
+      ]
+    },
+    {
+      "id": "button",
+      "title": "Button",
+      "route": "/button",
+      "example": "Button overview",
+      "steps": [
+        { "action": "hover", "target": "button.pb-button--text:not([disabled])", "caption": "Five appearances, from text to filled" },
+        { "action": "hover", "target": "button.pb-button--filled:not([disabled])" },
+        { "action": "hover", "target": "button.pb-button--tonal:not([disabled])" },
+        { "action": "hover", "target": "button.pb-button--outlined:not([disabled])" },
+        { "action": "hover", "target": "button.pb-button--elevated:not([disabled])" },
+        { "action": "click", "target": "button.pb-button--filled:not([disabled])", "caption": "Every press gets a ripple" }
+      ]
+    },
+    {
+      "id": "button-toggle",
+      "title": "Button Toggle",
+      "route": "/button-toggle",
+      "example": "View mode",
+      "steps": [
+        { "action": "click", "target": "button:has-text(\"Grid\")", "caption": "Switch between related options" },
+        { "action": "click", "target": "button:has-text(\"Board\")" },
+        { "action": "click", "target": "button:has-text(\"List\")" }
+      ]
+    },
+    {
+      "id": "card",
+      "title": "Card",
+      "route": "/card",
+      "example": "Variants",
+      "steps": [
+        { "action": "wait", "ms": 2600, "caption": "Elevated, filled and outlined cards" }
+      ]
+    },
+    {
+      "id": "checkbox",
+      "title": "Checkbox",
+      "route": "/checkbox",
+      "example": "Preferences",
+      "steps": [
+        { "action": "click", "target": "text=SMS notifications", "caption": "Toggle each option independently" },
+        { "action": "click", "target": "text=Email notifications" }
+      ]
+    },
+    {
+      "id": "chips",
+      "title": "Chips",
+      "route": "/chips",
+      "example": "Filter chips",
+      "steps": [
+        { "action": "click", "target": "[role=listitem] >> text=Design", "caption": "Filter chips toggle a selection" },
+        { "action": "click", "target": "[role=listitem] >> text=Accessibility" },
+        { "action": "click", "target": "[role=listitem] >> text=Frontend" }
+      ]
+    },
+    {
+      "id": "core",
+      "title": "Core",
+      "route": "/core",
+      "example": "Section wrapper",
+      "steps": [
+        { "action": "wait", "ms": 2400, "caption": "A base section wrapper for grouping content" }
+      ]
+    },
+    {
+      "id": "datepicker",
+      "title": "Datepicker",
+      "route": "/datepicker",
+      "example": "Default",
+      "steps": [
+        { "action": "type", "target": "input[type=date]", "text": "09262026", "caption": "Enter a date" }
+      ]
+    },
+    {
+      "id": "dialog",
+      "title": "Dialog",
+      "route": "/dialog",
+      "example": "Confirmation dialog",
+      "steps": [
+        { "action": "wait", "ms": 1500, "caption": "Ask the user to confirm an action" },
+        { "action": "click", "target": "button:has-text(\"Cancel\")" },
+        { "action": "wait", "ms": 500 },
+        { "action": "click", "target": "button:has-text(\"Show dialog\")", "caption": "Open it again" }
+      ]
+    },
+    {
+      "id": "divider",
+      "title": "Divider",
+      "route": "/divider",
+      "example": "Between two sections",
+      "steps": [
+        { "action": "wait", "ms": 2400, "caption": "A thin rule separating related content" }
+      ]
+    },
+    {
+      "id": "expansion-panel",
+      "title": "Expansion Panel",
+      "route": "/expansion-panel",
+      "example": "Frequently asked questions",
+      "steps": [
+        { "action": "click", "target": "summary:has-text(\"What is a design system?\")", "caption": "Expand a panel to reveal its content" },
+        { "action": "wait", "ms": 900 },
+        { "action": "click", "target": "summary:has-text(\"How do I add a new component?\")" }
+      ]
+    },
+    {
+      "id": "form-field",
+      "title": "Form Field",
+      "route": "/form-field",
+      "example": "Wrapping an input",
+      "steps": [
+        { "action": "type", "target": "input", "text": "Ada Lovelace", "caption": "The label floats up as you type" }
+      ]
+    },
+    {
+      "id": "grid-list",
+      "title": "Grid List",
+      "route": "/grid-list",
+      "example": "Photo grid",
+      "steps": [
+        { "action": "wait", "ms": 2600, "caption": "Lay out tiles in a responsive grid" }
+      ]
+    },
+    {
+      "id": "icon",
+      "title": "Icon",
+      "route": "/icon",
+      "example": "Icon with a button",
+      "steps": [
+        { "action": "hover", "target": "button:has-text(\"Continue\")", "caption": "Icons pair with labels inside buttons" },
+        { "action": "click", "target": "button:has-text(\"Continue\")" }
+      ]
+    },
+    {
+      "id": "input",
+      "title": "Input",
+      "route": "/input",
+      "example": "Default",
+      "steps": [
+        { "action": "type", "target": "input", "text": "ada@example.com", "caption": "A filled text field with a floating label" }
+      ]
+    },
+    {
+      "id": "list",
+      "title": "List",
+      "route": "/list",
+      "example": "Recent activity",
+      "steps": [
+        { "action": "hover", "target": "text=Ali updated the PBAutoComplete component", "caption": "Display a column of related items" },
+        { "action": "hover", "target": "text=New demo page published for PBBadge" },
+        { "action": "hover", "target": "text=Design tokens synced from Figma" }
+      ]
+    },
+    {
+      "id": "menu",
+      "title": "Menu",
+      "route": "/menu",
+      "example": "Row actions",
+      "zoom": 1.2,
+      "steps": [
+        { "action": "click", "target": ".pb-menu__trigger", "caption": "Open a menu of actions" },
+        { "action": "hover", "target": ".pb-menu-item:has-text(\"Edit\")" },
+        { "action": "click", "target": ".pb-menu-item:has-text(\"Duplicate\")", "caption": "Choose one to run it" }
+      ]
+    },
+    {
+      "id": "paginator",
+      "title": "Paginator",
+      "route": "/paginator",
+      "example": "Result pages",
+      "steps": [
+        { "action": "click", "target": "button:has-text(\"Next\")", "caption": "Step through pages of results" },
+        { "action": "click", "target": "button:has-text(\"Next\")" },
+        { "action": "click", "target": "button:has-text(\"Prev\")" }
+      ]
+    },
+    {
+      "id": "progress-bar",
+      "title": "Progress Bar",
+      "route": "/progress-bar",
+      "example": "Determinate",
+      "steps": [
+        { "action": "click", "target": "button:has-text(\"+10%\")", "caption": "Show how far along a task is" },
+        { "action": "click", "target": "button:has-text(\"+10%\")" },
+        { "action": "click", "target": "button:has-text(\"+10%\")" },
+        { "action": "click", "target": "button:has-text(\"-10%\")" }
+      ]
+    },
+    {
+      "id": "progress-spinner",
+      "title": "Progress Spinner",
+      "route": "/progress-spinner",
+      "example": "Loading",
+      "steps": [
+        { "action": "wait", "ms": 2600, "caption": "Indicate work of unknown duration" }
+      ]
+    },
+    {
+      "id": "radio-button",
+      "title": "Radio Button",
+      "route": "/radio-button",
+      "example": "Delivery speed",
+      "steps": [
+        { "action": "click", "target": "text=Express", "caption": "Pick exactly one option" },
+        { "action": "click", "target": "text=Overnight" }
+      ]
+    },
+    {
+      "id": "ripples",
+      "title": "Ripples",
+      "route": "/ripples",
+      "example": "Wrapping a button",
+      "steps": [
+        { "action": "click", "target": "button:has-text(\"Tap me\")", "caption": "A ripple spreads from the press point" },
+        { "action": "click", "target": "button:has-text(\"Tap me\")", "offset": { "x": 0.2, "y": 0.5 } }
+      ]
+    },
+    {
+      "id": "select",
+      "title": "Select",
+      "route": "/select",
+      "example": "Default",
+      "steps": [
+        { "action": "select", "target": "select", "label": "Editor", "caption": "Choose one value from a list" },
+        { "action": "wait", "ms": 700 },
+        { "action": "select", "target": "select", "label": "Admin" }
+      ]
+    },
+    {
+      "id": "sidenav",
+      "title": "Sidenav",
+      "route": "/sidenav",
+      "example": "Over mode (drawer)",
+      "steps": [
+        { "action": "click", "target": "button:has-text(\"Open drawer\")", "caption": "A drawer slides in over the content" },
+        { "action": "hover", "target": ".workspace-sidenav li:has-text(\"Members\")" },
+        { "action": "click", "target": ".workspace-sidenav-scrim", "position": { "x": 1000, "y": 360 }, "caption": "Tap outside to close it" }
+      ]
+    },
+    {
+      "id": "slide-toggle",
+      "title": "Slide Toggle",
+      "route": "/slide-toggle",
+      "example": "Dark mode",
+      "steps": [
+        { "action": "click", "target": "text=Enable dark mode", "caption": "Switch a single setting on or off" },
+        { "action": "wait", "ms": 700 },
+        { "action": "click", "target": "text=Enable dark mode" }
+      ]
+    },
+    {
+      "id": "slider",
+      "title": "Slider",
+      "route": "/slider",
+      "example": "Volume",
+      "steps": [
+        { "action": "drag", "target": "input[type=range]", "from": 0.6, "to": 0.9, "caption": "Drag to choose a value from a range" },
+        { "action": "drag", "target": "input[type=range]", "from": 0.9, "to": 0.3 }
+      ]
+    },
+    {
+      "id": "snackbar",
+      "title": "Snackbar",
+      "route": "/snackbar",
+      "example": "Save confirmation",
+      "steps": [
+        { "action": "click", "target": "button:has-text(\"Save changes\")", "caption": "Confirm the result of an action" },
+        { "action": "wait", "ms": 1500 },
+        { "action": "click", "target": "button:has-text(\"Dismiss\")" }
+      ]
+    },
+    {
+      "id": "sort-header",
+      "title": "Sort Header",
+      "route": "/sort-header",
+      "example": "Table column",
+      "steps": [
+        { "action": "click", "target": "button:has-text(\"Name\")", "caption": "Click a header to change sort direction" },
+        { "action": "wait", "ms": 500 },
+        { "action": "click", "target": "button:has-text(\"Name\")" }
+      ]
+    },
+    {
+      "id": "stepper",
+      "title": "Stepper",
+      "route": "/stepper",
+      "example": "Checkout",
+      "steps": [
+        { "action": "click", "target": "button:has-text(\"Next\")", "caption": "Move through a sequence of steps" },
+        { "action": "click", "target": "button:has-text(\"Next\")" },
+        { "action": "click", "target": "button:has-text(\"Back\")" }
+      ]
+    },
+    {
+      "id": "table",
+      "title": "Table",
+      "route": "/table",
+      "example": "Team members",
+      "steps": [
+        { "action": "wait", "ms": 2600, "caption": "Present structured data in rows and columns" }
+      ]
+    },
+    {
+      "id": "tabs",
+      "title": "Tabs",
+      "route": "/tabs",
+      "example": "Account settings",
+      "steps": [
+        { "action": "click", "target": "[role=tab]:has-text(\"Security\")", "caption": "Switch between views of related content" },
+        { "action": "click", "target": "[role=tab]:has-text(\"Integrations\")" },
+        { "action": "click", "target": "[role=tab]:has-text(\"Profile\")" }
+      ]
+    },
+    {
+      "id": "timepicker",
+      "title": "Timepicker",
+      "route": "/timepicker",
+      "example": "Default",
+      "steps": [
+        { "action": "type", "target": "input[type=time]", "text": "1030A", "caption": "Enter a time" }
+      ]
+    },
+    {
+      "id": "toolbar",
+      "title": "Toolbar",
+      "route": "/toolbar",
+      "example": "Document toolbar",
+      "steps": [
+        { "action": "hover", "target": "button:has-text(\"Share\")", "caption": "Group a title with its actions" },
+        { "action": "click", "target": "button:has-text(\"Save\")" }
+      ]
+    },
+    {
+      "id": "tooltip",
+      "title": "Tooltip",
+      "route": "/tooltip",
+      "example": "Icon button",
+      "steps": [
+        { "action": "hover", "target": ".workspace-tooltip", "caption": "Hover to reveal a short label" },
+        { "action": "wait", "ms": 1600 }
+      ]
+    },
+    {
+      "id": "tree",
+      "title": "Tree",
+      "route": "/tree",
+      "example": "File explorer",
+      "steps": [
+        { "action": "wait", "ms": 2600, "caption": "Show hierarchical data as a nested tree" }
+      ]
+    }
+  ]
+}
