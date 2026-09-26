@@ -694,7 +694,6 @@
 .pb-menu__panel {
   position: absolute;
   top: calc(100% + 0.25rem);
-  right: 0;
   z-index: 26;
   min-width: 12rem;
   padding: 0.5rem;
@@ -706,6 +705,17 @@
   gap: 0.15rem;
   transform-origin: top;
   animation: workspace-panel-in var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-emphasized-decelerate);
+}
+
+/* XPosition (mat-menu xPosition): logical insets so After/Before follow the
+ * reading direction — After extends toward the inline end, Before toward the
+ * inline start. */
+.pb-menu__panel--after {
+  inset-inline-start: 0;
+}
+
+.pb-menu__panel--before {
+  inset-inline-end: 0;
 }
 
 .pb-menu-item {

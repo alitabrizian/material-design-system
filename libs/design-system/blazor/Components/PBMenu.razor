@@ -8,7 +8,7 @@
     @if (IsOpen)
     {
         <div class="pb-menu__scrim" @onclick="CloseAsync"></div>
-        <div class="pb-menu__panel" role="menu" aria-label="@Label" @onkeydown="OnKeyDownAsync" tabindex="-1">
+        <div class="pb-menu__panel pb-menu__panel--@(XPosition.ToString().ToLowerInvariant())" role="menu" aria-label="@Label" @onkeydown="OnKeyDownAsync" tabindex="-1">
             @ChildContent
         </div>
     }
