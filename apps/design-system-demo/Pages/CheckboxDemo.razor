@@ -19,7 +19,7 @@
     @onchange=""@((ChangeEventArgs e) => emailEnabled = (bool)e.Value!)"" />")">
             <PBCheckbox Label="Email notifications" checked="@emailEnabled" @onchange="@((ChangeEventArgs e) => emailEnabled = (bool)e.Value!)" />
             <PBCheckbox Label="SMS notifications" checked="@smsEnabled" @onchange="@((ChangeEventArgs e) => smsEnabled = (bool)e.Value!)" />
-            <span class="status">Email: @emailEnabled, SMS: @smsEnabled</span>
+            <p class="status">Email: @emailEnabled, SMS: @smsEnabled</p>
         </ExampleCard>
     </section>
 

@@ -18,7 +18,7 @@
     value=""@selectedDate""
     @onchange=""@((ChangeEventArgs e) => selectedDate = e.Value?.ToString())"" />")">
             <PBDatepicker Label="Start date" value="@selectedDate" @onchange="@((ChangeEventArgs e) => selectedDate = e.Value?.ToString())" />
-            <span class="status">Selected: @(selectedDate ?? "—")</span>
+            <p class="status">Selected: @(selectedDate ?? "—")</p>
         </ExampleCard>
     </section>
 

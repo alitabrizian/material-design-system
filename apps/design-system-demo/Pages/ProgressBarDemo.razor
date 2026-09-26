@@ -12,7 +12,7 @@
 
         <ExampleCard Title="Determinate" RazorCode="@(@"<PBProgressBar Value=""@progress"" />")">
             <PBProgressBar Value="@progress" />
-            <span class="status">@progress%</span>
+            <p class="status">@progress%</p>
             <div class="actions">
                 <PBButton @onclick="() => progress = Math.Max(0, progress - 10)">-10%</PBButton>
                 <PBButton @onclick="() => progress = Math.Min(100, progress + 10)">+10%</PBButton>

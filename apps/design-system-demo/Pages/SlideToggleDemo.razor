@@ -15,7 +15,7 @@
     checked=""@darkModeEnabled""
     @onchange=""@((ChangeEventArgs e) => darkModeEnabled = (bool)e.Value!)"" />")">
             <PBSlideToggle Label="Enable dark mode" checked="@darkModeEnabled" @onchange="@((ChangeEventArgs e) => darkModeEnabled = (bool)e.Value!)" />
-            <span class="status">Dark mode: @(darkModeEnabled ? "on" : "off")</span>
+            <p class="status">Dark mode: @(darkModeEnabled ? "on" : "off")</p>
         </ExampleCard>
     </section>
 
