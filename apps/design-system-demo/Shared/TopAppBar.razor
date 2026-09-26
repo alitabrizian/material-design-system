@@ -6,7 +6,7 @@
     <span class="pb-topbar__title">@Title</span>
 
     <div class="pb-topbar__actions">
-        <PBMenu Label="Theme" @bind-IsOpen="themeMenuOpen">
+        <PBMenu Label="Theme" XPosition="PBMenuXPosition.Before" @bind-IsOpen="themeMenuOpen">
             <Trigger>
                 <span class="material-icons" aria-hidden="true">palette</span>
             </Trigger>
