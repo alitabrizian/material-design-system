@@ -16,7 +16,7 @@
     value=""@email""
     @oninput=""@((ChangeEventArgs e) => email = e.Value?.ToString())"" />")">
             <PBInput Label="Email address" placeholder="you@example.com" value="@email" @oninput="@((ChangeEventArgs e) => email = e.Value?.ToString())" />
-            <span class="status">Value: @(string.IsNullOrEmpty(email) ? "—" : email)</span>
+            <p class="status">Value: @(string.IsNullOrEmpty(email) ? "—" : email)</p>
         </ExampleCard>
     </section>
 

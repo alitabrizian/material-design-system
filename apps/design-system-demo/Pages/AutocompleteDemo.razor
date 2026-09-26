@@ -28,7 +28,7 @@
                 Placeholder="Start typing..."
                 @bind-SelectedOption="selectedFruit"
                 Options="fruitOptions" />
-            <span class="status">Selected: @(selectedFruit ?? "—")</span>
+            <p class="status">Selected: @(selectedFruit ?? "—")</p>
         </ExampleCard>
     </section>
 
@@ -58,7 +58,7 @@
                 @bind-SelectedOption="selectedCountry"
                 Options="countryOptions"
                 Filter="ContainsFilter" />
-            <span class="status">Selected: @(selectedCountry ?? "—")</span>
+            <p class="status">Selected: @(selectedCountry ?? "—")</p>
         </ExampleCard>
     </section>
 
@@ -84,7 +84,7 @@
                 Options="cityOptions"
                 DisplayProperty="Name"
                 ValueProperty="Code" />
-            <span class="status">Selected: @(selectedCity?.Name ?? "—") (code: @(selectedCity?.Code ?? "—"))</span>
+            <p class="status">Selected: @(selectedCity?.Name ?? "—") (code: @(selectedCity?.Code ?? "—"))</p>
         </ExampleCard>
     </section>
 
@@ -131,7 +131,7 @@
                 Placeholder="Try 'united'..."
                 @bind-SelectedOption="selectedHighlightCountry"
                 Options="countryOptions" />
-            <span class="status">Selected: @(selectedHighlightCountry ?? "—")</span>
+            <p class="status">Selected: @(selectedHighlightCountry ?? "—")</p>
         </ExampleCard>
     </section>
 

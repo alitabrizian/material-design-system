@@ -18,7 +18,7 @@
     value=""@volume""
     @oninput=""@((ChangeEventArgs e) => volume = int.Parse(e.Value!.ToString()!))"" />")">
             <PBSlider Label="Volume" min="0" max="100" value="@volume" @oninput="@((ChangeEventArgs e) => volume = int.Parse(e.Value!.ToString()!))" />
-            <span class="status">@volume%</span>
+            <p class="status">@volume%</p>
         </ExampleCard>
     </section>
 

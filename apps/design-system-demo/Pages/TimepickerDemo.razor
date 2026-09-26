@@ -18,7 +18,7 @@
     value=""@selectedTime""
     @onchange=""@((ChangeEventArgs e) => selectedTime = e.Value?.ToString())"" />")">
             <PBTimepicker Label="Meeting time" value="@selectedTime" @onchange="@((ChangeEventArgs e) => selectedTime = e.Value?.ToString())" />
-            <span class="status">Selected: @(selectedTime ?? "—")</span>
+            <p class="status">Selected: @(selectedTime ?? "—")</p>
         </ExampleCard>
     </section>
 

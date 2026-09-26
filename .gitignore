@@ -13,6 +13,8 @@ apps/remotion-videos/.remotion/
 libs/design-system/blazor/wwwroot/css/tokens.css
 libs/design-system/blazor/wwwroot/css/material-tokens.css
 libs/design-system/blazor/wwwroot/data/palettes.json
+libs/design-system/blazor/wwwroot/css/roboto.css
+libs/design-system/blazor/wwwroot/fonts/
 
 # dotnet pack output for local dev consumption (see libs/design-system/blazor/project.json)
 local-nuget-feed/

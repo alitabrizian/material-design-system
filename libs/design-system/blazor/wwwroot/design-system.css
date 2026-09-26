@@ -534,6 +534,11 @@
   position: relative;
   display: inline-flex;
   align-items: center;
+  /* An inline-flex box's baseline comes from its first item, and the visual
+     box only gains an in-flow child (the radio dot / checkmark ::after) once
+     checked -- so on the default `baseline` the whole control dropped a few
+     px every time it toggled. Centering on the line makes it state-proof. */
+  vertical-align: middle;
   gap: 0.65rem;
   cursor: pointer;
   font-family: var(--md-sys-typescale-font-family);
@@ -607,6 +612,17 @@
   background: var(--md-sys-color-primary);
   border: none;
   transform: none;
+}
+
+/* Radio group (PBRadioGroup) — mat-radio-group equivalent. Flex layout makes
+   the gap between options independent of markup whitespace (Razor @foreach
+   emits none) and centers every option on the same axis. */
+.workspace-radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: var(--md-sys-spacing-extra-large);
+  row-gap: var(--md-sys-spacing-small);
 }
 
 .workspace-check__label {
@@ -694,7 +710,6 @@
 .pb-menu__panel {
   position: absolute;
   top: calc(100% + 0.25rem);
-  right: 0;
   z-index: 26;
   min-width: 12rem;
   padding: 0.5rem;
@@ -706,6 +721,17 @@
   gap: 0.15rem;
   transform-origin: top;
   animation: workspace-panel-in var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-emphasized-decelerate);
+}
+
+/* XPosition (mat-menu xPosition): logical insets so After/Before follow the
+ * reading direction — After extends toward the inline end, Before toward the
+ * inline start. */
+.pb-menu__panel--after {
+  inset-inline-start: 0;
+}
+
+.pb-menu__panel--before {
+  inset-inline-end: 0;
 }
 
 .pb-menu-item {

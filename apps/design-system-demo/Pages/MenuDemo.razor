@@ -14,7 +14,7 @@
         <p class="field-hint">A menu grouping a set of related actions.</p>
 
         <ExampleCard Title="Row actions" RazorCode="@(
-@"<PBMenu Label=""Row actions"" @bind-IsOpen=""isOpen"">
+@"<PBMenu Label=""Row actions"" XPosition=""PBMenuXPosition.After"" @bind-IsOpen=""isOpen"">
     <Trigger>Actions</Trigger>
     <ChildContent>
         <button @onclick=""Edit"">Edit</button>
@@ -22,7 +22,7 @@
         <button @onclick=""Delete"">Delete</button>
     </ChildContent>
 </PBMenu>")">
-            <PBMenu Label="Row actions" @bind-IsOpen="isOpen">
+            <PBMenu Label="Row actions" XPosition="PBMenuXPosition.After" @bind-IsOpen="isOpen">
                 <Trigger>Actions ▾</Trigger>
                 <ChildContent>
                     <button type="button" class="pb-menu-item" @onclick='() => SelectAction("Edit")'>Edit</button>
@@ -30,7 +30,7 @@
                     <button type="button" class="pb-menu-item" @onclick='() => SelectAction("Delete")'>Delete</button>
                 </ChildContent>
             </PBMenu>
-            <span class="status">Last action: @(selectedAction ?? "—")</span>
+            <p class="status">Last action: @(selectedAction ?? "—")</p>
         </ExampleCard>
     </section>
 
@@ -43,6 +43,7 @@
             <tbody>
                 <tr><td><code>Label</code></td><td><code>string?</code></td><td>Accessible name for the trigger button and the menu panel.</td></tr>
                 <tr><td><code>Trigger</code></td><td><code>RenderFragment?</code></td><td>Content of the button that opens the menu.</td></tr>
+                <tr><td><code>XPosition</code></td><td><code>PBMenuXPosition</code></td><td><code>After</code> (default, panel opens toward the inline end, aligned to the trigger's start edge) or <code>Before</code> (opens toward the inline start, aligned to the trigger's end edge &mdash; use for triggers near the end of a row, e.g. a top app bar action).</td></tr>
                 <tr><td><code>IsOpen</code></td><td><code>bool</code></td><td>Whether the panel is open. Supports <code>@@bind-IsOpen</code>.</td></tr>
                 <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The menu's actions.</td></tr>
             </tbody>
