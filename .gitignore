@@ -16,6 +16,9 @@ libs/design-system/blazor/wwwroot/data/palettes.json
 # dotnet pack output for local dev consumption (see libs/design-system/blazor/project.json)
 local-nuget-feed/
 
+# Per-checkout NuGet package cache (globalPackagesFolder in NuGet.config)
+.nuget/
+
 
 .nx/cache
 .nx/workspace-data

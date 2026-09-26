@@ -32,6 +32,10 @@ if (pack.status !== 0) {
   process.exit(pack.status ?? 1);
 }
 
+// The preview tool assigns a free port via PORT (other worktrees' demo servers may hold
+// 5080). A --urls app argument overrides the launch profile's fixed applicationUrl.
+const urlArgs = process.env.PORT ? ["--", "--urls", `http://127.0.0.1:${process.env.PORT}`] : [];
+
 const watch = spawnSync(
   "dotnet",
   [
@@ -41,6 +45,7 @@ const watch = spawnSync(
     "run",
     "--launch-profile",
     "design-system-demo",
+    ...urlArgs,
   ],
   { stdio: "inherit" }
 );

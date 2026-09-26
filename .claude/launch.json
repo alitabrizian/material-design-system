@@ -5,7 +5,8 @@
       "name": "design-system-demo",
       "runtimeExecutable": "node",
       "runtimeArgs": ["tools/scripts/dev-design-system-demo.mts"],
-      "port": 5080
+      "port": 5080,
+      "autoPort": true
     }
   ]
 }
