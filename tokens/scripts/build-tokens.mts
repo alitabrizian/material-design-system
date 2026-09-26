@@ -13,6 +13,18 @@
  *   - dist/css/material-tokens.css  copied as-is from src/ (typescale/shape/
  *                                   elevation/motion/state, hand-authored)
  *   - dist/data/palettes.json       theme metadata for non-CSS consumers
+ *   - dist/css/roboto.css           self-hosted @font-face rules for Roboto,
+ *                                   the family --md-sys-typescale-font-family
+ *                                   names first
+ *   - dist/fonts/*.woff2, OFL.txt   the Roboto files roboto.css points at
+ *                                   (relative ../fonts/ URLs) + their license
+ *
+ * Roboto comes from the @fontsource-variable/roboto devDependency: one
+ * variable-weight (100-900) woff2 per unicode-range subset, normal + italic.
+ * Its CSS is rewritten to register the family as plain "Roboto" (Fontsource
+ * calls it "Roboto Variable"), so the token's `Roboto` resolves to these
+ * files -- and a same-named @font-face shadows any locally installed Roboto,
+ * so every machine renders the same font file.
  *
  * Note: @material/material-color-utilities@0.4.0's own barrel export
  * (the "." entry point) transitively imports a file with a missing ".js"
@@ -299,7 +311,59 @@ fs.writeFileSync(
   "utf8"
 );
 
+const robotoPackage = path.join(repoRoot, "node_modules/@fontsource-variable/roboto");
+if (!fs.existsSync(robotoPackage)) {
+  console.error(
+    `Could not find ${robotoPackage}.\n` +
+      "Run 'npm install' at the workspace root first " +
+      "(@fontsource-variable/roboto is a devDependency there)."
+  );
+  process.exit(1);
+}
+
+const robotoCssOutputPath = path.join(distRoot, "css/roboto.css");
+const fontsOutputDir = path.join(distRoot, "fonts");
+fs.mkdirSync(fontsOutputDir, { recursive: true });
+
+const robotoCss = ["wght.css", "wght-italic.css"]
+  .map((file) => fs.readFileSync(path.join(robotoPackage, file), "utf8"))
+  .join("\n")
+  .replaceAll("font-family: 'Roboto Variable';", "font-family: 'Roboto';")
+  .replaceAll("url(./files/", "url(../fonts/");
+
+const fontFiles = [...robotoCss.matchAll(/url\(\.\.\/fonts\/([^)]+)\)/g)].map((m) => m[1]);
+if (fontFiles.length === 0 || robotoCss.includes("Roboto Variable")) {
+  console.error("Unexpected @fontsource-variable/roboto CSS layout; update the rewrite in build-tokens.mts.");
+  process.exit(1);
+}
+for (const file of fontFiles) {
+  fs.copyFileSync(path.join(robotoPackage, "files", file), path.join(fontsOutputDir, file));
+}
+fs.copyFileSync(path.join(robotoPackage, "LICENSE"), path.join(fontsOutputDir, "OFL.txt"));
+
+const robotoVersion = JSON.parse(fs.readFileSync(path.join(robotoPackage, "package.json"), "utf8")).version;
+fs.writeFileSync(
+  robotoCssOutputPath,
+  [
+    "/**",
+    " * GENERATED FILE -- do not edit by hand.",
+    " * Produced by libs/design-system/tokens/scripts/build-tokens.mts (nx run tokens:build)",
+    ` * from @fontsource-variable/roboto@${robotoVersion}.`,
+    " *",
+    " * Self-hosted Roboto (variable weight 100-900, normal + italic) for",
+    " * --md-sys-typescale-font-family. unicode-range means browsers only fetch",
+    " * the subsets a page actually uses (typically just latin, ~43 KB).",
+    " * Roboto is licensed under the SIL Open Font License 1.1, see ../fonts/OFL.txt.",
+    " */",
+    "",
+    robotoCss.trim(),
+    "",
+  ].join("\n"),
+  "utf8"
+);
+
 console.log(`Wrote ${path.relative(repoRoot, cssOutputPath)}`);
 console.log(`Wrote ${path.relative(repoRoot, staticCssOutputPath)}`);
 console.log(`Wrote ${path.relative(repoRoot, jsonOutputPath)}`);
+console.log(`Wrote ${path.relative(repoRoot, robotoCssOutputPath)} (+ ${fontFiles.length} woff2 files in dist/fonts)`);
 console.log(`Generated ${keys.length} themes x ${ROLE_TO_VAR.length} tokens.`);
