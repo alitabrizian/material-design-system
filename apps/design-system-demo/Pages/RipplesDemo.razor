@@ -6,47 +6,60 @@
 <div class="catalog-content">
 
     <PageHeader Title="Ripples">
-        Ripples wrap an interactive element to give it tactile visual feedback
-        when pressed.
+        PBRipples connects user input to screen reactions with an ink ripple.
+        Buttons, toggles, list items, tabs and chips already
+        have one built in.
     </PageHeader>
 
     <section class="doc-section">
-        <p class="field-hint">Clicking updates the status below.</p>
+        <p class="field-hint">Click (or press Enter/Space when focused) anywhere in the area. The ink starts at the pointer, fills the area over 450ms and fades over 400ms on release.</p>
 
-        <ExampleCard Title="Wrapping a button" RazorCode="@(
-@"<PBRipples>
-    <PBButton @onclick=""() => tapCount++"">Tap me</PBButton>
+        <ExampleCard Title="Ripple overview" RazorCode="@(
+@"<PBRipples Centered=""@centered"" Unbounded=""@unbounded"" Disabled=""@disabled""
+           Color=""var(--md-sys-color-primary)"" class=""ripple-container"">
+    Click me
 </PBRipples>")">
-            <PBRipples>
-                <PBButton @onclick="() => tapCount++">Tap me</PBButton>
+            <div class="demo-row" style="margin-bottom:16px">
+                <PBCheckbox Label="Centered" checked="@centered" @onchange="e => centered = (bool)e.Value!" />
+                <PBCheckbox Label="Unbounded" checked="@unbounded" @onchange="e => unbounded = (bool)e.Value!" />
+                <PBCheckbox Label="Disabled" checked="@disabled" @onchange="e => disabled = (bool)e.Value!" />
+                <PBCheckbox Label="Primary color" checked="@primary" @onchange="e => primary = (bool)e.Value!" />
+            </div>
+            <PBRipples Centered="centered" Unbounded="unbounded" Disabled="disabled"
+                       Color="@(primary ? "var(--md-sys-color-primary)" : null)" class="ripple-container" tabindex="0">
+                Click me
             </PBRipples>
-            <p class="status">Tapped @tapCount time(s)</p>
         </ExampleCard>
     </section>
 
     <section class="doc-section">
         <h2>API reference</h2>
+        <div class="doc-table-wrapper">
         <table class="doc-table">
             <thead>
                 <tr><th>Property</th><th>Type</th><th>Description</th></tr>
             </thead>
             <tbody>
-                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The wrapped interactive element.</td></tr>
-                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;span&gt;</code>.</td></tr>
+                <tr><td><code>Centered</code></td><td><code>bool</code></td><td>Always starts from the center.</td></tr>
+                <tr><td><code>Unbounded</code></td><td><code>bool</code></td><td>Ink may extend past the container.</td></tr>
+                <tr><td><code>Disabled</code></td><td><code>bool</code></td><td>No ripples.</td></tr>
+                <tr><td><code>Color</code></td><td><code>string?</code></td><td>Ink color as a token expression; defaults to the text color.</td></tr>
             </tbody>
         </table>
+        </div>
     </section>
 
     <section class="doc-section">
         <div class="a11y-note">
             <strong>Accessibility</strong>
-            Ripples is a purely visual effect wrapper; it does not change the
-            accessibility tree, so the wrapped element's own semantics (e.g. a
-            <code>&lt;button&gt;</code>) still apply.
+            Ripples are purely visual and are skipped entirely when the user prefers reduced motion.
         </div>
     </section>
 </div>
 
 @code {
-    private int tapCount;
+    private bool centered;
+    private bool unbounded;
+    private bool disabled;
+    private bool primary;
 }

@@ -6,57 +6,119 @@
 <div class="catalog-content">
 
     <PageHeader Title="List">
-        A list presents a vertical collection of related items, such as
-        navigation entries or search results.
+        PBList is a container of PBListItems for plain, navigation and action lists: one-, two- or
+        three-line items
+        with optional leading icons or avatars and trailing text.
     </PageHeader>
 
     <section class="doc-section">
-        <p class="field-hint">A simple list of text items.</p>
+        <p class="field-hint">A basic list of single-line items.</p>
 
-        <ExampleCard Title="Recent activity" RazorCode="@(
+        <ExampleCard Title="Basic list" RazorCode="@(
 @"<PBList>
-    @foreach (var entry in activity)
-    {
-        <li>@entry</li>
-    }
+    <PBListItem>Item 1</PBListItem>
+    <PBListItem>Item 2</PBListItem>
+    <PBListItem>Item 3</PBListItem>
 </PBList>")">
             <PBList>
-                @foreach (var entry in activity)
+                <PBListItem>Item 1</PBListItem>
+                <PBListItem>Item 2</PBListItem>
+                <PBListItem>Item 3</PBListItem>
+            </PBList>
+        </ExampleCard>
+    </section>
+
+    <section class="doc-section">
+        <p class="field-hint">Sections with a subheader, leading icons, two lines of text and trailing meta text.</p>
+
+        <ExampleCard Title="List with sections" RazorCode="@(
+@"<PBList>
+    <PBListSubheader>Folders</PBListSubheader>
+    @foreach (var folder in folders)
+    {
+        <PBListItem Title=""@folder.Name"" Subtitle=""@folder.Updated"" Meta=""@folder.Size"">
+            <Icon><span class=""material-icons"">folder</span></Icon>
+        </PBListItem>
+    }
+    <PBDivider />
+    <PBListSubheader>Notes</PBListSubheader>
+    ...
+</PBList>")">
+            <PBList style="max-width:420px">
+                <PBListSubheader>Folders</PBListSubheader>
+                @foreach (var folder in folders)
                 {
-                    <li>@entry</li>
+                    <PBListItem Title="@folder.Name" Subtitle="@folder.Updated" Meta="@folder.Size">
+                        <Icon><span class="material-icons">folder</span></Icon>
+                    </PBListItem>
+                }
+                <PBDivider />
+                <PBListSubheader>Notes</PBListSubheader>
+                @foreach (var note in notes)
+                {
+                    <PBListItem Title="@note.Name" Subtitle="@note.Updated">
+                        <Icon><span class="material-icons">note</span></Icon>
+                    </PBListItem>
                 }
             </PBList>
         </ExampleCard>
     </section>
 
     <section class="doc-section">
-        <p class="field-hint">A two-line item with a leading icon and trailing meta text.</p>
+        <p class="field-hint">A navigation list (<code>Href</code>) with the activated item, and an action list (<code>OnClick</code>). Interactive items get the M3 state layer.</p>
 
-        <ExampleCard Title="Two-line with icon" RazorCode="@(
-@"<PBList>
-    @foreach (var msg in messages)
-    {
-        <li class=""workspace-list-item"">
-            <span class=""workspace-list-item__icon"">@msg.Icon</span>
-            <span class=""workspace-list-item__content"">
-                <span class=""workspace-list-item__title"">@msg.Title</span>
-                <span class=""workspace-list-item__subtitle"">@msg.Subtitle</span>
-            </span>
-            <span class=""workspace-list-item__trailing"">@msg.Time</span>
-        </li>
-    }
+        <ExampleCard Title="Navigation and action lists" RazorCode="@(
+@"<nav aria-label=""Main""><PBList Role=""presentation"">
+    <PBListItem Href=""#inbox"" Selected>Inbox</PBListItem>
+    <PBListItem Href=""#sent"">Sent</PBListItem>
+</PBList></nav>
+
+<PBList Role=""presentation"">
+    <PBListItem OnClick=""Save"">Save</PBListItem>
+    <PBListItem OnClick=""Undo"">Undo</PBListItem>
 </PBList>")">
-            <PBList>
-                @foreach (var msg in messages)
+            <div class="demo-row" style="align-items:flex-start">
+                <nav aria-label="Mailboxes" style="width:240px">
+                    <PBList Role="presentation">
+                        <PBListItem Href="list#inbox" Selected="@(nav == "Inbox")" @onclick='() => nav = "Inbox"'>
+                            <Icon><span class="material-icons">inbox</span></Icon>
+                            <ChildContent>Inbox</ChildContent>
+                        </PBListItem>
+                        <PBListItem Href="list#sent" Selected="@(nav == "Sent")" @onclick='() => nav = "Sent"'>
+                            <Icon><span class="material-icons">send</span></Icon>
+                            <ChildContent>Sent</ChildContent>
+                        </PBListItem>
+                        <PBListItem Href="list#drafts" Selected="@(nav == "Drafts")" @onclick='() => nav = "Drafts"'>
+                            <Icon><span class="material-icons">drafts</span></Icon>
+                            <ChildContent>Drafts</ChildContent>
+                        </PBListItem>
+                    </PBList>
+                </nav>
+                <div style="width:240px">
+                    <PBList Role="presentation">
+                        <PBListItem OnClick='() => action = "Save"'>Save</PBListItem>
+                        <PBListItem OnClick='() => action = "Undo"'>Undo</PBListItem>
+                        <PBListItem OnClick='() => action = "Delete"' Disabled>Delete</PBListItem>
+                    </PBList>
+                    <p class="status">Last action: @(action ?? "—")</p>
+                </div>
+            </div>
+        </ExampleCard>
+    </section>
+
+    <section class="doc-section">
+        <p class="field-hint">Avatars and three-line items.</p>
+
+        <ExampleCard Title="Three-line items with avatars" RazorCode="@(
+@"<PBListItem Title=""Brunch this weekend?"" Subtitle=""Ali Connors"" Line3=""I'll be in your neighborhood..."">
+    <Avatar>AC</Avatar>
+</PBListItem>")">
+            <PBList style="max-width:480px">
+                @foreach (var message in messages)
                 {
-                    <li class="workspace-list-item">
-                        <span class="workspace-list-item__icon">@msg.Icon</span>
-                        <span class="workspace-list-item__content">
-                            <span class="workspace-list-item__title">@msg.Title</span>
-                            <span class="workspace-list-item__subtitle">@msg.Subtitle</span>
-                        </span>
-                        <span class="workspace-list-item__trailing">@msg.Time</span>
-                    </li>
+                    <PBListItem Title="@message.Title" Subtitle="@message.From" Line3="@message.Preview" Meta="@message.Time">
+                        <Avatar>@message.Initials</Avatar>
+                    </PBListItem>
                 }
             </PBList>
         </ExampleCard>
@@ -64,39 +126,58 @@
 
     <section class="doc-section">
         <h2>API reference</h2>
+        <div class="doc-table-wrapper">
         <table class="doc-table">
             <thead>
                 <tr><th>Property</th><th>Type</th><th>Description</th></tr>
             </thead>
             <tbody>
-                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The list items, typically <code>&lt;li&gt;</code> elements.</td></tr>
-                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;ul&gt;</code>.</td></tr>
+                <tr><td><code>PBListItem.Title</code> / <code>ChildContent</code></td><td><code>string?</code> / <code>RenderFragment?</code></td><td>The first line (matListItemTitle).</td></tr>
+                <tr><td><code>Subtitle</code>, <code>Line3</code></td><td><code>string?</code></td><td>Second and third lines (matListItemLine); the item grows to 64px / 88px.</td></tr>
+                <tr><td><code>Icon</code> / <code>Avatar</code></td><td><code>RenderFragment?</code></td><td>Leading 24px icon or 40px avatar.</td></tr>
+                <tr><td><code>Meta</code> / <code>Trailing</code></td><td><code>string?</code> / <code>RenderFragment?</code></td><td>Trailing text or content (matListItemMeta).</td></tr>
+                <tr><td><code>Href</code> / <code>OnClick</code></td><td><code>string?</code> / <code>EventCallback</code></td><td>Makes the item a link (nav list) or a button (action list).</td></tr>
+                <tr><td><code>Selected</code>, <code>Disabled</code></td><td><code>bool</code></td><td>Activated nav item (tonal pill, <code>aria-current</code>) / disabled item.</td></tr>
+                <tr><td><code>PBListSubheader</code></td><td></td><td>A section heading.</td></tr>
             </tbody>
         </table>
+        </div>
     </section>
 
     <section class="doc-section">
         <div class="a11y-note">
             <strong>Accessibility</strong>
-            Renders a native <code>&lt;ul&gt;</code>, so use <code>&lt;li&gt;</code>
-            children to keep the list semantics assistive technology relies on.
+            Plain lists use <code>role="list"</code>/<code>listitem</code>. Navigation items are
+            real links (the activated one has <code>aria-current="page"</code>) and action items
+            are real buttons, so wrap those lists in a <code>&lt;nav&gt;</code> or give the list
+            <code>Role="presentation"</code>.
         </div>
     </section>
 </div>
 
 @code {
-    private static readonly string[] activity =
+    private sealed record Folder(string Name, string Updated, string Size);
+    private sealed record Message(string Initials, string Title, string From, string Preview, string Time);
+
+    private static readonly Folder[] folders =
     [
-        "Ali updated the PBAutoComplete component",
-        "New demo page published for PBBadge",
-        "Design tokens synced from Figma",
+        new("Photos", "Jan 1, 2026", "12 MB"),
+        new("Recipes", "Jan 17, 2026", "3 MB"),
+        new("Work", "Jan 28, 2026", "48 MB"),
     ];
 
-    private sealed record Message(string Icon, string Title, string Subtitle, string Time);
+    private static readonly Folder[] notes =
+    [
+        new("Vacation Itinerary", "Feb 20, 2026", ""),
+        new("Kitchen Remodel", "Jan 18, 2026", ""),
+    ];
 
     private static readonly Message[] messages =
     [
-        new("👤", "Sara Ahmadi", "Can you review the PR when you get a chance?", "9:41"),
-        new("📎", "Kian Rostami", "Attached the updated token spreadsheet.", "Yesterday"),
+        new("SA", "Brunch this weekend?", "Sara Ahmadi", "I'll be in your neighborhood doing errands this weekend. Do you want to grab brunch?", "9:41"),
+        new("KR", "Token spreadsheet", "Kian Rostami", "Attached the updated token spreadsheet with the four Material Design 3 themes.", "Yesterday"),
     ];
+
+    private string nav = "Inbox";
+    private string? action;
 }

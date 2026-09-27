@@ -67,10 +67,28 @@
     <DesignTokensDist>$(MSBuildThisFileDirectory)..\tokens\dist\</DesignTokensDist>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <DesignTokensRoot>$(MSBuildThisFileDirectory)..\tokens\</DesignTokensRoot>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <_DesignTokenSource Include="$(DesignTokensRoot)src\**\*.css;$(DesignTokensRoot)reference\**\*;$(DesignTokensRoot)scripts\build-tokens.mts" />
+  </ItemGroup>
+
+  <!--
+    (Re)generates libs/design-system/tokens/dist whenever its sources changed (incremental: skipped
+    when dist/css/tokens.css is newer than every source), so a fresh clone or an edited token file
+    never needs a manual `nx run tokens:build`. Requires `npm ci` at the workspace root.
+  -->
+  <Target Name="BuildDesignTokens" BeforeTargets="SyncDesignTokens"
+          Inputs="@(_DesignTokenSource)" Outputs="$(DesignTokensDist)css\tokens.css">
+    <Exec Command="node &quot;$(DesignTokensRoot)scripts/build-tokens.mts&quot;" WorkingDirectory="$(MSBuildThisFileDirectory)../../.." />
+  </Target>
+
   <Target Name="SyncDesignTokens" BeforeTargets="BeforeBuild">
     <Error
       Condition="!Exists('$(DesignTokensDist)css\tokens.css')"
-      Text="Design tokens not built ($(DesignTokensDist) is missing). Run 'npx nx run tokens:build' first." />
+      Text="Design tokens not built ($(DesignTokensDist) is missing). Run 'npm ci' and 'npx nx run tokens:build'." />
     <ItemGroup>
       <_DesignTokenFile Include="$(DesignTokensDist)**\*" />
       <_DesignTokenCopy Include="@(_DesignTokenFile->'wwwroot\%(RecursiveDir)%(Filename)%(Extension)')" />
@@ -80,5 +98,17 @@
       <Content Remove="@(_DesignTokenCopy)" />
       <Content Include="@(_DesignTokenCopy)" CopyToOutputDirectory="PreserveNewest" />
     </ItemGroup>
+  </Target>
+
+  <!--
+    Constitution principle II: no literal colors outside the generated tokens. The audit runs on
+    every library build (Node is already required here: the tokens are built with it) and fails
+    the build with file:line for any hex/rgb()/named color in components, styles or the demo.
+  -->
+  <Target Name="AuditColors" BeforeTargets="BeforeBuild" Condition="'$(SkipColorAudit)' != 'true'">
+    <Exec Command="node &quot;$(MSBuildThisFileDirectory)../../../tools/scripts/audit-colors.mts&quot;"
+          WorkingDirectory="$(MSBuildThisFileDirectory)../../.."
+          CustomErrorRegularExpression="violation\(s\) --"
+          ConsoleToMSBuild="true" />
   </Target>
 </Project>

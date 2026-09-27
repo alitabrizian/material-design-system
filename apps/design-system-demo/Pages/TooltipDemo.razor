@@ -5,41 +5,75 @@
 
 <div class="catalog-content">
 
-    <PageHeader Title="Tooltip">A tooltip shows a short explanation when the user hovers or focuses an element.</PageHeader>
+    <PageHeader Title="Tooltip">
+        PBTooltip provides a text label that is displayed when the user hovers over or
+        keyboard-focuses an element.
+    </PageHeader>
 
     <section class="doc-section">
-        <p class="field-hint">Hover the button to reveal the tooltip text.</p>
+        <p class="field-hint">Wrap the trigger; <code>Label</code> is the message. It shows below by default and flips when there is no room.</p>
 
-        <ExampleCard Title="Icon button" RazorCode="@(
-@"<PBTooltip Label=""Copy to clipboard"">
-    <PBButton>⧉</PBButton>
+        <ExampleCard Title="Basic tooltip" RazorCode="@(
+@"<PBTooltip Label=""Info about the action"">
+    <PBButton Variant=""PBButtonVariant.Outlined"">Action</PBButton>
 </PBTooltip>")">
-            <PBTooltip Label="Copy to clipboard">
-                <PBButton>⧉</PBButton>
+            <PBTooltip Label="Info about the action">
+                <PBButton Variant="PBButtonVariant.Outlined">Action</PBButton>
             </PBTooltip>
         </ExampleCard>
     </section>
 
     <section class="doc-section">
+        <p class="field-hint">The four positions, and a disabled button that still shows its tooltip through <code>DisabledInteractive</code>.</p>
+
+        <ExampleCard Title="Positions" RazorCode="@(
+@"<PBTooltip Label=""Above"" Position=""PBTooltipPosition.Above"">...</PBTooltip>
+<PBTooltip Label=""Below"" Position=""PBTooltipPosition.Below"">...</PBTooltip>
+<PBTooltip Label=""Before"" Position=""PBTooltipPosition.Before"">...</PBTooltip>
+<PBTooltip Label=""After"" Position=""PBTooltipPosition.After"">...</PBTooltip>
+<PBTooltip Label=""You need permission to delete"">
+    <PBButton Disabled DisabledInteractive>Delete</PBButton>
+</PBTooltip>")">
+            <div class="demo-row" style="padding:32px 0">
+                @foreach (var position in Enum.GetValues<PBTooltipPosition>())
+                {
+                    <PBTooltip Label="@position.ToString()" Position="position">
+                        <PBButton Variant="PBButtonVariant.Tonal">@position</PBButton>
+                    </PBTooltip>
+                }
+                <PBTooltip Label="You need permission to delete">
+                    <PBButton Variant="PBButtonVariant.Filled" Disabled DisabledInteractive>Delete</PBButton>
+                </PBTooltip>
+                <PBTooltip Label="Copy to clipboard">
+                    <PBButton Variant="PBButtonVariant.Icon" aria-label="Copy"><span class="material-icons">content_copy</span></PBButton>
+                </PBTooltip>
+            </div>
+        </ExampleCard>
+    </section>
+
+    <section class="doc-section">
         <h2>API reference</h2>
+        <div class="doc-table-wrapper">
         <table class="doc-table">
             <thead>
                 <tr><th>Property</th><th>Type</th><th>Description</th></tr>
             </thead>
             <tbody>
-                <tr><td><code>Label</code></td><td><code>string?</code></td><td>Rendered as the native <code>title</code> attribute.</td></tr>
-                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The element the tooltip is attached to.</td></tr>
+                <tr><td><code>Label</code></td><td><code>string?</code></td><td>The tooltip message.</td></tr>
+                <tr><td><code>Position</code></td><td><code>PBTooltipPosition</code></td><td><code>Below</code> (default), <code>Above</code>, <code>Before</code>, <code>After</code>.</td></tr>
+                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The trigger element.</td></tr>
             </tbody>
         </table>
+        </div>
     </section>
 
     <section class="doc-section">
         <div class="a11y-note">
             <strong>Accessibility</strong>
-            Uses the native <code>title</code> attribute, which most screen readers
-            announce but which isn't keyboard-discoverable on its own; the wrapped
-            control's own focusability (e.g. a real <code>&lt;button&gt;</code>) is
-            what makes the tooltip reachable.
+            The tooltip has <code>role="tooltip"</code> and describes its trigger via
+            <code>aria-describedby</code>. It appears on hover and on keyboard focus and hides on
+            Escape. Natively disabled triggers get no tooltip (they receive no events); use
+            <code>DisabledInteractive</code> to explain why a button is disabled.
         </div>
     </section>
 </div>

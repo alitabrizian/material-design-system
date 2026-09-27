@@ -6,35 +6,35 @@
 <div class="catalog-content">
 
     <PageHeader Title="Bottom Sheet">
-        A bottom sheet surfaces a focused set of actions or information without
-        leaving the current page.
+        PBBottomSheet slides a panel of content up from the bottom of the screen, typically
+        holding a list of actions.
     </PageHeader>
 
     <section class="doc-section">
-        <p class="field-hint">Click the button below to open the sheet — it slides up from the bottom of the screen with a scrim behind it. Click the scrim or press Escape to dismiss it.</p>
+        <p class="field-hint">Render the sheet while it should be open; it raises <code>Dismissed</code> on Escape or a scrim click.</p>
 
-        <ExampleCard Title="Action sheet" RazorCode="@(
-@"<PBButton @onclick=""() => isOpen = true"">Open</PBButton>
+        <ExampleCard Title="Bottom sheet overview" RazorCode="@(
+@"<PBButton Variant=""PBButtonVariant.Outlined"" @onclick=""() => open = true"">Open file</PBButton>
 
-@if (isOpen)
+@if (open)
 {
-    <PBBottomSheet Label=""Share options"" Dismissed=""() => isOpen = false"">
-        <PBList>
-            <li>Copy link</li>
-            <li>Send in a message</li>
-            <li>Share to social</li>
+    <PBBottomSheet Label=""Open with"" Dismissed=""() => open = false"">
+        <PBList Role=""presentation"">
+            <PBListItem Title=""Google Keep"" Subtitle=""Add to a note"" OnClick=""() => Pick(""Keep"")"" />
+            <PBListItem Title=""Google Docs"" Subtitle=""Embed in a document"" OnClick=""() => Pick(""Docs"")"" />
         </PBList>
     </PBBottomSheet>
 }")">
-            <PBButton Variant="PBButtonVariant.Elevated" @onclick="() => isOpen = true">Open</PBButton>
-
-            @if (isOpen)
+            <PBButton Variant="PBButtonVariant.Outlined" @onclick="() => open = true">Open file</PBButton>
+            <p class="status">Picked: @(picked ?? "—")</p>
+            @if (open)
             {
-                <PBBottomSheet Label="Share options" Dismissed="() => isOpen = false">
-                    <PBList>
-                        <li>Copy link</li>
-                        <li>Send in a message</li>
-                        <li>Share to social</li>
+                <PBBottomSheet Label="Open with" Dismissed="() => open = false">
+                    <PBList Role="presentation">
+                        <PBListItem Title="Google Keep" Subtitle="Add to a note" OnClick='() => Pick("Google Keep")' />
+                        <PBListItem Title="Google Docs" Subtitle="Embed in a document" OnClick='() => Pick("Google Docs")' />
+                        <PBListItem Title="Google Plus" Subtitle="Share with your friends" OnClick='() => Pick("Google Plus")' />
+                        <PBListItem Title="Google Hangouts" Subtitle="Show to your coworkers" OnClick='() => Pick("Google Hangouts")' />
                     </PBList>
                 </PBBottomSheet>
             }
@@ -43,31 +43,36 @@
 
     <section class="doc-section">
         <h2>API reference</h2>
+        <div class="doc-table-wrapper">
         <table class="doc-table">
             <thead>
                 <tr><th>Property</th><th>Type</th><th>Description</th></tr>
             </thead>
             <tbody>
-                <tr><td><code>Label</code></td><td><code>string?</code></td><td>Accessible label for the sheet region.</td></tr>
-                <tr><td><code>Dismissed</code></td><td><code>EventCallback</code></td><td>Raised when the scrim is clicked or Escape is pressed — remove the sheet from your <code>@@if</code> in response.</td></tr>
-                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The sheet's content, typically a list of actions.</td></tr>
-                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;section&gt;</code>.</td></tr>
+                <tr><td><code>Label</code></td><td><code>string?</code></td><td>Accessible name of the sheet.</td></tr>
+                <tr><td><code>Dismissed</code></td><td><code>EventCallback</code></td><td>Raised on Escape or a scrim click.</td></tr>
+                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The sheet content.</td></tr>
             </tbody>
         </table>
+        </div>
     </section>
 
     <section class="doc-section">
         <div class="a11y-note">
             <strong>Accessibility</strong>
-            The sheet renders as a <code>&lt;section aria-label&gt;</code> with a
-            dismissible scrim, and closes on Escape. Whether it's shown at all is
-            still controlled by the host page (via an <code>@@if</code>), so make
-            sure focus moves into the sheet when it opens and back to the
-            triggering control when it closes.
+            The sheet is a labelled modal <code>dialog</code> that takes focus when it opens; Escape
+            closes it. Return focus to the element that opened it when it closes.
         </div>
     </section>
 </div>
 
 @code {
-    private bool isOpen;
+    private bool open;
+    private string? picked;
+
+    private void Pick(string app)
+    {
+        picked = app;
+        open = false;
+    }
 }

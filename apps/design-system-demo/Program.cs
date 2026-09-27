@@ -4,7 +4,8 @@ using Design.Demo.Services;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
-builder.Services.AddSingleton<ThemeState>();
+// Scoped = one per circuit (per browser tab). A singleton would share one theme across every user.
+builder.Services.AddScoped<ThemeState>();
 
 var app = builder.Build();
 

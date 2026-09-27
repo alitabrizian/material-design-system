@@ -1,0 +1,54 @@
+@inherits WorkspaceComponentBase
+<button type="button" class="pb-menu-item pb-ripple-host @UserClass" role="@Role"
+        aria-checked="@(Role is "menuitemradio" or "menuitemcheckbox" ? (Checked ? "true" : "false") : null)"
+        disabled="@Disabled" tabindex="-1" @onclick="OnClickAsync" @attributes="Attrs">
+    @if (Role == "menuitemradio" && ShowIndicator)
+    {
+        <span class="pb-menu-item__radio" aria-hidden="true"></span>
+    }
+    else if (Role == "menuitemcheckbox" && ShowIndicator)
+    {
+        <span class="pb-menu-item__check material-icons" aria-hidden="true">check</span>
+    }
+    @if (Icon is not null)
+    {
+        <span class="pb-menu-item__icon pb-icon-slot" aria-hidden="true">@Icon</span>
+    }
+    <span class="pb-menu-item__text">@Label@ChildContent</span>
+    @if (Trailing is not null)
+    {
+        <span class="pb-menu-item__trailing">@Trailing</span>
+    }
+</button>
+
+@code {
+    [CascadingParameter] private PBMenu? Menu { get; set; }
+
+    /// <summary>Leading 24px icon.</summary>
+    [Parameter] public RenderFragment? Icon { get; set; }
+
+    /// <summary>Trailing content (e.g. a keyboard shortcut or swatch).</summary>
+    [Parameter] public RenderFragment? Trailing { get; set; }
+
+    [Parameter] public bool Disabled { get; set; }
+
+    /// <summary><c>menuitem</c> (default), <c>menuitemradio</c> or <c>menuitemcheckbox</c>.</summary>
+    [Parameter] public string Role { get; set; } = "menuitem";
+
+    /// <summary>Checked state for radio/checkbox items (<c>aria-checked</c>).</summary>
+    [Parameter] public bool Checked { get; set; }
+
+    /// <summary>Shows the radio dot / checkmark for radio and checkbox items.</summary>
+    [Parameter] public bool ShowIndicator { get; set; } = true;
+
+    /// <summary>Keeps the menu open after this item is clicked.</summary>
+    [Parameter] public bool KeepOpen { get; set; }
+
+    [Parameter] public EventCallback<Microsoft.AspNetCore.Components.Web.MouseEventArgs> OnClick { get; set; }
+
+    private async Task OnClickAsync(Microsoft.AspNetCore.Components.Web.MouseEventArgs e)
+    {
+        await OnClick.InvokeAsync(e);
+        if (!KeepOpen && Menu is not null) await Menu.ItemActivatedAsync();
+    }
+}

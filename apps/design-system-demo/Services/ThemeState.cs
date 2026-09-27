@@ -1,14 +1,10 @@
 namespace Design.Demo.Services;
 
 /// <summary>
-/// Holds the demo app's current theme. Each theme is a fixed two-hue
-/// (primary + tertiary) M3 palette locked to a single light or dark mode --
-/// there is no independent light/dark toggle, matching Angular Material's
-/// own prebuilt theme set. See libs/design-system/tokens/scripts/build-tokens.mts for the
-/// actual --md-sys-color-* token generation and
-/// css/tokens.css for the resulting values per theme.
-/// Registered as a singleton; the top app bar is the only component that
-/// mutates it, but any component can subscribe to <see cref="Changed"/>.
+/// The demo's current theme: one of the design system's four Material Design 3 themes, each a
+/// fixed palette locked to light or dark (there is no separate light/dark toggle). The colors
+/// themselves live only in the generated tokens.css (libs/design-system/tokens); nothing here
+/// holds a color value. Scoped per circuit; the top app bar is the only writer.
 /// </summary>
 public sealed class ThemeState
 {
@@ -16,17 +12,17 @@ public sealed class ThemeState
 
     public static readonly IReadOnlyList<ThemeOption> Themes =
     [
-        new("rose-red", "Rose & Red", "#E3184F", "#B3261E", IsDark: false),
-        new("azure-blue", "Azure & Blue", "#0091EA", "#0B57D0", IsDark: false),
-        new("magenta-violet", "Magenta & Violet", "#D500F9", "#673AB7", IsDark: true),
-        new("cyan-orange", "Cyan & Orange", "#00BCD4", "#F57C00", IsDark: true),
+        new("rose-red", "Rose & Red", IsDark: false),
+        new("azure-blue", "Azure & Blue", IsDark: false),
+        new("magenta-violet", "Magenta & Violet", IsDark: true),
+        new("cyan-orange", "Cyan & Orange", IsDark: true),
     ];
 
     public string Theme { get; private set; } = DefaultTheme;
 
     public event Action? Changed;
 
-    /// <summary>Seeds Theme from an already-resolved value (e.g. read from the DOM/localStorage) without raising Changed.</summary>
+    /// <summary>Seeds Theme from an already-resolved value (read from the DOM) without raising Changed.</summary>
     public void Initialize(string? theme)
     {
         Theme = Themes.Any(t => t.Key == theme) ? theme! : DefaultTheme;
@@ -41,5 +37,5 @@ public sealed class ThemeState
         Changed?.Invoke();
     }
 
-    public sealed record ThemeOption(string Key, string Name, string PrimarySeed, string TertiarySeed, bool IsDark);
+    public sealed record ThemeOption(string Key, string Name, bool IsDark);
 }

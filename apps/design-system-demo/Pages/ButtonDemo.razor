@@ -7,105 +7,196 @@
 
     <PageHeader Title="Button">
         Buttons trigger an action or event, such as submitting a form or opening a
-        dialog. <code>PBButton</code> renders a native <code>&lt;button&gt;</code>
-        in one of the five Material 3 appearances: text (default), filled, tonal,
-        outlined, and elevated.
+        dialog. <code>PBButton</code> renders a native <code>&lt;button&gt;</code>, or an
+        <code>&lt;a&gt;</code> when given an <code>Href</code>, in the Material 3 text,
+        elevated, outlined, filled and tonal appearances, plus icon buttons and FABs.
     </PageHeader>
 
     <section class="doc-section">
         <p class="field-hint">
-            Each appearance communicates a different emphasis level, from text (lowest)
-            to filled (highest). Hover, focus, and press states are all handled by CSS —
-            try interacting with the buttons below. The last button in each row shows
-            the disabled state.
+            Every appearance as a basic button, a disabled button and a link. Hover, focus and
+            press states are handled by CSS, and every press gets a ripple.
         </p>
 
         <ExampleCard Title="Button overview" RazorCode="@(
-@"<PBButton Variant=""PBButtonVariant.Text"">Text</PBButton>
-<PBButton Variant=""PBButtonVariant.Filled"">Filled</PBButton>
-<PBButton Variant=""PBButtonVariant.Tonal"">Tonal</PBButton>
-<PBButton Variant=""PBButtonVariant.Outlined"">Outlined</PBButton>
-<PBButton Variant=""PBButtonVariant.Elevated"">Elevated</PBButton>")">
-            <div style="display:grid; gap:1rem;">
-                @foreach (var variant in variants)
+@"<PBButton>Basic</PBButton>
+<PBButton Disabled>Disabled</PBButton>
+<PBButton Href=""https://www.google.com/"" target=""_blank"">Link</PBButton>
+
+<PBButton Variant=""PBButtonVariant.Elevated"">Basic</PBButton>
+<PBButton Variant=""PBButtonVariant.Outlined"">Basic</PBButton>
+<PBButton Variant=""PBButtonVariant.Filled"">Basic</PBButton>
+<PBButton Variant=""PBButtonVariant.Tonal"">Basic</PBButton>
+
+<PBButton Variant=""PBButtonVariant.Icon"" aria-label=""More options"">
+    <IconStart><span class=""material-symbols-outlined"">more_vert</span></IconStart>
+</PBButton>
+
+<PBButton Variant=""PBButtonVariant.Fab"" aria-label=""Delete"">
+    <IconStart><span class=""material-symbols-outlined"">delete</span></IconStart>
+</PBButton>
+
+<PBButton Variant=""PBButtonVariant.MiniFab"" aria-label=""Menu"">
+    <IconStart><span class=""material-symbols-outlined"">menu</span></IconStart>
+</PBButton>
+
+<PBButton Variant=""PBButtonVariant.ExtendedFab"">
+    <IconStart><span class=""material-symbols-outlined"">favorite</span></IconStart>
+    <ChildContent>Basic</ChildContent>
+</PBButton>")">
+            <div class="button-overview">
+                @foreach (var (label, variant) in appearances)
                 {
-                    <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;">
-                        <PBButton Variant="variant" @onclick="() => clickCount++">@variant</PBButton>
-                        <PBButton Variant="variant" disabled>@variant</PBButton>
-                    </div>
+                    <section>
+                        <div class="button-overview__label">@label</div>
+                        <div class="button-overview__row">
+                            <PBButton Variant="variant">Basic</PBButton>
+                            <PBButton Variant="variant" Disabled>Disabled</PBButton>
+                            <PBButton Variant="variant" Href="https://www.google.com/" target="_blank">Link</PBButton>
+                        </div>
+                    </section>
                 }
+                <section>
+                    <div class="button-overview__label">Icon</div>
+                    <div class="button-overview__row">
+                        <PBButton Variant="PBButtonVariant.Icon" aria-label="Example icon button with a vertical three dot icon">
+                            <IconStart><span class="material-symbols-outlined">more_vert</span></IconStart>
+                        </PBButton>
+                        <PBButton Variant="PBButtonVariant.Icon" Disabled aria-label="Example icon button with a open in new tab icon">
+                            <IconStart><span class="material-symbols-outlined">open_in_new</span></IconStart>
+                        </PBButton>
+                    </div>
+                </section>
+                <section>
+                    <div class="button-overview__label">Floating Action Button (FAB)</div>
+                    <div class="button-overview__row">
+                        <PBButton Variant="PBButtonVariant.Fab" aria-label="Example icon button with a delete icon">
+                            <IconStart><span class="material-symbols-outlined">delete</span></IconStart>
+                        </PBButton>
+                        <PBButton Variant="PBButtonVariant.Fab" Disabled aria-label="Example icon button with a heart icon">
+                            <IconStart><span class="material-symbols-outlined">favorite</span></IconStart>
+                        </PBButton>
+                    </div>
+                </section>
+                <section>
+                    <div class="button-overview__label">Mini FAB</div>
+                    <div class="button-overview__row">
+                        <PBButton Variant="PBButtonVariant.MiniFab" aria-label="Example icon button with a menu icon">
+                            <IconStart><span class="material-symbols-outlined">menu</span></IconStart>
+                        </PBButton>
+                        <PBButton Variant="PBButtonVariant.MiniFab" Disabled aria-label="Example icon button with a home icon">
+                            <IconStart><span class="material-symbols-outlined">home</span></IconStart>
+                        </PBButton>
+                    </div>
+                </section>
+                <section>
+                    <div class="button-overview__label">Extended FAB</div>
+                    <div class="button-overview__row">
+                        <PBButton Variant="PBButtonVariant.ExtendedFab">
+                            <IconStart><span class="material-symbols-outlined">favorite</span></IconStart>
+                            <ChildContent>Basic</ChildContent>
+                        </PBButton>
+                        <PBButton Variant="PBButtonVariant.ExtendedFab" Disabled>
+                            <IconStart><span class="material-symbols-outlined">favorite</span></IconStart>
+                            <ChildContent>Disabled</ChildContent>
+                        </PBButton>
+                        <PBButton Variant="PBButtonVariant.ExtendedFab" Href="https://www.google.com/" target="_blank">
+                            <IconStart><span class="material-symbols-outlined">favorite</span></IconStart>
+                            <ChildContent>Link</ChildContent>
+                        </PBButton>
+                    </div>
+                </section>
             </div>
-            <p class="status">Clicked @clickCount time(s)</p>
         </ExampleCard>
     </section>
 
     <section class="doc-section">
         <p class="field-hint">
-            Icons can be projected before the label via <code>IconStart</code>, after it
-            via <code>IconEnd</code>, or both at once.
+            A natively disabled button can't be focused or hovered, so a tooltip on it never
+            shows. <code>DisabledInteractive</code> keeps it focusable and hoverable (using
+            <code>aria-disabled</code>) while still blocking clicks.
+        </p>
+
+        <ExampleCard Title="Interactive disabled buttons" RazorCode="@(
+@"<PBTooltip Label=""This is a tooltip!"">
+    <PBButton Variant=""PBButtonVariant.Elevated"" Disabled DisabledInteractive>
+        Disabled button allowing interactivity
+    </PBButton>
+</PBTooltip>
+
+<PBTooltip Label=""This is a tooltip!"">
+    <PBButton Variant=""PBButtonVariant.Elevated"" Disabled>
+        Default disabled button
+    </PBButton>
+</PBTooltip>")">
+            <div class="button-demo-row">
+                <PBTooltip Label="This is a tooltip!">
+                    <PBButton Variant="PBButtonVariant.Elevated" Disabled DisabledInteractive>Disabled button allowing interactivity</PBButton>
+                </PBTooltip>
+                <PBTooltip Label="This is a tooltip!">
+                    <PBButton Variant="PBButtonVariant.Elevated" Disabled>Default disabled button</PBButton>
+                </PBTooltip>
+            </div>
+        </ExampleCard>
+    </section>
+
+    <section class="doc-section">
+        <p class="field-hint">
+            <code>ShowProgress</code> hides the label while keeping the button's size, and shows
+            the <code>ProgressIndicator</code> content in its place.
+        </p>
+
+        <ExampleCard Title="Buttons with progress indicators" RazorCode="@(
+@"<PBButton Variant=""PBButtonVariant.Outlined"" ShowProgress=""isLoading""
+    @onclick=""() => isLoading = !isLoading"">
+    <ProgressIndicator><PBProgressSpinner Diameter=""20"" Label=""Loading"" /></ProgressIndicator>
+    <ChildContent>Click to toggle progress</ChildContent>
+</PBButton>
+
+<PBButton Variant=""PBButtonVariant.Outlined"" ShowProgress=""isLoading""
+    @onclick=""() => isLoading = !isLoading"">
+    <ProgressIndicator><span role=""progressbar"">Loading...</span></ProgressIndicator>
+    <ChildContent>Click to toggle progress</ChildContent>
+</PBButton>")">
+            <div class="button-progress-example">
+                <h3>Button with a PBProgressSpinner</h3>
+                <PBButton Variant="PBButtonVariant.Outlined" ShowProgress="isLoading" @onclick="() => isLoading = !isLoading">
+                    <ProgressIndicator><PBProgressSpinner Diameter="20" Label="Loading" /></ProgressIndicator>
+                    <ChildContent>Click to toggle progress</ChildContent>
+                </PBButton>
+                <h3>Button with a custom progress indicator</h3>
+                <PBButton Variant="PBButtonVariant.Outlined" ShowProgress="isLoading" @onclick="() => isLoading = !isLoading">
+                    <ProgressIndicator><span role="progressbar">Loading...</span></ProgressIndicator>
+                    <ChildContent>Click to toggle progress</ChildContent>
+                </PBButton>
+            </div>
+        </ExampleCard>
+    </section>
+
+    <section class="doc-section">
+        <p class="field-hint">
+            Icons can be placed before the label with <code>IconStart</code>, after it with
+            <code>IconEnd</code>, or both.
         </p>
 
         <ExampleCard Title="Icon positioning" RazorCode="@(
 @"<PBButton Variant=""PBButtonVariant.Filled"">
-    <IconStart>★</IconStart>
+    <IconStart><span class=""material-symbols-outlined"">favorite</span></IconStart>
     <ChildContent>Like</ChildContent>
 </PBButton>
 
 <PBButton Variant=""PBButtonVariant.Outlined"">
     <ChildContent>Send</ChildContent>
-    <IconEnd>→</IconEnd>
+    <IconEnd><span class=""material-symbols-outlined"">send</span></IconEnd>
 </PBButton>")">
-            <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;">
+            <div class="button-demo-row">
                 <PBButton Variant="PBButtonVariant.Filled">
-                    <IconStart>★</IconStart>
+                    <IconStart><span class="material-symbols-outlined">favorite</span></IconStart>
                     <ChildContent>Like</ChildContent>
                 </PBButton>
                 <PBButton Variant="PBButtonVariant.Outlined">
                     <ChildContent>Send</ChildContent>
-                    <IconEnd>→</IconEnd>
-                </PBButton>
-            </div>
-        </ExampleCard>
-    </section>
-
-    <section class="doc-section">
-        <p class="field-hint">
-            Icon buttons and FABs (floating action buttons) use the same
-            <code>PBButton</code> component with an icon-only <code>Variant</code> —
-            just pass <code>IconStart</code> and no <code>ChildContent</code> (except
-            for <code>ExtendedFab</code>, which keeps its label).
-        </p>
-
-        <ExampleCard Title="Icon button and FABs" RazorCode="@(
-@"<PBButton Variant=""PBButtonVariant.Icon"" aria-label=""Favorite"">
-    <IconStart>♡</IconStart>
-</PBButton>
-
-<PBButton Variant=""PBButtonVariant.MiniFab"" aria-label=""Add"">
-    <IconStart>+</IconStart>
-</PBButton>
-
-<PBButton Variant=""PBButtonVariant.Fab"" aria-label=""Compose"">
-    <IconStart>✎</IconStart>
-</PBButton>
-
-<PBButton Variant=""PBButtonVariant.ExtendedFab"">
-    <IconStart>+</IconStart>
-    <ChildContent>Compose</ChildContent>
-</PBButton>")">
-            <div style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
-                <PBButton Variant="PBButtonVariant.Icon" aria-label="Favorite">
-                    <IconStart>♡</IconStart>
-                </PBButton>
-                <PBButton Variant="PBButtonVariant.MiniFab" aria-label="Add">
-                    <IconStart>+</IconStart>
-                </PBButton>
-                <PBButton Variant="PBButtonVariant.Fab" aria-label="Compose">
-                    <IconStart>✎</IconStart>
-                </PBButton>
-                <PBButton Variant="PBButtonVariant.ExtendedFab">
-                    <IconStart>+</IconStart>
-                    <ChildContent>Compose</ChildContent>
+                    <IconEnd><span class="material-symbols-outlined">send</span></IconEnd>
                 </PBButton>
             </div>
         </ExampleCard>
@@ -113,41 +204,50 @@
 
     <section class="doc-section">
         <h2>API reference</h2>
+        <div class="doc-table-wrapper">
         <table class="doc-table">
             <thead>
                 <tr><th>Property</th><th>Type</th><th>Description</th></tr>
             </thead>
             <tbody>
-                <tr><td><code>Variant</code></td><td><code>PBButtonVariant</code></td><td>One of <code>Text</code> (default), <code>Filled</code>, <code>Tonal</code>, <code>Outlined</code>, <code>Elevated</code>, <code>Icon</code>, <code>Fab</code>, <code>MiniFab</code>, <code>ExtendedFab</code>.</td></tr>
+                <tr><td><code>Variant</code></td><td><code>PBButtonVariant</code></td><td>One of <code>Text</code> (default), <code>Elevated</code>, <code>Outlined</code>, <code>Filled</code>, <code>Tonal</code>, <code>Icon</code>, <code>Fab</code>, <code>MiniFab</code>, <code>ExtendedFab</code>.</td></tr>
+                <tr><td><code>Href</code></td><td><code>string?</code></td><td>Renders an <code>&lt;a&gt;</code> with this URL, styled as the button.</td></tr>
+                <tr><td><code>Disabled</code></td><td><code>bool</code></td><td>Disables the button (or link).</td></tr>
+                <tr><td><code>DisabledInteractive</code></td><td><code>bool</code></td><td>With <code>Disabled</code>: stays focusable and hoverable (uses <code>aria-disabled</code>) but still blocks clicks.</td></tr>
+                <tr><td><code>ShowProgress</code></td><td><code>bool</code></td><td>Hides the label and icons and shows <code>ProgressIndicator</code> in their place.</td></tr>
+                <tr><td><code>ProgressIndicator</code></td><td><code>RenderFragment?</code></td><td>Content shown while <code>ShowProgress</code> is set, e.g. <code>&lt;PBProgressSpinner Diameter="20" /&gt;</code>.</td></tr>
                 <tr><td><code>Type</code></td><td><code>string</code></td><td>The native <code>type</code> attribute. Defaults to <code>"button"</code>.</td></tr>
                 <tr><td><code>IconStart</code></td><td><code>RenderFragment?</code></td><td>Icon rendered before the label.</td></tr>
                 <tr><td><code>IconEnd</code></td><td><code>RenderFragment?</code></td><td>Icon rendered after the label.</td></tr>
                 <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The button's label content.</td></tr>
-                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;button&gt;</code>, including <code>disabled</code> and <code>@@onclick</code>.</td></tr>
+                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying element, including <code>@@onclick</code>, <code>aria-label</code> and <code>target</code>.</td></tr>
             </tbody>
         </table>
+        </div>
     </section>
 
     <section class="doc-section">
         <div class="a11y-note">
             <strong>Accessibility</strong>
-            Renders a native <code>&lt;button&gt;</code>, so it is keyboard-focusable
-            and activates on Enter/Space without extra work, and a native
-            <code>disabled</code> button is correctly excluded from the focus order.
-            Give icon-only buttons an accessible name via <code>aria-label</code>.
+            Renders a native <code>&lt;button&gt;</code> (or <code>&lt;a&gt;</code> with
+            <code>Href</code>), so it is keyboard-focusable and activates on Enter/Space without
+            extra work. A disabled button is removed from the tab order, a disabled link gets
+            <code>aria-disabled</code> and <code>tabindex="-1"</code>, and
+            <code>DisabledInteractive</code> keeps it reachable so a tooltip can explain why.
+            Give icon-only buttons and FABs an accessible name via <code>aria-label</code>.
         </div>
     </section>
 </div>
 
 @code {
-    private int clickCount;
+    private bool isLoading;
 
-    private static readonly PBButtonVariant[] variants =
+    private static readonly (string Label, PBButtonVariant Variant)[] appearances =
     [
-        PBButtonVariant.Text,
-        PBButtonVariant.Filled,
-        PBButtonVariant.Tonal,
-        PBButtonVariant.Outlined,
-        PBButtonVariant.Elevated,
+        ("Text", PBButtonVariant.Text),
+        ("Elevated", PBButtonVariant.Elevated),
+        ("Outlined", PBButtonVariant.Outlined),
+        ("Filled", PBButtonVariant.Filled),
+        ("Tonal", PBButtonVariant.Tonal),
     ];
 }

@@ -2,53 +2,59 @@
 @implements IDisposable
 @inject NavigationManager NavManager
 
-<div class="catalog-shell">
-    <aside class="catalog-sidebar" aria-label="Design system navigation">
-        <a class="brand-lockup" href="/" aria-label="Workspace Design System home">
-            <span class="brand-mark">W</span>
-            <span>
-                <strong>Workspace</strong>
-                <small>Design system</small>
-            </span>
-        </a>
+@* Angular Material's docs layout (docs/src/app: material-docs-app, navbar, component-sidenav):
+   a full-width primary-container toolbar, then a 240px nav list beside the page on wide screens,
+   or a "Menu" header that opens it as a drawer below 960px. *@
+<div class="docs-app">
+    <TopAppBar />
 
-        <nav class="side-nav" aria-label="Components">
-            <div class="component-menu">
-                @foreach (var item in ComponentCatalog.Items)
-                {
-                    <a class="nav-link @(IsActive(item.Route) ? "active" : null)" href="@item.Route">@item.Name</a>
-                }
-            </div>
+    <div class="docs-body">
+        <nav class="docs-nav" aria-label="Components">
+            @Navigation
         </nav>
 
-        <div class="sidebar-footer">
-            <span class="status-dot" aria-hidden="true"></span>
-            <span>v1.0.0</span>
-        </div>
-    </aside>
+        <PBSidenav Mode="PBSidenavMode.Over" class="docs-drawer" Label="Components" @bind-Opened="drawerOpen">
+            <nav class="docs-drawer__nav" aria-label="Components">@Navigation</nav>
+        </PBSidenav>
 
-    <main class="page-shell">
-        <TopAppBar Title="@CurrentTitle" />
-        @Body
-    </main>
+        <main class="page-shell">
+            <header class="docs-page-header">
+                <PBButton Variant="PBButtonVariant.Text" aria-expanded="@(drawerOpen ? "true" : "false")" @onclick="() => drawerOpen = true">
+                    <IconStart><span class="material-icons">menu</span></IconStart>
+                    <ChildContent>Menu</ChildContent>
+                </PBButton>
+            </header>
+            @Body
+        </main>
+    </div>
 </div>
 
 @code {
+    private bool drawerOpen;
+
+    private RenderFragment Navigation => @<PBList class="docs-nav__list">
+        @foreach (var item in ComponentCatalog.Items)
+        {
+            <PBListItem Href="@item.Route" Selected="IsActive(item.Route)" Title="@item.Name" />
+        }
+    </PBList>;
+
     protected override void OnInitialized()
     {
         NavManager.LocationChanged += OnLocationChanged;
     }
 
-    private void OnLocationChanged(object? sender, LocationChangedEventArgs e) => StateHasChanged();
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        drawerOpen = false;
+        InvokeAsync(StateHasChanged);
+    }
 
     private bool IsActive(string route)
     {
-        var currentPath = "/" + NavManager.ToBaseRelativePath(NavManager.Uri).TrimEnd('/');
+        var currentPath = "/" + NavManager.ToBaseRelativePath(NavManager.Uri).Split('#', '?')[0].TrimEnd('/');
         return string.Equals(currentPath, route, StringComparison.OrdinalIgnoreCase);
     }
-
-    private string CurrentTitle =>
-        ComponentCatalog.Items.FirstOrDefault(item => IsActive(item.Route))?.Name ?? "Design System";
 
     public void Dispose() => NavManager.LocationChanged -= OnLocationChanged;
 }

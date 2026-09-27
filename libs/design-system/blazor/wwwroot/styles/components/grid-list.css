@@ -1,0 +1,57 @@
+/*
+ * PBGridList / PBGridTile: mat-grid-list / mat-grid-tile. Reference: grid-list structural styles.
+ *
+ *   equal columns, 1px default gutter, ratio or fixed row heights; tile content centered;
+ *   header/footer 48px, padding 0 16px, body-large, content on a scrim at 38% (Angular: #fff on
+ *   rgba(0,0,0,.38) -- expressed here with the scrim / on-scrim roles, identical in every theme)
+ */
+
+.pb-grid-list {
+  display: grid;
+  grid-template-columns: repeat(var(--pb-grid-cols, 2), minmax(0, 1fr));
+  grid-auto-rows: var(--pb-grid-row-height, 100px);
+  gap: var(--pb-grid-gutter, 1px);
+  container-type: inline-size;
+}
+
+.pb-grid-tile {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.pb-grid-tile__content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.pb-grid-tile__header,
+.pb-grid-tile__footer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 48px;
+  padding: 0 16px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--md-sys-color-scrim) 38%, transparent);
+  color: var(--md-sys-color-on-scrim);
+  font: var(--md-sys-typescale-body-large);
+}
+
+.pb-grid-tile__header {
+  top: 0;
+}
+
+.pb-grid-tile__footer {
+  bottom: 0;
+}

@@ -1,15 +1,23 @@
 @inherits WorkspaceComponentBase
-
-<div class="pb-menu" @attributes="AdditionalAttributes">
-    <button type="button" class="pb-menu__trigger" @onclick="ToggleAsync" aria-haspopup="menu" aria-expanded="@(IsOpen ? "true" : "false")" aria-label="@Label">
-        @Trigger
-    </button>
+@implements IAsyncDisposable
+@inject Microsoft.JSInterop.IJSRuntime JS
+<div class="pb-menu @UserClass" @attributes="Attrs">
+    <span @ref="triggerHost" class="pb-menu__trigger-host" style="display:contents" @onkeydown="OnTriggerKeyDownAsync">
+        <PBButton Variant="TriggerVariant" aria-haspopup="menu" aria-expanded="@(IsOpen ? "true" : "false")"
+                  aria-controls="@(IsOpen ? PanelId : null)" aria-label="@(TriggerVariant == PBButtonVariant.Icon ? Label : null)"
+                  @onclick="ToggleAsync">
+            @Trigger
+        </PBButton>
+    </span>
 
     @if (IsOpen)
     {
-        <div class="pb-menu__scrim" @onclick="CloseAsync"></div>
-        <div class="pb-menu__panel pb-menu__panel--@(XPosition.ToString().ToLowerInvariant())" role="menu" aria-label="@Label" @onkeydown="OnKeyDownAsync" tabindex="-1">
-            @ChildContent
+        <div @ref="panel" id="@PanelId" class="pb-menu__panel pb-overlay pb-overlay--pending @PanelClass" popover="manual">
+            <CascadingValue Value="this" IsFixed="true">
+                <div @ref="content" class="pb-menu__content" role="menu" aria-label="@Label" tabindex="-1" @onkeydown="OnKeyDownAsync">
+                    @ChildContent
+                </div>
+            </CascadingValue>
         </div>
     }
 </div>

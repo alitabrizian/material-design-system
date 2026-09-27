@@ -46,6 +46,7 @@
 
     <section class="doc-section">
         <h2>API reference</h2>
+        <div class="doc-table-wrapper">
         <table class="doc-table">
             <thead>
                 <tr><th>Property</th><th>Type</th><th>Description</th></tr>
@@ -55,8 +56,12 @@
                 <tr><td><code>SupportingText</code></td><td><code>string?</code></td><td>Helper text rendered below the field.</td></tr>
                 <tr><td><code>ErrorText</code></td><td><code>string?</code></td><td>When set, replaces supporting text and switches the field to its error state.</td></tr>
                 <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;input&gt;</code>.</td></tr>
+                <tr><td><code>Appearance</code></td><td><code>PBFormFieldAppearance</code></td><td><code>Fill</code> (default) or <code>Outline</code>.</td></tr>
+                <tr><td><code>Prefix</code> / <code>Suffix</code></td><td><code>RenderFragment?</code></td><td>Leading / trailing icons (matIconPrefix / matIconSuffix).</td></tr>
+                <tr><td><code>Block</code></td><td><code>bool</code></td><td>Stretches the field to its container's width.</td></tr>
             </tbody>
         </table>
+        </div>
     </section>
 
     <section class="doc-section">

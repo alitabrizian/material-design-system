@@ -1,2 +1,19 @@
 @inherits WorkspaceComponentBase
-<label class="workspace-check"><input @attributes="AdditionalAttributes" type="checkbox" /><span class="workspace-check__box"></span><span class="workspace-check__label">@Label</span></label>
+@inject Microsoft.JSInterop.IJSRuntime JS
+<label class="pb-checkbox @UserClass">
+    <span class="pb-checkbox__control pb-ripple-host pb-ripple-centered">
+        <input @ref="input" class="pb-checkbox__input" type="checkbox"
+               aria-checked="@(Indeterminate ? "mixed" : null)"
+               @attributes="Attrs" />
+        <span class="pb-checkbox__state-layer pb-ripple-container"></span>
+        <span class="pb-checkbox__box" aria-hidden="true">
+            <svg class="pb-checkbox__checkmark" focusable="false" viewBox="0 0 24 24"><path d="M1.73,12.91 8.1,19.28 22.79,4.59" /></svg>
+            <span class="pb-checkbox__mixedmark"></span>
+        </span>
+        <span class="pb-touch-target" aria-hidden="true"></span>
+    </span>
+    @if (Label is not null || ChildContent is not null)
+    {
+        <span class="pb-checkbox__label">@Label@ChildContent</span>
+    }
+</label>

@@ -6,68 +6,107 @@
 <div class="catalog-content">
 
     <PageHeader Title="Menu">
-        A menu exposes a list of contextual actions behind a trigger button. It
-        opens on click and closes on selection, outside click, or Escape.
+        PBMenu is a floating panel containing a list of options, opened from its trigger button,
+        with keyboard navigation and checkable items.
     </PageHeader>
 
     <section class="doc-section">
-        <p class="field-hint">A menu grouping a set of related actions.</p>
+        <p class="field-hint">A basic menu. It opens below its trigger and closes on selection, an outside click, Escape or Tab.</p>
 
-        <ExampleCard Title="Row actions" RazorCode="@(
-@"<PBMenu Label=""Row actions"" XPosition=""PBMenuXPosition.After"" @bind-IsOpen=""isOpen"">
-    <Trigger>Actions</Trigger>
+        <ExampleCard Title="Basic menu" RazorCode="@(
+@"<PBMenu Label=""Menu"" TriggerVariant=""PBButtonVariant.Text"" @bind-IsOpen=""isOpen"">
+    <Trigger>Menu</Trigger>
     <ChildContent>
-        <button @onclick=""Edit"">Edit</button>
-        <button @onclick=""Duplicate"">Duplicate</button>
-        <button @onclick=""Delete"">Delete</button>
+        <PBMenuItem OnClick='() => Select(""Item 1"")'>Item 1</PBMenuItem>
+        <PBMenuItem OnClick='() => Select(""Item 2"")'>Item 2</PBMenuItem>
     </ChildContent>
 </PBMenu>")">
-            <PBMenu Label="Row actions" XPosition="PBMenuXPosition.After" @bind-IsOpen="isOpen">
-                <Trigger>Actions ▾</Trigger>
+            <PBMenu Label="Menu" TriggerVariant="PBButtonVariant.Text" @bind-IsOpen="basicOpen">
+                <Trigger>Menu</Trigger>
                 <ChildContent>
-                    <button type="button" class="pb-menu-item" @onclick='() => SelectAction("Edit")'>Edit</button>
-                    <button type="button" class="pb-menu-item" @onclick='() => SelectAction("Duplicate")'>Duplicate</button>
-                    <button type="button" class="pb-menu-item" @onclick='() => SelectAction("Delete")'>Delete</button>
+                    <PBMenuItem OnClick='() => Select("Item 1")'>Item 1</PBMenuItem>
+                    <PBMenuItem OnClick='() => Select("Item 2")'>Item 2</PBMenuItem>
                 </ChildContent>
             </PBMenu>
-            <p class="status">Last action: @(selectedAction ?? "—")</p>
+            <p class="status">Last selected: @(selected ?? "—")</p>
+        </ExampleCard>
+    </section>
+
+    <section class="doc-section">
+        <p class="field-hint">Menu items with icons, a disabled item and an icon-button trigger.</p>
+
+        <ExampleCard Title="Menu with icons" RazorCode="@(
+@"<PBMenu Label=""Example icon-button with a menu"" @bind-IsOpen=""isOpen"">
+    <Trigger><span class=""material-icons"">more_vert</span></Trigger>
+    <ChildContent>
+        <PBMenuItem>
+            <Icon><span class=""material-icons"">dialpad</span></Icon>
+            <ChildContent>Redial</ChildContent>
+        </PBMenuItem>
+        <PBMenuItem Disabled>
+            <Icon><span class=""material-icons"">voicemail</span></Icon>
+            <ChildContent>Check voice mail</ChildContent>
+        </PBMenuItem>
+        <PBMenuItem>
+            <Icon><span class=""material-icons"">notifications_off</span></Icon>
+            <ChildContent>Disable alerts</ChildContent>
+        </PBMenuItem>
+    </ChildContent>
+</PBMenu>")">
+            <PBMenu Label="Example icon-button with a menu" @bind-IsOpen="iconOpen">
+                <Trigger><span class="material-icons" aria-hidden="true">more_vert</span></Trigger>
+                <ChildContent>
+                    <PBMenuItem OnClick='() => Select("Redial")'>
+                        <Icon><span class="material-icons">dialpad</span></Icon>
+                        <ChildContent>Redial</ChildContent>
+                    </PBMenuItem>
+                    <PBMenuItem Disabled>
+                        <Icon><span class="material-icons">voicemail</span></Icon>
+                        <ChildContent>Check voice mail</ChildContent>
+                    </PBMenuItem>
+                    <PBMenuItem OnClick='() => Select("Disable alerts")'>
+                        <Icon><span class="material-icons">notifications_off</span></Icon>
+                        <ChildContent>Disable alerts</ChildContent>
+                    </PBMenuItem>
+                </ChildContent>
+            </PBMenu>
         </ExampleCard>
     </section>
 
     <section class="doc-section">
         <h2>API reference</h2>
+        <div class="doc-table-wrapper">
         <table class="doc-table">
             <thead>
                 <tr><th>Property</th><th>Type</th><th>Description</th></tr>
             </thead>
             <tbody>
-                <tr><td><code>Label</code></td><td><code>string?</code></td><td>Accessible name for the trigger button and the menu panel.</td></tr>
-                <tr><td><code>Trigger</code></td><td><code>RenderFragment?</code></td><td>Content of the button that opens the menu.</td></tr>
-                <tr><td><code>XPosition</code></td><td><code>PBMenuXPosition</code></td><td><code>After</code> (default, panel opens toward the inline end, aligned to the trigger's start edge) or <code>Before</code> (opens toward the inline start, aligned to the trigger's end edge &mdash; use for triggers near the end of a row, e.g. a top app bar action).</td></tr>
-                <tr><td><code>IsOpen</code></td><td><code>bool</code></td><td>Whether the panel is open. Supports <code>@@bind-IsOpen</code>.</td></tr>
-                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The menu's actions.</td></tr>
+                <tr><td><code>Trigger</code></td><td><code>RenderFragment?</code></td><td>Content of the trigger button.</td></tr>
+                <tr><td><code>TriggerVariant</code></td><td><code>PBButtonVariant</code></td><td>Trigger button appearance; <code>Icon</code> by default.</td></tr>
+                <tr><td><code>Label</code></td><td><code>string?</code></td><td>Accessible name of the menu (and of an icon trigger).</td></tr>
+                <tr><td><code>XPosition</code> / <code>YPosition</code></td><td><code>PBMenuXPosition</code> / <code>PBMenuYPosition</code></td><td>Side the panel opens toward: <code>After</code>/<code>Before</code>, <code>Below</code>/<code>Above</code> (flips when there is no room).</td></tr>
+                <tr><td><code>IsOpen</code></td><td><code>bool</code></td><td>Supports <code>@@bind-IsOpen</code>.</td></tr>
+                <tr><td><code>PBMenuItem</code></td><td></td><td><code>Icon</code>, <code>Trailing</code>, <code>Disabled</code>, <code>OnClick</code>, <code>Role</code> (<code>menuitem</code>, <code>menuitemradio</code>, <code>menuitemcheckbox</code>) and <code>Checked</code>.</td></tr>
             </tbody>
         </table>
+        </div>
     </section>
 
     <section class="doc-section">
         <div class="a11y-note">
             <strong>Accessibility</strong>
-            The trigger has <code>aria-haspopup="menu"</code> and
-            <code>aria-expanded</code>. The panel uses <code>role="menu"</code>.
-            Escape closes the menu and returns focus to the trigger; clicking outside
-            the panel (a full-viewport scrim) also closes it.
+            The trigger has <code>aria-haspopup="menu"</code> and <code>aria-expanded</code>; the
+            panel is a <code>menu</code> of <code>menuitem</code>s. Opening focuses the first item
+            (ArrowUp on the trigger focuses the last); ArrowUp/ArrowDown/Home/End move; Escape
+            closes and returns focus to the trigger.
         </div>
     </section>
 </div>
 
 @code {
-    private bool isOpen;
-    private string? selectedAction;
+    private bool basicOpen;
+    private bool iconOpen;
+    private string? selected;
 
-    private void SelectAction(string action)
-    {
-        selectedAction = action;
-        isOpen = false;
-    }
+    private void Select(string item) => selected = item;
 }

@@ -4,7 +4,49 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
-  <ItemGroup>
+
+  <!--
+    Development (default): reference the library's source project. In Development, ASP.NET Core
+    serves _content/Design/* straight from libs/design-system/blazor/wwwroot (static web assets
+    manifest), so a saved CSS edit is visible on the next browser refresh, and `dotnet watch`
+    rebuilds/hot-reloads .razor/.cs edits in the library too.
+
+    Package verification (opt-in): `-p:UseDesignSystemPackage=true` consumes the packed nupkg from
+    local-nuget-feed instead, exactly like an external consumer. Use `npx nx run
+    design-system-demo:serve-package`, which repacks first (evicting the cached 0.1.0 copy).
+    Never develop in this mode: NuGet caches a package version as immutable, which is why library
+    CSS edits used to "not show up after refresh".
+  -->
+  <ItemGroup Condition="'$(UseDesignSystemPackage)' != 'true'">
+    <ProjectReference Include="..\..\libs\design-system\blazor\Design.csproj" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(UseDesignSystemPackage)' == 'true'">
     <PackageReference Include="PartoBita.DesignSystem.Blazor" Version="0.1.0" />
   </ItemGroup>
+
+  <!--
+    GitHub link in the toolbar: shown only when this checkout was cloned from GitHub. The build reads
+    `git config remote.origin.url`; for a github.com remote it embeds the repository's canonical
+    https URL as assembly metadata (GitHubRepositoryUrl), which TopAppBar reads. Any other origin
+    (e.g. the GitLab mirror), no git, or no origin embeds nothing, so the link is not rendered.
+    Only https://github.com/<owner>/<repo> is ever embedded, never the raw remote (which may carry
+    credentials). Override the detected remote with -p:RepositoryOriginUrl=<url>.
+  -->
+  <Target Name="ResolveGitHubRepositoryUrl" BeforeTargets="GetAssemblyAttributes">
+    <Exec Condition="'$(RepositoryOriginUrl)' == ''" Command="git config --get remote.origin.url"
+          WorkingDirectory="$(MSBuildProjectDirectory)" ConsoleToMSBuild="true" IgnoreExitCode="true"
+          IgnoreStandardErrorWarningFormat="true" StandardOutputImportance="low" StandardErrorImportance="low" EchoOff="true">
+      <Output TaskParameter="ConsoleOutput" PropertyName="RepositoryOriginUrl" />
+    </Exec>
+    <PropertyGroup>
+      <_GitHubRemotePattern>^(?:https?://(?:[^@/\s]+@)?|ssh://git@|git@)github\.com[:/]([A-Za-z0-9-]+)/([A-Za-z0-9._-]+?)(?:\.git)?/?$</_GitHubRemotePattern>
+      <_GitHubRepositoryUrl Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(RepositoryOriginUrl.Trim())', '$(_GitHubRemotePattern)'))">$([System.Text.RegularExpressions.Regex]::Replace('$(RepositoryOriginUrl.Trim())', '$(_GitHubRemotePattern)', 'https://github.com/$1/$2'))</_GitHubRepositoryUrl>
+    </PropertyGroup>
+    <ItemGroup Condition="'$(_GitHubRepositoryUrl)' != ''">
+      <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+        <_Parameter1>GitHubRepositoryUrl</_Parameter1>
+        <_Parameter2>$(_GitHubRepositoryUrl)</_Parameter2>
+      </AssemblyAttribute>
+    </ItemGroup>
+  </Target>
 </Project>

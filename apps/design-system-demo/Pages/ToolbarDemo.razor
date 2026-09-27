@@ -6,48 +6,72 @@
 <div class="catalog-content">
 
     <PageHeader Title="Toolbar">
-        A toolbar groups navigation and actions into a single horizontal bar,
-        typically at the top of a page or panel.
+        PBToolbar is a container for headers, titles or actions, in one
+        or more rows.
     </PageHeader>
 
     <section class="doc-section">
-        <p class="field-hint">Actions are laid out left to right.</p>
+        <p class="field-hint">A single-row toolbar with a navigation button, a title and actions.</p>
 
-        <ExampleCard Title="Document toolbar" RazorCode="@(
+        <ExampleCard Title="Toolbar overview" RazorCode="@(
 @"<PBToolbar>
-    <strong>Untitled document</strong>
-    <PBButton>Share</PBButton>
-    <PBButton>Save</PBButton>
+    <PBButton Variant=""PBButtonVariant.Icon"" aria-label=""Menu"">
+        <span class=""material-icons"">menu</span>
+    </PBButton>
+    <span>My App</span>
+    <span style=""flex:1 1 auto""></span>
+    <PBButton Variant=""PBButtonVariant.Icon"" aria-label=""Favorite"">...</PBButton>
+    <PBButton Variant=""PBButtonVariant.Icon"" aria-label=""Share"">...</PBButton>
 </PBToolbar>")">
-            <PBToolbar style="display:flex; align-items:center; justify-content:space-between; gap:0.5rem;">
-                <strong>Untitled document</strong>
-                <span style="display:inline-flex; gap:0.5rem;">
-                    <PBButton>Share</PBButton>
-                    <PBButton>Save</PBButton>
-                </span>
+            <PBToolbar style="gap:4px">
+                <PBButton Variant="PBButtonVariant.Icon" aria-label="Menu"><span class="material-icons">menu</span></PBButton>
+                <span>My App</span>
+                <span style="flex:1 1 auto"></span>
+                <PBButton Variant="PBButtonVariant.Icon" aria-label="Favorite"><span class="material-icons">favorite</span></PBButton>
+                <PBButton Variant="PBButtonVariant.Icon" aria-label="Share"><span class="material-icons">share</span></PBButton>
+            </PBToolbar>
+        </ExampleCard>
+    </section>
+
+    <section class="doc-section">
+        <p class="field-hint">Multiple rows with <code>PBToolbarRow</code>.</p>
+
+        <ExampleCard Title="Multi-row toolbar" RazorCode="@(
+@"<PBToolbar>
+    <PBToolbarRow><span>Custom Toolbar</span></PBToolbarRow>
+    <PBToolbarRow><span>Second Line</span></PBToolbarRow>
+</PBToolbar>")">
+            <PBToolbar>
+                <PBToolbarRow><span>Custom Toolbar</span></PBToolbarRow>
+                <PBToolbarRow>
+                    <span>Second Line</span>
+                    <span style="flex:1 1 auto"></span>
+                    <PBIcon Label="Verified user">verified_user</PBIcon>
+                </PBToolbarRow>
             </PBToolbar>
         </ExampleCard>
     </section>
 
     <section class="doc-section">
         <h2>API reference</h2>
+        <div class="doc-table-wrapper">
         <table class="doc-table">
             <thead>
-                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+                <tr><th>Component</th><th>Description</th></tr>
             </thead>
             <tbody>
-                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The toolbar's content.</td></tr>
-                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;header&gt;</code>.</td></tr>
+                <tr><td><code>PBToolbar</code></td><td>A <code>&lt;header&gt;</code> bar: surface color, title-large text, 64px (56px on phones).</td></tr>
+                <tr><td><code>PBToolbarRow</code></td><td>One row of a multi-row toolbar.</td></tr>
             </tbody>
         </table>
+        </div>
     </section>
 
     <section class="doc-section">
         <div class="a11y-note">
             <strong>Accessibility</strong>
-            Renders a <code>&lt;header&gt;</code> landmark; give it an
-            <code>aria-label</code> via <code>AdditionalAttributes</code> when a page
-            has more than one toolbar.
+            The toolbar renders a <code>&lt;header&gt;</code>; give icon-only buttons in it an
+            <code>aria-label</code>.
         </div>
     </section>
 </div>

@@ -1,19 +1,8 @@
 /*
- * These --catalog-* names are kept so none of the rules below need to change
- * (no sidebar restyling), but they now resolve to the active M3 palette/mode
- * via --md-sys-color-* instead of fixed hex, so the whole app (sidebar
- * included) follows the theme controls in the top app bar.
+ * Demo shell + documentation page styles. Every color is a --md-sys-* role (constitution
+ * principle II, enforced by tools/scripts/audit-colors.mts), so the whole shell -- sidebar, top
+ * bar, docs text, code samples -- follows the active theme.
  */
-:root {
-  --catalog-ink: var(--md-sys-color-on-surface);
-  --catalog-muted: var(--md-sys-color-on-surface-variant);
-  --catalog-line: var(--md-sys-color-outline-variant);
-  --catalog-panel: var(--md-sys-color-surface);
-  --catalog-soft: var(--md-sys-color-surface-container-low);
-  --catalog-accent: var(--md-sys-color-primary);
-  --catalog-accent-soft: var(--md-sys-color-primary-container);
-  --catalog-shadow: 0 16px 44px rgb(25 43 58 / 0.08);
-}
 
 * {
   box-sizing: border-box;
@@ -21,629 +10,274 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 80px;
 }
 
 body {
   margin: 0;
-  background: var(--md-sys-color-background);
-  color: var(--catalog-ink);
-  font-family: Roboto, "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-  font-size: 16px;
-  line-height: 28px;
+  background: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
+  font: var(--md-sys-typescale-body-large);
+  letter-spacing: var(--md-sys-typescale-body-large-tracking);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 a {
-  color: inherit;
-  text-decoration: none;
+  color: var(--md-sys-color-primary);
 }
 
-.page-shell {
+/* Blazor's FocusOnNavigate moves focus to the page <h1> for screen readers; it is not a control,
+   so it gets no visible focus ring (the old black box around every page title). */
+h1:focus {
+  outline: none;
+}
+
+::selection {
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+}
+
+/* ------------------------------------------------------------------ shell layout */
+/* Angular Material's docs layout (docs/src/app/material-docs-app.scss, shared/navbar/navbar.scss,
+   pages/component-sidenav/component-sidenav.scss, styles/_constants.scss). */
+
+.docs-app {
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
 }
 
-/* === Top app bar — light/dark toggle + palette picker ===
- * Uses --md-sys-* tokens (not --catalog-*) so it tracks the active M3 palette/mode.
- */
-.pb-topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  height: 3.5rem;
-  padding: 0 clamp(1.5rem, 5vw, 5rem);
+/* Toolbar: primary-container, primary text; 8px 16px padding around 40px buttons = 56px. */
+.docs-navbar {
   position: sticky;
   top: 0;
   z-index: 30;
-  background: var(--md-sys-color-surface-container);
-  color: var(--md-sys-color-on-surface);
-  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  color: var(--md-sys-color-primary);
+  background: var(--md-sys-color-primary-container);
 }
 
-.pb-topbar__title {
-  font-family: var(--md-sys-typescale-font-family);
-  font-size: var(--md-sys-typescale-title-medium-size);
-  line-height: var(--md-sys-typescale-title-medium-line-height);
-  font-weight: var(--md-sys-typescale-title-medium-weight);
-  letter-spacing: var(--md-sys-typescale-title-medium-tracking);
-}
-
-.pb-topbar__actions {
+.docs-navbar__header {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 0.25rem;
+  min-height: 56px;
+  padding: 8px 16px;
 }
 
-.pb-topbar__icon {
+.docs-navbar__item--selected {
+  background: color-mix(in srgb, var(--md-sys-color-primary) 10%, transparent);
+}
+
+/* Icon buttons take the toolbar's color (navbar.scss: .mat-mdc-icon-button { color: inherit }). */
+.docs-navbar .pb-button--icon {
+  color: inherit;
+}
+
+/* The logo and GitHub mark sit in the text button's icon slot at 24px, 8px before the label. */
+.docs-navbar .pb-button__icon--start {
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  border: none;
-  border-radius: var(--md-sys-shape-corner-full);
-  background: transparent;
-  color: var(--md-sys-color-on-surface);
-  font-size: 1.5rem;
-  line-height: 1;
-  cursor: pointer;
-  transition: background-color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+  width: 24px;
+  height: 24px;
+  margin-inline-end: 8px;
+  font-size: 24px;
 }
 
-.pb-topbar__icon:hover {
-  background: color-mix(in srgb, var(--md-sys-color-on-surface) calc(var(--md-sys-state-hover-state-layer-opacity) * 100%), transparent);
-}
-
-/* The palette picker's trigger is icon-only, sized to match the mode toggle. */
-.pb-topbar .pb-menu__trigger {
-  padding: 0;
-  font-size: 1.5rem;
-  color: var(--md-sys-color-on-surface);
-}
-
-.catalog-shell {
+.docs-logo {
   display: grid;
-  grid-template-columns: 15.5rem minmax(0, 1fr);
-  min-height: 100vh;
-}
-
-.catalog-sidebar {
-  display: flex;
-  position: sticky;
-  top: 0;
-  flex-direction: column;
-  height: 100vh;
-  padding-top: 1rem;
-  border-right: 1px solid var(--md-sys-color-outline-variant);
-  background: var(--md-sys-color-surface-container);
-}
-
-.brand-lockup {
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-  padding: 0 1rem 1.5rem;
-}
-
-.brand-mark {
-  display: grid;
-  width: 2.2rem;
-  height: 2.2rem;
+  width: 24px;
+  height: 24px;
   place-items: center;
-  border-radius: 0.65rem;
-  background: var(--catalog-accent);
-  color: white;
-  font-size: 1.1rem;
-  font-weight: 800;
+  border-radius: var(--md-sys-shape-corner-extra-small);
+  background: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+  font: var(--md-sys-typescale-label-large);
+  font-weight: 700;
+  letter-spacing: 0;
 }
 
-.brand-lockup strong,
-.brand-lockup small {
+.docs-github-logo {
   display: block;
+  width: 24px;
+  height: 24px;
 }
 
-.brand-lockup strong {
-  font-size: 0.95rem;
-  letter-spacing: 0.01em;
+.docs-flex-spacer {
+  flex-grow: 1;
 }
 
-.brand-lockup small {
-  margin-top: 0.15rem;
-  color: var(--catalog-muted);
-  font-size: 0.7rem;
+.docs-theme-picker {
+  display: flex;
 }
 
-.side-nav {
-  min-height: 0;
-  display: grid;
-  gap: 0.25rem;
+.docs-navbar__show-small {
+  display: none;
 }
 
-.component-menu {
-  display: grid;
-  gap: 0.15rem;
-  max-height: calc(100vh - 8rem);
-  overflow-y: auto;
-  padding: 0 0.35rem;
-  scrollbar-color: #c6d1d8 transparent;
+/* Below the toolbar: the 240px nav list on the page background, with an outline-variant rule. */
+.docs-body {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: flex-start;
+}
+
+.docs-nav {
+  position: sticky;
+  top: 56px;
+  flex-shrink: 0;
+  width: 240px;
+  height: calc(100vh - 56px);
+  height: calc(100dvh - 56px);
+  padding: 16px 8px;
+  overflow: auto;
+  border-right: 1px solid var(--md-sys-color-outline-variant);
+  scrollbar-color: var(--md-sys-color-outline-variant) transparent;
   scrollbar-width: thin;
 }
 
-.nav-label {
-  margin: 0.9rem 0 0.45rem 0.7rem;
-  color: #8793a0;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.nav-link {
-  padding: 0.5rem 1rem;
-  border-radius: 2.5rem;
-  color: var(--catalog-muted);
-  font-size: 16px;
-  font-weight: 400;
-  transition: background 160ms ease, color 160ms ease;
-}
-
-.nav-link:hover {
-  background: color-mix(in srgb, var(--md-sys-color-on-surface) calc(var(--md-sys-state-hover-state-layer-opacity) * 100%), transparent);
-}
-
-.nav-link.active {
-  background: var(--catalog-accent-soft);
-  color: var(--catalog-accent);
-  font-weight: 700;
-}
-
-.nav-link.active:hover {
-  background: color-mix(in srgb, var(--catalog-accent-soft), var(--md-sys-color-on-surface) calc(var(--md-sys-state-hover-state-layer-opacity) * 100%));
-}
-
-.sidebar-footer {
+.docs-nav__list {
   display: flex;
+  flex-direction: column;
+  /* A 4px gap keeps adjacent hover/activated pills from touching. */
+  gap: 4px;
+  padding-top: 0;
+}
+
+.page-shell {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* Small screens: a primary-container "Menu" header (component-page-header.scss) opens the list
+   as a drawer. */
+.docs-page-header {
+  display: none;
   align-items: center;
-  gap: 0.5rem;
-  margin-top: auto;
-  padding: 0.75rem 0.7rem;
-  border-top: 1px solid var(--catalog-line);
-  color: var(--catalog-muted);
-  font-size: 0.68rem;
+  justify-content: center;
+  min-height: 60px;
+  background: var(--md-sys-color-primary-container);
 }
 
-.status-dot {
-  width: 0.45rem;
-  height: 0.45rem;
-  border-radius: 50%;
-  background: #1b9a72;
-  box-shadow: 0 0 0 3px #d9f1eb;
+.docs-drawer__nav {
+  padding: 16px 8px;
 }
 
-.catalog-content {
-  padding: 3rem clamp(1.5rem, 5vw, 5rem) 5rem;
+/* Like the docs' fixedTopGap: the drawer and its scrim start below the 56px toolbar, which stays
+   visible and usable. */
+.docs-drawer.pb-sidenav--over,
+.docs-body > .pb-sidenav-backdrop {
+  top: 56px;
 }
 
-.eyebrow,
-.section-kicker {
-  margin: 0 0 0.55rem;
-  color: var(--catalog-accent);
-  font-size: 0.7rem;
-  font-weight: 800;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
+.docs-drawer.pb-sidenav--over {
+  height: calc(100vh - 56px);
+  height: calc(100dvh - 56px);
 }
 
-h1,
-h2,
-p {
-  margin-top: 0;
+/* Theme picker: Angular Material's docs theme picker (theme-picker.scss). Each preview is a 24px
+   mini app: page background (neutral tone 99 in light themes, neutral tone 10 in dark ones),
+   a top bar and a button pill in primary-container, framed by 50% outline-variant, 4px corners. */
+.theme-picker.pb-menu__panel {
+  max-width: none;
 }
 
-h1 {
-  margin-bottom: 0.65rem;
-  color: var(--catalog-ink);
-  font-size: clamp(2.7rem, 6vw, 4.8rem);
-  font-weight: 700;
-  letter-spacing: -0.04em;
-  line-height: 0.98;
-}
-
-h2 {
-  margin-bottom: 0;
-  font-size: 1.45rem;
-  letter-spacing: -0.025em;
-}
-
-.intro {
-  max-width: 38rem;
-  margin-bottom: 0;
-  color: var(--catalog-muted);
-  font-size: 1rem;
-  line-height: 1.65;
-}
-
-.header-meta {
-  display: grid;
-  justify-items: end;
-  gap: 0.55rem;
+.theme-picker .pb-menu-item__text {
   white-space: nowrap;
 }
 
-.version-pill,
-.preview-badge {
-  padding: 0.35rem 0.65rem;
-  border-radius: 999px;
-  background: var(--catalog-accent-soft);
-  color: var(--catalog-accent);
-  font-size: 0.68rem;
-  font-weight: 700;
+.theme-picker .pb-menu-item__trailing {
+  padding-left: 24px;
 }
 
-.catalog-toolbar {
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-  margin-bottom: 1.5rem;
-  padding: 0.7rem 1rem;
-  border: 1px solid var(--catalog-line);
-  border-radius: 0.55rem;
-  background: var(--catalog-panel);
-  box-shadow: 0 4px 16px rgb(25 43 58 / 0.03);
+.theme-example {
+  display: inline-flex;
+  flex-shrink: 0;
+  box-sizing: content-box;
+  width: 24px;
+  height: 24px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--md-sys-color-outline-variant) 50%, transparent);
+  border-radius: 4px;
 }
 
-.search-icon {
-    color: var(--catalog-accent);
-    font-size: 2rem;
-    line-height: 1;
-    position: relative;
-    top: -5px;
-}
-
-.catalog-toolbar input {
-  width: min(100%, 20rem);
-  border: 0;
-  outline: 0;
-  background: transparent;
-  color: var(--catalog-ink);
-  font: inherit;
-  font-size: 0.85rem;
-}
-
-.catalog-toolbar input::placeholder {
-  color: #8b97a3;
-}
-
-.toolbar-hint {
-  margin-left: auto;
-  color: #99a4ae;
-  font-size: 0.72rem;
-}
-
-.component-section,
-.playground-section {
-  scroll-margin-top: 2rem;
-}
-
-.section-heading {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  margin-bottom: 1.25rem;
-}
-
-.section-kicker {
+.theme-example__svg {
   display: block;
-  margin-bottom: 0.3rem;
-  color: #8995a1;
-  font-size: 0.65rem;
-}
-
-.component-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
-  gap: 0.8rem;
-}
-
-.component-card {
-  display: flex;
-  position: relative;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.9rem;
-  aspect-ratio: 1;
-  min-height: 0;
-  padding: 1rem;
-  border: 1px solid var(--catalog-line);
-  border-radius: 0.65rem;
-  background: var(--catalog-panel);
-  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
-}
-
-.component-card:hover {
-  border-color: #9ccfc6;
-  box-shadow: var(--catalog-shadow);
-  transform: translateY(-2px);
-}
-
-.component-card.featured {
-  border-color: var(--md-sys-color-primary);
-  background: linear-gradient(145deg, var(--md-sys-color-surface-container-low) 0%, var(--md-sys-color-primary-container) 100%);
-}
-
-.card-icon {
-  display: grid;
-  width: 2.5rem;
-  height: 2.5rem;
-  flex: 0 0 auto;
-  place-items: center;
-  border-radius: 0.55rem;
-  font-size: 1.5rem;
-}
-
-.card-icon.filled {
-  background: var(--catalog-accent);
-  color: white;
-}
-
-.card-icon.outline {
-  border: 1px solid var(--catalog-line);
-  color: var(--catalog-accent);
-}
-
-.card-copy strong,
-.card-copy small {
-  display: block;
-}
-
-.card-copy {
   width: 100%;
-  text-align: center;
+  height: 100%;
 }
 
-.card-copy strong {
-  margin-bottom: 0.3rem;
-  font-size: clamp(1rem, 1.5vw, 1.2rem);
-  line-height: 1.15;
+.theme-example__background {
+  fill: var(--md-ref-palette-neutral99);
 }
 
-.card-copy small {
-  color: var(--catalog-muted);
-  font-size: clamp(0.78rem, 1.1vw, 0.92rem);
-  line-height: 1.35;
+.theme-example__svg--dark .theme-example__background {
+  fill: var(--md-sys-color-neutral10);
 }
 
-.card-arrow {
-  align-self: end;
-  justify-self: end;
-  color: #9aa6b0;
-  font-size: 0.9rem;
+.theme-example__accent {
+  fill: var(--md-sys-color-primary-container);
 }
 
-.empty-search {
-  display: grid;
-  gap: 0.35rem;
-  padding: 3rem 1.5rem;
-  border: 1px dashed var(--catalog-line);
-  border-radius: 0.65rem;
-  background: var(--md-sys-color-surface-container-low);
-  color: var(--catalog-muted);
-  text-align: center;
-}
+/* ------------------------------------------------------------------ narrow screens */
+/* 959px: docs' $small-breakpoint-width (nav becomes a drawer); 720px: $extra-small-breakpoint-width
+   (section links and the GitHub label collapse). */
 
-.empty-search strong {
-  color: var(--catalog-ink);
-  font-size: 0.95rem;
-}
-
-.empty-search span {
-  font-size: 0.78rem;
-}
-
-.showcase {
-  display: block;
-  padding: 1.35rem;
-  border: 1px solid var(--catalog-line);
-  border-radius: 0.75rem;
-  background: var(--catalog-panel);
-  box-shadow: var(--catalog-shadow);
-}
-
-.playground-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 1.4rem;
-}
-
-.playground-heading strong,
-.playground-heading span {
-  display: block;
-}
-
-.playground-heading strong {
-  margin-bottom: 0.25rem;
-  font-size: 0.95rem;
-}
-
-.playground-heading div span {
-  color: var(--catalog-muted);
-  font-size: 0.72rem;
-}
-
-.control-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1rem;
-}
-
-.actions {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-top: 1.8rem;
-}
-
-.status {
-  margin: 1rem 0 0;
-  color: var(--catalog-accent);
-  font-size: 16px;
-  line-height: 28px;
-  font-weight: 600;
-}
-
-@media (max-width: 900px) {
-  .catalog-shell {
-    grid-template-columns: 12rem minmax(0, 1fr);
-  }
-
-  .catalog-content {
-    padding-inline: 2rem;
-  }
-
-  .component-grid {
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
-  }
-}
-
-@media (max-width: 640px) {
-  .catalog-shell {
-    display: block;
-  }
-
-  .catalog-sidebar {
-    position: static;
-    height: auto;
-    padding: 1rem;
-    border-right: 0;
-    border-bottom: 1px solid var(--catalog-line);
-  }
-
-  .brand-lockup {
-    padding-bottom: 1rem;
-  }
-
-  .side-nav {
-    display: flex;
-    gap: 0.35rem;
-    overflow-x: auto;
-  }
-
-  .component-menu {
-    display: flex;
-    max-height: none;
-    gap: 0.35rem;
-    overflow-x: auto;
-    overflow-y: hidden;
-    padding-right: 0;
-  }
-
-  .nav-label,
-  .sidebar-footer {
+@media (max-width: 959px) {
+  .docs-nav {
     display: none;
   }
 
-  .nav-link {
-    flex: 0 0 auto;
-    padding: 0.55rem 0.7rem;
-  }
-
-  .catalog-content {
-    padding: 2.5rem 1rem 3rem;
-  }
-
-  .header-meta {
+  .docs-page-header {
     display: flex;
-    justify-content: flex-start;
-    margin-top: 1.2rem;
   }
+}
 
-  .toolbar-hint {
+@media (min-width: 960px) {
+  .docs-drawer {
+    display: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .docs-navbar__hide-small {
     display: none;
   }
 
-  .component-grid,
-  .control-grid {
-    grid-template-columns: 1fr;
+  .docs-navbar__show-small {
+    display: inline-flex;
   }
 }
 
-.hero { margin-bottom: 2rem; }
-.eyebrow { color: var(--md-sys-color-primary); font-weight: 700; }
-h1 { font-size: clamp(2.5rem, 8vw, 5rem); margin: 0; }
-h2 { margin-top: 0; }
-.intro { font-size: 1.25rem; }
-.control-grid { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
-.actions { display: flex; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-top: 2rem; }
-.status { color: var(--md-sys-color-primary); font-weight: 600; margin-bottom: 0; }
+/* ------------------------------------------------------------------ documentation pages */
 
-.playground-field {
-  border: 0;
-  padding: 0;
-  margin: 0 0 1.5rem;
+.catalog-content {
+  max-width: 1080px;
+  padding: 40px clamp(16px, 5vw, 64px) 80px;
 }
 
-.playground-field legend {
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: var(--catalog-ink);
-  margin-bottom: 0.35rem;
-  padding: 0;
-}
-
-.field-hint {
-  margin: 0 0 0.75rem;
-  font-size: 16px;
-  line-height: 28px;
-  color: var(--catalog-muted);
-}
-
-.playground-field .status {
-  display: block;
-  margin-top: 0.5rem;
-}
-
-/* === Component documentation page ===
- * Spacing/typography fixed once here (PageHeader.razor is the single markup
- * source every page uses) rather than per page:
- *   - title: --md-sys-typescale-headline-large
- *   - description: --md-sys-typescale-body-large / on-surface-variant
- *   - 16px gap title->description, 32px gap description->first example
- */
 .doc-header {
   max-width: 44rem;
-  margin-bottom: 2rem;
-}
-
-.doc-header .eyebrow {
-  margin-bottom: 0.5rem;
+  margin-bottom: 32px;
 }
 
 .doc-header h1 {
-  font-family: var(--md-sys-typescale-font-family);
-  font-size: 24px;
-  font-weight: 400;
-  line-height: var(--md-sys-typescale-headline-large-line-height);
-  letter-spacing: var(--md-sys-typescale-headline-large-tracking);
+  margin: 0 0 16px;
   color: var(--md-sys-color-on-surface);
-  margin: 0 0 1rem;
+  font: var(--md-sys-typescale-display-small);
+  letter-spacing: var(--md-sys-typescale-display-small-tracking);
 }
 
 .doc-header .intro {
-  font-family: var(--md-sys-typescale-font-family);
-  font-size: 16px;
-  line-height: 28px;
-  font-weight: var(--md-sys-typescale-body-large-weight);
-  letter-spacing: var(--md-sys-typescale-body-large-tracking);
-  color: var(--md-sys-color-on-surface-variant);
   margin: 0;
+  color: var(--md-sys-color-on-surface-variant);
+  font: var(--md-sys-typescale-body-large);
+  letter-spacing: var(--md-sys-typescale-body-large-tracking);
 }
 
 .doc-section {
-  margin-bottom: 2.5rem;
-  padding-bottom: 2.5rem;
-  border-bottom: 1px solid var(--catalog-line);
+  margin-bottom: 40px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
 }
 
 .doc-section:last-of-type {
@@ -651,197 +285,200 @@ h2 { margin-top: 0; }
 }
 
 .doc-section h2 {
-  margin-bottom: 0.5rem;
-  font-size: 1.2rem;
+  margin: 0 0 8px;
+  color: var(--md-sys-color-on-surface);
+  font: var(--md-sys-typescale-headline-small);
+  letter-spacing: var(--md-sys-typescale-headline-small-tracking);
 }
 
-.doc-section .field-hint {
-  max-width: 40rem;
+.doc-section h3 {
+  margin: 16px 0 8px;
+  font: var(--md-sys-typescale-title-medium);
 }
 
-.doc-example {
-  padding: 1.35rem;
-  margin-bottom: 1rem;
-  border: 1px solid var(--catalog-line);
-  border-radius: 0.65rem;
-  background: var(--catalog-panel);
+.field-hint {
+  max-width: 44rem;
+  margin: 0 0 16px;
+  color: var(--md-sys-color-on-surface-variant);
+  font: var(--md-sys-typescale-body-large);
 }
 
-.snippet {
-  margin: 0;
-  padding: 1rem 1.15rem;
+code {
+  padding: 1px 4px;
+  border-radius: var(--md-sys-shape-corner-extra-small);
+  background: var(--md-sys-color-surface-container-high);
+  color: var(--md-sys-color-on-surface);
+  font-family: "Cascadia Code", Consolas, "Roboto Mono", monospace;
+  font-size: 0.875em;
+}
+
+.doc-table-wrapper {
   overflow-x: auto;
-  border-radius: 0.55rem;
-  background: #182230;
-  color: #dbe3ef;
-  font-size: 0.8rem;
-  line-height: 1.55;
-}
-
-.snippet code {
-  font-family: "Cascadia Code", "Consolas", monospace;
-  white-space: pre;
 }
 
 .doc-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 16px;
-  line-height: 28px;
+  font: var(--md-sys-typescale-body-medium);
 }
 
 .doc-table th,
 .doc-table td {
-  padding: 0.6rem 0.75rem;
-  border-bottom: 1px solid var(--catalog-line);
+  padding: 12px;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
   text-align: left;
   vertical-align: top;
 }
 
 .doc-table th {
-  color: var(--catalog-muted);
-  font-size: 16px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  color: var(--md-sys-color-on-surface-variant);
+  font: var(--md-sys-typescale-title-small);
 }
 
-.doc-table code {
-  font-size: 0.9em;
-  color: var(--catalog-accent);
+.doc-table td:first-child code {
+  color: var(--md-sys-color-primary);
 }
 
 .a11y-note {
-  padding: 1rem 1.15rem;
-  border-radius: 0.55rem;
-  border: 1px solid var(--md-sys-color-outline-variant);
+  padding: 16px;
+  border-radius: var(--md-sys-shape-corner-medium);
   background: var(--md-sys-color-surface-container);
-  font-size: 16px;
-  line-height: 28px;
   color: var(--md-sys-color-on-surface);
+  font: var(--md-sys-typescale-body-medium);
 }
 
 .a11y-note strong {
   display: block;
-  margin-bottom: 0.3rem;
+  margin-bottom: 4px;
   color: var(--md-sys-color-primary);
-  font-size: 0.7rem;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font: var(--md-sys-typescale-label-large);
 }
 
-/* === Example card ===
-   Matches Angular Material's doc-example card: near-invisible outline, no
-   distinct panel fill (the card blends into the page background instead of
-   standing out as a separate surface). */
+.status {
+  margin: 16px 0 0;
+  color: var(--md-sys-color-on-surface-variant);
+  font: var(--md-sys-typescale-body-medium);
+}
+
+.actions,
+.demo-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+}
+
+.actions {
+  margin-top: 16px;
+}
+
+.demo-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.demo-surface {
+  padding: 16px;
+  border-radius: var(--md-sys-shape-corner-medium);
+  background: var(--md-sys-color-surface-container-low);
+}
+
+/* ------------------------------------------------------------------ example card */
+
 .example-card {
-  margin-bottom: 1.25rem;
-  border: 1px solid var(--catalog-line);
-  border-radius: 0.65rem;
-  background: transparent;
-  /*
-   * No overflow:hidden here (on purpose): this container's own background is
-   * transparent and none of its children touch the rounded outer corners
-   * with a contrasting fill, so there's nothing to clip -- but a live
-   * example's dropdown/menu panel (Autocomplete, Select, Menu, ...) is
-   * absolutely positioned and DOES need to escape this box and float over
-   * the page, exactly like Angular Material's own doc examples. Clipping it
-   * here would trap the panel inside the card instead.
-   */
+  margin-bottom: 20px;
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--md-sys-shape-corner-medium);
+  background: var(--md-sys-color-surface);
 }
 
 .example-card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  padding: 0.85rem 1rem;
-  border-bottom: 1px solid var(--catalog-line);
+  gap: 16px;
+  min-height: 48px;
+  padding: 0 8px 0 16px;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
 }
 
 .example-card-title {
-  font-size: 0.92rem;
-  font-weight: 400;
-  color: var(--catalog-muted);
+  color: var(--md-sys-color-on-surface-variant);
+  font: var(--md-sys-typescale-title-small);
 }
 
 .example-card-actions {
   display: flex;
-  align-items: center;
-  gap: 0.15rem;
   flex: 0 0 auto;
+  align-items: center;
+  gap: 0;
 }
 
 .icon-btn {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1.9rem;
-  height: 1.9rem;
+  width: 40px;
+  height: 40px;
   padding: 0;
   border: 0;
-  border-radius: 0.4rem;
+  border-radius: var(--md-sys-shape-corner-full);
   background: transparent;
-  color: var(--catalog-muted);
+  color: var(--md-sys-color-on-surface-variant);
   cursor: pointer;
-  transition: background 120ms ease, color 120ms ease;
 }
 
 .icon-btn:hover {
-  background: var(--catalog-soft);
-  color: var(--catalog-accent);
+  background: color-mix(in srgb, var(--md-sys-color-on-surface-variant) calc(var(--md-sys-state-hover-state-layer-opacity) * 100%), transparent);
+}
+
+.icon-btn:focus-visible {
+  outline: none;
+  background: color-mix(in srgb, var(--md-sys-color-on-surface-variant) calc(var(--md-sys-state-focus-state-layer-opacity) * 100%), transparent);
 }
 
 .icon-btn.is-active {
-  color: var(--catalog-accent);
-  background: var(--catalog-accent-soft);
+  background: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-on-secondary-container);
 }
 
 .example-tabs {
   display: flex;
-  gap: 0.6rem;
-  padding: 0 1rem;
-  border-bottom: 1px solid var(--catalog-line);
-  background: var(--catalog-soft);
+  gap: 16px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  background: var(--md-sys-color-surface-container-low);
 }
 
 .example-tab {
-  padding: 0.6rem 0.1rem;
   margin-bottom: -1px;
+  padding: 10px 2px;
   border: 0;
   border-bottom: 2px solid transparent;
   background: transparent;
-  color: var(--catalog-muted);
-  font-size: 0.78rem;
-  font-weight: 600;
-  font-family: "Cascadia Code", "Consolas", monospace;
+  color: var(--md-sys-color-on-surface-variant);
+  font: 600 13px/1.4 "Cascadia Code", Consolas, "Roboto Mono", monospace;
   cursor: pointer;
 }
 
 .example-tab:hover {
-  color: var(--catalog-ink);
+  color: var(--md-sys-color-on-surface);
 }
 
 .example-tab.active {
-  color: var(--catalog-accent);
-  border-bottom-color: var(--catalog-accent);
+  border-bottom-color: var(--md-sys-color-primary);
+  color: var(--md-sys-color-primary);
 }
 
+/* Code viewer: a tonal surface of the active theme; syntax colors are theme roles too. */
 .example-code-panel {
-  /*
-   * A fixed VS Code-style palette (Dark+ by default), NOT
-   * var(--catalog-ink)/var(--catalog-panel): those flip with the app's
-   * theme, which used to invert this into a light box with dark text
-   * whenever the app was in a dark theme. The two light app themes
-   * (rose-red, azure-blue) get an explicit VS Code Light+ override below
-   * instead, so the code viewer always matches its OWN light/dark mode
-   * rather than following the app theme 1:1.
-   */
   position: relative;
-  padding: 1rem 1.15rem;
-  background: #1e1e1e;
+  padding: 16px 56px 16px 16px;
   overflow-x: auto;
+  background: var(--md-sys-color-surface-container);
 }
 
 .example-code-panel pre {
@@ -849,90 +486,284 @@ h2 { margin-top: 0; }
 }
 
 .example-code-panel code {
-  font-family: "Cascadia Code", "Consolas", monospace;
-  font-size: 0.8rem;
-  line-height: 1.55;
-  color: #d4d4d4;
+  padding: 0;
+  background: none;
+  color: var(--md-sys-color-on-surface);
+  font-size: 13px;
+  line-height: 1.6;
   white-space: pre;
 }
 
 .example-code-copy {
   position: absolute;
-  top: 0.6rem;
-  right: 0.75rem;
-  color: #b9c3d6;
+  top: 4px;
+  right: 4px;
 }
 
-.example-code-copy:hover {
-  background: rgb(255 255 255 / 0.1);
-  color: #ffffff;
+.tok-comment {
+  color: var(--md-sys-color-on-surface-variant);
+  font-style: italic;
 }
 
-/* VS Code Light+ override for the two light app themes. */
-[data-theme="rose-red"] .example-code-panel,
-[data-theme="azure-blue"] .example-code-panel {
-  background: #ffffff;
-  border: 1px solid var(--catalog-line);
+.tok-string {
+  color: var(--md-sys-color-tertiary);
 }
 
-[data-theme="rose-red"] .example-code-panel code,
-[data-theme="azure-blue"] .example-code-panel code {
-  color: #000000;
+.tok-tag {
+  color: var(--md-sys-color-primary);
 }
 
-[data-theme="rose-red"] .example-code-copy,
-[data-theme="azure-blue"] .example-code-copy {
-  color: #5a5a5a;
+.tok-razor {
+  color: var(--md-sys-color-secondary);
+  font-weight: 600;
 }
 
-[data-theme="rose-red"] .example-code-copy:hover,
-[data-theme="azure-blue"] .example-code-copy:hover {
-  background: rgb(0 0 0 / 0.06);
-  color: #000000;
+.tok-keyword {
+  color: var(--md-sys-color-primary);
+  font-weight: 600;
 }
 
-[data-theme="rose-red"] .tok-comment,
-[data-theme="azure-blue"] .tok-comment { color: #008000; }
-[data-theme="rose-red"] .tok-string,
-[data-theme="azure-blue"] .tok-string { color: #a31515; }
-[data-theme="rose-red"] .tok-tag,
-[data-theme="azure-blue"] .tok-tag { color: #800000; }
-[data-theme="rose-red"] .tok-razor,
-[data-theme="azure-blue"] .tok-razor { color: #0000ff; }
-[data-theme="rose-red"] .tok-keyword,
-[data-theme="azure-blue"] .tok-keyword { color: #0000ff; }
-[data-theme="rose-red"] .tok-property,
-[data-theme="azure-blue"] .tok-property { color: #ff0000; }
+.tok-property {
+  color: var(--md-sys-color-tertiary);
+}
 
 .example-live {
-  padding: 1.35rem;
+  padding: 24px;
+  overflow-x: auto;
 }
 
 .example-live.with-code {
-  border-top: 1px solid var(--catalog-line);
+  border-top: 1px solid var(--md-sys-color-outline-variant);
+}
+
+/* ------------------------------------------------------------------ home page */
+
+.catalog-search {
+  max-width: 560px;
+  margin-bottom: 24px;
+}
+
+.component-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+  gap: 16px;
+}
+
+.component-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 148px;
+  padding: 16px;
+  overflow: hidden;
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--md-sys-shape-corner-medium);
+  background: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
+  text-decoration: none;
+  transition: box-shadow 280ms var(--md-sys-motion-easing-legacy);
+}
+
+.component-card:hover {
+  box-shadow: var(--md-sys-elevation-level-1);
+}
+
+.component-card:hover::before,
+.component-card:focus-visible::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--md-sys-color-on-surface);
+  opacity: var(--md-sys-state-hover-state-layer-opacity);
+  pointer-events: none;
+}
+
+.component-card:focus-visible {
+  outline: none;
+}
+
+.card-icon {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border-radius: var(--md-sys-shape-corner-medium);
+  background: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-on-secondary-container);
+}
+
+.card-copy strong,
+.card-copy small {
+  display: block;
+}
+
+.card-copy strong {
+  margin-bottom: 4px;
+  font: var(--md-sys-typescale-title-medium);
+}
+
+.card-copy small {
+  color: var(--md-sys-color-on-surface-variant);
+  font: var(--md-sys-typescale-body-medium);
+}
+
+.empty-search {
+  padding: 48px 24px;
+  border: 1px dashed var(--md-sys-color-outline-variant);
+  border-radius: var(--md-sys-shape-corner-medium);
+  color: var(--md-sys-color-on-surface-variant);
+  text-align: center;
+}
+
+.empty-search strong {
+  display: block;
+  color: var(--md-sys-color-on-surface);
+  font: var(--md-sys-typescale-title-medium);
+}
+
+/* ------------------------------------------------------------------ page-specific demo helpers */
+
+.button-overview > section {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 4px 0;
+}
+
+.button-overview > section + section {
+  border-top: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.button-overview__label {
+  min-width: 120px;
+  margin: 0 16px 0 8px;
+  font: var(--md-sys-typescale-body-medium);
+}
+
+.button-overview__row > *,
+.button-demo-row > * {
+  margin: 8px 8px 8px 0;
+}
+
+.button-progress-example h3,
+.button-toggle-example h3 {
+  margin: 12px 0 8px;
+  font: var(--md-sys-typescale-title-medium);
+}
+
+.button-toggle-example {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.button-toggle-example__options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
 }
 
 .badge-overview-grid {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 24px;
 }
 
 .badge-overview-row {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 1.5rem;
+  gap: 32px;
 }
 
-.anchor {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
+.grid-tile-fill {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  font: var(--md-sys-typescale-title-medium);
 }
 
-.tok-comment { color: #6a9955; font-style: italic; }
-.tok-string { color: #4ec9b0; }
-.tok-tag { color: #d4d4d4; }
-.tok-razor { color: #4fc1ff; }
-.tok-keyword { color: #569cd6; }
-.tok-property { color: #9cdcfe; }
+.grid-tile-fill--1 {
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+}
+
+.grid-tile-fill--2 {
+  background: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-on-secondary-container);
+}
+
+.grid-tile-fill--3 {
+  background: var(--md-sys-color-tertiary-container);
+  color: var(--md-sys-color-on-tertiary-container);
+}
+
+.grid-tile-fill--4 {
+  background: var(--md-sys-color-surface-container-highest);
+  color: var(--md-sys-color-on-surface);
+}
+
+.sidenav-demo {
+  display: flex;
+  height: 320px;
+  overflow: hidden;
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--md-sys-shape-corner-medium);
+  background: var(--md-sys-color-background);
+}
+
+.sidenav-demo .pb-sidenav--side {
+  width: 240px;
+}
+
+.sidenav-demo__content {
+  flex: 1;
+  padding: 16px;
+  color: var(--md-sys-color-on-background);
+}
+
+.card-avatar {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+}
+
+.ripple-container {
+  display: grid;
+  width: 300px;
+  max-width: 100%;
+  height: 300px;
+  place-items: center;
+  border-radius: var(--md-sys-shape-corner-medium);
+  background: var(--md-sys-color-surface-container-high);
+  color: var(--md-sys-color-on-surface);
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+}
+
+.ripple-container:focus-visible {
+  box-shadow: 0 0 0 2px var(--md-sys-color-primary);
+}
+
+.token-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 8px;
+}
+
+.token-swatch {
+  display: flex;
+  align-items: flex-end;
+  min-height: 72px;
+  padding: 8px 12px;
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--md-sys-shape-corner-small);
+  font: var(--md-sys-typescale-label-medium);
+}

@@ -6,59 +6,100 @@
 <div class="catalog-content">
 
     <PageHeader Title="Tree">
-        A tree displays hierarchical data, such as a file system or an
-        organization chart.
+        PBTree displays hierarchical data: expandable nodes with a toggle button, 40px
+        indentation per level and full tree keyboard navigation.
     </PageHeader>
 
     <section class="doc-section">
-        <p class="field-hint">Nested lists represent parent-child relationships.</p>
+        <p class="field-hint">Nodes with children get a toggle; leaves keep its space so labels line up.</p>
 
-        <ExampleCard Title="File explorer" RazorCode="@(
-@"<PBTree>
-    <li role=""treeitem"">
-        libs
-        <ul role=""group"">
-            <li role=""treeitem"">design-system</li>
-        </ul>
-    </li>
+        <ExampleCard Title="Nested tree" RazorCode="@(
+@"<PBTree Label=""Food"">
+    <PBTreeNode Label=""Fruit"" Expanded>
+        <PBTreeNode Label=""Apple"" />
+        <PBTreeNode Label=""Banana"" />
+    </PBTreeNode>
+    <PBTreeNode Label=""Vegetables"">
+        <PBTreeNode Label=""Green"">
+            <PBTreeNode Label=""Broccoli"" />
+        </PBTreeNode>
+    </PBTreeNode>
 </PBTree>")">
-            <PBTree>
-                <li role="treeitem">
-                    libs
-                    <ul role="group">
-                        <li role="treeitem">design-system</li>
-                    </ul>
-                </li>
-                <li role="treeitem">
-                    apps
-                    <ul role="group">
-                        <li role="treeitem">design-system-demo</li>
-                    </ul>
-                </li>
+            <PBTree Label="Food">
+                <PBTreeNode Label="Fruit" Expanded>
+                    <PBTreeNode Label="Apple" />
+                    <PBTreeNode Label="Banana" />
+                    <PBTreeNode Label="Fruit loops" />
+                </PBTreeNode>
+                <PBTreeNode Label="Vegetables">
+                    <PBTreeNode Label="Green">
+                        <PBTreeNode Label="Broccoli" />
+                        <PBTreeNode Label="Brussels sprouts" />
+                    </PBTreeNode>
+                    <PBTreeNode Label="Orange">
+                        <PBTreeNode Label="Pumpkins" />
+                        <PBTreeNode Label="Carrots" />
+                    </PBTreeNode>
+                </PBTreeNode>
+            </PBTree>
+        </ExampleCard>
+    </section>
+
+    <section class="doc-section">
+        <p class="field-hint">Nodes with icons, like a file browser.</p>
+
+        <ExampleCard Title="Tree with icons" RazorCode="@(
+@"<PBTreeNode Label=""src"" Expanded>
+    <Icon><span class=""material-icons"">folder</span></Icon>
+    <ChildContent>
+        <PBTreeNode Label=""app.razor"">
+            <Icon><span class=""material-icons"">description</span></Icon>
+        </PBTreeNode>
+    </ChildContent>
+</PBTreeNode>")">
+            <PBTree Label="Files">
+                <PBTreeNode Label="src" Expanded>
+                    <Icon><span class="material-icons">folder</span></Icon>
+                    <ChildContent>
+                        <PBTreeNode Label="Components">
+                            <Icon><span class="material-icons">folder</span></Icon>
+                            <ChildContent>
+                                <PBTreeNode Label="PBButton.razor"><Icon><span class="material-icons">description</span></Icon></PBTreeNode>
+                            </ChildContent>
+                        </PBTreeNode>
+                        <PBTreeNode Label="App.razor"><Icon><span class="material-icons">description</span></Icon></PBTreeNode>
+                    </ChildContent>
+                </PBTreeNode>
             </PBTree>
         </ExampleCard>
     </section>
 
     <section class="doc-section">
         <h2>API reference</h2>
+        <div class="doc-table-wrapper">
         <table class="doc-table">
             <thead>
                 <tr><th>Property</th><th>Type</th><th>Description</th></tr>
             </thead>
             <tbody>
-                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The tree's <code>role="treeitem"</code> nodes.</td></tr>
-                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;ul role="tree"&gt;</code>.</td></tr>
+                <tr><td><code>PBTree.Label</code></td><td><code>string?</code></td><td>Accessible name of the tree.</td></tr>
+                <tr><td><code>PBTreeNode.Label</code> / <code>LabelContent</code></td><td></td><td>The node text.</td></tr>
+                <tr><td><code>Icon</code></td><td><code>RenderFragment?</code></td><td>Leading icon.</td></tr>
+                <tr><td><code>Expanded</code></td><td><code>bool</code></td><td>Supports <code>@@bind-Expanded</code>.</td></tr>
+                <tr><td><code>Expandable</code></td><td><code>bool</code></td><td>Shows a toggle before the children exist (lazy loading).</td></tr>
+                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>Child nodes.</td></tr>
             </tbody>
         </table>
+        </div>
     </section>
 
     <section class="doc-section">
         <div class="a11y-note">
             <strong>Accessibility</strong>
-            The root has <code>role="tree"</code>; give each item
-            <code>role="treeitem"</code> and each nested list
-            <code>role="group"</code> as shown, so assistive technology can navigate
-            the hierarchy.
+            <code>tree</code> / <code>treeitem</code> / <code>group</code> roles with
+            <code>aria-level</code> and <code>aria-expanded</code>. One node is in the tab order;
+            Up/Down move between visible nodes, Right expands or enters a node, Left collapses or
+            returns to the parent, Home/End jump, Enter/Space toggle.
         </div>
     </section>
 </div>

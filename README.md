@@ -64,22 +64,31 @@ npx nx show projects
 npx nx graph
 ```
 
-The .NET projects continue to use the native .NET SDK commands:
+The .NET projects use the native .NET SDK commands (a fresh clone needs only `npm ci` first,
+because the library build generates the design tokens with Node):
 
-```powershell
-dotnet restore DesignSystem.sln
-dotnet build DesignSystem.sln
-dotnet run --project apps/design-system-demo/Design.Demo.csproj
+```bash
+npm ci
+dotnet build DesignSystem.sln          # 0 warnings required; also runs the color audit
+npx nx run design-system-demo:serve    # dev loop: library CSS edits show up on browser refresh
 ```
 
-For Blazor hot reload during design-system development, use `dotnet watch`:
+See [docs/development/blazor.md](docs/development/blazor.md) for the dev loop, the package
+verification mode and the quality gates (`tools/scripts/audit-colors.mts`,
+`tools/scripts/verify-demo.mts`).
 
-```powershell
-dotnet watch --project apps/design-system-demo/Design.Demo.csproj run --no-launch-profile --urls http://127.0.0.1:5080
-```
+## Design system at a glance
 
-This watches Razor markup, C# code-behind, and CSS changes. Keep the browser at
-`http://127.0.0.1:5080`; supported edits update without a full manual restart.
+- **Reference:** Angular Material 22.2 (Material 3). Every component value is traced to Angular
+  Material's `_m3-*.scss` token maps and structural styles.
+- **Themes:** Rose & Red (default, light), Azure & Blue (light), Magenta & Violet (dark),
+  Cyan & Orange (dark). They are generated from Angular Material's prebuilt theme CSS and selected with
+  `<html data-theme="…">`.
+- **No hardcoded colors:** enforced by the build.
+- **Self-hosted fonts:** Roboto, Material Icons and Material Symbols ship in the package. There is
+  no CDN dependency.
+- **Spec Kit:** the constitution lives in `.specify/memory/constitution.md` and feature specs in
+  `specs/`.
 
 Initialize the Samamat submodule after cloning the workspace:
 

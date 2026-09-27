@@ -1,0 +1,262 @@
+/*
+ * PBSlideToggle: mat-slide-toggle (MDC switch). Reference: slide-toggle/_m3-slide-toggle.scss +
+ * structural styles.
+ *
+ *   track 52x32, corner-full, 2px outline border (unselected) / primary fill (selected)
+ *   handle: 24px with icons (Angular's default), 16px with HideIcon, 28px while pressed
+ *     centered at x=16 when off and x=36 when on
+ *   handle color: off outline (hover/focus/pressed on-surface-variant), on on-primary
+ *     (hover/focus/pressed primary-container); icons 16px: on = check (on-primary-container),
+ *     off = minus (surface-variant)
+ *   state layer: 40px circle around the handle, on-surface (off) / primary (on)
+ *   label body-medium on-surface, 4px leading padding
+ *
+ * The native checkbox (role=switch) is stretched over the whole switch AND label wrapper, so any
+ * point on the track toggles it (the earlier 18px hit-area bug cannot come back).
+ */
+
+.pb-slide-toggle {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  color: var(--md-sys-color-on-surface);
+  font-family: var(--md-sys-typescale-body-medium-font);
+  font-size: var(--md-sys-typescale-body-medium-size);
+  line-height: var(--md-sys-typescale-body-medium-line-height);
+  font-weight: var(--md-sys-typescale-body-medium-weight);
+  letter-spacing: var(--md-sys-typescale-body-medium-tracking);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pb-slide-toggle__switch {
+  --pb-switch-handle-center: 16px;
+  --pb-switch-handle-size: 24px;
+
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  width: 52px;
+  height: 32px;
+  cursor: pointer;
+}
+
+.pb-slide-toggle--hide-icon .pb-slide-toggle__switch {
+  --pb-switch-handle-size: 16px;
+}
+
+/* Hit area: the whole 52x32 switch plus the 48px touch-target height. */
+.pb-slide-toggle__input {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  z-index: 2;
+  width: 100%;
+  height: 48px;
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  transform: translateY(-50%);
+  cursor: inherit;
+}
+
+.pb-slide-toggle__track {
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
+  border: 2px solid var(--md-sys-color-outline);
+  border-radius: var(--md-sys-shape-corner-full);
+  background-color: var(--md-sys-color-surface-variant);
+  transition:
+    background-color 75ms var(--md-sys-motion-easing-legacy),
+    border-color 75ms var(--md-sys-motion-easing-legacy);
+}
+
+.pb-slide-toggle__handle {
+  position: absolute;
+  top: 50%;
+  left: var(--pb-switch-handle-center);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: var(--pb-switch-handle-size);
+  height: var(--pb-switch-handle-size);
+  border-radius: var(--md-sys-shape-corner-full);
+  background-color: var(--md-sys-color-outline);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  transition:
+    left 150ms var(--md-sys-motion-easing-legacy),
+    width 75ms var(--md-sys-motion-easing-legacy),
+    height 75ms var(--md-sys-motion-easing-legacy),
+    background-color 75ms var(--md-sys-motion-easing-legacy);
+}
+
+.pb-slide-toggle__state-layer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.pb-slide-toggle__state-layer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background-color: var(--md-sys-color-on-surface);
+  opacity: 0;
+  transition: opacity 75ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.pb-slide-toggle__icon {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  fill: var(--md-sys-color-surface-variant);
+  opacity: 0;
+  transform: rotate(-45deg);
+  transition:
+    opacity 30ms linear,
+    transform 150ms var(--md-sys-motion-easing-legacy);
+}
+
+.pb-slide-toggle__icon--on {
+  position: absolute;
+  fill: var(--md-sys-color-on-primary-container);
+}
+
+.pb-slide-toggle__input:not(:checked) ~ .pb-slide-toggle__handle .pb-slide-toggle__icon--off,
+.pb-slide-toggle__input:checked ~ .pb-slide-toggle__handle .pb-slide-toggle__icon--on {
+  opacity: 1;
+  transform: none;
+  transition: opacity 45ms 30ms linear, transform 150ms var(--md-sys-motion-easing-legacy);
+}
+
+/* Unselected interaction */
+.pb-slide-toggle__switch:hover > .pb-slide-toggle__handle,
+.pb-slide-toggle__input:focus-visible ~ .pb-slide-toggle__handle,
+.pb-slide-toggle__switch:active > .pb-slide-toggle__handle {
+  background-color: var(--md-sys-color-on-surface-variant);
+}
+
+.pb-slide-toggle__switch:hover > .pb-slide-toggle__handle .pb-slide-toggle__state-layer::before {
+  opacity: var(--md-sys-state-hover-state-layer-opacity);
+}
+
+.pb-slide-toggle__input:focus-visible ~ .pb-slide-toggle__handle .pb-slide-toggle__state-layer::before {
+  opacity: var(--md-sys-state-focus-state-layer-opacity);
+}
+
+.pb-slide-toggle__switch:active > .pb-slide-toggle__handle .pb-slide-toggle__state-layer::before {
+  opacity: var(--md-sys-state-pressed-state-layer-opacity);
+  transition: opacity 75ms linear;
+}
+
+.pb-slide-toggle__switch:active {
+  --pb-switch-handle-size: 28px;
+}
+
+/* Selected */
+.pb-slide-toggle__input:checked ~ .pb-slide-toggle__track {
+  border-color: transparent;
+  background-color: var(--md-sys-color-primary);
+}
+
+.pb-slide-toggle__input:checked ~ .pb-slide-toggle__handle {
+  --pb-switch-handle-size: 24px;
+  left: 36px;
+  background-color: var(--md-sys-color-on-primary);
+}
+
+.pb-slide-toggle__switch:active > .pb-slide-toggle__input:checked ~ .pb-slide-toggle__handle {
+  --pb-switch-handle-size: 28px;
+}
+
+.pb-slide-toggle__input:checked ~ .pb-slide-toggle__handle .pb-slide-toggle__state-layer::before {
+  background-color: var(--md-sys-color-primary);
+}
+
+.pb-slide-toggle__switch:hover > .pb-slide-toggle__input:checked ~ .pb-slide-toggle__handle,
+.pb-slide-toggle__input:checked:focus-visible ~ .pb-slide-toggle__handle,
+.pb-slide-toggle__switch:active > .pb-slide-toggle__input:checked ~ .pb-slide-toggle__handle {
+  background-color: var(--md-sys-color-primary-container);
+}
+
+.pb-slide-toggle__label {
+  padding-left: 4px;
+  cursor: pointer;
+}
+
+/* Disabled */
+.pb-slide-toggle__input:disabled {
+  cursor: default;
+}
+
+.pb-slide-toggle:has(.pb-slide-toggle__input:disabled) :is(.pb-slide-toggle__switch, .pb-slide-toggle__label) {
+  cursor: default;
+}
+
+.pb-slide-toggle:has(.pb-slide-toggle__input:disabled) .pb-slide-toggle__label {
+  color: color-mix(in srgb, var(--md-sys-color-on-surface) 38%, transparent);
+}
+
+.pb-slide-toggle__input:disabled ~ .pb-slide-toggle__handle .pb-slide-toggle__state-layer {
+  display: none;
+}
+
+.pb-slide-toggle__input:disabled ~ .pb-slide-toggle__track {
+  border-color: color-mix(in srgb, var(--md-sys-color-on-surface) 12%, transparent);
+  background-color: color-mix(in srgb, var(--md-sys-color-surface-variant) 12%, transparent);
+}
+
+.pb-slide-toggle__input:disabled:checked ~ .pb-slide-toggle__track {
+  border-color: transparent;
+  background-color: color-mix(in srgb, var(--md-sys-color-on-surface) 12%, transparent);
+}
+
+.pb-slide-toggle__input:disabled ~ .pb-slide-toggle__handle,
+.pb-slide-toggle__switch:hover > .pb-slide-toggle__input:disabled ~ .pb-slide-toggle__handle {
+  --pb-switch-handle-size: 24px;
+  background-color: color-mix(in srgb, var(--md-sys-color-on-surface) 38%, transparent);
+}
+
+.pb-slide-toggle--hide-icon .pb-slide-toggle__input:disabled:not(:checked) ~ .pb-slide-toggle__handle {
+  --pb-switch-handle-size: 16px;
+}
+
+.pb-slide-toggle__input:disabled:checked ~ .pb-slide-toggle__handle,
+.pb-slide-toggle__switch:hover > .pb-slide-toggle__input:disabled:checked ~ .pb-slide-toggle__handle {
+  background-color: var(--md-sys-color-surface);
+}
+
+.pb-slide-toggle__input:disabled ~ .pb-slide-toggle__handle .pb-slide-toggle__icon {
+  fill: var(--md-sys-color-on-surface);
+}
+
+.pb-slide-toggle__input:disabled:not(:checked) ~ .pb-slide-toggle__handle .pb-slide-toggle__icon--off {
+  fill: var(--md-sys-color-surface-variant);
+}
+
+.pb-slide-toggle__input:disabled ~ .pb-slide-toggle__handle .pb-slide-toggle__icon {
+  opacity: 0;
+}
+
+.pb-slide-toggle__input:disabled:not(:checked) ~ .pb-slide-toggle__handle .pb-slide-toggle__icon--off,
+.pb-slide-toggle__input:disabled:checked ~ .pb-slide-toggle__handle .pb-slide-toggle__icon--on {
+  opacity: 0.38;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pb-slide-toggle__track,
+  .pb-slide-toggle__handle,
+  .pb-slide-toggle__icon {
+    transition: none;
+  }
+}

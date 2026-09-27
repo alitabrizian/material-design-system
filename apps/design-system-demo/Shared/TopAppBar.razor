@@ -2,35 +2,81 @@
 @inject IJSRuntime JS
 @implements IAsyncDisposable
 
-<header class="pb-topbar">
-    <span class="pb-topbar__title">@Title</span>
+@* Angular Material's docs navbar (docs/src/app/shared/navbar): primary-container toolbar in the
+   primary color, text-button brand and section links, the selected section tinted primary 10%,
+   then the theme picker and a GitHub link after a spacer. *@
+<header class="docs-navbar">
+    <nav class="docs-navbar__header" aria-label="Top Toolbar">
+        <PBButton Variant="PBButtonVariant.Text" Href="/" class="docs-navbar__brand" aria-label="Workspace design system home">
+            <IconStart><span class="docs-logo">W</span></IconStart>
+            <ChildContent>Workspace</ChildContent>
+        </PBButton>
+        <PBButton Variant="PBButtonVariant.Text" Href="/" class="docs-navbar__hide-small docs-navbar__item--selected" aria-current="page">Components</PBButton>
 
-    <div class="pb-topbar__actions">
-        <PBMenu Label="Theme" XPosition="PBMenuXPosition.Before" @bind-IsOpen="themeMenuOpen">
-            <Trigger>
-                <span class="material-icons" aria-hidden="true">palette</span>
-            </Trigger>
-            <ChildContent>
-                @foreach (var theme in ThemeState.Themes)
-                {
-                    var selected = Theme.Theme == theme.Key;
-                    <button type="button" role="menuitemradio" aria-checked="@(selected ? "true" : "false")"
-                        class="pb-menu-item @(selected ? "pb-menu-item--selected" : "")" @onclick="() => SelectThemeAsync(theme.Key)">
-                        <span class="pb-menu-item__radio" aria-hidden="true"></span>
-                        <span class="pb-menu-item__label">@theme.Name</span>
-                        <span class="pb-menu-item__swatch--theme" aria-hidden="true">
-                            <span style="background:@theme.PrimarySeed;"></span>
-                            <span style="background:@theme.TertiarySeed;"></span>
-                        </span>
-                    </button>
-                }
-            </ChildContent>
-        </PBMenu>
-    </div>
+        <div class="docs-flex-spacer"></div>
+
+        <div class="docs-theme-picker">
+            @* Angular Material's docs theme picker (docs/src/app/shared/theme-picker): format_color_fill
+               trigger, radio_button_checked/unchecked icons, and a mini-app preview of each theme. *@
+            <PBTooltip Label="Select a theme for the documentation">
+                <PBMenu Label="Select a theme" XPosition="PBMenuXPosition.Before" PanelClass="theme-picker" @bind-IsOpen="themeMenuOpen">
+                    <Trigger>
+                        <span class="material-icons" aria-hidden="true">format_color_fill</span>
+                    </Trigger>
+                    <ChildContent>
+                        @foreach (var theme in ThemeState.Themes)
+                        {
+                            var key = theme.Key;
+                            var selected = Theme.Theme == key;
+                            <PBMenuItem Role="menuitemradio" Checked="selected" ShowIndicator="false" OnClick="() => SelectThemeAsync(key)">
+                                <Icon>
+                                    <span class="material-icons">@(selected ? "radio_button_checked" : "radio_button_unchecked")</span>
+                                </Icon>
+                                <ChildContent>@theme.Name</ChildContent>
+                                <Trailing>
+                                    @* The svg carries data-theme, so its fills come from that theme's own tokens;
+                                       the frame around it stays in the page's theme. *@
+                                    <span class="theme-example" aria-hidden="true">
+                                        <svg class="theme-example__svg @(theme.IsDark ? "theme-example__svg--dark" : null)" data-theme="@key"
+                                             viewBox="0 0 80 80" focusable="false">
+                                            <path class="theme-example__background" d="M77.87 0C79.05 0 80 .95 80 2.13v75.74c0 1.17-.95 2.13-2.13 2.13H2.13C.96 80 0 79.04 0 77.87V2.13C0 .95.96 0 2.13 0h75.74z" />
+                                            <path class="theme-example__accent" d="M54 40c3.32 0 6 2.69 6 6 0 1.2 0-1.2 0 0 0 3.31-2.68 6-6 6H26c-3.31 0-6-2.69-6-6 0-1.2 0 1.2 0 0 0-3.31 2.69-6 6-6h28z" />
+                                            <path class="theme-example__accent" d="M0 0h80v17.24H0V0z" />
+                                        </svg>
+                                    </span>
+                                </Trailing>
+                            </PBMenuItem>
+                        }
+                    </ChildContent>
+                </PBMenu>
+            </PBTooltip>
+        </div>
+
+        @if (GitHubUrl is not null)
+        {
+            <PBButton Variant="PBButtonVariant.Text" Href="@GitHubUrl" class="docs-navbar__hide-small" target="_blank" rel="noopener" aria-label="GitHub Repository">
+                <IconStart>@GitHubIcon</IconStart>
+                <ChildContent>GitHub</ChildContent>
+            </PBButton>
+            <PBButton Variant="PBButtonVariant.Icon" Href="@GitHubUrl" class="docs-navbar__show-small" target="_blank" rel="noopener" aria-label="GitHub Repository">
+                @GitHubIcon
+            </PBButton>
+        }
+    </nav>
 </header>
 
 @code {
-    [Parameter] public string Title { get; set; } = string.Empty;
+    // Set at build time only when the checkout's git origin is on github.com (see Design.Demo.csproj,
+    // ResolveGitHubRepositoryUrl); null for the GitLab mirror, so no GitHub link is shown there.
+    private static readonly string? GitHubUrl = typeof(TopAppBar).Assembly
+        .GetCustomAttributes(typeof(System.Reflection.AssemblyMetadataAttribute), inherit: false)
+        .OfType<System.Reflection.AssemblyMetadataAttribute>()
+        .FirstOrDefault(a => a.Key == "GitHubRepositoryUrl")?.Value;
+
+    // The GitHub mark as the docs navbar draws it (currentColor, so it follows the toolbar).
+    private static readonly RenderFragment GitHubIcon = @<svg viewBox="0 0 20 20" class="docs-github-logo" aria-hidden="true" focusable="false">
+        <path fill="currentColor" fill-rule="evenodd" d="M10 0C4.477 0 0 4.477 0 10c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V19c0 .27.16.59.67.5C17.14 18.16 20 14.42 20 10A10 10 0 0 0 10 0z" />
+    </svg>;
 
     private bool themeMenuOpen;
     private IJSObjectReference? module;
@@ -45,43 +91,36 @@
         if (!firstRender)
             return;
 
-        // JS interop is unavailable during static prerendering, so the very first
-        // paint uses ThemeState's default (Rose & Red) for the checkmark. The
-        // <html data-theme> attribute is already correct from App.razor's inline
-        // FOUC script, so page colors never flash; only this brief correction of
-        // the menu's selected-radio state happens post-render.
-        module = await JS.InvokeAsync<IJSObjectReference>("import", "/js/theme.js");
-
-        var stored = await module.InvokeAsync<string?>("getStoredTheme");
-        Theme.Initialize(stored);
+        // The <html data-theme> attribute was set before first paint by App.razor's inline script;
+        // read it back so the picker marks the right theme.
+        module = await JS.InvokeAsync<IJSObjectReference>("import", "./js/theme.js");
+        Theme.Initialize(await module.InvokeAsync<string?>("getTheme"));
         StateHasChanged();
     }
 
     private void OnThemeChanged() => InvokeAsync(StateHasChanged);
 
-    private Task SelectThemeAsync(string key)
+    private async Task SelectThemeAsync(string key)
     {
         Theme.SetTheme(key);
-        themeMenuOpen = false;
-        return PersistAndApplyAsync();
-    }
-
-    private async Task PersistAndApplyAsync()
-    {
-        if (module is null)
-            return;
-
-        await module.InvokeVoidAsync("applyTheme", Theme.Theme);
-        await module.InvokeVoidAsync("setStoredTheme", Theme.Theme);
+        if (module is not null)
+        {
+            await module.InvokeVoidAsync("selectTheme", key);
+        }
     }
 
     public async ValueTask DisposeAsync()
     {
         Theme.Changed -= OnThemeChanged;
-
         if (module is not null)
         {
-            await module.DisposeAsync();
+            try
+            {
+                await module.DisposeAsync();
+            }
+            catch (JSDisconnectedException)
+            {
+            }
         }
     }
 }

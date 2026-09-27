@@ -5,74 +5,103 @@
 
 <div class="catalog-content">
 
-    <PageHeader Title="Stepper">A stepper breaks a task into an ordered sequence of steps.</PageHeader>
+    <PageHeader Title="Stepper">
+        PBStepper provides a wizard-like workflow by dividing content into logical steps,
+        horizontal or vertical, linear or free.
+    </PageHeader>
 
     <section class="doc-section">
-        <p class="field-hint">Advance through the steps with the buttons below.</p>
+        <p class="field-hint">A horizontal stepper. Completed steps show an edit icon; use <code>NextAsync</code>/<code>PreviousAsync</code> from buttons inside the steps.</p>
 
-        <ExampleCard Title="Checkout" RazorCode="@(
-@"<PBStepper>
-    @foreach (var step in steps)
-    {
-        <li>@step</li>
-    }
+        <ExampleCard Title="Stepper overview" RazorCode="@(
+@"<PBStepper @ref=""stepper"" @bind-SelectedIndex=""step"" Label=""Checkout"">
+    <PBStep Label=""Fill out your name"">
+        <PBInput Label=""Name"" />
+        <PBButton @onclick=""() => stepper.NextAsync()"">Next</PBButton>
+    </PBStep>
+    <PBStep Label=""Fill out your address"">...</PBStep>
+    <PBStep Label=""Done"">...</PBStep>
 </PBStepper>")">
-            <PBStepper>
-                @for (var i = 0; i < steps.Length; i++)
-                {
-                    var index = i;
-                    <li style="font-weight:@(index == currentStep ? 700 : 400);">@steps[index]</li>
-                }
+            <PBStepper @ref="stepper" @bind-SelectedIndex="step" Label="Checkout">
+                <PBStep Label="Fill out your name">
+                    <PBInput Label="Name" placeholder="Last name, First name" />
+                    <div class="actions"><PBButton @onclick="() => stepper!.NextAsync()">Next</PBButton></div>
+                </PBStep>
+                <PBStep Label="Fill out your address">
+                    <PBInput Label="Address" placeholder="Ex. 1 Main St, New York, NY" />
+                    <div class="actions">
+                        <PBButton @onclick="() => stepper!.PreviousAsync()">Back</PBButton>
+                        <PBButton @onclick="() => stepper!.NextAsync()">Next</PBButton>
+                    </div>
+                </PBStep>
+                <PBStep Label="Done">
+                    <p>You are now done.</p>
+                    <div class="actions">
+                        <PBButton @onclick="() => stepper!.PreviousAsync()">Back</PBButton>
+                        <PBButton @onclick="() => stepper!.ResetAsync()">Reset</PBButton>
+                    </div>
+                </PBStep>
             </PBStepper>
-            <div class="actions">
-                <PBButton disabled="@(currentStep == 0)" @onclick="() => currentStep--">Back</PBButton>
-                <PBButton disabled="@(currentStep == steps.Length - 1)" @onclick="() => currentStep++">Next</PBButton>
-            </div>
         </ExampleCard>
     </section>
 
     <section class="doc-section">
-        <p class="field-hint"><code>Orientation="PBStepperOrientation.Vertical"</code> stacks the steps with the connector line running down instead of across.</p>
+        <p class="field-hint">A vertical stepper with an optional step and a step in error.</p>
 
-        <ExampleCard Title="Vertical" RazorCode="@(
+        <ExampleCard Title="Vertical stepper" RazorCode="@(
 @"<PBStepper Orientation=""PBStepperOrientation.Vertical"">
-    <li>Cart</li>
-    <li>Shipping</li>
-    <li>Payment</li>
+    <PBStep Label=""Cart"">...</PBStep>
+    <PBStep Label=""Shipping"" Optional>...</PBStep>
+    <PBStep Label=""Payment"" HasError ErrorMessage=""Card declined"">...</PBStep>
 </PBStepper>")">
-            <PBStepper Orientation="PBStepperOrientation.Vertical">
-                <li>Cart</li>
-                <li>Shipping</li>
-                <li>Payment</li>
+            <PBStepper Orientation="PBStepperOrientation.Vertical" Label="Order" @bind-SelectedIndex="verticalStep">
+                <PBStep Label="Cart">
+                    <p>Three items in your cart.</p>
+                    <PBButton @onclick="() => verticalStep = 1">Next</PBButton>
+                </PBStep>
+                <PBStep Label="Shipping" Optional>
+                    <p>Choose a delivery speed.</p>
+                    <PBButton @onclick="() => verticalStep = 2">Next</PBButton>
+                </PBStep>
+                <PBStep Label="Payment" HasError ErrorMessage="Card declined">
+                    <p>Enter another card.</p>
+                </PBStep>
             </PBStepper>
         </ExampleCard>
     </section>
 
     <section class="doc-section">
         <h2>API reference</h2>
+        <div class="doc-table-wrapper">
         <table class="doc-table">
             <thead>
                 <tr><th>Property</th><th>Type</th><th>Description</th></tr>
             </thead>
             <tbody>
                 <tr><td><code>Orientation</code></td><td><code>PBStepperOrientation</code></td><td><code>Horizontal</code> (default) or <code>Vertical</code>.</td></tr>
-                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The step items, typically <code>&lt;li&gt;</code> elements.</td></tr>
-                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;ol&gt;</code>.</td></tr>
+                <tr><td><code>SelectedIndex</code></td><td><code>int</code></td><td>The active step. Supports <code>@@bind-SelectedIndex</code>.</td></tr>
+                <tr><td><code>Linear</code></td><td><code>bool</code></td><td>Steps can only be reached once the previous ones are completed.</td></tr>
+                <tr><td><code>NextAsync()</code>, <code>PreviousAsync()</code>, <code>ResetAsync()</code></td><td>methods</td><td>Move to the next or previous step, or back to the first.</td></tr>
+                <tr><td><code>PBStep.Label</code>, <code>LabelContent</code></td><td></td><td>The step header label.</td></tr>
+                <tr><td><code>PBStep.Completed</code>, <code>Optional</code>, <code>Editable</code></td><td><code>bool?</code>, <code>bool</code>, <code>bool</code></td><td>Completion override, "Optional" hint, pencil (editable) vs check icon.</td></tr>
+                <tr><td><code>PBStep.HasError</code>, <code>ErrorMessage</code></td><td><code>bool</code>, <code>string?</code></td><td>Error state with a warning icon and message.</td></tr>
             </tbody>
         </table>
+        </div>
     </section>
 
     <section class="doc-section">
         <div class="a11y-note">
             <strong>Accessibility</strong>
-            Renders a native ordered list (<code>&lt;ol&gt;</code>), giving step
-            numbers for free. The current-step styling above is visual only; expose
-            it with <code>aria-current="step"</code> in real usage.
+            Step headers are <code>tab</code>s in a <code>tablist</code> with
+            <code>aria-selected</code>; step content is a <code>tabpanel</code>. Arrow keys, Home and
+            End move focus between headers; Enter or Space selects.
         </div>
     </section>
 </div>
 
 @code {
-    private static readonly string[] steps = ["Cart", "Shipping", "Payment", "Review"];
-    private int currentStep;
+    private PBStepper? stepper;
+    private int step;
+    private int verticalStep;
 }

@@ -3,23 +3,34 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/remotion-videos/src",
   "projectType": "application",
+  "implicitDependencies": ["tokens"],
   "targets": {
-    "studio": {
+    "record": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "remotion studio src/index.ts",
+        "command": "node scripts/record.mts",
         "cwd": "apps/remotion-videos"
       }
     },
     "render": {
       "executor": "nx:run-commands",
+      "dependsOn": ["^build"],
       "options": {
-        "command": "remotion render src/index.ts AutocompleteDemo out/autocomplete-demo.mp4",
+        "command": "node scripts/render.mts",
+        "cwd": "apps/remotion-videos"
+      }
+    },
+    "studio": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["^build"],
+      "options": {
+        "command": "remotion studio src/index.ts",
         "cwd": "apps/remotion-videos"
       }
     },
     "build": {
       "executor": "nx:run-commands",
+      "dependsOn": ["^build"],
       "options": {
         "command": "remotion bundle src/index.ts",
         "cwd": "apps/remotion-videos"

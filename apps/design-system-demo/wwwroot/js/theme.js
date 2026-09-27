@@ -1,15 +1,19 @@
-// Minimal theme interop: persistence + applying data-theme to <html>. All
-// derivation of what to show/generate lives in Blazor (ThemeState.cs) and in
-// the precomputed --md-sys-color-* CSS.
+// Theme interop for the demo's picker. The inline script in App.razor applies the saved theme
+// before first paint; these helpers read it back and switch it live (no reload).
 
-export function getStoredTheme() {
-    return localStorage.getItem("theme") || document.documentElement.getAttribute("data-theme");
+const THEMES = ["rose-red", "azure-blue", "magenta-violet", "cyan-orange"];
+
+export function getTheme() {
+  return document.documentElement.getAttribute("data-theme");
 }
 
-export function setStoredTheme(theme) {
+/** Applies a theme immediately and persists it. Storage failures (private mode) only lose persistence. */
+export function selectTheme(theme) {
+  if (!THEMES.includes(theme)) return;
+  document.documentElement.setAttribute("data-theme", theme);
+  try {
     localStorage.setItem("theme", theme);
-}
-
-export function applyTheme(theme) {
-    document.documentElement.setAttribute("data-theme", theme);
+  } catch {
+    /* storage unavailable */
+  }
 }

@@ -19,15 +19,30 @@
     </section>
 
     <section class="doc-section">
+        <p class="field-hint">Determinate spinners: set <code>Value</code> (0–100).</p>
+
+        <ExampleCard Title="Determinate" RazorCode="@(@"<PBProgressSpinner Value=""@progress"" Label=""Upload progress"" />")">
+            <div class="demo-row">
+                <PBProgressSpinner Value="progress" Label="Upload progress" />
+                <PBSlider Label="Progress" min="0" max="100" value="@progress" @oninput="@(e => progress = double.Parse(e.Value?.ToString() ?? "0", System.Globalization.CultureInfo.InvariantCulture))" style="max-width:240px" />
+            </div>
+        </ExampleCard>
+    </section>
+
+    <section class="doc-section">
         <h2>API reference</h2>
+        <div class="doc-table-wrapper">
         <table class="doc-table">
             <thead>
                 <tr><th>Property</th><th>Type</th><th>Description</th></tr>
             </thead>
             <tbody>
                 <tr><td><code>Label</code></td><td><code>string?</code></td><td>Rendered as <code>aria-label</code> on the spinner.</td></tr>
+                <tr><td><code>Value</code></td><td><code>double?</code></td><td>0–100 for a determinate spinner; <code>null</code> (default) spins indeterminately.</td></tr>
+                <tr><td><code>StrokeWidth</code></td><td><code>double?</code></td><td>Stroke width in px (M3 default 4px).</td></tr>
             </tbody>
         </table>
+        </div>
     </section>
 
     <section class="doc-section">
@@ -38,3 +53,7 @@
         </div>
     </section>
 </div>
+
+@code {
+    private double progress = 60;
+}

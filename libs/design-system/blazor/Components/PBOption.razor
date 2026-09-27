@@ -1,0 +1,17 @@
+@typeparam TValue
+@inherits WorkspaceComponentBase
+@implements IDisposable
+<div id="@Id"
+     class="pb-option @(Selected ? "pb-option--selected" : null) @(Active ? "pb-option--active" : null) @(Disabled ? "pb-option--disabled" : null) @UserClass"
+     role="option"
+     aria-selected="@(Selected ? "true" : "false")"
+     aria-disabled="@(Disabled ? "true" : "false")"
+     @onmousedown:preventDefault="true"
+     @onclick="OnClickAsync"
+     @attributes="Attrs">
+    <span class="pb-option__text">@Display</span>
+    @if (Selected && Select?.ShowCheckmark == true)
+    {
+        <span class="pb-option__check" aria-hidden="true"></span>
+    }
+</div>

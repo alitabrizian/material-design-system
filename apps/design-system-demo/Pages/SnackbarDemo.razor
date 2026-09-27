@@ -6,52 +6,69 @@
 <div class="catalog-content">
 
     <PageHeader Title="Snackbar">
-        A snackbar shows a brief, unobtrusive message about the result of an
-        action.
+        PBSnackbar displays brief notifications at the bottom of the screen, with
+        an optional action.
     </PageHeader>
 
     <section class="doc-section">
-        <p class="field-hint">Trigger the snackbar with the button below.</p>
+        <p class="field-hint">Set <code>Open</code> to show it; <code>Duration</code> dismisses it automatically.</p>
 
-        <ExampleCard Title="Save confirmation" RazorCode="@(
-@"<PBSnackbar>
-    Changes saved.
-    <PBButton @onclick=""Dismiss"">Dismiss</PBButton>
+        <ExampleCard Title="Basic snack-bar" RazorCode="@(
+@"<PBButton Variant=""PBButtonVariant.Outlined"" @onclick=""() => open = true"">Show snack-bar</PBButton>
+
+<PBSnackbar @bind-Open=""open"" ActionLabel=""Undo"" OnAction=""Undo"" Duration=""4000"">
+    Message archived
 </PBSnackbar>")">
-            <PBButton @onclick="() => isVisible = true">Save changes</PBButton>
+            <PBButton Variant="PBButtonVariant.Outlined" @onclick="() => open = true">Show snack-bar</PBButton>
+            <p class="status">@status</p>
+            <PBSnackbar @bind-Open="open" ActionLabel="Undo" OnAction='() => status = "Undo clicked"' Duration="4000">
+                Message archived
+            </PBSnackbar>
+        </ExampleCard>
+    </section>
 
-            @if (isVisible)
-            {
-                <PBSnackbar>
-                    Changes saved.
-                    <PBButton @onclick="() => isVisible = false">Dismiss</PBButton>
-                </PBSnackbar>
-            }
+    <section class="doc-section">
+        <p class="field-hint">The snack-bar surface rendered in place (<code>Inline</code>), with and without an action.</p>
+
+        <ExampleCard Title="Inline preview" RazorCode="@(
+@"<PBSnackbar Inline>Connection restored</PBSnackbar>
+<PBSnackbar Inline ActionLabel=""Retry"">Can't send photo</PBSnackbar>")">
+            <div class="demo-stack">
+                <PBSnackbar Inline>Connection restored</PBSnackbar>
+                <PBSnackbar Inline ActionLabel="Retry">Can't send photo. Retry in 5 seconds.</PBSnackbar>
+            </div>
         </ExampleCard>
     </section>
 
     <section class="doc-section">
         <h2>API reference</h2>
+        <div class="doc-table-wrapper">
         <table class="doc-table">
             <thead>
                 <tr><th>Property</th><th>Type</th><th>Description</th></tr>
             </thead>
             <tbody>
-                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The message and any inline actions.</td></tr>
-                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;output role="status"&gt;</code>.</td></tr>
+                <tr><td><code>Open</code></td><td><code>bool</code></td><td>Shows the snack-bar. Supports <code>@@bind-Open</code>.</td></tr>
+                <tr><td><code>ChildContent</code> / <code>Label</code></td><td></td><td>The message.</td></tr>
+                <tr><td><code>Duration</code></td><td><code>int</code></td><td>Milliseconds before it dismisses itself; <code>0</code> (default) waits for the action.</td></tr>
+                <tr><td><code>ActionLabel</code> / <code>OnAction</code></td><td><code>string?</code> / <code>EventCallback</code></td><td>An action button (inverse-primary) that also dismisses it.</td></tr>
+                <tr><td><code>Inline</code></td><td><code>bool</code></td><td>Renders the surface in place.</td></tr>
             </tbody>
         </table>
+        </div>
     </section>
 
     <section class="doc-section">
         <div class="a11y-note">
             <strong>Accessibility</strong>
-            Renders an <code>&lt;output role="status"&gt;</code>, which is announced
-            politely by screen readers as it appears, without stealing focus.
+            The message is announced through a polite live region (<code>role="status"</code>). Avoid
+            auto-dismissing snack-bars whose action is important: users of assistive technology may
+            not reach it in time.
         </div>
     </section>
 </div>
 
 @code {
-    private bool isVisible;
+    private bool open;
+    private string status = "";
 }

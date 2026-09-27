@@ -28,7 +28,16 @@
     </section>
 
     <section class="doc-section">
+        <p class="field-hint">Without the check/minus icons in the handle (<code>HideIcon</code>).</p>
+
+        <ExampleCard Title="Hidden icon" RazorCode="@(@"<PBSlideToggle Label=""Wi-Fi"" HideIcon checked />")">
+            <PBSlideToggle Label="Wi-Fi" HideIcon checked="@wifi" @onchange="@(e => wifi = (bool)e.Value!)" />
+        </ExampleCard>
+    </section>
+
+    <section class="doc-section">
         <h2>API reference</h2>
+        <div class="doc-table-wrapper">
         <table class="doc-table">
             <thead>
                 <tr><th>Property</th><th>Type</th><th>Description</th></tr>
@@ -36,8 +45,10 @@
             <tbody>
                 <tr><td><code>Label</code></td><td><code>string?</code></td><td>Text rendered next to the switch.</td></tr>
                 <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;input type="checkbox" role="switch"&gt;</code>.</td></tr>
+                <tr><td><code>HideIcon</code></td><td><code>bool</code></td><td>Hides the icons in the handle.</td></tr>
             </tbody>
         </table>
+        </div>
     </section>
 
     <section class="doc-section">
@@ -50,5 +61,7 @@
 </div>
 
 @code {
+    private bool wifi = true;
+
     private bool darkModeEnabled;
 }

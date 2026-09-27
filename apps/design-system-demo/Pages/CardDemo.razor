@@ -6,83 +6,116 @@
 <div class="catalog-content">
 
     <PageHeader Title="Card">
-        Cards group related content and actions into a single, self-contained
-        surface.
+        PBCard is a content container for text, photos and actions in the context of a single
+        subject, with header, content and actions sections.
     </PageHeader>
 
     <section class="doc-section">
-        <p class="field-hint">A card with a title, body copy, and an action.</p>
+        <p class="field-hint">The three M3 appearances: elevated (the default), filled and outlined.</p>
 
-        <ExampleCard Title="Basic card" RazorCode="@(
+        <ExampleCard Title="Card appearances" RazorCode="@(
 @"<PBCard>
-    <h3>Team standup</h3>
-    <p>Daily sync at 9:30 AM in the design system room.</p>
-    <PBButton>Join</PBButton>
+    <PBCardContent>Elevated card (default)</PBCardContent>
+</PBCard>
+<PBCard Variant=""PBCardVariant.Filled"">
+    <PBCardContent>Filled card</PBCardContent>
+</PBCard>
+<PBCard Variant=""PBCardVariant.Outlined"">
+    <PBCardContent>Outlined card</PBCardContent>
 </PBCard>")">
-            <PBCard>
-                <h3 style="margin:0 0 0.35rem;">Team standup</h3>
-                <p style="margin:0 0 0.75rem;">Daily sync at 9:30 AM in the design system room.</p>
-                <PBButton>Join</PBButton>
-            </PBCard>
-        </ExampleCard>
-    </section>
-
-    <section class="doc-section">
-        <p class="field-hint">A card can hold arbitrary content, including lists.</p>
-
-        <ExampleCard Title="Media card" RazorCode="@(
-@"<PBCard>
-    <h3>Release notes</h3>
-    <PBList>
-        <li>Autocomplete component shipped</li>
-        <li>Dark mode groundwork started</li>
-    </PBList>
-</PBCard>")">
-            <PBCard>
-                <h3 style="margin:0 0 0.35rem;">Release notes</h3>
-                <PBList>
-                    <li>Autocomplete component shipped</li>
-                    <li>Dark mode groundwork started</li>
-                </PBList>
-            </PBCard>
-        </ExampleCard>
-    </section>
-
-    <section class="doc-section">
-        <p class="field-hint">Three variants: elevated (shadow), filled (tonal surface), and outlined (border) — the default.</p>
-
-        <ExampleCard Title="Variants" RazorCode="@(
-@"<PBCard Variant=""PBCardVariant.Elevated"">Elevated</PBCard>
-<PBCard Variant=""PBCardVariant.Filled"">Filled</PBCard>
-<PBCard Variant=""PBCardVariant.Outlined"">Outlined</PBCard>")">
-            <div style="display:flex; gap:1rem; flex-wrap:wrap;">
-                <PBCard Variant="PBCardVariant.Elevated" style="flex:1 1 10rem;">Elevated</PBCard>
-                <PBCard Variant="PBCardVariant.Filled" style="flex:1 1 10rem;">Filled</PBCard>
-                <PBCard Variant="PBCardVariant.Outlined" style="flex:1 1 10rem;">Outlined</PBCard>
+            <div class="demo-row" style="align-items:stretch">
+                <PBCard style="width:200px"><PBCardContent>Elevated card (default)</PBCardContent></PBCard>
+                <PBCard Variant="PBCardVariant.Filled" style="width:200px"><PBCardContent>Filled card</PBCardContent></PBCard>
+                <PBCard Variant="PBCardVariant.Outlined" style="width:200px"><PBCardContent>Outlined card</PBCardContent></PBCard>
             </div>
         </ExampleCard>
     </section>
 
     <section class="doc-section">
+        <p class="field-hint">A card with a header (avatar, title, subtitle), body content and actions.</p>
+
+        <ExampleCard Title="Card with multiple sections" RazorCode="@(
+@"<PBCard style=""max-width:400px"">
+    <PBCardHeader Title=""Shiba Inu"" Subtitle=""Dog Breed"">
+        <Avatar><PBIcon>pets</PBIcon></Avatar>
+    </PBCardHeader>
+    <PBCardContent>
+        <p>The Shiba Inu is the smallest of the six original and distinct
+        spitz breeds of dog from Japan.</p>
+    </PBCardContent>
+    <PBCardActions>
+        <PBButton>Like</PBButton>
+        <PBButton>Share</PBButton>
+    </PBCardActions>
+</PBCard>")">
+            <PBCard style="max-width:400px">
+                <PBCardHeader Title="Shiba Inu" Subtitle="Dog Breed">
+                    <Avatar><span class="card-avatar"><PBIcon>pets</PBIcon></span></Avatar>
+                </PBCardHeader>
+                <PBCardContent>
+                    <p>
+                        The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog
+                        from Japan. A small, agile dog that copes very well with mountainous terrain, the
+                        Shiba Inu was originally bred for hunting.
+                    </p>
+                </PBCardContent>
+                <PBCardActions>
+                    <PBButton>Like</PBButton>
+                    <PBButton>Share</PBButton>
+                </PBCardActions>
+            </PBCard>
+        </ExampleCard>
+    </section>
+
+    <section class="doc-section">
+        <p class="field-hint">Actions aligned to the end, and a card holding a list.</p>
+
+        <ExampleCard Title="End-aligned actions" RazorCode="@(
+@"<PBCard Variant=""PBCardVariant.Outlined"">
+    <PBCardHeader Title=""Release notes"" Subtitle=""Version 1.0"" />
+    <PBList>
+        <PBListItem>Select rebuilt as an M3 listbox</PBListItem>
+        <PBListItem>Four Material Design 3 themes</PBListItem>
+    </PBList>
+    <PBCardActions Align=""PBCardActionsAlign.End"">
+        <PBButton Variant=""PBButtonVariant.Filled"">Read more</PBButton>
+    </PBCardActions>
+</PBCard>")">
+            <PBCard Variant="PBCardVariant.Outlined" style="max-width:400px">
+                <PBCardHeader Title="Release notes" Subtitle="Version 1.0" />
+                <PBList>
+                    <PBListItem>Select rebuilt as an M3 listbox</PBListItem>
+                    <PBListItem>Four Material Design 3 themes</PBListItem>
+                </PBList>
+                <PBCardActions Align="PBCardActionsAlign.End">
+                    <PBButton Variant="PBButtonVariant.Filled">Read more</PBButton>
+                </PBCardActions>
+            </PBCard>
+        </ExampleCard>
+    </section>
+
+    <section class="doc-section">
         <h2>API reference</h2>
+        <div class="doc-table-wrapper">
         <table class="doc-table">
             <thead>
-                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+                <tr><th>Component / property</th><th>Type</th><th>Description</th></tr>
             </thead>
             <tbody>
-                <tr><td><code>Variant</code></td><td><code>PBCardVariant</code></td><td>One of <code>Elevated</code>, <code>Filled</code>, <code>Outlined</code> (default).</td></tr>
-                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The card's content.</td></tr>
-                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;article&gt;</code>.</td></tr>
+                <tr><td><code>PBCard.Variant</code></td><td><code>PBCardVariant</code></td><td><code>Elevated</code> (default), <code>Filled</code> or <code>Outlined</code>.</td></tr>
+                <tr><td><code>PBCardHeader</code></td><td></td><td><code>Title</code> (title-large), <code>Subtitle</code> (title-medium) and a 40px <code>Avatar</code>.</td></tr>
+                <tr><td><code>PBCardContent</code></td><td></td><td>Body content with the standard 16px padding.</td></tr>
+                <tr><td><code>PBCardActions.Align</code></td><td><code>PBCardActionsAlign</code></td><td><code>Start</code> (default) or <code>End</code>.</td></tr>
             </tbody>
         </table>
+        </div>
     </section>
 
     <section class="doc-section">
         <div class="a11y-note">
             <strong>Accessibility</strong>
-            A card is a generic <code>&lt;article&gt;</code> container. Give it a
-            heading (as in the examples above) so assistive technology users can
-            navigate between cards by heading level.
+            A card renders an <code>&lt;article&gt;</code> and adds no roles of its own. Use real
+            headings inside it where the card title belongs in the page outline.
         </div>
     </section>
 </div>
