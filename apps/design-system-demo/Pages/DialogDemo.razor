@@ -6,8 +6,8 @@
 <div class="catalog-content">
 
     <PageHeader Title="Dialog">
-        PBDialog opens a modal dialog with M3 styling and focus management, like Angular
-        Material's <code>MatDialog</code>: a native <code>&lt;dialog&gt;</code> in the top layer
+        PBDialog opens a modal dialog with M3 styling and focus management: a
+        native <code>&lt;dialog&gt;</code> in the top layer
         with a scrim, focus trap and Escape to close.
     </PageHeader>
 
@@ -85,9 +85,9 @@
             </thead>
             <tbody>
                 <tr><td><code>Open</code></td><td><code>bool</code></td><td>Shows the dialog modally. Supports <code>@@bind-Open</code>.</td></tr>
-                <tr><td><code>Label</code> / <code>Title</code></td><td><code>string?</code> / <code>RenderFragment?</code></td><td>mat-dialog-title (headline-small).</td></tr>
-                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>mat-dialog-content.</td></tr>
-                <tr><td><code>Actions</code></td><td><code>RenderFragment?</code></td><td>mat-dialog-actions (end-aligned).</td></tr>
+                <tr><td><code>Label</code> / <code>Title</code></td><td><code>string?</code> / <code>RenderFragment?</code></td><td>Dialog title (headline-small).</td></tr>
+                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>Dialog content.</td></tr>
+                <tr><td><code>Actions</code></td><td><code>RenderFragment?</code></td><td>Action row (end-aligned).</td></tr>
                 <tr><td><code>DisableClose</code></td><td><code>bool</code></td><td>Ignores Escape and backdrop clicks.</td></tr>
                 <tr><td><code>Inline</code></td><td><code>bool</code></td><td>Renders the surface in place, non-modal.</td></tr>
                 <tr><td><code>CloseAsync()</code></td><td>method</td><td>Closes the dialog from code.</td></tr>

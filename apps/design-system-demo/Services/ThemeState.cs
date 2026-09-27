@@ -1,11 +1,10 @@
 namespace Design.Demo.Services;
 
 /// <summary>
-/// The demo's current theme: one of Angular Material's four prebuilt M3 themes, each a fixed
-/// palette locked to light or dark (there is no separate light/dark toggle, matching Angular
-/// Material). The colors themselves live only in the generated tokens.css
-/// (libs/design-system/tokens); nothing here holds a color value.
-/// Registered as a singleton per circuit consumer; the top app bar is the only writer.
+/// The demo's current theme: one of the design system's four Material Design 3 themes, each a
+/// fixed palette locked to light or dark (there is no separate light/dark toggle). The colors
+/// themselves live only in the generated tokens.css (libs/design-system/tokens); nothing here
+/// holds a color value. Scoped per circuit; the top app bar is the only writer.
 /// </summary>
 public sealed class ThemeState
 {

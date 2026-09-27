@@ -7,7 +7,7 @@
 
     <PageHeader Title="Form Field">
         PBFormField wraps a native control (input, textarea or select) with the M3 text-field
-        chrome of Angular Material's <code>mat-form-field</code>: floating label, fill or outline
+        chrome: floating label, fill or outline
         container, hint and error text, and prefix/suffix icons.
     </PageHeader>
 
@@ -76,10 +76,10 @@
                 <tr><th>Property</th><th>Type</th><th>Description</th></tr>
             </thead>
             <tbody>
-                <tr><td><code>Label</code></td><td><code>string?</code></td><td>Floating label (mat-label).</td></tr>
+                <tr><td><code>Label</code></td><td><code>string?</code></td><td>Floating label.</td></tr>
                 <tr><td><code>LabelFor</code></td><td><code>string?</code></td><td>The projected control's <code>id</code>, for the label's <code>for</code>.</td></tr>
                 <tr><td><code>Appearance</code></td><td><code>PBFormFieldAppearance</code></td><td><code>Fill</code> (default) or <code>Outline</code>.</td></tr>
-                <tr><td><code>SupportingText</code> / <code>ErrorText</code></td><td><code>string?</code></td><td>mat-hint / mat-error. An error colors the field.</td></tr>
+                <tr><td><code>SupportingText</code> / <code>ErrorText</code></td><td><code>string?</code></td><td>Hint / error text under the field. An error colors the field.</td></tr>
                 <tr><td><code>Prefix</code> / <code>Suffix</code></td><td><code>RenderFragment?</code></td><td>matIconPrefix / matIconSuffix.</td></tr>
                 <tr><td><code>Block</code></td><td><code>bool</code></td><td>Stretches the field to its container's width.</td></tr>
                 <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The native control.</td></tr>

@@ -6,13 +6,12 @@
 <div class="catalog-content">
 
     <PageHeader Title="Chips">
-        Chips allow users to view information, make selections, filter content and enter data,
-        like Angular Material's <code>mat-chip-set</code>, <code>mat-chip-listbox</code> and
-        <code>mat-chip-grid</code>.
+        Chips allow users to view information, make selections, filter content and enter data:
+        assist, filter and input chips, in a plain set or a selectable listbox.
     </PageHeader>
 
     <section class="doc-section">
-        <p class="field-hint">Filter chips (<code>mat-chip-option</code>) toggle on click: the selected ones fill with the secondary container color and draw in a checkmark.</p>
+        <p class="field-hint">Filter chips toggle on click: the selected ones fill with the secondary container color and draw in a checkmark.</p>
 
         <ExampleCard Title="Filter chips" RazorCode="@(
 @"<PBChips Selectable Label=""Topics"">
@@ -35,7 +34,7 @@
     </section>
 
     <section class="doc-section">
-        <p class="field-hint">Input chips (<code>mat-chip-row</code>) represent entered values and can be removed.</p>
+        <p class="field-hint">Input chips represent entered values and can be removed.</p>
 
         <ExampleCard Title="Input chips" RazorCode="@(
 @"<PBChips Label=""Members"">
@@ -61,7 +60,7 @@
     </section>
 
     <section class="doc-section">
-        <p class="field-hint">Assist chips (<code>mat-chip</code>) with leading icons, a highlighted chip and a disabled chip.</p>
+        <p class="field-hint">Assist chips with leading icons, a highlighted chip and a disabled chip.</p>
 
         <ExampleCard Title="Assist chips" RazorCode="@(
 @"<PBChips Label=""Suggestions"">
@@ -92,7 +91,7 @@
                 <tr><th>Property</th><th>Type</th><th>Description</th></tr>
             </thead>
             <tbody>
-                <tr><td><code>PBChips.Selectable</code></td><td><code>bool</code></td><td>Renders a <code>listbox</code> of filter chips (mat-chip-listbox) instead of a list.</td></tr>
+                <tr><td><code>PBChips.Selectable</code></td><td><code>bool</code></td><td>Renders a <code>listbox</code> of filter chips instead of a list.</td></tr>
                 <tr><td><code>PBChips.Multiple</code>, <code>.Stacked</code></td><td><code>bool</code></td><td>Multi-select (default) / one chip per row.</td></tr>
                 <tr><td><code>PBChip.Variant</code></td><td><code>PBChipVariant</code></td><td><code>Assist</code> (default), <code>Filter</code> or <code>Input</code>.</td></tr>
                 <tr><td><code>Selected</code></td><td><code>bool</code></td><td>Filter chip state. Supports <code>@@bind-Selected</code>.</td></tr>

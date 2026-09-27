@@ -111,7 +111,7 @@ h1:focus {
 }
 
 /* Navigation items: pill-shaped, label-large, secondary-container when active (M3 navigation
-   drawer colors, in the dense 40px rhythm of Angular Material's own docs sidebar). */
+   drawer colors, 40px tall). A 4px gap keeps adjacent hover/active pills from touching. */
 .nav-link {
   position: relative;
   display: flex;
@@ -125,6 +125,10 @@ h1:focus {
   font: var(--md-sys-typescale-label-large);
   letter-spacing: var(--md-sys-typescale-label-large-tracking);
   text-decoration: none;
+}
+
+.nav-link + .nav-link {
+  margin-top: 4px;
 }
 
 .nav-link:hover {

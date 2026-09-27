@@ -6,13 +6,12 @@
 <div class="catalog-content">
 
     <PageHeader Title="Badge">
-        Badges are small status descriptors for UI elements, like Angular Material's
-        <code>matBadge</code>: a small circle with a count or short text pinned to a corner of the
-        element it annotates.
+        Badges are small status descriptors for UI elements: a small circle with a count or short
+        text pinned to a corner of the element it annotates.
     </PageHeader>
 
     <section class="doc-section">
-        <p class="field-hint">Wrap the annotated element in <code>PBBadge</code> and set <code>Content</code>. Use <code>Position</code>, <code>Size</code> and <code>Overlap</code> like Angular's inputs.</p>
+        <p class="field-hint">Wrap the annotated element in <code>PBBadge</code> and set <code>Content</code>. Use <code>Position</code>, <code>Size</code> and <code>Overlap</code> to place and size it.</p>
 
         <ExampleCard Title="Badge overview" RazorCode="@(
 @"<PBBadge Content=""4"" Overlap=""false"">Text with a badge</PBBadge>
@@ -70,13 +69,13 @@
                 <tr><th>Property</th><th>Type</th><th>Description</th></tr>
             </thead>
             <tbody>
-                <tr><td><code>Content</code></td><td><code>string?</code></td><td>The badge text (matBadge).</td></tr>
+                <tr><td><code>Content</code></td><td><code>string?</code></td><td>The badge text.</td></tr>
                 <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The element the badge is attached to.</td></tr>
                 <tr><td><code>Position</code></td><td><code>PBBadgePosition</code></td><td><code>AboveAfter</code> (default), <code>AboveBefore</code>, <code>BelowAfter</code>, <code>BelowBefore</code>.</td></tr>
                 <tr><td><code>Size</code></td><td><code>PBBadgeSize</code></td><td><code>Small</code> (6px dot), <code>Medium</code> (default, 16px) or <code>Large</code> (16px).</td></tr>
                 <tr><td><code>Overlap</code></td><td><code>bool</code></td><td>Overlaps the host's corner (default); turn off for text hosts.</td></tr>
                 <tr><td><code>Hidden</code>, <code>Disabled</code></td><td><code>bool</code></td><td>Hides the badge / dims it (error at 38%).</td></tr>
-                <tr><td><code>Description</code></td><td><code>string?</code></td><td>Screen-reader text (matBadgeDescription).</td></tr>
+                <tr><td><code>Description</code></td><td><code>string?</code></td><td>Screen-reader text.</td></tr>
             </tbody>
         </table>
         </div>
@@ -86,7 +85,7 @@
         <div class="a11y-note">
             <strong>Accessibility</strong>
             The badge itself is <code>aria-hidden</code>; give it a <code>Description</code> so
-            screen readers announce what the count means, as with matBadgeDescription.
+            screen readers announce what the count means.
         </div>
     </section>
 </div>
