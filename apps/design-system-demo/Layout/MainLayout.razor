@@ -3,47 +3,63 @@
 @inject NavigationManager NavManager
 
 <div class="catalog-shell">
-    <aside class="catalog-sidebar" aria-label="Design system navigation">
-        <a class="brand-lockup" href="/" aria-label="Workspace Design System home">
-            <span class="brand-mark">W</span>
-            <span>
-                <strong>Workspace</strong>
-                <small>Design system</small>
-            </span>
-        </a>
+    <div class="catalog-nav-column">
+        <aside class="catalog-sidebar" aria-label="Design system navigation">
+            @Navigation
+        </aside>
+    </div>
 
-        <nav class="side-nav" aria-label="Components">
-            <div class="component-menu">
-                @foreach (var item in ComponentCatalog.Items)
-                {
-                    <a class="nav-link @(IsActive(item.Route) ? "active" : null)" href="@item.Route">@item.Name</a>
-                }
-            </div>
-        </nav>
-
-        <div class="sidebar-footer">
-            <span class="status-dot" aria-hidden="true"></span>
-            <span>v1.0.0</span>
-        </div>
-    </aside>
+    <PBSidenav Mode="PBSidenavMode.Over" class="catalog-drawer" Label="Design system navigation" @bind-Opened="drawerOpen">
+        <div class="catalog-sidebar">@Navigation</div>
+    </PBSidenav>
 
     <main class="page-shell">
-        <TopAppBar Title="@CurrentTitle" />
+        <TopAppBar Title="@CurrentTitle" MenuClicked="() => drawerOpen = true" />
         @Body
     </main>
 </div>
 
 @code {
+    private bool drawerOpen;
+
+    private RenderFragment Navigation => @<text>
+        <a class="brand-lockup" href="/" aria-label="Workspace Design System home">
+            <span class="brand-mark" aria-hidden="true">W</span>
+            <span>
+                <strong>Workspace</strong>
+                <small>Angular Material M3 for Blazor</small>
+            </span>
+        </a>
+
+        <nav class="side-nav" aria-label="Components">
+            <div class="nav-heading">Components</div>
+            @foreach (var item in ComponentCatalog.Items)
+            {
+                var active = IsActive(item.Route);
+                <a class="nav-link @(active ? "active" : null)" href="@item.Route" aria-current="@(active ? "page" : null)">@item.Name</a>
+            }
+        </nav>
+
+        <div class="sidebar-footer">
+            <span class="status-dot" aria-hidden="true"></span>
+            <span>Angular Material 22.2 · M3</span>
+        </div>
+    </text>;
+
     protected override void OnInitialized()
     {
         NavManager.LocationChanged += OnLocationChanged;
     }
 
-    private void OnLocationChanged(object? sender, LocationChangedEventArgs e) => StateHasChanged();
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        drawerOpen = false;
+        InvokeAsync(StateHasChanged);
+    }
 
     private bool IsActive(string route)
     {
-        var currentPath = "/" + NavManager.ToBaseRelativePath(NavManager.Uri).TrimEnd('/');
+        var currentPath = "/" + NavManager.ToBaseRelativePath(NavManager.Uri).Split('#', '?')[0].TrimEnd('/');
         return string.Equals(currentPath, route, StringComparison.OrdinalIgnoreCase);
     }
 

@@ -1,0 +1,71 @@
+/*
+ * PBTree / PBTreeNode: mat-tree (nested nodes). Reference: tree/_m3-tree.scss + structural styles.
+ *
+ *   surface / on-surface, body-large; node rows min-height 48px, indented 40px per level
+ *   (matTreeNodePadding); toggle = 40px icon button with chevron_right / expand_more; leaves keep
+ *   the toggle's space; focused row gets the on-surface focus state layer (12%)
+ */
+
+.pb-tree {
+  display: block;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background-color: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
+  font-family: var(--md-sys-typescale-body-large-font);
+  font-size: var(--md-sys-typescale-body-large-size);
+  line-height: var(--md-sys-typescale-body-large-line-height);
+  font-weight: var(--md-sys-typescale-body-large-weight);
+  letter-spacing: var(--md-sys-typescale-body-large-tracking);
+}
+
+.pb-tree [role="group"] {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pb-tree-node {
+  display: block;
+  outline: none;
+}
+
+.pb-tree-node__row {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  box-sizing: border-box;
+  min-height: 48px;
+  padding-left: calc(var(--pb-tree-level, 0) * 40px);
+  word-wrap: break-word;
+}
+
+.pb-tree-node:focus-visible > .pb-tree-node__row {
+  background-color: color-mix(in srgb, var(--md-sys-color-on-surface) calc(var(--md-sys-state-focus-state-layer-opacity) * 100%), transparent);
+}
+
+.pb-tree-node__toggle {
+  flex-shrink: 0;
+}
+
+.pb-tree-node__toggle .material-icons {
+  transition: transform 150ms var(--md-sys-motion-easing-legacy);
+}
+
+.pb-tree-node__spacer {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+}
+
+.pb-tree-node__icon {
+  margin-right: 8px;
+  color: var(--md-sys-color-on-surface-variant);
+  font-size: 24px;
+}
+
+.pb-tree-node__label {
+  flex: 1;
+  min-width: 0;
+}

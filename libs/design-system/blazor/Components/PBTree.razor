@@ -1,2 +1,20 @@
 @inherits WorkspaceComponentBase
-<ul class="workspace-tree" role="tree" @attributes="AdditionalAttributes">@ChildContent</ul>
+<ul class="pb-tree @UserClass" role="tree" aria-label="@Label" @attributes="Attrs">
+    <CascadingValue Value="this" IsFixed="true">@ChildContent</CascadingValue>
+</ul>
+
+@code {
+    private PBTreeNode? tabStop;
+
+    /// <summary>Roving tabindex: only one node (the first registered top-level node) is in the tab order.</summary>
+    internal bool IsTabStop(PBTreeNode node)
+    {
+        tabStop ??= node;
+        return tabStop == node;
+    }
+
+    internal void Unregister(PBTreeNode node)
+    {
+        if (tabStop == node) tabStop = null;
+    }
+}

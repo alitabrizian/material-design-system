@@ -2,14 +2,20 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace Design.Components;
 
+/// <summary>
+/// MatBottomSheet as a component: render it (conditionally) to slide a sheet up from the bottom of the
+/// screen over a scrim. It takes focus when shown; Escape or a scrim click raise <see cref="Dismissed"/>.
+/// </summary>
 public partial class PBBottomSheet : WorkspaceComponentBase
 {
-    /// <summary>
-    /// Renders as a fixed, bottom-anchored overlay (matching Angular
-    /// Material's MatBottomSheet service) with a dismissible scrim behind it,
-    /// instead of an inline block in the page's normal flow.
-    /// </summary>
     [Parameter] public EventCallback Dismissed { get; set; }
+
+    private ElementReference sheet;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender) await DesignSystemJs.InvokeVoidAsync(JS, "focus", sheet, new { preventScroll = true });
+    }
 
     private Task CloseAsync() => Dismissed.InvokeAsync();
 

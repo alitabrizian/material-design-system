@@ -1,2 +1,10 @@
 @inherits WorkspaceComponentBase
-<ul class="workspace-list" @attributes="AdditionalAttributes">@ChildContent</ul>
+<div class="pb-list @UserClass" role="@(Role ?? "list")" aria-label="@Label" @attributes="Attrs">@ChildContent</div>
+
+@code {
+    /// <summary>
+    /// ARIA role of the container. Defaults to <c>list</c> (mat-list). Use <c>navigation</c> semantics by
+    /// wrapping in a &lt;nav&gt; and giving items an <c>Href</c> (mat-nav-list).
+    /// </summary>
+    [Parameter] public string? Role { get; set; }
+}

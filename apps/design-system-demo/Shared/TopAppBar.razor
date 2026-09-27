@@ -3,34 +3,45 @@
 @implements IAsyncDisposable
 
 <header class="pb-topbar">
+    <PBButton Variant="PBButtonVariant.Icon" class="pb-topbar__menu" aria-label="Open navigation" @onclick="OnMenuClick">
+        <span class="material-icons" aria-hidden="true">menu</span>
+    </PBButton>
     <span class="pb-topbar__title">@Title</span>
 
     <div class="pb-topbar__actions">
-        <PBMenu Label="Theme" XPosition="PBMenuXPosition.Before" @bind-IsOpen="themeMenuOpen">
-            <Trigger>
-                <span class="material-icons" aria-hidden="true">palette</span>
-            </Trigger>
-            <ChildContent>
-                @foreach (var theme in ThemeState.Themes)
-                {
-                    var selected = Theme.Theme == theme.Key;
-                    <button type="button" role="menuitemradio" aria-checked="@(selected ? "true" : "false")"
-                        class="pb-menu-item @(selected ? "pb-menu-item--selected" : "")" @onclick="() => SelectThemeAsync(theme.Key)">
-                        <span class="pb-menu-item__radio" aria-hidden="true"></span>
-                        <span class="pb-menu-item__label">@theme.Name</span>
-                        <span class="pb-menu-item__swatch--theme" aria-hidden="true">
-                            <span style="background:@theme.PrimarySeed;"></span>
-                            <span style="background:@theme.TertiarySeed;"></span>
-                        </span>
-                    </button>
-                }
-            </ChildContent>
-        </PBMenu>
+        <PBTooltip Label="Select a theme">
+            <PBMenu Label="Theme" XPosition="PBMenuXPosition.Before" PanelClass="theme-picker" @bind-IsOpen="themeMenuOpen">
+                <Trigger>
+                    <span class="material-icons" aria-hidden="true">palette</span>
+                </Trigger>
+                <ChildContent>
+                    <div class="theme-picker__heading" role="presentation">Theme</div>
+                    @foreach (var theme in ThemeState.Themes)
+                    {
+                        var key = theme.Key;
+                        <PBMenuItem Role="menuitemradio" Checked="Theme.Theme == key" OnClick="() => SelectThemeAsync(key)">
+                            <ChildContent>@theme.Name</ChildContent>
+                            <Trailing>
+                                @* The swatch carries data-theme, so it renders from that theme's own tokens. *@
+                                <span class="theme-swatch" data-theme="@key" aria-hidden="true">
+                                    <span class="theme-swatch__primary"></span>
+                                    <span class="theme-swatch__secondary"></span>
+                                    <span class="theme-swatch__tertiary"></span>
+                                </span>
+                            </Trailing>
+                        </PBMenuItem>
+                    }
+                </ChildContent>
+            </PBMenu>
+        </PBTooltip>
     </div>
 </header>
 
 @code {
     [Parameter] public string Title { get; set; } = string.Empty;
+
+    /// <summary>Raised by the navigation button shown on narrow screens.</summary>
+    [Parameter] public EventCallback MenuClicked { get; set; }
 
     private bool themeMenuOpen;
     private IJSObjectReference? module;
@@ -45,43 +56,38 @@
         if (!firstRender)
             return;
 
-        // JS interop is unavailable during static prerendering, so the very first
-        // paint uses ThemeState's default (Rose & Red) for the checkmark. The
-        // <html data-theme> attribute is already correct from App.razor's inline
-        // FOUC script, so page colors never flash; only this brief correction of
-        // the menu's selected-radio state happens post-render.
-        module = await JS.InvokeAsync<IJSObjectReference>("import", "/js/theme.js");
-
-        var stored = await module.InvokeAsync<string?>("getStoredTheme");
-        Theme.Initialize(stored);
+        // The <html data-theme> attribute was set before first paint by App.razor's inline script;
+        // read it back so the picker marks the right theme.
+        module = await JS.InvokeAsync<IJSObjectReference>("import", "./js/theme.js");
+        Theme.Initialize(await module.InvokeAsync<string?>("getTheme"));
         StateHasChanged();
     }
 
     private void OnThemeChanged() => InvokeAsync(StateHasChanged);
 
-    private Task SelectThemeAsync(string key)
+    private Task OnMenuClick() => MenuClicked.InvokeAsync();
+
+    private async Task SelectThemeAsync(string key)
     {
         Theme.SetTheme(key);
-        themeMenuOpen = false;
-        return PersistAndApplyAsync();
-    }
-
-    private async Task PersistAndApplyAsync()
-    {
-        if (module is null)
-            return;
-
-        await module.InvokeVoidAsync("applyTheme", Theme.Theme);
-        await module.InvokeVoidAsync("setStoredTheme", Theme.Theme);
+        if (module is not null)
+        {
+            await module.InvokeVoidAsync("selectTheme", key);
+        }
     }
 
     public async ValueTask DisposeAsync()
     {
         Theme.Changed -= OnThemeChanged;
-
         if (module is not null)
         {
-            await module.DisposeAsync();
+            try
+            {
+                await module.DisposeAsync();
+            }
+            catch (JSDisconnectedException)
+            {
+            }
         }
     }
 }

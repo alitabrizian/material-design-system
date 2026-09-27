@@ -1,2 +1,19 @@
 @inherits WorkspaceComponentBase
-<label class="workspace-check workspace-check--switch"><input @attributes="AdditionalAttributes" type="checkbox" role="switch" /><span class="workspace-check__box"></span><span class="workspace-check__label">@Label</span></label>
+<label class="pb-slide-toggle @(HideIcon ? "pb-slide-toggle--hide-icon" : null) @UserClass">
+    <span class="pb-slide-toggle__switch">
+        <input class="pb-slide-toggle__input" type="checkbox" role="switch" @attributes="Attrs" />
+        <span class="pb-slide-toggle__track" aria-hidden="true"></span>
+        <span class="pb-slide-toggle__handle" aria-hidden="true">
+            <span class="pb-slide-toggle__state-layer"></span>
+            @if (!HideIcon)
+            {
+                <svg class="pb-slide-toggle__icon pb-slide-toggle__icon--on" viewBox="0 0 24 24" focusable="false"><path d="M19.69,5.23L8.96,15.96l-4.23-4.23L2.96,13.5l6,6L21.46,7L19.69,5.23z" /></svg>
+                <svg class="pb-slide-toggle__icon pb-slide-toggle__icon--off" viewBox="0 0 24 24" focusable="false"><path d="M20 13H4v-2h16v2z" /></svg>
+            }
+        </span>
+    </span>
+    @if (Label is not null || ChildContent is not null)
+    {
+        <span class="pb-slide-toggle__label">@Label@ChildContent</span>
+    }
+</label>

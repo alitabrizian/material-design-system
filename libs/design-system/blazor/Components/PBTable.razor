@@ -1,2 +1,4 @@
 @inherits WorkspaceComponentBase
-<table class="workspace-table" @attributes="AdditionalAttributes"><tbody>@ChildContent</tbody></table>
+<div class="pb-table-container">
+    <table class="pb-table @UserClass" aria-label="@Label" @attributes="Attrs">@ChildContent</table>
+</div>

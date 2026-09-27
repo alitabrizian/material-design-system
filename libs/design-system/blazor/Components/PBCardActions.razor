@@ -1,0 +1,7 @@
+@inherits WorkspaceComponentBase
+<div class="pb-card__actions @(Align == PBCardActionsAlign.End ? "pb-card__actions--end" : null) @UserClass" @attributes="Attrs">@ChildContent</div>
+
+@code {
+    /// <summary>mat-card-actions' <c>align</c>.</summary>
+    [Parameter] public PBCardActionsAlign Align { get; set; } = PBCardActionsAlign.Start;
+}

@@ -48,6 +48,18 @@
   --md-sys-motion-easing-legacy-decelerate: cubic-bezier(0, 0, 0.2, 1);
   --md-sys-motion-easing-legacy-accelerate: cubic-bezier(0.4, 0, 1, 1);
 
+  /* Angular Material's legacy z-depth 2 shadow (elevation.get-box-shadow(2)), which its M3 menu,
+     select, autocomplete and expansion-panel tokens use instead of an M3 level. Black at the
+     umbra/penumbra/ambient opacities, exactly as core/style/_elevation.scss computes it. */
+  --md-sys-elevation-z2: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+
+  /* Content on a scrim-tinted overlay (mat-grid-tile header/footer: #fff on scrim 38%). Tone 100
+     of every tonal palette, so it is the same in all four themes, like --md-sys-color-scrim. */
+  --md-sys-color-on-scrim: #ffffff;
+
+  /* Legacy z-depth 16 shadow, used by Angular Material's bottom sheet container. */
+  --md-sys-elevation-z16: 0px 8px 10px -5px rgba(0, 0, 0, 0.2), 0px 16px 24px 2px rgba(0, 0, 0, 0.14), 0px 6px 30px 5px rgba(0, 0, 0, 0.12);
+
   --md-sys-spacing-none: 0px;
   --md-sys-spacing-extra-small: 4px;
   --md-sys-spacing-small: 8px;

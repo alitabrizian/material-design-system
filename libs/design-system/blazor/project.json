@@ -12,6 +12,13 @@
         "cwd": "libs/design-system/blazor"
       }
     },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/scripts/audit-colors.mts",
+        "cwd": "{workspaceRoot}"
+      }
+    },
     "pack": {
       "executor": "nx:run-commands",
       "dependsOn": ["^build"],

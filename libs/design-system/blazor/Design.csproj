@@ -81,4 +81,16 @@
       <Content Include="@(_DesignTokenCopy)" CopyToOutputDirectory="PreserveNewest" />
     </ItemGroup>
   </Target>
+
+  <!--
+    Constitution principle II: no literal colors outside the generated tokens. The audit runs on
+    every library build (Node is already required here: the tokens are built with it) and fails
+    the build with file:line for any hex/rgb()/named color in components, styles or the demo.
+  -->
+  <Target Name="AuditColors" BeforeTargets="BeforeBuild" Condition="'$(SkipColorAudit)' != 'true'">
+    <Exec Command="node &quot;$(MSBuildThisFileDirectory)../../../tools/scripts/audit-colors.mts&quot;"
+          WorkingDirectory="$(MSBuildThisFileDirectory)../../.."
+          CustomErrorRegularExpression="violation\(s\) --"
+          ConsoleToMSBuild="true" />
+  </Target>
 </Project>

@@ -51,15 +51,17 @@ public partial class PBButton : WorkspaceComponentBase
     [Parameter] public RenderFragment? ProgressIndicator { get; set; }
 
     private string CssClass =>
-        $"pb-button pb-button--{VariantClass}"
+        $"pb-button pb-button--{VariantClass} pb-interactive pb-ripple-host"
+        + (Variant == PBButtonVariant.Icon ? " pb-ripple-centered" : "")
         + (Disabled ? " pb-button--disabled" : "")
         + (Disabled && DisabledInteractive ? " pb-button--disabled-interactive" : "")
-        + (ShowProgress ? " pb-button--progress" : "");
+        + (ShowProgress ? " pb-button--progress" : "")
+        + (UserClass is null ? "" : " " + UserClass);
 
     // A disabled link or interactive-disabled button is not natively disabled, so drop the
     // consumer's click handler to block activation the way the native attribute would.
     private IEnumerable<KeyValuePair<string, object>>? ForwardedAttributes =>
-        Disabled ? AdditionalAttributes?.Where(a => !a.Key.Equals("onclick", StringComparison.OrdinalIgnoreCase)) : AdditionalAttributes;
+        Disabled ? Attrs?.Where(a => !a.Key.Equals("onclick", StringComparison.OrdinalIgnoreCase)) : Attrs;
 
     private string VariantClass => Variant switch
     {

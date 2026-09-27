@@ -1,0 +1,153 @@
+/*
+ * PBTabs / PBTab: mat-tab-group / mat-tab. Reference: tabs/_m3-tabs.scss + structural styles.
+ *
+ *   tab 48px tall, min-width 90px, padding 0 24px, title-small, label on-surface (active and
+ *   inactive, as Angular's M3 tokens specify); tabs stretch to fill the header by default
+ *   active indicator 2px primary, square, slides between tabs over 250ms
+ *   1px surface-variant divider under the header; state layer on-surface (hover 8%, focus 12%)
+ *   disabled tab 38% opacity
+ */
+
+.pb-tabs {
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+  font-family: var(--md-sys-typescale-title-small-font);
+}
+
+.pb-tabs__header {
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border-bottom: 1px solid var(--md-sys-color-surface-variant);
+  scrollbar-width: none;
+}
+
+.pb-tabs__header::-webkit-scrollbar {
+  display: none;
+}
+
+.pb-tabs__labels {
+  display: flex;
+  flex: 1 0 auto;
+}
+
+.pb-tabs--align-center .pb-tabs__labels {
+  justify-content: center;
+}
+
+.pb-tabs--align-end .pb-tabs__labels {
+  justify-content: flex-end;
+}
+
+.pb-tab {
+  --pb-state-layer-color: var(--md-sys-color-on-surface);
+
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 0 1 auto;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: 90px;
+  height: 48px;
+  margin: 0;
+  padding: 0 24px;
+  overflow: hidden;
+  border: none;
+  outline: none;
+  background: none;
+  color: var(--md-sys-color-on-surface);
+  font-family: var(--md-sys-typescale-title-small-font);
+  font-size: var(--md-sys-typescale-title-small-size);
+  line-height: var(--md-sys-typescale-title-small-line-height);
+  font-weight: var(--md-sys-typescale-title-small-weight);
+  letter-spacing: var(--md-sys-typescale-title-small-tracking);
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pb-tabs--stretch .pb-tab {
+  flex-grow: 1;
+}
+
+.pb-tab__content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: inherit;
+  pointer-events: none;
+}
+
+.pb-tab__label {
+  display: inline-block;
+  line-height: 1;
+  transition: color 150ms linear;
+}
+
+.pb-tab__icon {
+  font-size: 24px;
+}
+
+.pb-tab__indicator {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.pb-tab__indicator-content {
+  align-self: flex-end;
+  box-sizing: border-box;
+  width: 100%;
+  border-top: 2px solid var(--md-sys-color-primary);
+  border-radius: 0;
+  opacity: 0;
+  transform-origin: left;
+  transition: transform 250ms var(--md-sys-motion-easing-legacy);
+}
+
+.pb-tab--active .pb-tab__indicator-content {
+  opacity: 1;
+}
+
+.pb-tab--active .pb-tab__label {
+  transition-delay: 100ms;
+}
+
+.pb-tab:disabled {
+  cursor: default;
+  opacity: 0.38;
+}
+
+.pb-tabs__body {
+  position: relative;
+  display: flex;
+  overflow: hidden;
+}
+
+.pb-tabs__panel {
+  flex: 1 1 auto;
+  min-width: 0;
+  outline: none;
+  animation: pb-fade-in 250ms var(--md-sys-motion-easing-legacy);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pb-tab__indicator-content,
+  .pb-tabs__panel {
+    transition: none;
+    animation: none;
+  }
+}

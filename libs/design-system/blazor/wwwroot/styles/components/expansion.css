@@ -1,0 +1,204 @@
+/*
+ * PBExpansionPanel / PBAccordion: mat-expansion-panel / mat-accordion.
+ * Reference: expansion/_m3-expansion.scss + structural styles.
+ *
+ *   container surface / on-surface, 12px radius, z2 shadow; body-large content, padding 0 24px 16px
+ *   header 48px collapsed / 64px expanded, padding 0 24px, title-medium; title on-surface,
+ *   description on-surface-variant; chevron indicator on-surface-variant rotates 180deg
+ *   hover (collapsed) on-surface 8%; expand/collapse via grid-template-rows over 225ms
+ *   inside an accordion only the outer corners are rounded; expanded panels get 16px margins
+ */
+
+.pb-expansion-panel {
+  position: relative;
+  box-sizing: content-box;
+  display: block;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 12px;
+  background-color: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
+  box-shadow: var(--md-sys-elevation-z2);
+  font-family: var(--md-sys-typescale-body-large-font);
+  font-size: var(--md-sys-typescale-body-large-size);
+  line-height: var(--md-sys-typescale-body-large-line-height);
+  font-weight: var(--md-sys-typescale-body-large-weight);
+  letter-spacing: var(--md-sys-typescale-body-large-tracking);
+  transition:
+    margin 225ms var(--md-sys-motion-easing-legacy),
+    box-shadow 280ms var(--md-sys-motion-easing-legacy);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pb-accordion .pb-expansion-panel:not(.pb-expansion-panel--expanded) {
+  border-radius: 0;
+}
+
+.pb-accordion .pb-expansion-panel:first-of-type {
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.pb-accordion .pb-expansion-panel:last-of-type {
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+.pb-accordion .pb-expansion-panel--expanded {
+  margin: 16px 0;
+  border-radius: 12px;
+}
+
+.pb-accordion > .pb-expansion-panel--expanded:first-child {
+  margin-top: 0;
+}
+
+.pb-accordion > .pb-expansion-panel--expanded:last-child {
+  margin-bottom: 0;
+}
+
+.pb-expansion-panel__header {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: 48px;
+  margin: 0;
+  padding: 0 24px;
+  border: none;
+  border-radius: inherit;
+  outline: none;
+  background: transparent;
+  color: inherit;
+  font-family: var(--md-sys-typescale-title-medium-font);
+  font-size: var(--md-sys-typescale-title-medium-size);
+  line-height: var(--md-sys-typescale-title-medium-line-height);
+  font-weight: var(--md-sys-typescale-title-medium-weight);
+  letter-spacing: var(--md-sys-typescale-title-medium-tracking);
+  text-align: left;
+  cursor: pointer;
+  transition: height 225ms var(--md-sys-motion-easing-legacy);
+}
+
+.pb-expansion-panel--expanded > .pb-expansion-panel__header {
+  height: 64px;
+}
+
+.pb-expansion-panel:not(.pb-expansion-panel--expanded) > .pb-expansion-panel__header:not(:disabled):hover {
+  background: color-mix(in srgb, var(--md-sys-color-on-surface) calc(var(--md-sys-state-hover-state-layer-opacity) * 100%), transparent);
+}
+
+.pb-expansion-panel__header:focus-visible {
+  background: color-mix(in srgb, var(--md-sys-color-on-surface) calc(var(--md-sys-state-focus-state-layer-opacity) * 100%), transparent);
+}
+
+.pb-expansion-panel__content-row {
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  overflow: hidden;
+  margin-right: 16px;
+}
+
+.pb-expansion-panel__title,
+.pb-expansion-panel__description {
+  display: flex;
+  flex-grow: 1;
+  flex-basis: 0;
+  align-items: center;
+  margin-right: 16px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pb-expansion-panel__title {
+  color: var(--md-sys-color-on-surface);
+}
+
+.pb-expansion-panel__description {
+  flex-grow: 2;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.pb-expansion-panel__indicator {
+  display: inline-block;
+  color: var(--md-sys-color-on-surface-variant);
+  transition: transform 225ms var(--md-sys-motion-easing-legacy);
+}
+
+.pb-expansion-panel__indicator::after {
+  content: "";
+  display: inline-block;
+  padding: 3px;
+  border-style: solid;
+  border-width: 0 2px 2px 0;
+  vertical-align: middle;
+  transform: rotate(45deg);
+}
+
+.pb-expansion-panel--expanded .pb-expansion-panel__indicator {
+  transform: rotate(180deg);
+}
+
+.pb-expansion-panel__header:disabled {
+  cursor: default;
+}
+
+.pb-expansion-panel__header:disabled :is(.pb-expansion-panel__title, .pb-expansion-panel__description, .pb-expansion-panel__indicator) {
+  color: color-mix(in srgb, var(--md-sys-color-on-surface) 38%, transparent);
+}
+
+.pb-expansion-panel__content-wrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+  grid-template-columns: 100%;
+  transition: grid-template-rows 225ms var(--md-sys-motion-easing-legacy);
+}
+
+.pb-expansion-panel--expanded > .pb-expansion-panel__content-wrapper {
+  grid-template-rows: 1fr;
+}
+
+.pb-expansion-panel__content {
+  min-height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  transition: visibility 225ms;
+}
+
+.pb-expansion-panel--expanded > .pb-expansion-panel__content-wrapper > .pb-expansion-panel__content {
+  visibility: visible;
+}
+
+.pb-expansion-panel__body {
+  padding: 0 24px 16px;
+}
+
+.pb-expansion-panel__body > :first-child {
+  margin-top: 0;
+}
+
+.pb-expansion-panel__body > :last-child {
+  margin-bottom: 0;
+}
+
+.pb-expansion-panel__actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 16px 8px 16px 24px;
+  border-top: 1px solid var(--md-sys-color-outline);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pb-expansion-panel,
+  .pb-expansion-panel__header,
+  .pb-expansion-panel__indicator,
+  .pb-expansion-panel__content-wrapper {
+    transition: none;
+  }
+}
