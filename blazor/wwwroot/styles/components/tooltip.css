@@ -11,12 +11,17 @@
 }
 
 .pb-tooltip {
+  /* Size to the message (up to the surface's 200px), never to the space left at the viewport edge. */
+  width: max-content;
   pointer-events: none;
   overflow: visible;
   line-height: normal;
 }
 
+/* The surface is a <span> (valid inside the host's phrasing content); block so padding, min-height
+   and max-width apply to one box instead of to each wrapped line. */
 .pb-tooltip__surface {
+  display: block;
   box-sizing: border-box;
   min-width: 40px;
   max-width: 200px;

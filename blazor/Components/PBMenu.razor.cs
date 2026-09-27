@@ -51,12 +51,17 @@ public partial class PBMenu : WorkspaceComponentBase
     private async Task SetOpenAsync(bool value, bool restoreFocus = false)
     {
         if (IsOpen == value) return;
-        if (!value && positioned)
-        {
-            positioned = false;
-            await DesignSystemJs.InvokeVoidAsync(JS, "unposition", panel);
-        }
+        // Update state before the first await: Blazor re-renders an event handler's component when it
+        // yields, and a render that still saw IsOpen with positioned = false would position the closing
+        // panel again, leaving positioned stuck at true so the next open never shows the panel.
+        var detach = !value && positioned;
+        var closingPanel = panel;
         IsOpen = value;
+        if (!value) positioned = false;
+        if (detach)
+        {
+            await DesignSystemJs.InvokeVoidAsync(JS, "unposition", closingPanel);
+        }
         await IsOpenChanged.InvokeAsync(value);
         StateHasChanged();
         if (!value && restoreFocus)
