@@ -6,109 +6,123 @@
 <div class="catalog-content">
 
     <PageHeader Title="Chips">
-        Chips represent a small piece of information, such as a filter or a tag,
-        in a compact, interactive form.
+        Chips allow users to view information, make selections, filter content and enter data,
+        like Angular Material's <code>mat-chip-set</code>, <code>mat-chip-listbox</code> and
+        <code>mat-chip-grid</code>.
     </PageHeader>
 
     <section class="doc-section">
-        <p class="field-hint">Filter chips toggle a selection on and off; selected chips fill with the tonal secondary color and show a checkmark.</p>
+        <p class="field-hint">Filter chips (<code>mat-chip-option</code>) toggle on click: the selected ones fill with the secondary container color and draw in a checkmark.</p>
 
         <ExampleCard Title="Filter chips" RazorCode="@(
-@"<PBChips>
+@"<PBChips Selectable Label=""Topics"">
     @foreach (var tag in tags)
     {
-        <span role=""listitem"" class=""@ChipClass(tag)"" @onclick=""() => Toggle(tag)"">
-            @ChipLabel(tag)
-        </span>
+        <PBChip Variant=""PBChipVariant.Filter"" Label=""@tag""
+                Selected=""@selected.Contains(tag)""
+                SelectedChanged=""@(on => Toggle(tag, on))"" />
     }
 </PBChips>")">
-            <PBChips>
+            <PBChips Selectable Label="Topics">
                 @foreach (var tag in tags)
                 {
-                    <span role="listitem" class="@ChipClass(tag)" @onclick="() => Toggle(tag)">
-                        @ChipLabel(tag)
-                    </span>
+                    <PBChip Variant="PBChipVariant.Filter" Label="@tag" Selected="@selected.Contains(tag)"
+                            SelectedChanged="@(on => Toggle(tag, on))" />
                 }
             </PBChips>
+            <p class="status">Selected: @string.Join(", ", selected)</p>
         </ExampleCard>
     </section>
 
     <section class="doc-section">
-        <p class="field-hint">Input chips represent something the user has already entered or selected, with a trailing action to remove it.</p>
+        <p class="field-hint">Input chips (<code>mat-chip-row</code>) represent entered values and can be removed.</p>
 
         <ExampleCard Title="Input chips" RazorCode="@(
-@"<PBChips>
+@"<PBChips Label=""Members"">
     @foreach (var member in members)
     {
-        <span role=""listitem"" class=""workspace-chip--input"">
-            @member
-            <button type=""button"" class=""workspace-chip__remove"" aria-label=""Remove @member"" @onclick=""() => members.Remove(member)"">×</button>
-        </span>
+        <PBChip Variant=""PBChipVariant.Input"" Label=""@member"" Removable
+                OnRemove=""() => members.Remove(member)"" />
     }
 </PBChips>")">
-            <PBChips>
+            <PBChips Label="Members">
                 @foreach (var member in members)
                 {
-                    <span role="listitem" class="workspace-chip--input">
-                        @member
-                        <button type="button" class="workspace-chip__remove" aria-label="Remove @member" @onclick="() => members.Remove(member)">×</button>
-                    </span>
+                    <PBChip Variant="PBChipVariant.Input" Label="@member" Removable OnRemove="() => members.Remove(member)">
+                        <Icon><span class="material-icons">person</span></Icon>
+                    </PBChip>
                 }
             </PBChips>
+            @if (members.Count == 0)
+            {
+                <PBButton @onclick='() => members.AddRange(["Ali", "Sara", "Kian"])'>Reset</PBButton>
+            }
         </ExampleCard>
     </section>
 
     <section class="doc-section">
-        <p class="field-hint">Assist chips surface a suggested action, typically with a leading icon.</p>
+        <p class="field-hint">Assist chips (<code>mat-chip</code>) with leading icons, a highlighted chip and a disabled chip.</p>
 
         <ExampleCard Title="Assist chips" RazorCode="@(
-@"<PBChips>
-    <span role=""listitem"" class=""workspace-chip--assist"">📅 Add to calendar</span>
-    <span role=""listitem"" class=""workspace-chip--assist"">📍 View on map</span>
+@"<PBChips Label=""Suggestions"">
+    <PBChip Label=""Add to calendar"" OnClick=""...""><Icon>...event...</Icon></PBChip>
+    <PBChip Label=""View on map"" OnClick=""...""><Icon>...place...</Icon></PBChip>
+    <PBChip Label=""Highlighted"" Highlighted />
+    <PBChip Label=""Disabled"" Disabled />
 </PBChips>")">
-            <PBChips>
-                <span role="listitem" class="workspace-chip--assist">📅 Add to calendar</span>
-                <span role="listitem" class="workspace-chip--assist">📍 View on map</span>
+            <PBChips Label="Suggestions">
+                <PBChip Label="Add to calendar" OnClick='() => clicked = "Add to calendar"'>
+                    <Icon><span class="material-icons">event</span></Icon>
+                </PBChip>
+                <PBChip Label="View on map" OnClick='() => clicked = "View on map"'>
+                    <Icon><span class="material-icons">place</span></Icon>
+                </PBChip>
+                <PBChip Label="Highlighted" Highlighted />
+                <PBChip Label="Disabled" Disabled />
             </PBChips>
+            <p class="status">Clicked: @(clicked ?? "—")</p>
         </ExampleCard>
     </section>
 
     <section class="doc-section">
         <h2>API reference</h2>
+        <div class="doc-table-wrapper">
         <table class="doc-table">
             <thead>
                 <tr><th>Property</th><th>Type</th><th>Description</th></tr>
             </thead>
             <tbody>
-                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The chip items, typically <code>role="listitem"</code> elements.</td></tr>
-                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;div role="list"&gt;</code>.</td></tr>
+                <tr><td><code>PBChips.Selectable</code></td><td><code>bool</code></td><td>Renders a <code>listbox</code> of filter chips (mat-chip-listbox) instead of a list.</td></tr>
+                <tr><td><code>PBChips.Multiple</code>, <code>.Stacked</code></td><td><code>bool</code></td><td>Multi-select (default) / one chip per row.</td></tr>
+                <tr><td><code>PBChip.Variant</code></td><td><code>PBChipVariant</code></td><td><code>Assist</code> (default), <code>Filter</code> or <code>Input</code>.</td></tr>
+                <tr><td><code>Selected</code></td><td><code>bool</code></td><td>Filter chip state. Supports <code>@@bind-Selected</code>.</td></tr>
+                <tr><td><code>Icon</code></td><td><code>RenderFragment?</code></td><td>Leading 18px icon.</td></tr>
+                <tr><td><code>Removable</code> / <code>OnRemove</code></td><td><code>bool</code> / <code>EventCallback</code></td><td>Trailing remove button (matChipRemove).</td></tr>
+                <tr><td><code>OnClick</code>, <code>Highlighted</code>, <code>Disabled</code></td><td></td><td>Assist-chip action, tonal highlight, disabled state.</td></tr>
             </tbody>
         </table>
+        </div>
     </section>
 
     <section class="doc-section">
         <div class="a11y-note">
             <strong>Accessibility</strong>
-            The container uses <code>role="list"</code>; give each chip
-            <code>role="listitem"</code> as shown above so the set is announced as a
-            list of items.
+            Selectable sets are <code>listbox</code>es of <code>option</code>s with
+            <code>aria-selected</code>; other sets are lists. Chip actions and remove buttons are
+            real buttons; the remove button is labelled "Remove &lt;chip&gt;".
         </div>
     </section>
 </div>
 
 @code {
     private static readonly string[] tags = ["Design", "Frontend", "Accessibility", "Blazor"];
-    private readonly HashSet<string> selected = ["Frontend"];
+    private readonly List<string> selected = ["Frontend"];
     private readonly List<string> members = ["Ali", "Sara", "Kian"];
+    private string? clicked;
 
-    private string ChipClass(string tag) => selected.Contains(tag) ? "workspace-chip--selected" : "";
-    private string ChipLabel(string tag) => selected.Contains(tag) ? $"✓ {tag}" : tag;
-
-    private void Toggle(string tag)
+    private void Toggle(string tag, bool on)
     {
-        if (!selected.Remove(tag))
-        {
-            selected.Add(tag);
-        }
+        selected.Remove(tag);
+        if (on) selected.Add(tag);
     }
 }

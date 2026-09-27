@@ -32,7 +32,25 @@
     </section>
 
     <section class="doc-section">
+        <p class="field-hint">A parent checkbox in the indeterminate state while only some children are checked.</p>
+
+        <ExampleCard Title="Indeterminate" RazorCode="@(
+@"<PBCheckbox Label=""Select all"" checked=""@AllChecked"" Indeterminate=""@SomeChecked""
+            @onchange=""@(e => SetAll((bool)e.Value!))"" />")">
+            <PBCheckbox Label="Select all" checked="@AllChecked" Indeterminate="@SomeChecked" @onchange="@(e => SetAll((bool)e.Value!))" />
+            <div style="padding-left:32px;display:flex;flex-direction:column">
+                @for (var i = 0; i < subtasks.Length; i++)
+                {
+                    var index = i;
+                    <PBCheckbox Label="@subtasks[index].Name" checked="@subtasks[index].Done" @onchange="@(e => subtasks[index].Done = (bool)e.Value!)" />
+                }
+            </div>
+        </ExampleCard>
+    </section>
+
+    <section class="doc-section">
         <h2>API reference</h2>
+        <div class="doc-table-wrapper">
         <table class="doc-table">
             <thead>
                 <tr><th>Property</th><th>Type</th><th>Description</th></tr>
@@ -40,8 +58,10 @@
             <tbody>
                 <tr><td><code>Label</code></td><td><code>string?</code></td><td>Text rendered next to the checkbox.</td></tr>
                 <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;input type="checkbox"&gt;</code>, including <code>checked</code>, <code>disabled</code> and <code>@@onchange</code>.</td></tr>
+                <tr><td><code>Indeterminate</code></td><td><code>bool</code></td><td>Shows the mixed state (a dash) and reports <code>aria-checked="mixed"</code>.</td></tr>
             </tbody>
         </table>
+        </div>
     </section>
 
     <section class="doc-section">
@@ -55,6 +75,12 @@
 </div>
 
 @code {
+    private sealed class Subtask(string name, bool done) { public string Name { get; } = name; public bool Done { get; set; } = done; }
+    private readonly Subtask[] subtasks = [new("Primary", true), new("Accent", false), new("Warn", false)];
+    private bool AllChecked => subtasks.All(t => t.Done);
+    private bool SomeChecked => subtasks.Any(t => t.Done) && !AllChecked;
+    private void SetAll(bool value) { foreach (var t in subtasks) t.Done = value; }
+
     private bool emailEnabled = true;
     private bool smsEnabled;
 }

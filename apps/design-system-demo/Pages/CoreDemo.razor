@@ -6,42 +6,71 @@
 <div class="catalog-content">
 
     <PageHeader Title="Core">
-        Core is a lightweight section wrapper used to apply the design system's
-        foundational styles and behavior to a region of a page.
+        The core layer is what every component builds on: the design tokens generated from Angular
+        Material's prebuilt themes, and PBCore, which applies the M3 typography hierarchy
+        (like <code>mat.core</code> and <code>.mat-typography</code>) to a region of content.
     </PageHeader>
 
     <section class="doc-section">
-        <p class="field-hint">Wraps arbitrary content in the shared foundation styles.</p>
+        <p class="field-hint">Headings and body text inside <code>PBCore</code> use the M3 type scale.</p>
 
-        <ExampleCard Title="Section wrapper" RazorCode="@(
+        <ExampleCard Title="Typography" RazorCode="@(
 @"<PBCore>
-    <p>Content rendered inside a PBCore section.</p>
+    <h1>Headline large</h1>
+    <h2>Headline medium</h2>
+    <h3>Headline small</h3>
+    <h4>Title large</h4>
+    <p>Body medium paragraph text.</p>
 </PBCore>")">
             <PBCore>
-                <p style="margin:0;">Content rendered inside a PBCore section.</p>
+                <h1>Headline large</h1>
+                <h2>Headline medium</h2>
+                <h3>Headline small</h3>
+                <h4>Title large</h4>
+                <h5>Title medium</h5>
+                <h6>Title small</h6>
+                <p>Body medium paragraph text, the default for content inside a PBCore region.</p>
+                <small>Body small supporting text.</small>
             </PBCore>
         </ExampleCard>
     </section>
 
     <section class="doc-section">
-        <h2>API reference</h2>
-        <table class="doc-table">
-            <thead>
-                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
-            </thead>
-            <tbody>
-                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The wrapped content.</td></tr>
-                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;section&gt;</code>.</td></tr>
-            </tbody>
-        </table>
+        <p class="field-hint">The color roles of the active theme. Switch themes with the palette button in the top bar.</p>
+
+        <ExampleCard Title="Color roles" RazorCode="@(
+@"<div style=""background: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary)"">primary</div>")">
+            <div class="token-grid">
+                @foreach (var (role, on) in roles)
+                {
+                    <div class="token-swatch" style="background:var(--md-sys-color-@role);color:var(--md-sys-color-@on)">
+                        <span>@role</span>
+                    </div>
+                }
+            </div>
+        </ExampleCard>
     </section>
 
     <section class="doc-section">
         <div class="a11y-note">
             <strong>Accessibility</strong>
-            <code>PBCore</code> renders a plain <code>&lt;section&gt;</code> with no
-            implicit semantics; give it a heading or <code>aria-label</code> when it
-            represents a distinct region of the page.
+            Every "on-" role is designed for contrast against its container role in all four themes;
+            pair them as shown rather than mixing roles.
         </div>
     </section>
 </div>
+
+@code {
+    private static readonly (string Role, string On)[] roles =
+    [
+        ("primary", "on-primary"), ("primary-container", "on-primary-container"),
+        ("secondary", "on-secondary"), ("secondary-container", "on-secondary-container"),
+        ("tertiary", "on-tertiary"), ("tertiary-container", "on-tertiary-container"),
+        ("error", "on-error"), ("error-container", "on-error-container"),
+        ("surface", "on-surface"), ("surface-container-low", "on-surface"),
+        ("surface-container", "on-surface"), ("surface-container-highest", "on-surface"),
+        ("surface-variant", "on-surface-variant"), ("inverse-surface", "inverse-on-surface"),
+        ("outline", "surface"), ("outline-variant", "on-surface"),
+    ];
+}

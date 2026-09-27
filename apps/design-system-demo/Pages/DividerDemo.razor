@@ -5,38 +5,57 @@
 
 <div class="catalog-content">
 
-    <PageHeader Title="Divider">A divider is a thin line that groups content into clear sections.</PageHeader>
+    <PageHeader Title="Divider">
+        PBDivider is a thin line that groups content in lists and layouts, like Angular Material's
+        <code>mat-divider</code>.
+    </PageHeader>
 
     <section class="doc-section">
-        <p class="field-hint">Use a divider to separate unrelated content.</p>
+        <p class="field-hint">Dividers between list items, an inset divider (aligned with text after an avatar) and a vertical divider.</p>
 
-        <ExampleCard Title="Between two sections" RazorCode="@(
-@"<p>Account settings</p>
-<PBDivider />
-<p>Notification preferences</p>")">
-            <p style="margin:0;">Account settings</p>
-            <PBDivider />
-            <p style="margin:0;">Notification preferences</p>
+        <ExampleCard Title="Basic divider" RazorCode="@(
+@"<PBList>
+    <PBListItem>Item 1</PBListItem>
+    <PBDivider />
+    <PBListItem>Item 2</PBListItem>
+    <PBDivider Inset />
+    <PBListItem>Item 3</PBListItem>
+</PBList>
+<div style=""display:flex; height:40px"">Left <PBDivider Vertical /> Right</div>")">
+            <PBList style="max-width:360px">
+                <PBListItem>Item 1</PBListItem>
+                <PBDivider />
+                <PBListItem>Item 2</PBListItem>
+                <PBDivider Inset />
+                <PBListItem>Item 3</PBListItem>
+            </PBList>
+            <div style="display:flex;align-items:center;gap:16px;height:40px;margin-top:16px">
+                <span>Left</span>
+                <PBDivider Vertical />
+                <span>Right</span>
+            </div>
         </ExampleCard>
     </section>
 
     <section class="doc-section">
         <h2>API reference</h2>
+        <div class="doc-table-wrapper">
         <table class="doc-table">
             <thead>
                 <tr><th>Property</th><th>Type</th><th>Description</th></tr>
             </thead>
             <tbody>
-                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;hr&gt;</code>.</td></tr>
+                <tr><td><code>Vertical</code></td><td><code>bool</code></td><td>A vertical rule that stretches to its flex container's height.</td></tr>
+                <tr><td><code>Inset</code></td><td><code>bool</code></td><td>Indents a horizontal divider by 80px.</td></tr>
             </tbody>
         </table>
+        </div>
     </section>
 
     <section class="doc-section">
         <div class="a11y-note">
             <strong>Accessibility</strong>
-            Renders a native <code>&lt;hr&gt;</code>, which is announced as a
-            separator by assistive technology with no extra markup needed.
+            Renders <code>role="separator"</code> with <code>aria-orientation</code>.
         </div>
     </section>
 </div>

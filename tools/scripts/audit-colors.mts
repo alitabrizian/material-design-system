@@ -68,7 +68,8 @@ const RULES: { name: string; re: RegExp }[] = [
   },
   {
     name: "SVG color attribute",
-    re: new RegExp(`\\b(?:fill|stroke|stop-color|color)\\s*=\\s*["'](?!none|currentColor|transparent|inherit|@)[^"']+["']`, "gi"),
+    // Case-sensitive: HTML/SVG attributes are lowercase; Razor component parameters (Color=...) are not.
+    re: new RegExp(`(?<![\\w-])(?:fill|stroke|stop-color|color)\\s*=\\s*["'](?!none|currentColor|transparent|inherit|@)[^"']+["']`, "g"),
   },
 ];
 

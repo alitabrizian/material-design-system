@@ -5,49 +5,66 @@
 
 <div class="catalog-content">
 
-    <PageHeader Title="Paginator">A paginator lets the user move between pages of a larger result set.</PageHeader>
+    <PageHeader Title="Paginator">
+        PBPaginator provides navigation for paged information, like Angular Material's
+        <code>mat-paginator</code>: a page-size select, a range label and first/previous/next/last
+        buttons.
+    </PageHeader>
 
     <section class="doc-section">
-        <p class="field-hint">Clicking a page control updates the status below.</p>
+        <p class="field-hint">Bind <code>PageIndex</code> and <code>PageSize</code>, or handle <code>Page</code>.</p>
 
-        <ExampleCard Title="Result pages" RazorCode="@(
-@"<PBPaginator>
-    <PBButton disabled=""@(currentPage == 1)"" @onclick=""() => currentPage--"">← Prev</PBButton>
-    <span>Page @currentPage of @totalPages</span>
-    <PBButton disabled=""@(currentPage == totalPages)"" @onclick=""() => currentPage++"">Next →</PBButton>
-</PBPaginator>")">
-            <PBPaginator>
-                <PBButton disabled="@(currentPage == 1)" @onclick="() => currentPage--">← Prev</PBButton>
-                <span>Page @currentPage of @totalPages</span>
-                <PBButton disabled="@(currentPage == totalPages)" @onclick="() => currentPage++">Next →</PBButton>
-            </PBPaginator>
+        <ExampleCard Title="Configurable paginator" RazorCode="@(
+@"<PBPaginator Length=""100"" @bind-PageIndex=""pageIndex"" @bind-PageSize=""pageSize""
+             PageSizeOptions=""@(new[] { 5, 10, 25, 100 })"" ShowFirstLastButtons
+             Page=""e => lastEvent = e"" />")">
+            <PBPaginator Length="100" @bind-PageIndex="pageIndex" @bind-PageSize="pageSize"
+                         PageSizeOptions="@(new[] { 5, 10, 25, 100 })" ShowFirstLastButtons Page="e => lastEvent = e" />
+            <p class="status">Page index: @pageIndex · Page size: @pageSize @(lastEvent is null ? "" : $"· Last event: {lastEvent}")</p>
+        </ExampleCard>
+    </section>
+
+    <section class="doc-section">
+        <p class="field-hint">Without the page-size select, and disabled.</p>
+
+        <ExampleCard Title="Minimal and disabled" RazorCode="@(
+@"<PBPaginator Length=""50"" PageSize=""10"" HidePageSize />
+<PBPaginator Length=""50"" PageSize=""10"" Disabled />")">
+            <PBPaginator Length="50" PageSize="10" HidePageSize />
+            <PBPaginator Length="50" PageSize="10" Disabled />
         </ExampleCard>
     </section>
 
     <section class="doc-section">
         <h2>API reference</h2>
+        <div class="doc-table-wrapper">
         <table class="doc-table">
             <thead>
                 <tr><th>Property</th><th>Type</th><th>Description</th></tr>
             </thead>
             <tbody>
-                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The pagination controls.</td></tr>
-                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;nav aria-label="Pagination"&gt;</code>.</td></tr>
+                <tr><td><code>Length</code></td><td><code>int</code></td><td>Total number of items.</td></tr>
+                <tr><td><code>PageIndex</code>, <code>PageSize</code></td><td><code>int</code></td><td>Current page (0-based) and size. Both support <code>@@bind-</code>.</td></tr>
+                <tr><td><code>PageSizeOptions</code></td><td><code>IReadOnlyList&lt;int&gt;</code></td><td>Choices in the "Items per page" select.</td></tr>
+                <tr><td><code>ShowFirstLastButtons</code>, <code>HidePageSize</code>, <code>Disabled</code></td><td><code>bool</code></td><td>Extra buttons / hide the select / disable everything.</td></tr>
+                <tr><td><code>Page</code></td><td><code>EventCallback&lt;PBPageEvent&gt;</code></td><td>Raised on every page or page-size change (MatPaginator's PageEvent).</td></tr>
+                <tr><td><code>ItemsPerPageLabel</code>, <code>…PageLabel</code></td><td><code>string</code></td><td>Localizable labels (MatPaginatorIntl).</td></tr>
             </tbody>
         </table>
+        </div>
     </section>
 
     <section class="doc-section">
         <div class="a11y-note">
             <strong>Accessibility</strong>
-            The wrapping <code>&lt;nav&gt;</code> is labeled "Pagination"; disable
-            the previous/next controls at the ends of the range, as shown above,
-            rather than leaving them clickable with no effect.
+            The paginator is a labelled <code>group</code>; each icon button has an accessible name
+            ("Next page", …) and a tooltip-style title; the range label is a polite live region.
         </div>
     </section>
 </div>
 
 @code {
-    private int currentPage = 1;
-    private const int totalPages = 5;
+    private int pageIndex;
+    private int pageSize = 10;
+    private PBPageEvent? lastEvent;
 }

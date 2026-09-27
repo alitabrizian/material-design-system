@@ -6,81 +6,92 @@
 <div class="catalog-content">
 
     <PageHeader Title="Sidenav">
-        A sidenav is a vertical panel used to navigate between the sections of an
-        application.
+        PBSidenav is a side panel for navigation or supplementary content, like Angular Material's
+        <code>mat-sidenav</code>: fixed beside the content (side mode) or floating over it with a
+        scrim (over mode).
     </PageHeader>
 
     <section class="doc-section">
-        <p class="field-hint">A compact vertical list of links.</p>
+        <p class="field-hint">Side mode: the drawer sits next to the content.</p>
 
-        <ExampleCard Title="Section navigation" RazorCode="@(
-@"<PBSidenav Label=""Workspace sections"">
-    <PBList>
-        <li>Overview</li>
-        <li>Members</li>
-        <li>Billing</li>
-        <li>Settings</li>
-    </PBList>
-</PBSidenav>")">
-            <PBSidenav Label="Workspace sections" style="width:14rem; border:1px solid var(--catalog-line); border-radius:0.5rem; padding:0.5rem;">
-                <PBList>
-                    <li>Overview</li>
-                    <li>Members</li>
-                    <li>Billing</li>
-                    <li>Settings</li>
-                </PBList>
-            </PBSidenav>
+        <ExampleCard Title="Sidenav in side mode" RazorCode="@(
+@"<div class=""sidenav-demo"">
+    <PBSidenav Label=""Sections"">
+        <PBList Role=""presentation"">
+            <PBListItem Href=""#"" Selected>Inbox</PBListItem>
+            <PBListItem Href=""#"">Starred</PBListItem>
+        </PBList>
+    </PBSidenav>
+    <div class=""sidenav-demo__content"">Main content</div>
+</div>")">
+            <div class="sidenav-demo">
+                <PBSidenav Label="Workspace sections">
+                    <PBList Role="presentation">
+                        <PBListItem Selected="@(currentSection == "Inbox")" OnClick='() => currentSection = "Inbox"'>
+                            <Icon><span class="material-icons">inbox</span></Icon><ChildContent>Inbox</ChildContent>
+                        </PBListItem>
+                        <PBListItem Selected="@(currentSection == "Starred")" OnClick='() => currentSection = "Starred"'>
+                            <Icon><span class="material-icons">star</span></Icon><ChildContent>Starred</ChildContent>
+                        </PBListItem>
+                        <PBListItem Selected="@(currentSection == "Sent")" OnClick='() => currentSection = "Sent"'>
+                            <Icon><span class="material-icons">send</span></Icon><ChildContent>Sent</ChildContent>
+                        </PBListItem>
+                    </PBList>
+                </PBSidenav>
+                <div class="sidenav-demo__content">Main content: @(currentSection)</div>
+            </div>
         </ExampleCard>
     </section>
 
     <section class="doc-section">
-        <p class="field-hint"><code>Mode="PBSidenavMode.Over"</code> renders the panel as a fixed drawer over the whole viewport with a dismissible scrim — click the button, then the scrim (or press Escape's equivalent, clicking outside) to close it.</p>
+        <p class="field-hint">Over mode: a modal drawer that slides in over the page. The scrim or Escape closes it.</p>
 
-        <ExampleCard Title="Over mode (drawer)" RazorCode="@(
-@"<PBButton @onclick=""() => drawerOpen = true"">Open drawer</PBButton>
-<PBSidenav Mode=""PBSidenavMode.Over"" Opened=""drawerOpen"" OpenedChanged=""@(v => drawerOpen = v)"" Label=""Workspace sections"">
-    <PBList>
-        <li>Overview</li>
-        <li>Members</li>
-    </PBList>
+        <ExampleCard Title="Sidenav in over mode" RazorCode="@(
+@"<PBButton Variant=""PBButtonVariant.Outlined"" @onclick=""() => drawerOpen = true"">Open drawer</PBButton>
+<PBSidenav Mode=""PBSidenavMode.Over"" @bind-Opened=""drawerOpen"" Label=""Drawer"">
+    ...
 </PBSidenav>")">
-            <PBButton @onclick="() => drawerOpen = true">Open drawer</PBButton>
-            <PBSidenav Mode="PBSidenavMode.Over" Opened="drawerOpen" OpenedChanged="@((bool v) => drawerOpen = v)" Label="Workspace sections" style="width:14rem; padding:0.5rem;">
-                <PBList>
-                    <li>Overview</li>
-                    <li>Members</li>
-                    <li>Billing</li>
-                    <li>Settings</li>
-                </PBList>
+            <PBButton Variant="PBButtonVariant.Outlined" @onclick="() => drawerOpen = true">Open drawer</PBButton>
+            <PBSidenav Mode="PBSidenavMode.Over" @bind-Opened="drawerOpen" Label="Example drawer">
+                <div style="padding:16px">
+                    <h2 style="margin:8px 12px 16px;font:var(--md-sys-typescale-title-small)">Mail</h2>
+                    <PBList Role="presentation">
+                        <PBListItem OnClick="() => drawerOpen = false"><Icon><span class="material-icons">inbox</span></Icon><ChildContent>Inbox</ChildContent></PBListItem>
+                        <PBListItem OnClick="() => drawerOpen = false"><Icon><span class="material-icons">send</span></Icon><ChildContent>Outbox</ChildContent></PBListItem>
+                    </PBList>
+                </div>
             </PBSidenav>
         </ExampleCard>
     </section>
 
     <section class="doc-section">
         <h2>API reference</h2>
+        <div class="doc-table-wrapper">
         <table class="doc-table">
             <thead>
                 <tr><th>Property</th><th>Type</th><th>Description</th></tr>
             </thead>
             <tbody>
-                <tr><td><code>Mode</code></td><td><code>PBSidenavMode</code></td><td><code>Standard</code> (default, static panel) or <code>Over</code> (fixed drawer + scrim).</td></tr>
-                <tr><td><code>Opened</code></td><td><code>bool</code></td><td>Whether the drawer is visible. Only meaningful in <code>Over</code> mode.</td></tr>
-                <tr><td><code>OpenedChanged</code></td><td><code>EventCallback&lt;bool&gt;</code></td><td>Raised with <code>false</code> when the scrim is clicked, for <code>@@bind-Opened</code>.</td></tr>
-                <tr><td><code>Label</code></td><td><code>string?</code></td><td>Rendered as <code>aria-label</code> on the panel.</td></tr>
-                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The panel's navigation content.</td></tr>
+                <tr><td><code>Mode</code></td><td><code>PBSidenavMode</code></td><td><code>Standard</code> (side) or <code>Over</code>.</td></tr>
+                <tr><td><code>Position</code></td><td><code>PBSidenavPosition</code></td><td><code>Start</code> (default) or <code>End</code>.</td></tr>
+                <tr><td><code>Opened</code></td><td><code>bool</code></td><td>Supports <code>@@bind-Opened</code>; the scrim and Escape close an over-mode drawer.</td></tr>
+                <tr><td><code>Label</code></td><td><code>string?</code></td><td>Accessible name.</td></tr>
             </tbody>
         </table>
+        </div>
     </section>
 
     <section class="doc-section">
         <div class="a11y-note">
             <strong>Accessibility</strong>
-            Renders a labeled <code>&lt;aside&gt;</code>, letting assistive
-            technology jump directly to the navigation landmark.
+            The drawer is a labelled <code>&lt;aside&gt;</code>. In over mode it becomes a modal
+            <code>dialog</code> while open and is <code>inert</code> while closed, so hidden links are
+            never focusable.
         </div>
     </section>
 </div>
 
 @code {
+    private string currentSection = "Inbox";
     private bool drawerOpen;
 }

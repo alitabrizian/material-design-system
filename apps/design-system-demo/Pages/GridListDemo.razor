@@ -6,52 +6,77 @@
 <div class="catalog-content">
 
     <PageHeader Title="Grid List">
-        A grid list arranges a collection of items into a uniform, structured
-        grid.
+        PBGridList is a two-dimensional list view that arranges tiles into a grid, like Angular
+        Material's <code>mat-grid-list</code>.
     </PageHeader>
 
     <section class="doc-section">
-        <p class="field-hint">Items are arranged edge to edge in a grid.</p>
+        <p class="field-hint">Four columns with a 2:1 row height ratio.</p>
 
-        <ExampleCard Title="Photo grid" RazorCode="@(
-@"<PBGridList style=""display:grid; grid-template-columns:repeat(3, 1fr); gap:0.5rem;"">
-    @foreach (var label in tiles)
-    {
-        <div>@label</div>
-    }
+        <ExampleCard Title="Basic grid list" RazorCode="@(
+@"<PBGridList Cols=""2"" RowHeight=""2:1"">
+    <PBGridTile>1</PBGridTile>
+    <PBGridTile>2</PBGridTile>
+    <PBGridTile>3</PBGridTile>
+    <PBGridTile>4</PBGridTile>
 </PBGridList>")">
-            <PBGridList style="display:grid; grid-template-columns:repeat(3, 1fr); gap:0.5rem;">
-                @foreach (var label in tiles)
+            <PBGridList Cols="2" RowHeight="2:1">
+                @for (var i = 1; i <= 4; i++)
                 {
-                    <div style="aspect-ratio:1; display:grid; place-items:center; background:var(--catalog-soft); border-radius:0.4rem;">@label</div>
+                    <PBGridTile><div class="grid-tile-fill grid-tile-fill--@i">@i</div></PBGridTile>
                 }
             </PBGridList>
         </ExampleCard>
     </section>
 
     <section class="doc-section">
+        <p class="field-hint">Tiles spanning several rows and columns, a fixed 100px row height and a footer.</p>
+
+        <ExampleCard Title="Dynamic grid list" RazorCode="@(
+@"<PBGridList Cols=""4"" RowHeight=""100px"" Gutter=""4px"">
+    <PBGridTile Colspan=""3"">One</PBGridTile>
+    <PBGridTile Rowspan=""2"">Two</PBGridTile>
+    <PBGridTile Rowspan=""1"">Three</PBGridTile>
+    <PBGridTile Colspan=""2"">
+        Four
+        <Footer>Footer text</Footer>
+    </PBGridTile>
+</PBGridList>")">
+            <PBGridList Cols="4" RowHeight="100px" Gutter="4px">
+                <PBGridTile Colspan="3"><div class="grid-tile-fill grid-tile-fill--1">One</div></PBGridTile>
+                <PBGridTile Rowspan="2"><div class="grid-tile-fill grid-tile-fill--2">Two</div></PBGridTile>
+                <PBGridTile><div class="grid-tile-fill grid-tile-fill--3">Three</div></PBGridTile>
+                <PBGridTile Colspan="2">
+                    <ChildContent><div class="grid-tile-fill grid-tile-fill--4">Four</div></ChildContent>
+                    <Footer>Footer text</Footer>
+                </PBGridTile>
+            </PBGridList>
+        </ExampleCard>
+    </section>
+
+    <section class="doc-section">
         <h2>API reference</h2>
+        <div class="doc-table-wrapper">
         <table class="doc-table">
             <thead>
                 <tr><th>Property</th><th>Type</th><th>Description</th></tr>
             </thead>
             <tbody>
-                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The grid's tiles.</td></tr>
-                <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;div&gt;</code>; used above to supply the grid layout via <code>style</code>.</td></tr>
+                <tr><td><code>Cols</code></td><td><code>int</code></td><td>Number of columns.</td></tr>
+                <tr><td><code>RowHeight</code></td><td><code>string</code></td><td>A ratio (<code>"1:1"</code>, default) or a CSS length (<code>"100px"</code>).</td></tr>
+                <tr><td><code>Gutter</code></td><td><code>string</code></td><td>Space between tiles (default <code>1px</code>).</td></tr>
+                <tr><td><code>PBGridTile.Colspan</code>, <code>.Rowspan</code></td><td><code>int</code></td><td>Tile size in cells.</td></tr>
+                <tr><td><code>PBGridTile.Header</code>, <code>.Footer</code></td><td><code>RenderFragment?</code></td><td>48px overlay bars (mat-grid-tile-header/footer).</td></tr>
             </tbody>
         </table>
+        </div>
     </section>
 
     <section class="doc-section">
         <div class="a11y-note">
             <strong>Accessibility</strong>
-            <code>PBGridList</code> does not currently apply <code>role="list"</code>/
-            <code>role="listitem"</code> semantics. If the tiles represent a
-            meaningful collection, add those roles via <code>AdditionalAttributes</code>.
+            The grid is a <code>list</code> of <code>listitem</code> tiles. Give image tiles
+            alternative text; header/footer text sits on a scrim for contrast.
         </div>
     </section>
 </div>
-
-@code {
-    private static readonly string[] tiles = ["1", "2", "3", "4", "5", "6"];
-}

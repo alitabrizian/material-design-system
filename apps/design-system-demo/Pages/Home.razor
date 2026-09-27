@@ -4,33 +4,37 @@
 <PageTitle>Design System</PageTitle>
 
 <div class="catalog-content">
+    <PageHeader Title="Components">
+        Angular Material's Material 3 components for Blazor: the same tokens, dimensions, states and
+        keyboard behavior, in four themes. Pick a component to see its examples and API.
+    </PageHeader>
 
-    <div class="catalog-toolbar" aria-label="Component catalog tools">
-        <span class="search-icon" aria-hidden="true">⌕</span>
-        <input aria-label="Search components" placeholder="Search components" @bind="searchTerm" @bind:event="oninput" />
+    <div class="catalog-search">
+        <PBInput Label="Search components" Appearance="PBFormFieldAppearance.Outline" Block type="search"
+                 value="@searchTerm" @oninput="e => searchTerm = e.Value?.ToString() ?? string.Empty">
+            <Prefix><span class="material-icons">search</span></Prefix>
+        </PBInput>
     </div>
 
-    <div class="component-section">
-        @if (filteredComponents.Any())
-        {
-            <div class="component-grid" aria-live="polite">
-                @foreach (var component in filteredComponents)
-                {
-                    <a class="component-card @(component.Featured ? "featured" : string.Empty)" href="@component.Route">
-                        <span class="card-icon @(component.Featured ? "filled" : "outline")">@component.Icon</span>
-                        <span class="card-copy"><strong>@component.Name</strong><small>@component.Description</small></span>
-                    </a>
-                }
-            </div>
-        }
-        else
-        {
-            <div class="empty-search" role="status">
-                <strong>No components found</strong>
-                <span>Try a different search term.</span>
-            </div>
-        }
-    </div>
+    @if (filteredComponents.Any())
+    {
+        <div class="component-grid" aria-live="polite">
+            @foreach (var component in filteredComponents)
+            {
+                <a class="component-card pb-ripple-host" href="@component.Route">
+                    <span class="card-icon" aria-hidden="true"><span class="material-icons">@component.Icon</span></span>
+                    <span class="card-copy"><strong>@component.Name</strong><small>@component.Description</small></span>
+                </a>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-search" role="status">
+            <strong>No components found</strong>
+            <span>Try a different search term.</span>
+        </div>
+    }
 </div>
 
 @code {

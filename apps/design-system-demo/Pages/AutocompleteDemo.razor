@@ -145,6 +145,7 @@
 
     <section class="doc-section">
         <h2>API reference</h2>
+        <div class="doc-table-wrapper">
         <table class="doc-table">
             <thead>
                 <tr><th>Property</th><th>Type</th><th>Description</th></tr>
@@ -160,6 +161,7 @@
                 <tr><td><code>Filter</code></td><td><code>Func&lt;string, IEnumerable&lt;TItem&gt;, IEnumerable&lt;TItem&gt;&gt;?</code></td><td>Custom filter run against the typed text.</td></tr>
             </tbody>
         </table>
+        </div>
     </section>
 
     <section class="doc-section">
@@ -279,7 +281,7 @@
             return options;
 
         var lower = input.ToLowerInvariant();
-        return options.Where(o => o.ToLowerInvariant().Contains(lower));
+        return options.Where(o => o?.ToLowerInvariant().Contains(lower) == true);
     }
 
     public class City

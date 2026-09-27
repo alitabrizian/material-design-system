@@ -6,56 +6,77 @@
 <div class="catalog-content">
 
     <PageHeader Title="Icon">
-        Icons are compact, glyph-based representations of an action, object, or
-        state.
+        PBIcon displays a 24px icon from the Material Icons or Material Symbols fonts (both ship with
+        the design system, no CDN) or custom SVG content, like Angular Material's
+        <code>mat-icon</code>.
     </PageHeader>
 
     <section class="doc-section">
-        <p class="field-hint">Each icon carries an accessible label.</p>
+        <p class="field-hint">Write the icon's ligature name as the content. Icons inherit the text color unless a color role is set.</p>
 
-        <ExampleCard Title="Standalone icons" RazorCode="@(@"<PBIcon Label=""Search"">⌕</PBIcon>")">
-            <span style="display:inline-flex; gap:1rem; font-size:1.4rem;">
-                <PBIcon Label="Search">⌕</PBIcon>
-                <PBIcon Label="Settings">⚙</PBIcon>
-                <PBIcon Label="Favorite">★</PBIcon>
-            </span>
+        <ExampleCard Title="Basic icons" RazorCode="@(
+@"<PBIcon Label=""Home"">home</PBIcon>
+<PBIcon Label=""Favorite"" Color=""PBIconColor.Primary"">favorite</PBIcon>
+<PBIcon Label=""Settings"" FontSet=""PBIconFontSet.Symbols"">settings</PBIcon>
+<PBIcon Label=""Error"" Color=""PBIconColor.Error"">error</PBIcon>")">
+            <div class="demo-row">
+                <PBIcon Label="Home">home</PBIcon>
+                <PBIcon Label="Favorite" Color="PBIconColor.Primary">favorite</PBIcon>
+                <PBIcon Label="Delete" Color="PBIconColor.Secondary">delete</PBIcon>
+                <PBIcon Label="Star" Color="PBIconColor.Tertiary">star</PBIcon>
+                <PBIcon Label="Error" Color="PBIconColor.Error">error</PBIcon>
+                <PBIcon Label="Settings (Material Symbols)" FontSet="PBIconFontSet.Symbols">settings</PBIcon>
+                <PBIcon Label="Search (Material Symbols)" FontSet="PBIconFontSet.Symbols">search</PBIcon>
+            </div>
         </ExampleCard>
     </section>
 
     <section class="doc-section">
-        <p class="field-hint">Icons commonly appear alongside text in a button.</p>
+        <p class="field-hint">Custom SVG icons (<code>FontSet="None"</code>) and icons inside buttons.</p>
 
-        <ExampleCard Title="Icon with a button" RazorCode="@(
-@"<PBButton>
-    <PBIcon Label="""">→</PBIcon>
-    Continue
+        <ExampleCard Title="SVG icons and buttons" RazorCode="@(
+@"<PBIcon FontSet=""PBIconFontSet.None"" Label=""Thumbs up"">
+    <svg viewBox=""0 0 24 24""><path d=""M1 21h4V9H1v12zm22-11c0-1.1...""/></svg>
+</PBIcon>
+<PBButton Variant=""PBButtonVariant.Filled"">
+    <IconStart><PBIcon>send</PBIcon></IconStart>
+    <ChildContent>Send</ChildContent>
 </PBButton>")">
-            <PBButton>
-                <PBIcon Label="">→</PBIcon>
-                Continue
-            </PBButton>
+            <div class="demo-row">
+                <PBIcon FontSet="PBIconFontSet.None" Label="Thumbs up">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z" /></svg>
+                </PBIcon>
+                <PBButton Variant="PBButtonVariant.Filled">
+                    <IconStart><PBIcon>send</PBIcon></IconStart>
+                    <ChildContent>Send</ChildContent>
+                </PBButton>
+                <PBButton Variant="PBButtonVariant.Icon" aria-label="More options"><PBIcon>more_vert</PBIcon></PBButton>
+            </div>
         </ExampleCard>
     </section>
 
     <section class="doc-section">
         <h2>API reference</h2>
+        <div class="doc-table-wrapper">
         <table class="doc-table">
             <thead>
                 <tr><th>Property</th><th>Type</th><th>Description</th></tr>
             </thead>
             <tbody>
-                <tr><td><code>Label</code></td><td><code>string?</code></td><td>Rendered as <code>aria-label</code> on the icon.</td></tr>
-                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The icon glyph.</td></tr>
+                <tr><td><code>ChildContent</code></td><td><code>RenderFragment?</code></td><td>The ligature name (e.g. <code>home</code>) or custom SVG.</td></tr>
+                <tr><td><code>FontSet</code></td><td><code>PBIconFontSet</code></td><td><code>Icons</code> (Material Icons, default), <code>Symbols</code> (Material Symbols Outlined) or <code>None</code>.</td></tr>
+                <tr><td><code>Color</code></td><td><code>PBIconColor</code></td><td><code>Inherit</code> (default), <code>Primary</code>, <code>Secondary</code>, <code>Tertiary</code> or <code>Error</code>.</td></tr>
+                <tr><td><code>Label</code></td><td><code>string?</code></td><td>Makes the icon meaningful (<code>role="img"</code> + <code>aria-label</code>); without it the icon is decorative.</td></tr>
             </tbody>
         </table>
+        </div>
     </section>
 
     <section class="doc-section">
         <div class="a11y-note">
             <strong>Accessibility</strong>
-            The icon has <code>role="img"</code> with an <code>aria-label</code> from
-            <code>Label</code>. When an icon is purely decorative (as in the button
-            example), pass an empty <code>Label</code> so it isn't announced twice.
+            Icons without a <code>Label</code> are <code>aria-hidden</code> (decorative). Give
+            icon-only buttons their own <code>aria-label</code> rather than labelling the icon.
         </div>
     </section>
 </div>
