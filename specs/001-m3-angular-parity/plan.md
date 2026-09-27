@@ -10,8 +10,8 @@ Four earlier attempts at M3 parity failed for three structural reasons found in 
 
 1. **Invisible edits.** The demo consumed the library as a packed NuGet package (`0.1.0`, cached as
    immutable), so no library CSS edit could appear on refresh.
-2. **Guessed colors.** Theme colors came from guessed seed colors (Rose & Red primary `#e3184f` →
-   generated `#b4004d`-ish, versus Angular's real `#ba005c`). Dark surfaces used a hand-picked `#2d2d2d`, and
+2. **Guessed colors.** Theme colors came from guessed seed colors (Rose & Red seed `#e3184f` →
+   generated primary `#be003e`, versus Angular's real `#ba005c`). Dark surfaces used a hand-picked `#2d2d2d`, and
    several surface-container tones were wrong.
 3. **Shells, not components.** Most components were one-line wrappers around raw HTML. The demo pages
    hand-built tabs, chips, list items and steps, so no component could enforce Angular Material's

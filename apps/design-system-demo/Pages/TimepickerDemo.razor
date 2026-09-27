@@ -38,8 +38,12 @@
                 <tr><th>Property</th><th>Type</th><th>Description</th></tr>
             </thead>
             <tbody>
-                <tr><td><code>Label</code></td><td><code>string?</code></td><td>Text rendered above the time field.</td></tr>
+                <tr><td><code>Label</code></td><td><code>string?</code></td><td>Floating label; always floated because the time input shows its format. The trailing clock button opens the browser's time picker.</td></tr>
                 <tr><td><code>AdditionalAttributes</code></td><td><code>IReadOnlyDictionary&lt;string, object&gt;?</code></td><td>Passed through to the underlying <code>&lt;input type="time"&gt;</code>.</td></tr>
+                <tr><td><code>SupportingText</code> / <code>ErrorText</code></td><td><code>string?</code></td><td>Hint / error text under the field.</td></tr>
+                <tr><td><code>Appearance</code></td><td><code>PBFormFieldAppearance</code></td><td><code>Fill</code> (default) or <code>Outline</code>, like mat-form-field.</td></tr>
+                <tr><td><code>Prefix</code> / <code>Suffix</code></td><td><code>RenderFragment?</code></td><td>Leading / trailing icons (matIconPrefix / matIconSuffix).</td></tr>
+                <tr><td><code>Block</code></td><td><code>bool</code></td><td>Stretches the field to its container's width.</td></tr>
             </tbody>
         </table>
         </div>

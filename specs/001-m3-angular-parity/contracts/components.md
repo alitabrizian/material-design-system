@@ -22,24 +22,32 @@ Each row lists the Angular Material equivalent that sets the reference values.
 | PBDivider | mat-divider | new: Vertical, Inset | role=separator, aria-orientation |
 | PBExpansionPanel (+ PBAccordion) | mat-expansion-panel / mat-accordion | kept: Label; new: Description, Expanded/ExpandedChanged, Disabled; accordion: Multi | header button aria-expanded/aria-controls; region |
 | PBGridList / PBGridTile | mat-grid-list / mat-grid-tile | new: Cols, RowHeight, Gutter; tile: Colspan, Rowspan, Header, Footer | list/listitem |
-| PBIcon | mat-icon | kept: Label; new: FontSet (Icons, Symbols) | role=img with label, else aria-hidden |
+| PBIcon | mat-icon | kept: Label; new: FontSet (Icons, Symbols, None), Color (Inherit, Primary, Secondary, Tertiary, Error) | role=img with label, else aria-hidden |
 | PBList / PBListItem | mat-list / mat-list-item | new item: Title (or ChildContent), Subtitle, Line3, Leading, Trailing, Href, OnClick, Disabled, Selected; list: new Dense? no | list/listitem; interactive items are buttons/links |
-| PBMenu / PBMenuItem | mat-menu / mat-menu-item | kept: Trigger, XPosition, IsOpen; new: YPosition; item: Icon, Disabled, Role (menuitem, menuitemradio, menuitemcheckbox), Checked, OnClick, Trailing | menu/menuitem*; arrows, Home/End, Escape returns focus |
+| PBMenu / PBMenuItem | mat-menu / mat-menu-item | kept: Trigger, XPosition, IsOpen; new: TriggerVariant, YPosition, PanelClass; item: Icon, Trailing, Disabled, Role (menuitem, menuitemradio, menuitemcheckbox), Checked, ShowIndicator, KeepOpen, OnClick | menu/menuitem*; arrows, Home/End, Escape returns focus |
 | PBPaginator | mat-paginator | new: Length, PageIndex/PageIndexChanged, PageSize/PageSizeChanged, PageSizeOptions, ShowFirstLastButtons, HidePageSize, Disabled | nav; icon buttons with labels |
 | PBProgressBar | mat-progress-bar | kept: Value, Indeterminate, BufferValue | role=progressbar |
 | PBProgressSpinner | mat-progress-spinner | kept: Diameter; new: StrokeWidth, Value (null = indeterminate) | role=progressbar |
 | PBRipples | matRipple | new: Centered, Unbounded, Disabled | presentational |
 | PBSidenav | mat-sidenav | kept: Mode (Standard, Over), Opened/OpenedChanged; new: Position (Start, End) | complementary; Escape closes Over mode |
 | PBSnackbar | MatSnackBar | new: Open/OpenChanged, ActionLabel, OnAction, Duration; kept: ChildContent (message) | role=status, aria-live=polite |
-| PBSortHeader | mat-sort-header | kept: Label; new: Direction/DirectionChanged, Arrow position | button; aria-sort on parent th is the consumer's job (documented) |
+| PBSortHeader | mat-sort-header | kept: Label; new: Direction/DirectionChanged, ArrowPosition, DisableClear, Disabled | button with a sort-state label; aria-sort on the parent th is the consumer's job (documented) |
 | PBStepper / PBStep | mat-stepper / mat-step | kept: Orientation; new: SelectedIndex/SelectedIndexChanged, Linear; step: Label, Completed, Optional, HasError, ChildContent | tablist-like headers (aria-selected), arrows move focus |
 | PBTable | mat-table (native table flavour) | kept: ChildContent (now `thead`/`tbody`/`tr` passed as-is, no forced tbody) | native table |
 | PBTabs / PBTab | mat-tab-group / mat-tab | new: SelectedIndex/SelectedIndexChanged, Stretch; tab: Label, Icon, Disabled, ChildContent (panel) | tablist/tab/tabpanel; arrows, Home/End, Enter/Space |
 | PBToolbar | mat-toolbar | kept | header |
 | PBTooltip | matTooltip | kept: Label (message); new: Position (Below default, Above, Before, After) | role=tooltip, aria-describedby on the wrapper |
 | PBTree / PBTreeNode | mat-tree (nested) | new node: Label, Icon, Expanded/ExpandedChanged, ChildContent (children) | tree/treeitem/group, aria-expanded, aria-level; arrows per CDK |
-| PBBadge | matBadge | kept: Variant, Size, Overlay | presentational (content read with host) |
-| PBChips / PBChip | mat-chip-set, mat-chip-listbox, mat-chip-grid / mat-chip, mat-chip-option, mat-chip-row | new chip: Variant (Assist, Filter, Input), Selected/SelectedChanged, Removable, OnRemove, Disabled, Icon | set role=list, or listbox for filter; option aria-selected |
+| PBBadge | matBadge | new: Content (badge text), Position, Overlap, Hidden, Disabled, Description; kept: Variant, Size, Overlay. **Changed:** ChildContent is now the annotated host element (matBadge is a directive on the host), not the badge text | badge aria-hidden; Description rendered visually hidden |
+| PBChips / PBChip | mat-chip-set, mat-chip-listbox / mat-chip, mat-chip-option, mat-chip-row | set: Selectable, Multiple, Stacked; chip: Variant (Assist, Filter, Input), Selected/SelectedChanged, Icon, Removable, OnRemove, OnClick, Highlighted, Disabled | set role=list, or listbox when Selectable; filter chip role=option + aria-selected |
 | PBDialog | MatDialog | kept: Label (title), ChildContent; new: Open/OpenChanged, Actions, DisableClose | native dialog (modal): focus trap, Escape, labelled by title |
 | PBBottomSheet | MatBottomSheet | kept: Dismissed, Label | dialog-like region; Escape and scrim click dismiss |
 | PBCore | (typography root) | kept | section |
+
+## Cross-cutting behavior
+
+- A consumer's `class` attribute is appended to the component's own classes (never replaces them);
+  other unmatched attributes are splatted onto the component's main element (or the native control
+  for field/selection components).
+- Overlays (PBSelect, PBMenu, PBAutoComplete, PBTooltip) render in the top layer (Popover API) and
+  are positioned against their trigger; PBDialog is a native modal `<dialog>`.
