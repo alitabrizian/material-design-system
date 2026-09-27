@@ -33,6 +33,10 @@ tertiary-fixed, tertiary-fixed-dim, on-tertiary-fixed, on-tertiary-fixed-variant
 error-container, on-error-container, outline, outline-variant, scrim, shadow, neutral10,
 neutral-variant20.
 
+Hand-authored per theme (not in the prebuilt themes): `--md-ref-palette-neutral99`, neutral tone 99 of
+the theme's primary palette (`core/theming/_palettes.scss`). The theme picker previews use it as the
+light themes' background, like Angular Material's docs theme picker.
+
 ## Other system tokens
 
 - `--md-sys-typescale-font-family`, and per role `R` in {display,headline,title,body,label}×{large,medium,small}:

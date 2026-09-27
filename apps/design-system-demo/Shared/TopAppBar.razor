@@ -9,24 +9,33 @@
     <span class="pb-topbar__title">@Title</span>
 
     <div class="pb-topbar__actions">
-        <PBTooltip Label="Select a theme">
-            <PBMenu Label="Theme" XPosition="PBMenuXPosition.Before" PanelClass="theme-picker" @bind-IsOpen="themeMenuOpen">
+        @* Angular Material's docs theme picker (docs/src/app/shared/theme-picker): format_color_fill
+           trigger, radio_button_checked/unchecked icons, and a mini-app preview of each theme. *@
+        <PBTooltip Label="Select a theme for the documentation">
+            <PBMenu Label="Select a theme" XPosition="PBMenuXPosition.Before" PanelClass="theme-picker" @bind-IsOpen="themeMenuOpen">
                 <Trigger>
-                    <span class="material-icons" aria-hidden="true">palette</span>
+                    <span class="material-icons" aria-hidden="true">format_color_fill</span>
                 </Trigger>
                 <ChildContent>
-                    <div class="theme-picker__heading" role="presentation">Theme</div>
                     @foreach (var theme in ThemeState.Themes)
                     {
                         var key = theme.Key;
-                        <PBMenuItem Role="menuitemradio" Checked="Theme.Theme == key" OnClick="() => SelectThemeAsync(key)">
+                        var selected = Theme.Theme == key;
+                        <PBMenuItem Role="menuitemradio" Checked="selected" ShowIndicator="false" OnClick="() => SelectThemeAsync(key)">
+                            <Icon>
+                                <span class="material-icons">@(selected ? "radio_button_checked" : "radio_button_unchecked")</span>
+                            </Icon>
                             <ChildContent>@theme.Name</ChildContent>
                             <Trailing>
-                                @* The swatch carries data-theme, so it renders from that theme's own tokens. *@
-                                <span class="theme-swatch" data-theme="@key" aria-hidden="true">
-                                    <span class="theme-swatch__primary"></span>
-                                    <span class="theme-swatch__secondary"></span>
-                                    <span class="theme-swatch__tertiary"></span>
+                                @* The svg carries data-theme, so its fills come from that theme's own tokens;
+                                   the frame around it stays in the page's theme. *@
+                                <span class="theme-example" aria-hidden="true">
+                                    <svg class="theme-example__svg @(theme.IsDark ? "theme-example__svg--dark" : null)" data-theme="@key"
+                                         viewBox="0 0 80 80" focusable="false">
+                                        <path class="theme-example__background" d="M77.87 0C79.05 0 80 .95 80 2.13v75.74c0 1.17-.95 2.13-2.13 2.13H2.13C.96 80 0 79.04 0 77.87V2.13C0 .95.96 0 2.13 0h75.74z" />
+                                        <path class="theme-example__accent" d="M54 40c3.32 0 6 2.69 6 6 0 1.2 0-1.2 0 0 0 3.31-2.68 6-6 6H26c-3.31 0-6-2.69-6-6 0-1.2 0 1.2 0 0 0-3.31 2.69-6 6-6h28z" />
+                                        <path class="theme-example__accent" d="M0 0h80v17.24H0V0z" />
+                                    </svg>
                                 </span>
                             </Trailing>
                         </PBMenuItem>

@@ -16,7 +16,7 @@ libs/design-system/tokens  ──► libs/design-system/blazor  (NuGet: PartoBit
 | --- | --- | --- |
 | `reference/angular-material/*.css` | Angular Material's prebuilt M3 themes (rose-red, azure-blue, magenta-violet, cyan-orange), vendored with `VERSION` and `LICENSE`. Refresh with `node scripts/sync-angular-themes.mts [version]` | yes |
 | `scripts/build-tokens.mts` | Parses the vendored themes: 51 `--md-sys-color-*` roles per theme + typescale, shape, elevation and state tokens, and fails on missing or inconsistent values | yes |
-| `src/material-tokens.css` | Hand-authored tokens Angular Material doesn't ship: font stack, motion, spacing, legacy z2/z16 shadows, on-scrim | yes |
+| `src/material-tokens.css` | Hand-authored tokens Angular Material doesn't ship: font stack, motion, spacing, legacy z2/z16 shadows, on-scrim, and per-theme `--md-ref-palette-neutral99` (neutral tone 99 from `_palettes.scss`, used by the theme picker previews) | yes |
 | `dist/css/tokens.css` | Everything above: color roles per `[data-theme]` (with `color-scheme`) and system tokens on `:root` | no |
 | `dist/css/icons.css`, `dist/css/fonts.css` | Self-hosted Material Icons + Material Symbols Outlined (and Roboto in `fonts.css`) | no |
 | `dist/css/material-tokens.css` | Copy of `src/material-tokens.css` | no |

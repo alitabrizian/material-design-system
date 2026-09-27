@@ -210,12 +210,9 @@ h1:focus {
 }
 
 /* Theme picker: radio + name + a swatch rendered from that theme's own tokens (data-theme scoping). */
-.theme-picker__heading {
-  padding: 8px 16px 4px;
-  color: var(--md-sys-color-on-surface-variant);
-  font: var(--md-sys-typescale-title-small);
-}
-
+/* Theme picker: Angular Material's docs theme picker (theme-picker.scss). Each preview is a 24px
+   mini app: page background (neutral tone 99 in light themes, neutral tone 10 in dark ones),
+   a top bar and a button pill in primary-container, framed by 50% outline-variant, 4px corners. */
 .theme-picker.pb-menu__panel {
   max-width: none;
 }
@@ -224,32 +221,37 @@ h1:focus {
   white-space: nowrap;
 }
 
-.theme-swatch {
+.theme-picker .pb-menu-item__trailing {
+  padding-left: 24px;
+}
+
+.theme-example {
   display: inline-flex;
   flex-shrink: 0;
-  width: 28px;
-  height: 28px;
-  margin-left: 16px;
+  box-sizing: content-box;
+  width: 24px;
+  height: 24px;
   overflow: hidden;
-  border: 1px solid var(--md-sys-color-outline-variant);
-  border-radius: 50%;
-  background: var(--md-sys-color-surface);
+  border: 1px solid color-mix(in srgb, var(--md-sys-color-outline-variant) 50%, transparent);
+  border-radius: 4px;
 }
 
-.theme-swatch span {
-  flex: 1 1 0;
+.theme-example__svg {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
-.theme-swatch__primary {
-  background: var(--md-sys-color-primary);
+.theme-example__background {
+  fill: var(--md-ref-palette-neutral99);
 }
 
-.theme-swatch__secondary {
-  background: var(--md-sys-color-secondary);
+.theme-example__svg--dark .theme-example__background {
+  fill: var(--md-sys-color-neutral10);
 }
 
-.theme-swatch__tertiary {
-  background: var(--md-sys-color-tertiary);
+.theme-example__accent {
+  fill: var(--md-sys-color-primary-container);
 }
 
 /* ------------------------------------------------------------------ narrow screens: drawer nav */

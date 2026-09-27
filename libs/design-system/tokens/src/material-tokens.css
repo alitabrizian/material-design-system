@@ -1,7 +1,7 @@
 /**
- * Hand-authored, palette-independent Material 3 tokens that Angular Material's prebuilt themes do
- * NOT ship: the font stack, motion (m3.material.io/styles/motion/easing-and-duration/tokens-specs)
- * and a 4dp spacing scale.
+ * Hand-authored Material 3 tokens that Angular Material's prebuilt themes do NOT ship: the font
+ * stack, motion (m3.material.io/styles/motion/easing-and-duration/tokens-specs), a 4dp spacing
+ * scale, and one reference-palette tone per theme (neutral 99, below).
  *
  * Everything else -- color roles, typescale, shape, elevation, state-layer opacities -- is generated
  * from Angular Material's prebuilt themes by scripts/build-tokens.mts into dist/css/tokens.css, which
@@ -66,4 +66,25 @@
   --md-sys-spacing-medium: 12px;
   --md-sys-spacing-large: 16px;
   --md-sys-spacing-extra-large: 24px;
+}
+
+/* Neutral tone 99 of each theme's primary palette (@angular/material core/theming/_palettes.scss:
+   $rose-palette, $azure-palette, $magenta-palette, $cyan-palette). No M3 color role carries it; the
+   theme picker's preview swatches use it as the light themes' page background, as Angular Material's
+   own docs theme picker does (its dark previews use neutral 10, --md-sys-color-neutral10). */
+:root,
+[data-theme="rose-red"] {
+  --md-ref-palette-neutral99: #fffbff;
+}
+
+[data-theme="azure-blue"] {
+  --md-ref-palette-neutral99: #fdfbff;
+}
+
+[data-theme="magenta-violet"] {
+  --md-ref-palette-neutral99: #fffbff;
+}
+
+[data-theme="cyan-orange"] {
+  --md-ref-palette-neutral99: #fafdfc;
 }
