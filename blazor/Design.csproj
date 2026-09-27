@@ -67,10 +67,28 @@
     <DesignTokensDist>$(MSBuildThisFileDirectory)..\tokens\dist\</DesignTokensDist>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <DesignTokensRoot>$(MSBuildThisFileDirectory)..\tokens\</DesignTokensRoot>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <_DesignTokenSource Include="$(DesignTokensRoot)src\**\*.css;$(DesignTokensRoot)reference\**\*;$(DesignTokensRoot)scripts\build-tokens.mts" />
+  </ItemGroup>
+
+  <!--
+    (Re)generates libs/design-system/tokens/dist whenever its sources changed (incremental: skipped
+    when dist/css/tokens.css is newer than every source), so a fresh clone or an edited token file
+    never needs a manual `nx run tokens:build`. Requires `npm ci` at the workspace root.
+  -->
+  <Target Name="BuildDesignTokens" BeforeTargets="SyncDesignTokens"
+          Inputs="@(_DesignTokenSource)" Outputs="$(DesignTokensDist)css\tokens.css">
+    <Exec Command="node &quot;$(DesignTokensRoot)scripts/build-tokens.mts&quot;" WorkingDirectory="$(MSBuildThisFileDirectory)../../.." />
+  </Target>
+
   <Target Name="SyncDesignTokens" BeforeTargets="BeforeBuild">
     <Error
       Condition="!Exists('$(DesignTokensDist)css\tokens.css')"
-      Text="Design tokens not built ($(DesignTokensDist) is missing). Run 'npx nx run tokens:build' first." />
+      Text="Design tokens not built ($(DesignTokensDist) is missing). Run 'npm ci' and 'npx nx run tokens:build'." />
     <ItemGroup>
       <_DesignTokenFile Include="$(DesignTokensDist)**\*" />
       <_DesignTokenCopy Include="@(_DesignTokenFile->'wwwroot\%(RecursiveDir)%(Filename)%(Extension)')" />
