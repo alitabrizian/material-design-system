@@ -4,7 +4,23 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
-  <ItemGroup>
+
+  <!--
+    Development (default): reference the library's source project. In Development, ASP.NET Core
+    serves _content/Design/* straight from libs/design-system/blazor/wwwroot (static web assets
+    manifest), so a saved CSS edit is visible on the next browser refresh, and `dotnet watch`
+    rebuilds/hot-reloads .razor/.cs edits in the library too.
+
+    Package verification (opt-in): `-p:UseDesignSystemPackage=true` consumes the packed nupkg from
+    local-nuget-feed instead, exactly like an external consumer. Use `npx nx run
+    design-system-demo:serve-package`, which repacks first (evicting the cached 0.1.0 copy).
+    Never develop in this mode: NuGet caches a package version as immutable, which is why library
+    CSS edits used to "not show up after refresh".
+  -->
+  <ItemGroup Condition="'$(UseDesignSystemPackage)' != 'true'">
+    <ProjectReference Include="..\..\libs\design-system\blazor\Design.csproj" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(UseDesignSystemPackage)' == 'true'">
     <PackageReference Include="PartoBita.DesignSystem.Blazor" Version="0.1.0" />
   </ItemGroup>
 </Project>

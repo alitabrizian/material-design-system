@@ -6,7 +6,7 @@
   "targets": {
     "build": {
       "executor": "nx:run-commands",
-      "dependsOn": ["design-system-blazor:pack"],
+      "dependsOn": ["tokens:build"],
       "options": {
         "command": "dotnet build Design.Demo.csproj",
         "cwd": "apps/design-system-demo"
@@ -14,10 +14,24 @@
     },
     "serve": {
       "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/scripts/dev-design-system-demo.mts",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "serve-package": {
+      "executor": "nx:run-commands",
       "dependsOn": ["design-system-blazor:pack"],
       "options": {
-        "command": "dotnet run --project Design.Demo.csproj",
+        "command": "dotnet run --project Design.Demo.csproj -p:UseDesignSystemPackage=true",
         "cwd": "apps/design-system-demo"
+      }
+    },
+    "verify": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/scripts/verify-demo.mts",
+        "cwd": "{workspaceRoot}"
       }
     }
   },
