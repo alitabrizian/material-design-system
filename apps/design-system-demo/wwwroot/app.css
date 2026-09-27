@@ -39,177 +39,141 @@ h1:focus {
 }
 
 /* ------------------------------------------------------------------ shell layout */
+/* Angular Material's docs layout (docs/src/app/material-docs-app.scss, shared/navbar/navbar.scss,
+   pages/component-sidenav/component-sidenav.scss, styles/_constants.scss). */
 
-.catalog-shell {
-  display: grid;
-  grid-template-columns: 280px minmax(0, 1fr);
+.docs-app {
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
 }
 
-.catalog-nav-column {
-  background: var(--md-sys-color-surface-container-low);
-}
-
-.catalog-sidebar {
+/* Toolbar: primary-container, primary text; 8px 16px padding around 40px buttons = 56px. */
+.docs-navbar {
   position: sticky;
   top: 0;
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  height: 100dvh;
+  z-index: 30;
+  color: var(--md-sys-color-primary);
+  background: var(--md-sys-color-primary-container);
 }
 
-.brand-lockup {
+.docs-navbar__header {
   display: flex;
-  flex-shrink: 0;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 12px;
-  height: 64px;
-  padding: 0 20px;
-  color: var(--md-sys-color-on-surface);
-  text-decoration: none;
+  min-height: 56px;
+  padding: 8px 16px;
 }
 
-.brand-mark {
+.docs-navbar__item--selected {
+  background: color-mix(in srgb, var(--md-sys-color-primary) 10%, transparent);
+}
+
+/* Icon buttons take the toolbar's color (navbar.scss: .mat-mdc-icon-button { color: inherit }). */
+.docs-navbar .pb-button--icon {
+  color: inherit;
+}
+
+/* The logo and GitHub mark sit in the text button's icon slot at 24px, 8px before the label. */
+.docs-navbar .pb-button__icon--start {
+  display: inline-flex;
+  width: 24px;
+  height: 24px;
+  margin-inline-end: 8px;
+  font-size: 24px;
+}
+
+.docs-logo {
   display: grid;
-  width: 36px;
-  height: 36px;
+  width: 24px;
+  height: 24px;
   place-items: center;
-  border-radius: var(--md-sys-shape-corner-medium);
+  border-radius: var(--md-sys-shape-corner-extra-small);
   background: var(--md-sys-color-primary);
   color: var(--md-sys-color-on-primary);
-  font: var(--md-sys-typescale-title-medium);
+  font: var(--md-sys-typescale-label-large);
+  font-weight: 700;
+  letter-spacing: 0;
 }
 
-.brand-lockup strong,
-.brand-lockup small {
+.docs-github-logo {
   display: block;
+  width: 24px;
+  height: 24px;
 }
 
-.brand-lockup strong {
-  font: var(--md-sys-typescale-title-small);
+.docs-flex-spacer {
+  flex-grow: 1;
 }
 
-.brand-lockup small {
-  color: var(--md-sys-color-on-surface-variant);
-  font: var(--md-sys-typescale-label-small);
+.docs-theme-picker {
+  display: flex;
 }
 
-.side-nav {
+.docs-navbar__show-small {
+  display: none;
+}
+
+/* Below the toolbar: the 240px nav list on the page background, with an outline-variant rule. */
+.docs-body {
+  display: flex;
   flex: 1 1 auto;
-  min-height: 0;
-  overflow-y: auto;
-  padding: 0 12px 12px;
+  align-items: flex-start;
+}
+
+.docs-nav {
+  position: sticky;
+  top: 56px;
+  flex-shrink: 0;
+  width: 240px;
+  height: calc(100vh - 56px);
+  height: calc(100dvh - 56px);
+  padding: 16px 8px;
+  overflow: auto;
+  border-right: 1px solid var(--md-sys-color-outline-variant);
   scrollbar-color: var(--md-sys-color-outline-variant) transparent;
   scrollbar-width: thin;
 }
 
-.nav-heading {
-  margin: 8px 16px 4px;
-  color: var(--md-sys-color-on-surface-variant);
-  font: var(--md-sys-typescale-title-small);
-}
-
-/* Navigation items: pill-shaped, label-large, secondary-container when active (M3 navigation
-   drawer colors, 40px tall). A 4px gap keeps adjacent hover/active pills from touching. */
-.nav-link {
-  position: relative;
+.docs-nav__list {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  min-height: 40px;
-  padding: 0 16px;
-  overflow: hidden;
-  border-radius: var(--md-sys-shape-corner-full);
-  color: var(--md-sys-color-on-surface-variant);
-  font: var(--md-sys-typescale-label-large);
-  letter-spacing: var(--md-sys-typescale-label-large-tracking);
-  text-decoration: none;
-}
-
-.nav-link + .nav-link {
-  margin-top: 4px;
-}
-
-.nav-link:hover {
-  background: color-mix(in srgb, var(--md-sys-color-on-surface) calc(var(--md-sys-state-hover-state-layer-opacity) * 100%), transparent);
-}
-
-.nav-link:focus-visible {
-  outline: none;
-  background: color-mix(in srgb, var(--md-sys-color-on-surface) calc(var(--md-sys-state-focus-state-layer-opacity) * 100%), transparent);
-}
-
-.nav-link.active {
-  background: var(--md-sys-color-secondary-container);
-  color: var(--md-sys-color-on-secondary-container);
-}
-
-.nav-link.active:hover {
-  background: color-mix(in srgb, var(--md-sys-color-secondary-container), var(--md-sys-color-on-secondary-container) calc(var(--md-sys-state-hover-state-layer-opacity) * 100%));
-}
-
-.sidebar-footer {
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 24px;
-  border-top: 1px solid var(--md-sys-color-outline-variant);
-  color: var(--md-sys-color-on-surface-variant);
-  font: var(--md-sys-typescale-label-small);
-}
-
-.status-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--md-sys-color-primary);
-  box-shadow: 0 0 0 3px var(--md-sys-color-primary-container);
+  flex-direction: column;
+  /* A 4px gap keeps adjacent hover/activated pills from touching. */
+  gap: 4px;
+  padding-top: 0;
 }
 
 .page-shell {
-  min-width: 0;
-  min-height: 100vh;
-}
-
-/* ------------------------------------------------------------------ top app bar */
-
-.pb-topbar {
-  position: sticky;
-  top: 0;
-  z-index: 30;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  height: 64px;
-  padding: 0 16px 0 clamp(16px, 4vw, 48px);
-  background: var(--md-sys-color-surface);
-  color: var(--md-sys-color-on-surface);
-  border-bottom: 1px solid var(--md-sys-color-outline-variant);
-}
-
-.pb-topbar__menu {
-  display: none;
-}
-
-.pb-topbar__title {
   flex: 1 1 auto;
   min-width: 0;
-  overflow: hidden;
-  font: var(--md-sys-typescale-title-large);
-  letter-spacing: var(--md-sys-typescale-title-large-tracking);
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
-.pb-topbar__actions {
-  display: flex;
+/* Small screens: a primary-container "Menu" header (component-page-header.scss) opens the list
+   as a drawer. */
+.docs-page-header {
+  display: none;
   align-items: center;
-  gap: 4px;
+  justify-content: center;
+  min-height: 60px;
+  background: var(--md-sys-color-primary-container);
 }
 
-/* Theme picker: radio + name + a swatch rendered from that theme's own tokens (data-theme scoping). */
+.docs-drawer__nav {
+  padding: 16px 8px;
+}
+
+/* Like the docs' fixedTopGap: the drawer and its scrim start below the 56px toolbar, which stays
+   visible and usable. */
+.docs-drawer.pb-sidenav--over,
+.docs-body > .pb-sidenav-backdrop {
+  top: 56px;
+}
+
+.docs-drawer.pb-sidenav--over {
+  height: calc(100vh - 56px);
+  height: calc(100dvh - 56px);
+}
+
 /* Theme picker: Angular Material's docs theme picker (theme-picker.scss). Each preview is a 24px
    mini app: page background (neutral tone 99 in light themes, neutral tone 10 in dark ones),
    a top bar and a button pill in primary-container, framed by 50% outline-variant, 4px corners. */
@@ -254,35 +218,33 @@ h1:focus {
   fill: var(--md-sys-color-primary-container);
 }
 
-/* ------------------------------------------------------------------ narrow screens: drawer nav */
+/* ------------------------------------------------------------------ narrow screens */
+/* 959px: docs' $small-breakpoint-width (nav becomes a drawer); 720px: $extra-small-breakpoint-width
+   (section links and the GitHub label collapse). */
 
-.catalog-drawer .catalog-sidebar {
-  position: static;
-  height: 100%;
-}
-
-@media (max-width: 840px) {
-  .catalog-shell {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .catalog-nav-column {
+@media (max-width: 959px) {
+  .docs-nav {
     display: none;
   }
 
-  .pb-topbar {
-    padding-left: 4px;
+  .docs-page-header {
+    display: flex;
+  }
+}
+
+@media (min-width: 960px) {
+  .docs-drawer {
+    display: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .docs-navbar__hide-small {
+    display: none;
   }
 
-  .pb-topbar__menu {
+  .docs-navbar__show-small {
     display: inline-flex;
-  }
-}
-
-@media (min-width: 841px) {
-  .catalog-drawer,
-  .catalog-drawer-backdrop {
-    display: none;
   }
 }
 

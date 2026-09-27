@@ -8,8 +8,9 @@
  *   trailing meta label-small on-surface-variant (28px gap, 16px end)
  *   leading icon 24px on-surface-variant (16px / 32px margins); leading avatar 40px circle,
  *     primary-container, 16px margins
- *   interactive items: on-surface state layer (hover 8%, focus 12%); selected nav item:
- *     secondary-container, corner-full; disabled: title 30%, icons 38%
+ *   interactive items: on-surface state layer (hover 8%, focus 12%); nav-list items (links) are
+ *     corner-full pills, and the activated one only gains a secondary-container background
+ *     (labels and icons keep their colors); disabled: title 30%, icons 38%
  */
 
 .pb-list {
@@ -157,16 +158,15 @@
   margin-top: 16px;
 }
 
-/* Selected (mat-nav-list activated): tonal pill. */
+/* mat-nav-list: every item is a pill (the hover/focus state layer too); the activated item
+   (.mdc-list-item--activated) gets the secondary-container indicator. */
+a.pb-list-item,
 .pb-list-item--selected {
-  --pb-state-layer-color: var(--md-sys-color-on-secondary-container);
   border-radius: var(--md-sys-shape-corner-full);
-  background-color: var(--md-sys-color-secondary-container);
-  color: var(--md-sys-color-on-secondary-container);
 }
 
-.pb-list-item--selected .pb-list-item__start {
-  color: var(--md-sys-color-on-secondary-container);
+.pb-list-item--selected {
+  background-color: var(--md-sys-color-secondary-container);
 }
 
 .pb-list-item--disabled {
