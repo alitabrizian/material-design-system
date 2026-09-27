@@ -14,9 +14,11 @@ libs/design-system/tokens  ──► libs/design-system/blazor  (NuGet: PartoBit
 
 | Path | What | Committed? |
 | --- | --- | --- |
-| `scripts/build-tokens.mts` | Generates the color roles for the 4 themes with the HCT algorithm from `@material/material-color-utilities` | yes |
-| `src/material-tokens.css` | Hand-authored, theme-independent tokens: typescale, shape, elevation, motion, state layers | yes |
-| `dist/css/tokens.css` | Generated `--md-sys-color-*` per theme, selected by `<html data-theme="...">` (`rose-red`, `azure-blue`, `magenta-violet`, `cyan-orange`) | no |
+| `reference/angular-material/*.css` | Angular Material's prebuilt M3 themes (rose-red, azure-blue, magenta-violet, cyan-orange), vendored with `VERSION` and `LICENSE`. Refresh with `node scripts/sync-angular-themes.mts [version]` | yes |
+| `scripts/build-tokens.mts` | Parses the vendored themes: 51 `--md-sys-color-*` roles per theme + typescale, shape, elevation and state tokens, and fails on missing or inconsistent values | yes |
+| `src/material-tokens.css` | Hand-authored tokens Angular Material doesn't ship: font stack, motion, spacing, legacy z2/z16 shadows, on-scrim | yes |
+| `dist/css/tokens.css` | Everything above: color roles per `[data-theme]` (with `color-scheme`) and system tokens on `:root` | no |
+| `dist/css/icons.css`, `dist/css/fonts.css` | Self-hosted Material Icons + Material Symbols Outlined (and Roboto in `fonts.css`) | no |
 | `dist/css/material-tokens.css` | Copy of `src/material-tokens.css` | no |
 | `dist/data/palettes.json` | Theme metadata (name, mode, seed colors) for non-CSS consumers | no |
 | `dist/css/roboto.css` | Self-hosted `@font-face` rules for Roboto (variable weight 100–900, normal + italic, one rule per unicode-range subset), generated from the `@fontsource-variable/roboto` devDependency | no |
@@ -62,11 +64,10 @@ on it through the Nx graph (`implicitDependencies` + `dependsOn: ["^build"]`).
 The version lives in `package.json`. Bump it whenever token values change, and
 bump the Blazor package too, since it embeds a copy of these files.
 
-## Why the direct-file-import workaround in the script
+## Why the themes are vendored CSS instead of generated from seed colors
 
-`@material/material-color-utilities@0.4.0`'s own barrel export (`"."` entry
-point) transitively imports a file with a missing `.js` extension in a
-relative import, which Node's ESM resolver rejects — and the package's
-`exports` map only declares `"."`, so a normal deep import is blocked too.
-The script imports the compiled file directly off disk via a `file://` URL,
-which bypasses the `exports` map entirely.
+Angular Material's prebuilt themes are built from predefined tonal palettes (`mat.$rose-palette`, …),
+not from a single seed color. Earlier versions of this package guessed seed colors and ran the HCT
+algorithm, which produced visibly different colors (measured primaries: Rose & Red `#be003e` vs Angular's `#ba005c`, Azure & Blue
+`#0062a0` vs `#005cbb`, Magenta & Violet `#f8acff` vs `#ffabf3`, Cyan & Orange `#44d8f1` vs `#00dddd`). Parsing Angular Material's own output makes every role
+match exactly. `tools/scripts/verify-demo.mts` checks all 51 roles in a real browser.

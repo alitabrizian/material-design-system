@@ -4,33 +4,36 @@ Material 3 Blazor component library. Components use the `PB` prefix (e.g. `PBBut
 
 ## Consuming this package
 
-Add a `PackageReference` to `PartoBita.DesignSystem.Blazor` from any Blazor app (Server or WebAssembly), then
-reference the components' CSS/JS from your `_Host`/`App` root:
+Add a `PackageReference` to `PartoBita.DesignSystem.Blazor` from any Blazor app (Server or WebAssembly),
+then reference the assets from your `App.razor` / host page:
 
 ```html
 <html data-theme="rose-red">
 ...
-<link rel="stylesheet" href="_content/Design/css/roboto.css" />
-<link rel="stylesheet" href="_content/Design/css/tokens.css" />
-<link rel="stylesheet" href="_content/Design/css/material-tokens.css" />
+<link rel="stylesheet" href="_content/Design/css/fonts.css" />   <!-- Roboto + Material Icons/Symbols -->
+<link rel="stylesheet" href="_content/Design/css/tokens.css" />  <!-- every --md-sys-* token -->
 <link rel="stylesheet" href="_content/Design/design-system.css" />
 <script type="module" src="_content/Design/design-system.js"></script>
 ```
 
-The path segment is `_content/Design/` (pinned by `StaticWebAssetBasePath` in `Design.csproj`), not the
-package id. `data-theme` picks one of `rose-red`, `azure-blue`, `magenta-violet`, `cyan-orange`.
+- The path segment is `_content/Design/` (pinned by `StaticWebAssetBasePath` in `Design.csproj`), not
+  the package id.
+- `data-theme` selects one of Angular Material's four prebuilt M3 themes: `rose-red` (default),
+  `azure-blue`, `magenta-violet` or `cyan-orange`. Any element can carry `data-theme` to re-theme
+  its subtree.
+- Fonts are self-hosted, so no Google Fonts `<link>` is needed and it works offline. Roboto is under
+  SIL OFL 1.1 (`fonts/OFL.txt`), Material Icons/Symbols under Apache 2.0 (`fonts/Apache-2.0.txt`).
+- The individual `css/roboto.css`, `css/icons.css` and `css/material-tokens.css` files are still shipped
+  for existing consumers.
 
-`css/roboto.css` loads Roboto, the typeface the typescale tokens name first, from the package itself
-(`_content/Design/fonts/*.woff2`, variable weight 100–900, normal and italic). No Google Fonts
-`<link>` is needed, and it works offline. Leave it out and text silently falls back to Arial on any machine
-that doesn't happen to have Roboto installed. Browsers only download the unicode-range subsets a page
-actually uses (usually just Latin, about 43 KB). Roboto is licensed under the SIL Open Font License 1.1;
-the license ships next to the fonts as `fonts/OFL.txt`.
+Design tokens and fonts come from the framework-neutral
+[`libs/design-system/tokens`](../tokens/README.md) package. `Design.csproj` regenerates it when its
+sources change and copies its `dist/` into `wwwroot/`, so consumers never need Node/npm.
 
-Design tokens (`css/tokens.css`, `css/material-tokens.css`) and the Roboto files (`css/roboto.css`,
-`fonts/`) come from the framework-neutral
-[`libs/design-system/tokens`](../tokens/README.md) package: `Design.csproj` copies its `dist/` into
-`wwwroot/` on every build, so they ship inside this NuGet package — consumers never need Node/npm.
+## Components
+
+All components follow Angular Material 22 (M3): see `specs/001-m3-angular-parity/contracts/components.md`
+for the public API of each one and the demo app for live examples.
 
 ## Versioning
 
