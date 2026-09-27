@@ -1,169 +1,38 @@
 /**
- * Material 3 (M3) design tokens as plain CSS custom properties.
+ * Hand-authored, palette-independent Material 3 tokens that Angular Material's prebuilt themes do
+ * NOT ship: the font stack, motion (m3.material.io/styles/motion/easing-and-duration/tokens-specs)
+ * and a 4dp spacing scale.
  *
- * Naming follows the official --md-sys-* convention (the same prefix Material
- * Web / material-components uses).
+ * Everything else -- color roles, typescale, shape, elevation, state-layer opacities -- is generated
+ * from Angular Material's prebuilt themes by scripts/build-tokens.mts into dist/css/tokens.css, which
+ * also appends this file. This file is additionally copied verbatim to dist/css/material-tokens.css
+ * for consumers that still link it separately.
  *
- * Color roles (--md-sys-color-*) are NOT in this file — they are generated
- * per theme into dist/css/tokens.css by `nx run tokens:build`
- * (scripts/build-tokens.mts, using the real HCT tonal-palette algorithm from
- * @material/material-color-utilities). This file is copied verbatim to
- * dist/css/material-tokens.css by the same build.
- *
- * Everything in *this* file is palette-independent and hand-authored, so it
- * stays static:
- *   - @tinybigui/tokens (npm, MIT)
- *   - material-components/material-web (Google, Apache-2.0) for state-layer
- *     opacities, which @tinybigui/tokens does not publish
- *
- * No SASS/SCSS — this file is consumed directly via <link rel="stylesheet">
- * and referenced elsewhere as var(--md-sys-*).
- *
- * Structure:
- *   3. Typography           (--md-sys-typescale-*)
- *   4. Shape                (--md-sys-shape-corner-*)
- *   5. Elevation            (--md-sys-elevation-level-*)
- *   6. Motion               (--md-sys-motion-*)
- *   7. State layers         (--md-sys-state-*)
- *   8. Spacing              (--md-sys-spacing-*)
+ * No SASS/SCSS: consumed directly via <link rel="stylesheet"> and referenced as var(--md-sys-*).
  */
 
-/* ==========================================================================
-   3. TYPOGRAPHY — 5 categories x 3 sizes x 4 properties = 60 tokens
-   ========================================================================== */
-
 :root {
+  /* Angular Material's typescale names plain "Roboto"; the fallbacks only matter if roboto.css
+     (shipped in this package) is not loaded. */
   --md-sys-typescale-font-family: Roboto, "Helvetica Neue", Arial, sans-serif;
 
-  --md-sys-typescale-display-large-size: 3.5625rem;
-  --md-sys-typescale-display-large-line-height: 4rem;
-  --md-sys-typescale-display-large-weight: 400;
-  --md-sys-typescale-display-large-tracking: -0.25px;
-
-  --md-sys-typescale-display-medium-size: 2.8125rem;
-  --md-sys-typescale-display-medium-line-height: 3.25rem;
-  --md-sys-typescale-display-medium-weight: 400;
-  --md-sys-typescale-display-medium-tracking: 0px;
-
-  --md-sys-typescale-display-small-size: 2.25rem;
-  --md-sys-typescale-display-small-line-height: 2.75rem;
-  --md-sys-typescale-display-small-weight: 400;
-  --md-sys-typescale-display-small-tracking: 0px;
-
-  --md-sys-typescale-headline-large-size: 2rem;
-  --md-sys-typescale-headline-large-line-height: 2.5rem;
-  --md-sys-typescale-headline-large-weight: 400;
-  --md-sys-typescale-headline-large-tracking: 0px;
-
-  --md-sys-typescale-headline-medium-size: 1.75rem;
-  --md-sys-typescale-headline-medium-line-height: 2.25rem;
-  --md-sys-typescale-headline-medium-weight: 400;
-  --md-sys-typescale-headline-medium-tracking: 0px;
-
-  --md-sys-typescale-headline-small-size: 1.5rem;
-  --md-sys-typescale-headline-small-line-height: 2rem;
-  --md-sys-typescale-headline-small-weight: 400;
-  --md-sys-typescale-headline-small-tracking: 0px;
-
-  --md-sys-typescale-title-large-size: 1.375rem;
-  --md-sys-typescale-title-large-line-height: 1.75rem;
-  --md-sys-typescale-title-large-weight: 400;
-  --md-sys-typescale-title-large-tracking: 0px;
-
-  --md-sys-typescale-title-medium-size: 1rem;
-  --md-sys-typescale-title-medium-line-height: 1.5rem;
-  --md-sys-typescale-title-medium-weight: 500;
-  --md-sys-typescale-title-medium-tracking: 0.15px;
-
-  --md-sys-typescale-title-small-size: 0.875rem;
-  --md-sys-typescale-title-small-line-height: 1.25rem;
-  --md-sys-typescale-title-small-weight: 500;
-  --md-sys-typescale-title-small-tracking: 0.1px;
-
-  --md-sys-typescale-body-large-size: 1rem;
-  --md-sys-typescale-body-large-line-height: 1.5rem;
-  --md-sys-typescale-body-large-weight: 400;
-  --md-sys-typescale-body-large-tracking: 0.5px;
-
-  --md-sys-typescale-body-medium-size: 0.875rem;
-  --md-sys-typescale-body-medium-line-height: 1.25rem;
-  --md-sys-typescale-body-medium-weight: 400;
-  --md-sys-typescale-body-medium-tracking: 0.25px;
-
-  --md-sys-typescale-body-small-size: 0.75rem;
-  --md-sys-typescale-body-small-line-height: 1rem;
-  --md-sys-typescale-body-small-weight: 400;
-  --md-sys-typescale-body-small-tracking: 0.4px;
-
-  --md-sys-typescale-label-large-size: 0.875rem;
-  --md-sys-typescale-label-large-line-height: 1.25rem;
-  --md-sys-typescale-label-large-weight: 500;
-  --md-sys-typescale-label-large-tracking: 0.1px;
-
-  --md-sys-typescale-label-medium-size: 0.75rem;
-  --md-sys-typescale-label-medium-line-height: 1rem;
-  --md-sys-typescale-label-medium-weight: 500;
-  --md-sys-typescale-label-medium-tracking: 0.5px;
-
-  --md-sys-typescale-label-small-size: 0.6875rem;
-  --md-sys-typescale-label-small-line-height: 1rem;
-  --md-sys-typescale-label-small-weight: 500;
-  --md-sys-typescale-label-small-tracking: 0.5px;
-}
-
-/* ==========================================================================
-   4. SHAPE — corner radius scale
-   ========================================================================== */
-
-:root {
-  --md-sys-shape-corner-none: 0px;
-  --md-sys-shape-corner-extra-small: 0.25rem;
-  --md-sys-shape-corner-small: 0.5rem;
-  --md-sys-shape-corner-medium: 0.75rem;
-  --md-sys-shape-corner-large: 1rem;
-  --md-sys-shape-corner-extra-large: 1.75rem;
-  --md-sys-shape-corner-full: 624.9375rem;
-}
-
-/* ==========================================================================
-   5. ELEVATION — box-shadow levels
-   ========================================================================== */
-
-:root {
-  --md-sys-elevation-level-0: none;
-  --md-sys-elevation-level-1: 0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15);
-  --md-sys-elevation-level-2: 0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(0, 0, 0, 0.15);
-  --md-sys-elevation-level-3: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 4px 8px 3px rgba(0, 0, 0, 0.15);
-  --md-sys-elevation-level-4: 0 2px 3px 0 rgba(0, 0, 0, 0.3), 0 6px 10px 4px rgba(0, 0, 0, 0.15);
-  --md-sys-elevation-level-5: 0 4px 4px 0 rgba(0, 0, 0, 0.3), 0 8px 12px 6px rgba(0, 0, 0, 0.15);
-}
-
-/* ==========================================================================
-   6. MOTION — durations and easings
-   ========================================================================== */
-
-:root {
   --md-sys-motion-duration-short1: 50ms;
   --md-sys-motion-duration-short2: 100ms;
   --md-sys-motion-duration-short3: 150ms;
   --md-sys-motion-duration-short4: 200ms;
-
   --md-sys-motion-duration-medium1: 250ms;
   --md-sys-motion-duration-medium2: 300ms;
   --md-sys-motion-duration-medium3: 350ms;
   --md-sys-motion-duration-medium4: 400ms;
-
   --md-sys-motion-duration-long1: 450ms;
   --md-sys-motion-duration-long2: 500ms;
   --md-sys-motion-duration-long3: 550ms;
   --md-sys-motion-duration-long4: 600ms;
-
   --md-sys-motion-duration-extra-long1: 700ms;
   --md-sys-motion-duration-extra-long2: 800ms;
   --md-sys-motion-duration-extra-long3: 900ms;
   --md-sys-motion-duration-extra-long4: 1000ms;
 
-  /* M3 defines linear as a plain, unaccelerated curve (no dedicated cubic-bezier). */
   --md-sys-motion-easing-linear: linear;
   --md-sys-motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
   --md-sys-motion-easing-standard-decelerate: cubic-bezier(0, 0, 0, 1);
@@ -171,36 +40,18 @@
   --md-sys-motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
   --md-sys-motion-easing-emphasized-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1);
   --md-sys-motion-easing-emphasized-accelerate: cubic-bezier(0.3, 0, 0.8, 0.15);
-
-  /* Convenience aliases matching the short names used elsewhere in this design system. */
   --md-sys-motion-easing-decelerate: var(--md-sys-motion-easing-standard-decelerate);
   --md-sys-motion-easing-accelerate: var(--md-sys-motion-easing-standard-accelerate);
-}
 
-/* ==========================================================================
-   7. STATE LAYERS — interaction-state opacities
-   Sourced from material-components/material-web tokens, md-sys-state module
-   (@tinybigui/tokens does not publish this category).
-   ========================================================================== */
+  /* Material Components' legacy curves, still used by Angular Material's own transitions. */
+  --md-sys-motion-easing-legacy: cubic-bezier(0.4, 0, 0.2, 1);
+  --md-sys-motion-easing-legacy-decelerate: cubic-bezier(0, 0, 0.2, 1);
+  --md-sys-motion-easing-legacy-accelerate: cubic-bezier(0.4, 0, 1, 1);
 
-:root {
-  --md-sys-state-hover-state-layer-opacity: 0.08;
-  --md-sys-state-focus-state-layer-opacity: 0.12;
-  --md-sys-state-pressed-state-layer-opacity: 0.12;
-  --md-sys-state-dragged-state-layer-opacity: 0.16;
-}
-
-/* ==========================================================================
-   8. SPACING — 4dp-grid scale for gaps between components
-   M3 lays everything out on a 4dp grid (m3.material.io/foundations/layout);
-   named like the shape scale so components never hardcode spacing.
-   ========================================================================== */
-
-:root {
   --md-sys-spacing-none: 0px;
-  --md-sys-spacing-extra-small: 0.25rem;
-  --md-sys-spacing-small: 0.5rem;
-  --md-sys-spacing-medium: 0.75rem;
-  --md-sys-spacing-large: 1rem;
-  --md-sys-spacing-extra-large: 1.5rem;
+  --md-sys-spacing-extra-small: 4px;
+  --md-sys-spacing-small: 8px;
+  --md-sys-spacing-medium: 12px;
+  --md-sys-spacing-large: 16px;
+  --md-sys-spacing-extra-large: 24px;
 }

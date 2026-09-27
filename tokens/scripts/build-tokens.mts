@@ -1,369 +1,291 @@
 /**
- * Generates the Material 3 color-role tokens (--md-sys-color-*) for the 4
- * fixed Angular-Material-style two-hue themes (each theme has its own
- * primary + tertiary seed color and a single fixed light/dark mode -- there
- * is no independent light/dark toggle, matching Angular Material's own
- * prebuilt theme set), using the real HCT tonal-palette algorithm from
- * @material/material-color-utilities.
+ * Builds the framework-neutral design tokens package (dist/) from Angular Material's own prebuilt
+ * M3 themes, so every --md-sys-* value is exactly what Angular Material ships -- no seed colors, no
+ * hand-picked tones (constitution principles I and III).
  *
- * Output goes ONLY into this package's own dist/ -- this script knows nothing
- * about Blazor or Angular. Each framework package pulls from dist/ itself
- * (the Blazor library syncs it at build time, see Design.csproj):
- *   - dist/css/tokens.css           generated color roles, per theme
- *   - dist/css/material-tokens.css  copied as-is from src/ (typescale/shape/
- *                                   elevation/motion/state, hand-authored)
- *   - dist/data/palettes.json       theme metadata for non-CSS consumers
- *   - dist/css/roboto.css           self-hosted @font-face rules for Roboto,
- *                                   the family --md-sys-typescale-font-family
- *                                   names first
- *   - dist/fonts/*.woff2, OFL.txt   the Roboto files roboto.css points at
- *                                   (relative ../fonts/ URLs) + their license
+ * Source of truth: reference/angular-material/{rose-red,azure-blue,magenta-violet,cyan-orange}.css,
+ * vendored from @angular/material/prebuilt-themes (refresh with scripts/sync-angular-themes.mts).
+ * Each file is one `html { --mat-sys-*: ...; }` block holding:
+ *   - ~50 color roles             -> --md-sys-color-<role>, per [data-theme] (theme-specific)
+ *   - level0..5 box-shadows       -> --md-sys-elevation-level-N          } identical in all four
+ *   - typescale roles             -> --md-sys-typescale-<role>[-<prop>]  } themes (asserted), so
+ *   - corner-* shape scale        -> --md-sys-shape-corner-*             } emitted once on :root
+ *   - *-state-layer-opacity       -> --md-sys-state-*-state-layer-opacity}
  *
- * Roboto comes from the @fontsource-variable/roboto devDependency: one
- * variable-weight (100-900) woff2 per unicode-range subset, normal + italic.
- * Its CSS is rewritten to register the family as plain "Roboto" (Fontsource
- * calls it "Roboto Variable"), so the token's `Roboto` resolves to these
- * files -- and a same-named @font-face shadows any locally installed Roboto,
- * so every machine renders the same font file.
- *
- * Note: @material/material-color-utilities@0.4.0's own barrel export
- * (the "." entry point) transitively imports a file with a missing ".js"
- * extension in a relative import, which Node's ESM resolver rejects, and
- * the package's `exports` map only allows importing ".", so a normal
- * `@material/material-color-utilities/palettes/core_palette.js` deep
- * import is also blocked. We work around both by importing the compiled
- * file directly off disk via a file:// URL, which bypasses the exports
- * map (this is a filesystem import, not package-specifier resolution).
+ * Output (dist/, gitignored; the Blazor library copies it into wwwroot at build time):
+ *   - css/tokens.css            color roles per theme + all system tokens + src/material-tokens.css
+ *   - css/material-tokens.css   copy of src/material-tokens.css (motion, spacing, font stack)
+ *   - css/roboto.css            self-hosted Roboto @font-face rules (from @fontsource-variable/roboto)
+ *   - css/icons.css             self-hosted Material Icons + Material Symbols Outlined + class rules
+ *   - css/fonts.css             roboto.css + icons.css in one file
+ *   - fonts/*.woff2, OFL.txt, Apache-2.0.txt
+ *   - data/palettes.json        theme metadata (name, mode, key colors) for non-CSS consumers
  */
 
-import { fileURLToPath, pathToFileURL } from "node:url";
-import path from "node:path";
 import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const packageRoot = path.resolve(__dirname, "..");
+const packageRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const repoRoot = path.resolve(packageRoot, "../../..");
+const referenceDir = path.join(packageRoot, "reference/angular-material");
 const distRoot = path.join(packageRoot, "dist");
 
-const corePaletteModule = path.join(
-  repoRoot,
-  "node_modules/@material/material-color-utilities/palettes/core_palette.js"
-);
+const DEFAULT_THEME = "rose-red";
+const THEMES: Record<string, { name: string }> = {
+  "rose-red": { name: "Rose & Red" },
+  "azure-blue": { name: "Azure & Blue" },
+  "magenta-violet": { name: "Magenta & Violet" },
+  "cyan-orange": { name: "Cyan & Orange" },
+};
 
-if (!fs.existsSync(corePaletteModule)) {
-  console.error(
-    `Could not find ${corePaletteModule}.\n` +
-      "Run 'npm install' at the workspace root first " +
-      "(@material/material-color-utilities is a devDependency there)."
-  );
+// Every color role the design system relies on (contracts/tokens.md). The build fails if Angular
+// Material ever stops shipping one, instead of silently emitting a theme with holes in it.
+const COLOR_ROLES = [
+  "background", "on-background",
+  "surface", "surface-dim", "surface-bright", "surface-container-lowest", "surface-container-low",
+  "surface-container", "surface-container-high", "surface-container-highest", "surface-variant",
+  "on-surface", "on-surface-variant", "surface-tint",
+  "inverse-surface", "inverse-on-surface", "inverse-primary",
+  "primary", "on-primary", "primary-container", "on-primary-container",
+  "primary-fixed", "primary-fixed-dim", "on-primary-fixed", "on-primary-fixed-variant",
+  "secondary", "on-secondary", "secondary-container", "on-secondary-container",
+  "secondary-fixed", "secondary-fixed-dim", "on-secondary-fixed", "on-secondary-fixed-variant",
+  "tertiary", "on-tertiary", "tertiary-container", "on-tertiary-container",
+  "tertiary-fixed", "tertiary-fixed-dim", "on-tertiary-fixed", "on-tertiary-fixed-variant",
+  "error", "on-error", "error-container", "on-error-container",
+  "outline", "outline-variant", "scrim", "shadow", "neutral10", "neutral-variant20",
+] as const;
+
+const FONT_STACK_VAR = "var(--md-sys-typescale-font-family)";
+
+function fail(message: string): never {
+  console.error(`build-tokens: ${message}`);
   process.exit(1);
 }
 
-const { CorePalette } = await import(pathToFileURL(corePaletteModule).href);
-
-interface TonalPalette {
-  tone(tone: number): number; // returns an ARGB int
-}
-
-interface CorePaletteInstance {
-  a1: TonalPalette; // primary
-  a2: TonalPalette; // secondary
-  a3: TonalPalette; // tertiary
-  error: TonalPalette;
-  n1: TonalPalette; // neutral (surface)
-  n2: TonalPalette; // neutral-variant (outline)
-}
-
-interface ThemeDef {
-  name: string;
-  mode: "light" | "dark";
-  primary: number;
-  tertiary: number;
-}
-
-// The 4 fixed themes (Angular Material's own prebuilt-theme naming/pairing):
-// each is its own two-hue palette (primary + tertiary seed) locked to a
-// single light or dark mode -- not independently togglable.
-const THEMES: Record<string, ThemeDef> = {
-  "rose-red": { name: "Rose & Red", mode: "light", primary: 0xe3184f, tertiary: 0xb3261e },
-  "azure-blue": { name: "Azure & Blue", mode: "light", primary: 0x0091ea, tertiary: 0x0b57d0 },
-  "magenta-violet": { name: "Magenta & Violet", mode: "dark", primary: 0xd500f9, tertiary: 0x673ab7 },
-  "cyan-orange": { name: "Cyan & Orange", mode: "dark", primary: 0x00bcd4, tertiary: 0xf57c00 },
-};
-
-function toHex(argb: number): string {
-  const r = (argb >> 16) & 0xff;
-  const g = (argb >> 8) & 0xff;
-  const b = argb & 0xff;
-  return "#" + [r, g, b].map((c) => c.toString(16).padStart(2, "0")).join("");
-}
-
-interface ColorRoles {
-  primary: string;
-  onPrimary: string;
-  primaryContainer: string;
-  onPrimaryContainer: string;
-  secondary: string;
-  onSecondary: string;
-  secondaryContainer: string;
-  onSecondaryContainer: string;
-  tertiary: string;
-  onTertiary: string;
-  tertiaryContainer: string;
-  onTertiaryContainer: string;
-  error: string;
-  onError: string;
-  errorContainer: string;
-  onErrorContainer: string;
-  surface: string;
-  onSurface: string;
-  surfaceVariant: string;
-  onSurfaceVariant: string;
-  surfaceContainerLowest: string;
-  surfaceContainerLow: string;
-  surfaceContainer: string;
-  surfaceContainerHigh: string;
-  surfaceContainerHighest: string;
-  background: string;
-  onBackground: string;
-  outline: string;
-  outlineVariant: string;
-  inverseSurface: string;
-  inverseOnSurface: string;
-  inversePrimary: string;
-  scrim: string;
-  shadow: string;
-}
-
-function rolesForMode(cp: CorePaletteInstance, mode: "light" | "dark"): ColorRoles {
-  const t = (palette: TonalPalette, tone: number) => toHex(palette.tone(tone));
-  const isDark = mode === "dark";
-
-  return {
-    primary: t(cp.a1, isDark ? 80 : 40),
-    onPrimary: t(cp.a1, isDark ? 20 : 100),
-    primaryContainer: t(cp.a1, isDark ? 30 : 90),
-    onPrimaryContainer: t(cp.a1, isDark ? 90 : 10),
-
-    secondary: t(cp.a2, isDark ? 80 : 40),
-    onSecondary: t(cp.a2, isDark ? 20 : 100),
-    secondaryContainer: t(cp.a2, isDark ? 30 : 90),
-    onSecondaryContainer: t(cp.a2, isDark ? 90 : 10),
-
-    tertiary: t(cp.a3, isDark ? 80 : 40),
-    onTertiary: t(cp.a3, isDark ? 20 : 100),
-    tertiaryContainer: t(cp.a3, isDark ? 30 : 90),
-    onTertiaryContainer: t(cp.a3, isDark ? 90 : 10),
-
-    error: t(cp.error, isDark ? 80 : 40),
-    onError: t(cp.error, isDark ? 20 : 100),
-    errorContainer: t(cp.error, isDark ? 30 : 90),
-    onErrorContainer: t(cp.error, isDark ? 90 : 10),
-
-    surface: isDark ? "#2d2d2d" : t(cp.n1, 98),
-    onSurface: t(cp.n1, isDark ? 90 : 10),
-    surfaceVariant: t(cp.n2, isDark ? 30 : 90),
-    onSurfaceVariant: t(cp.n2, isDark ? 80 : 30),
-
-    surfaceContainerLowest: t(cp.n1, isDark ? 4 : 100),
-    surfaceContainerLow: t(cp.n1, isDark ? 6 : 96),
-    surfaceContainer: t(cp.n1, isDark ? 12 : 94),
-    surfaceContainerHigh: t(cp.n1, isDark ? 17 : 92),
-    surfaceContainerHighest: t(cp.n1, isDark ? 22 : 90),
-
-    background: t(cp.n1, isDark ? 10 : 99),
-    onBackground: t(cp.n1, isDark ? 90 : 10),
-
-    outline: t(cp.n2, isDark ? 60 : 50),
-    outlineVariant: t(cp.n2, isDark ? 30 : 80),
-
-    inverseSurface: t(cp.n1, isDark ? 90 : 20),
-    inverseOnSurface: t(cp.n1, isDark ? 20 : 95),
-    inversePrimary: t(cp.a1, isDark ? 40 : 80),
-
-    scrim: t(cp.n1, 0),
-    shadow: t(cp.n1, 0),
-  };
-}
-
-const ROLE_TO_VAR: [keyof ColorRoles, string][] = [
-  ["primary", "--md-sys-color-primary"],
-  ["onPrimary", "--md-sys-color-on-primary"],
-  ["primaryContainer", "--md-sys-color-primary-container"],
-  ["onPrimaryContainer", "--md-sys-color-on-primary-container"],
-  ["secondary", "--md-sys-color-secondary"],
-  ["onSecondary", "--md-sys-color-on-secondary"],
-  ["secondaryContainer", "--md-sys-color-secondary-container"],
-  ["onSecondaryContainer", "--md-sys-color-on-secondary-container"],
-  ["tertiary", "--md-sys-color-tertiary"],
-  ["onTertiary", "--md-sys-color-on-tertiary"],
-  ["tertiaryContainer", "--md-sys-color-tertiary-container"],
-  ["onTertiaryContainer", "--md-sys-color-on-tertiary-container"],
-  ["error", "--md-sys-color-error"],
-  ["onError", "--md-sys-color-on-error"],
-  ["errorContainer", "--md-sys-color-error-container"],
-  ["onErrorContainer", "--md-sys-color-on-error-container"],
-  ["surface", "--md-sys-color-surface"],
-  ["onSurface", "--md-sys-color-on-surface"],
-  ["surfaceVariant", "--md-sys-color-surface-variant"],
-  ["onSurfaceVariant", "--md-sys-color-on-surface-variant"],
-  ["surfaceContainerLowest", "--md-sys-color-surface-container-lowest"],
-  ["surfaceContainerLow", "--md-sys-color-surface-container-low"],
-  ["surfaceContainer", "--md-sys-color-surface-container"],
-  ["surfaceContainerHigh", "--md-sys-color-surface-container-high"],
-  ["surfaceContainerHighest", "--md-sys-color-surface-container-highest"],
-  ["background", "--md-sys-color-background"],
-  ["onBackground", "--md-sys-color-on-background"],
-  ["outline", "--md-sys-color-outline"],
-  ["outlineVariant", "--md-sys-color-outline-variant"],
-  ["inverseSurface", "--md-sys-color-inverse-surface"],
-  ["inverseOnSurface", "--md-sys-color-inverse-on-surface"],
-  ["inversePrimary", "--md-sys-color-inverse-primary"],
-  ["scrim", "--md-sys-color-scrim"],
-  ["shadow", "--md-sys-color-shadow"],
-];
-
-// Roles that start a new visual group in the generated CSS (a blank line is
-// inserted before each, purely cosmetic to mirror the hand-written original).
-const GROUP_STARTS: ReadonlySet<keyof ColorRoles> = new Set([
-  "secondary",
-  "tertiary",
-  "error",
-  "surface",
-  "surfaceContainerLowest",
-  "background",
-  "outline",
-  "inverseSurface",
-  "scrim",
-]);
-
-function cssBlock(selector: string, roles: ColorRoles): string {
-  const lines = [`${selector} {`];
-  for (const [role, cssVar] of ROLE_TO_VAR) {
-    if (GROUP_STARTS.has(role)) lines.push("");
-    lines.push(`  ${cssVar}: ${roles[role]};`);
+function parseTheme(file: string): Map<string, string> {
+  const css = fs.readFileSync(file, "utf8");
+  const tokens = new Map<string, string>();
+  for (const match of css.matchAll(/--mat-sys-([a-z0-9-]+)\s*:\s*([^;]+);/g)) {
+    tokens.set(match[1], match[2].trim());
   }
-  lines.push("}");
-  return lines.join("\n");
+  if (tokens.size === 0) fail(`no --mat-sys-* tokens found in ${file}`);
+  return tokens;
 }
 
-const DEFAULT_THEME = "rose-red";
-
-const themes: Record<string, { def: ThemeDef; roles: ColorRoles }> = {};
-
-for (const [key, def] of Object.entries(THEMES)) {
-  const cp: CorePaletteInstance = CorePalette.fromColors({ primary: def.primary, tertiary: def.tertiary });
-  themes[key] = { def, roles: rolesForMode(cp, def.mode) };
+function relativeLuminance(hex: string): number {
+  const [r, g, b] = [1, 3, 5].map((i) => {
+    const c = parseInt(hex.slice(i, i + 2), 16) / 255;
+    return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+  });
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }
 
-const cssParts: string[] = [
-  "/**",
-  " * GENERATED FILE -- do not edit by hand.",
-  " * Produced by libs/design-system/tokens/scripts/build-tokens.mts (nx run tokens:build)",
-  " * from @material/material-color-utilities. Re-run the Nx target to regenerate.",
-  " *",
-  " * --md-sys-color-* roles for the 4 fixed themes (each its own two-hue",
-  " * primary+tertiary palette, locked to one light/dark mode). Palette-",
-  " * independent tokens (typescale/shape/elevation/motion/state) live in",
-  " * material-tokens.css instead.",
-  " */",
-  "",
+/** Maps one theme-independent --mat-sys-* token to its --md-sys-* name and value (null = not a system token). */
+function systemToken(name: string, value: string): [string, string] | null {
+  let m: RegExpMatchArray | null;
+  if ((m = name.match(/^level(\d)$/))) return [`--md-sys-elevation-level-${m[1]}`, value];
+  if (name.startsWith("corner-")) return [`--md-sys-shape-${name}`, value];
+  if (name.endsWith("-state-layer-opacity")) return [`--md-sys-state-${name}`, value];
+  if ((m = name.match(/^(display|headline|title|body|label)-(large|medium|small)(-.+)?$/))) {
+    const role = `${m[1]}-${m[2]}`;
+    const prop = m[3] ?? "";
+    if (prop === "") return [`--md-sys-typescale-${role}`, value.replace(/ Roboto$/, ` ${FONT_STACK_VAR}`)];
+    if (prop === "-font") return [`--md-sys-typescale-${role}-font`, FONT_STACK_VAR];
+    return [`--md-sys-typescale-${role}${prop}`, value];
+  }
+  return null;
+}
+
+// ---------------------------------------------------------------- read + validate the references
+
+const angularVersion = fs.readFileSync(path.join(referenceDir, "VERSION"), "utf8").trim();
+const themes = Object.fromEntries(
+  Object.keys(THEMES).map((key) => [key, parseTheme(path.join(referenceDir, `${key}.css`))])
+) as Record<string, Map<string, string>>;
+
+for (const [key, tokens] of Object.entries(themes)) {
+  const missing = COLOR_ROLES.filter((role) => !tokens.has(role));
+  if (missing.length) fail(`${key}.css is missing color roles: ${missing.join(", ")}`);
+}
+
+const reference = themes[DEFAULT_THEME];
+const system: [string, string][] = [];
+for (const [name, value] of reference) {
+  if ((COLOR_ROLES as readonly string[]).includes(name)) continue;
+  const mapped = systemToken(name, value);
+  if (!mapped) fail(`unmapped Angular Material token --mat-sys-${name}; extend systemToken()`);
+  for (const [key, tokens] of Object.entries(themes)) {
+    if (tokens.get(name) !== value) {
+      fail(`--mat-sys-${name} differs between ${DEFAULT_THEME} (${value}) and ${key} (${tokens.get(name)})`);
+    }
+  }
+  system.push(mapped);
+}
+
+const modes = Object.fromEntries(
+  Object.entries(themes).map(([key, tokens]) => [key, relativeLuminance(tokens.get("surface")!) < 0.5 ? "dark" : "light"])
+) as Record<string, "light" | "dark">;
+
+// ---------------------------------------------------------------- tokens.css
+
+const header = (lines: string[]) => ["/**", " * GENERATED FILE -- do not edit by hand.", ...lines.map((l) => ` * ${l}`.trimEnd()), " */", ""].join("\n");
+
+const tokensCss: string[] = [
+  header([
+    "Produced by libs/design-system/tokens/scripts/build-tokens.mts (nx run tokens:build) from",
+    `Angular Material ${angularVersion}'s prebuilt M3 themes (reference/angular-material/*.css).`,
+    "",
+    "Theme color roles are scoped by [data-theme]; any element may carry data-theme to re-scope",
+    "its subtree. :root gets the default theme. System tokens are theme-independent.",
+  ]),
 ];
 
-const keys = Object.keys(THEMES);
-for (const key of keys) {
+for (const key of Object.keys(THEMES)) {
+  const tokens = themes[key];
   const selector = key === DEFAULT_THEME ? `:root,\n[data-theme="${key}"]` : `[data-theme="${key}"]`;
-  cssParts.push(`/* ${THEMES[key].name} — ${THEMES[key].mode} */`);
-  cssParts.push(cssBlock(selector, themes[key].roles));
-  cssParts.push("");
+  tokensCss.push(`/* ${THEMES[key].name} (${modes[key]}) */`, `${selector} {`, `  color-scheme: ${modes[key]};`);
+  for (const role of COLOR_ROLES) tokensCss.push(`  --md-sys-color-${role}: ${tokens.get(role)};`);
+  tokensCss.push("}", "");
 }
 
-const cssOutputPath = path.join(distRoot, "css/tokens.css");
-const staticCssOutputPath = path.join(distRoot, "css/material-tokens.css");
-const jsonOutputPath = path.join(distRoot, "data/palettes.json");
+tokensCss.push("/* System tokens: typescale, shape, elevation, state layers (identical in every theme) */", ":root {");
+for (const [name, value] of system) tokensCss.push(`  ${name}: ${value};`);
+tokensCss.push("}", "");
+
+const handAuthored = fs.readFileSync(path.join(packageRoot, "src/material-tokens.css"), "utf8");
+tokensCss.push("/* ---- src/material-tokens.css (motion, spacing, font stack) ---- */", handAuthored.trim(), "");
+
+// ---------------------------------------------------------------- fonts (Roboto + icon fonts)
+
+function requirePackage(name: string): string {
+  const dir = path.join(repoRoot, "node_modules", name);
+  if (!fs.existsSync(dir)) fail(`could not find ${dir}. Run 'npm install' at the workspace root first.`);
+  return dir;
+}
 
 fs.rmSync(distRoot, { recursive: true, force: true });
-fs.mkdirSync(path.dirname(cssOutputPath), { recursive: true });
-fs.mkdirSync(path.dirname(jsonOutputPath), { recursive: true });
+for (const dir of ["css", "fonts", "data"]) fs.mkdirSync(path.join(distRoot, dir), { recursive: true });
 
-fs.writeFileSync(cssOutputPath, cssParts.join("\n").trimEnd() + "\n", "utf8");
-fs.copyFileSync(path.join(packageRoot, "src/material-tokens.css"), staticCssOutputPath);
-fs.writeFileSync(
-  jsonOutputPath,
+const fontFiles = new Set<string>();
+/** Rewrites Fontsource's ./files/ URLs to ../fonts/ and copies each referenced file from whichever package has it. */
+function copyFonts(css: string, ...packageDirs: string[]): string {
+  const rewritten = css.replaceAll("url(./files/", "url(../fonts/");
+  for (const m of rewritten.matchAll(/url\(\.\.\/fonts\/([^)]+)\)/g)) {
+    const source = packageDirs.map((dir) => path.join(dir, "files", m[1])).find((file) => fs.existsSync(file));
+    if (!source) fail(`font file ${m[1]} not found in ${packageDirs.join(", ")}`);
+    fs.copyFileSync(source, path.join(distRoot, "fonts", m[1]));
+    fontFiles.add(m[1]);
+  }
+  return rewritten;
+}
+
+const roboto = requirePackage("@fontsource-variable/roboto");
+const robotoCss = copyFonts(
+  ["wght.css", "wght-italic.css"]
+    .map((f) => fs.readFileSync(path.join(roboto, f), "utf8"))
+    .join("\n")
+    .replaceAll("font-family: 'Roboto Variable';", "font-family: 'Roboto';"),
+  roboto
+);
+if (robotoCss.includes("Roboto Variable")) fail("unexpected @fontsource-variable/roboto CSS layout");
+fs.copyFileSync(path.join(roboto, "LICENSE"), path.join(distRoot, "fonts/OFL.txt"));
+
+// Material Icons (the font mat-icon uses by default) and Material Symbols Outlined (variable weight).
+// Only the woff2 is kept for Material Icons; every supported browser reads woff2.
+const materialIcons = requirePackage("@fontsource/material-icons");
+const materialSymbols = requirePackage("@fontsource-variable/material-symbols-outlined");
+fs.copyFileSync(path.join(materialIcons, "LICENSE"), path.join(distRoot, "fonts/Apache-2.0.txt"));
+
+const iconsCss = copyFonts(
+  [
+    "@font-face {",
+    "  font-family: 'Material Icons';",
+    "  font-style: normal;",
+    "  font-display: block;",
+    "  font-weight: 400;",
+    "  src: url(./files/material-icons-latin-400-normal.woff2) format('woff2');",
+    "}",
+    "",
+    "@font-face {",
+    "  font-family: 'Material Symbols Outlined';",
+    "  font-style: normal;",
+    "  font-display: block;",
+    "  font-weight: 100 700;",
+    "  src: url(./files/material-symbols-outlined-latin-wght-normal.woff2) format('woff2');",
+    "}",
+    "",
+    // Same class contract as Google Fonts' icon CSS, which mat-icon and existing markup rely on.
+    ".material-icons,",
+    ".material-symbols-outlined {",
+    "  font-weight: normal;",
+    "  font-style: normal;",
+    "  font-size: 24px;",
+    "  line-height: 1;",
+    "  letter-spacing: normal;",
+    "  text-transform: none;",
+    "  display: inline-block;",
+    "  white-space: nowrap;",
+    "  word-wrap: normal;",
+    "  direction: ltr;",
+    "  font-feature-settings: 'liga';",
+    "  -webkit-font-smoothing: antialiased;",
+    "  -moz-osx-font-smoothing: grayscale;",
+    "  text-rendering: optimizeLegibility;",
+    "}",
+    "",
+    ".material-icons {",
+    "  font-family: 'Material Icons';",
+    "}",
+    "",
+    ".material-symbols-outlined {",
+    "  font-family: 'Material Symbols Outlined';",
+    "}",
+  ].join("\n"),
+  materialIcons,
+  materialSymbols
+);
+
+// ---------------------------------------------------------------- write dist/
+
+const write = (rel: string, content: string) => {
+  fs.writeFileSync(path.join(distRoot, rel), content.trimEnd() + "\n", "utf8");
+  console.log(`Wrote ${path.relative(repoRoot, path.join(distRoot, rel))}`);
+};
+
+write("css/tokens.css", tokensCss.join("\n"));
+write("css/material-tokens.css", handAuthored);
+const robotoOut = header(["Self-hosted Roboto (variable 100-900, normal + italic), SIL OFL 1.1 (../fonts/OFL.txt)."]) + "\n" + robotoCss.trim();
+const iconsOut = header(["Self-hosted Material Icons + Material Symbols Outlined, Apache 2.0 (../fonts/Apache-2.0.txt)."]) + "\n" + iconsCss.trim();
+write("css/roboto.css", robotoOut);
+write("css/icons.css", iconsOut);
+write("css/fonts.css", robotoOut + "\n\n" + iconsOut);
+write(
+  "data/palettes.json",
   JSON.stringify(
     {
+      source: `@angular/material@${angularVersion} prebuilt-themes`,
       default: DEFAULT_THEME,
       themes: Object.fromEntries(
-        keys.map((key) => [
+        Object.keys(THEMES).map((key) => [
           key,
           {
             name: THEMES[key].name,
-            mode: THEMES[key].mode,
-            primarySeed: toHex(THEMES[key].primary),
-            tertiarySeed: toHex(THEMES[key].tertiary),
+            mode: modes[key],
+            primary: themes[key].get("primary"),
+            secondary: themes[key].get("secondary"),
+            tertiary: themes[key].get("tertiary"),
           },
         ])
       ),
     },
     null,
     2
-  ) + "\n",
-  "utf8"
+  )
 );
 
-const robotoPackage = path.join(repoRoot, "node_modules/@fontsource-variable/roboto");
-if (!fs.existsSync(robotoPackage)) {
-  console.error(
-    `Could not find ${robotoPackage}.\n` +
-      "Run 'npm install' at the workspace root first " +
-      "(@fontsource-variable/roboto is a devDependency there)."
-  );
-  process.exit(1);
-}
-
-const robotoCssOutputPath = path.join(distRoot, "css/roboto.css");
-const fontsOutputDir = path.join(distRoot, "fonts");
-fs.mkdirSync(fontsOutputDir, { recursive: true });
-
-const robotoCss = ["wght.css", "wght-italic.css"]
-  .map((file) => fs.readFileSync(path.join(robotoPackage, file), "utf8"))
-  .join("\n")
-  .replaceAll("font-family: 'Roboto Variable';", "font-family: 'Roboto';")
-  .replaceAll("url(./files/", "url(../fonts/");
-
-const fontFiles = [...robotoCss.matchAll(/url\(\.\.\/fonts\/([^)]+)\)/g)].map((m) => m[1]);
-if (fontFiles.length === 0 || robotoCss.includes("Roboto Variable")) {
-  console.error("Unexpected @fontsource-variable/roboto CSS layout; update the rewrite in build-tokens.mts.");
-  process.exit(1);
-}
-for (const file of fontFiles) {
-  fs.copyFileSync(path.join(robotoPackage, "files", file), path.join(fontsOutputDir, file));
-}
-fs.copyFileSync(path.join(robotoPackage, "LICENSE"), path.join(fontsOutputDir, "OFL.txt"));
-
-const robotoVersion = JSON.parse(fs.readFileSync(path.join(robotoPackage, "package.json"), "utf8")).version;
-fs.writeFileSync(
-  robotoCssOutputPath,
-  [
-    "/**",
-    " * GENERATED FILE -- do not edit by hand.",
-    " * Produced by libs/design-system/tokens/scripts/build-tokens.mts (nx run tokens:build)",
-    ` * from @fontsource-variable/roboto@${robotoVersion}.`,
-    " *",
-    " * Self-hosted Roboto (variable weight 100-900, normal + italic) for",
-    " * --md-sys-typescale-font-family. unicode-range means browsers only fetch",
-    " * the subsets a page actually uses (typically just latin, ~43 KB).",
-    " * Roboto is licensed under the SIL Open Font License 1.1, see ../fonts/OFL.txt.",
-    " */",
-    "",
-    robotoCss.trim(),
-    "",
-  ].join("\n"),
-  "utf8"
+console.log(
+  `Generated ${Object.keys(THEMES).length} themes x ${COLOR_ROLES.length} color roles + ${system.length} system tokens ` +
+    `from Angular Material ${angularVersion}; ${fontFiles.size} font files.`
 );
-
-console.log(`Wrote ${path.relative(repoRoot, cssOutputPath)}`);
-console.log(`Wrote ${path.relative(repoRoot, staticCssOutputPath)}`);
-console.log(`Wrote ${path.relative(repoRoot, jsonOutputPath)}`);
-console.log(`Wrote ${path.relative(repoRoot, robotoCssOutputPath)} (+ ${fontFiles.length} woff2 files in dist/fonts)`);
-console.log(`Generated ${keys.length} themes x ${ROLE_TO_VAR.length} tokens.`);
