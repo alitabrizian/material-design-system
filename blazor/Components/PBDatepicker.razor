@@ -1,11 +1,28 @@
 @inherits WorkspaceFieldComponentBase
-<div class="workspace-field">
-    <label class="workspace-field-control @(ErrorText is not null ? "workspace-field-control--error" : "")">
-        <input @attributes="AdditionalAttributes" type="date" />
-        <span class="workspace-field-label">@Label</span>
-    </label>
-    @if (FieldHintText is not null)
-    {
-        <span class="@FieldHintClass">@FieldHintText</span>
-    }
-</div>
+@inject Microsoft.JSInterop.IJSRuntime JS
+<FormFieldFrame Appearance="Appearance" Label="@Label" LabelFor="@ControlId" HasError="HasError" HintText="@FieldHintText"
+                Disabled="IsDisabledAttribute" Required="IsRequiredAttribute" Floating="true" Block="Block" Prefix="Prefix"
+                ExtraClass="@("pb-datepicker " + UserClass)">
+    <Control>
+        <input @ref="input" class="pb-form-field__control" id="@ControlId" type="@InputType"
+               aria-invalid="@(HasError ? "true" : null)"
+               aria-describedby="@(FieldHintText is null ? null : ControlId + "-hint")"
+               @attributes="Attrs" />
+    </Control>
+    <Suffix>
+        <PBButton Variant="PBButtonVariant.Icon" Disabled="IsDisabledAttribute" aria-label="@ToggleLabel" @onclick="OpenPickerAsync">
+            <span class="material-icons" aria-hidden="true">@ToggleIcon</span>
+        </PBButton>
+    </Suffix>
+</FormFieldFrame>
+
+@code {
+    private ElementReference input;
+
+    /// <summary>The native input type; PBTimepicker overrides it with <c>time</c>.</summary>
+    protected virtual string InputType => "date";
+    protected virtual string ToggleIcon => "calendar_today";
+    protected virtual string ToggleLabel => "Open calendar";
+
+    private async Task OpenPickerAsync() => await DesignSystemJs.InvokeVoidAsync(JS, "showPicker", input);
+}

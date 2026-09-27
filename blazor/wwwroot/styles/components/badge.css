@@ -1,0 +1,93 @@
+/*
+ * PBBadge: matBadge. Reference: badge/_m3-badge.scss + structural styles.
+ *
+ *   error / on-error, corner-full, label-small; medium & large: 16px min size, padding 0 4px;
+ *   small: a 6px dot with no text. Positioned relative to the host at above/below x before/after;
+ *   margins pull it back over the host: -12px (overlap) / -12px 0 (no overlap); small -6px.
+ *   Scales in from 0.6 over 200ms. Disabled: error at 38%.
+ */
+
+.pb-badge {
+  position: relative;
+  display: inline-flex;
+  vertical-align: middle;
+}
+
+.pb-badge__content {
+  position: absolute;
+  z-index: 1;
+  display: inline-block;
+  box-sizing: border-box;
+  min-width: 16px;
+  min-height: 16px;
+  padding: 0 4px;
+  margin: -12px 0;
+  overflow: hidden;
+  border-radius: var(--md-sys-shape-corner-full);
+  background-color: var(--md-sys-color-error);
+  color: var(--md-sys-color-on-error);
+  font-family: var(--md-sys-typescale-label-small-font);
+  font-size: var(--md-sys-typescale-label-small-size);
+  line-height: 16px;
+  font-weight: var(--md-sys-typescale-label-small-weight);
+  letter-spacing: var(--md-sys-typescale-label-small-tracking);
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  pointer-events: none;
+  transform: none;
+  transition: transform 200ms ease-in-out;
+}
+
+@starting-style {
+  .pb-badge__content {
+    transform: scale(0.6);
+  }
+}
+
+.pb-badge--overlap .pb-badge__content {
+  margin: -12px;
+}
+
+.pb-badge--small .pb-badge__content {
+  min-width: 6px;
+  min-height: 6px;
+  padding: 0;
+  margin: -6px 0;
+  font-size: 0;
+  line-height: 6px;
+}
+
+.pb-badge--small.pb-badge--overlap .pb-badge__content {
+  margin: -6px;
+}
+
+.pb-badge--above .pb-badge__content {
+  bottom: 100%;
+}
+
+.pb-badge--below .pb-badge__content {
+  top: 100%;
+}
+
+.pb-badge--after .pb-badge__content {
+  left: 100%;
+}
+
+.pb-badge--before .pb-badge__content {
+  right: 100%;
+}
+
+.pb-badge--hidden .pb-badge__content {
+  display: none;
+}
+
+.pb-badge--disabled .pb-badge__content {
+  background-color: color-mix(in srgb, var(--md-sys-color-error) 38%, transparent);
+}
+
+/* A badge with no host content (inline status indicator). */
+.pb-badge--standalone .pb-badge__content {
+  position: static;
+  margin: 0;
+}

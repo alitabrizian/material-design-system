@@ -1,0 +1,180 @@
+/*
+ * PBRadioButton / PBRadioGroup: mat-radio-button / mat-radio-group.
+ * Reference: radio/_m3-radio.scss + MDC radio structure.
+ *
+ *   40px state-layer circle (10px padding) around a 20px ring (2px border); the 20px inner
+ *   circle scales 0 -> 0.5 (a 10px dot) when checked
+ *   unselected ring on-surface-variant (hover/focus/pressed on-surface); selected primary
+ *   state layer: on-surface, primary when checked; label body-medium on-surface, 4px leading
+ *   disabled: ring + dot on-surface at 38%, label on-surface 38%
+ */
+
+.pb-radio {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  color: var(--md-sys-color-on-surface);
+  font-family: var(--md-sys-typescale-body-medium-font);
+  font-size: var(--md-sys-typescale-body-medium-size);
+  line-height: var(--md-sys-typescale-body-medium-line-height);
+  font-weight: var(--md-sys-typescale-body-medium-weight);
+  letter-spacing: var(--md-sys-typescale-body-medium-tracking);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pb-radio__control {
+  position: relative;
+  display: inline-block;
+  flex: 0 0 auto;
+  box-sizing: content-box;
+  width: 20px;
+  height: 20px;
+  padding: 10px;
+  will-change: opacity, transform, border-color, color;
+  cursor: pointer;
+}
+
+.pb-radio__input {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 40px;
+  height: 40px;
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+
+.pb-radio__state-layer {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.pb-radio__state-layer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background-color: var(--md-sys-color-on-surface);
+  opacity: 0;
+  transition: opacity 15ms linear;
+}
+
+.pb-radio__input:checked ~ .pb-radio__state-layer::before {
+  background-color: var(--md-sys-color-primary);
+}
+
+.pb-radio__control:hover > .pb-radio__state-layer::before {
+  opacity: var(--md-sys-state-hover-state-layer-opacity);
+}
+
+.pb-radio__input:focus-visible ~ .pb-radio__state-layer::before {
+  opacity: var(--md-sys-state-focus-state-layer-opacity);
+}
+
+.pb-radio__control:active > .pb-radio__state-layer::before {
+  opacity: var(--md-sys-state-pressed-state-layer-opacity);
+}
+
+.pb-radio__outer {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  box-sizing: border-box;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--md-sys-color-on-surface-variant);
+  border-radius: 50%;
+  pointer-events: none;
+  transition: border-color 90ms cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+.pb-radio__inner {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  box-sizing: border-box;
+  width: 20px;
+  height: 20px;
+  border: 10px solid var(--md-sys-color-primary);
+  border-radius: 50%;
+  transform: scale(0);
+  pointer-events: none;
+  transition:
+    transform 90ms cubic-bezier(0.4, 0, 0.6, 1),
+    border-color 90ms cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+.pb-radio__control:hover > .pb-radio__outer,
+.pb-radio__input:focus-visible ~ .pb-radio__outer,
+.pb-radio__control:active > .pb-radio__outer {
+  border-color: var(--md-sys-color-on-surface);
+}
+
+.pb-radio__input:checked ~ .pb-radio__outer,
+.pb-radio__control:hover > .pb-radio__input:checked ~ .pb-radio__outer {
+  border-color: var(--md-sys-color-primary);
+}
+
+.pb-radio__input:checked ~ .pb-radio__inner {
+  transform: scale(0.5);
+  transition:
+    transform 90ms cubic-bezier(0, 0, 0.2, 1),
+    border-color 90ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.pb-radio__label {
+  padding-left: 4px;
+  cursor: pointer;
+}
+
+/* Disabled */
+.pb-radio__input:disabled {
+  cursor: default;
+}
+
+.pb-radio__input:disabled ~ .pb-radio__state-layer {
+  display: none;
+}
+
+.pb-radio__input:disabled ~ .pb-radio__outer,
+.pb-radio__input:disabled ~ .pb-radio__inner,
+.pb-radio__control:hover > .pb-radio__input:disabled ~ .pb-radio__outer {
+  border-color: var(--md-sys-color-on-surface);
+  opacity: 0.38;
+}
+
+.pb-radio:has(.pb-radio__input:disabled) :is(.pb-radio__control, .pb-radio__label) {
+  cursor: default;
+}
+
+.pb-radio:has(.pb-radio__input:disabled) .pb-radio__label {
+  color: color-mix(in srgb, var(--md-sys-color-on-surface) 38%, transparent);
+}
+
+/* PBRadioGroup: flex so spacing does not depend on markup whitespace (Razor @foreach emits
+   none), and every option sits on the same axis. */
+.pb-radio-group {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: var(--md-sys-spacing-large);
+  row-gap: 0;
+}
+
+.pb-radio-group--vertical {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.pb-radio__control {
+  --pb-ripple-color: var(--md-sys-color-on-surface);
+}
+
+.pb-radio__control:has(.pb-radio__input:checked) {
+  --pb-ripple-color: var(--md-sys-color-primary);
+}

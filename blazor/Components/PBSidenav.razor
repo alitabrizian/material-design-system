@@ -1,13 +1,10 @@
 @inherits WorkspaceComponentBase
 @if (Mode == PBSidenavMode.Over)
 {
-    @if (Opened)
-    {
-        <div class="workspace-sidenav-scrim" @onclick="CloseAsync"></div>
-    }
-    <aside class="workspace-sidenav workspace-sidenav--over @(Opened ? "workspace-sidenav--open" : "")" aria-label="@Label" @attributes="AdditionalAttributes">@ChildContent</aside>
+    <div class="pb-sidenav-backdrop @(Opened ? "pb-sidenav-backdrop--shown" : null)" @onclick="CloseAsync" aria-hidden="true"></div>
 }
-else
-{
-    <aside class="workspace-sidenav" aria-label="@Label" @attributes="AdditionalAttributes">@ChildContent</aside>
-}
+<aside class="@CssClass @UserClass" aria-label="@Label" inert="@(Mode == PBSidenavMode.Over && !Opened)"
+       role="@(Mode == PBSidenavMode.Over && Opened ? "dialog" : null)" aria-modal="@(Mode == PBSidenavMode.Over && Opened ? "true" : null)"
+       tabindex="-1" @onkeydown="OnKeyDownAsync" @attributes="Attrs">
+    <div class="pb-sidenav__inner">@ChildContent</div>
+</aside>

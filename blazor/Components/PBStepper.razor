@@ -1,2 +1,88 @@
 @inherits WorkspaceComponentBase
-<ol class="workspace-stepper workspace-stepper--@(Orientation.ToString().ToLowerInvariant())" @attributes="AdditionalAttributes">@ChildContent</ol>
+@inject Microsoft.JSInterop.IJSRuntime JS
+<CascadingValue Value="this" IsFixed="true">@ChildContent</CascadingValue>
+<div class="pb-stepper pb-stepper--@(Orientation.ToString().ToLowerInvariant()) @UserClass" @attributes="Attrs">
+    @if (Orientation == PBStepperOrientation.Horizontal)
+    {
+        <div @ref="headerContainer" class="pb-stepper__header-container" role="tablist" aria-label="@Label" @onkeydown="OnKeyDownAsync">
+            @for (var i = 0; i < steps.Count; i++)
+            {
+                var index = i;
+                @Header(index)
+                @if (index < steps.Count - 1)
+                {
+                    <div class="pb-stepper__line" aria-hidden="true"></div>
+                }
+            }
+        </div>
+        @if (SelectedIndex >= 0 && SelectedIndex < steps.Count)
+        {
+            <div @key="SelectedIndex" class="pb-stepper__content" role="tabpanel" id="@PanelId(SelectedIndex)" aria-labelledby="@HeaderId(SelectedIndex)">
+                @steps[SelectedIndex].ChildContent
+            </div>
+        }
+    }
+    else
+    {
+        <div @ref="headerContainer" role="tablist" aria-orientation="vertical" aria-label="@Label" @onkeydown="OnKeyDownAsync">
+            @for (var i = 0; i < steps.Count; i++)
+            {
+                var index = i;
+                var active = index == SelectedIndex;
+                <div class="pb-stepper__vertical-step">
+                    @Header(index)
+                    <div class="pb-stepper__vertical-content-container @(active ? "pb-stepper__vertical-content-container--active" : null)">
+                        <div class="pb-stepper__vertical-content" role="tabpanel" id="@PanelId(index)" aria-labelledby="@HeaderId(index)" inert="@(!active)">
+                            <div class="pb-stepper__vertical-content-inner">@steps[index].ChildContent</div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    private RenderFragment Header(int index) => __builder =>
+    {
+        var step = steps[index];
+        var selected = index == SelectedIndex;
+        var state = StateOf(index);
+        var blocked = !CanSelect(index);
+        <button type="button" role="tab" id="@HeaderId(index)" class="pb-step-header pb-ripple-host"
+                aria-selected="@(selected ? "true" : "false")" aria-controls="@PanelId(index)"
+                aria-disabled="@(blocked ? "true" : null)" tabindex="@(selected ? 0 : -1)"
+                @onclick="() => SelectAsync(index)">
+            <span class="pb-step-icon pb-step-icon--@state" aria-hidden="true">
+                <span class="pb-step-icon__content">
+                    @switch (state)
+                    {
+                        case "done":
+                            <span class="material-icons">done</span>
+                            break;
+                        case "edit":
+                            <span class="material-icons">create</span>
+                            break;
+                        case "error":
+                            <span class="material-icons">warning</span>
+                            break;
+                        default:
+                            <span>@(index + 1)</span>
+                            break;
+                    }
+                </span>
+            </span>
+            <span class="pb-step-label @(state == "error" ? "pb-step-label--error" : null)">
+                @(step.LabelContent ?? (RenderFragment)(b => b.AddContent(0, step.Label)))
+                @if (state == "error" && step.ErrorMessage is not null)
+                {
+                    <span class="pb-step-optional pb-step-label--error">@step.ErrorMessage</span>
+                }
+                else if (step.Optional)
+                {
+                    <span class="pb-step-optional">Optional</span>
+                }
+            </span>
+        </button>
+    };
+}

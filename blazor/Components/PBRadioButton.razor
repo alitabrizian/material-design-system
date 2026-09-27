@@ -1,2 +1,14 @@
 @inherits WorkspaceComponentBase
-<label class="workspace-check"><input @attributes="AdditionalAttributes" type="radio" /><span class="workspace-check__box"></span><span class="workspace-check__label">@Label</span></label>
+<label class="pb-radio @UserClass">
+    <span class="pb-radio__control pb-ripple-host pb-ripple-centered">
+        <input class="pb-radio__input" type="radio" @attributes="Attrs" />
+        <span class="pb-radio__state-layer pb-ripple-container"></span>
+        <span class="pb-radio__outer" aria-hidden="true"></span>
+        <span class="pb-radio__inner" aria-hidden="true"></span>
+        <span class="pb-touch-target" aria-hidden="true"></span>
+    </span>
+    @if (Label is not null || ChildContent is not null)
+    {
+        <span class="pb-radio__label">@Label@ChildContent</span>
+    }
+</label>

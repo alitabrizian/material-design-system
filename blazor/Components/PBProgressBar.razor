@@ -1,15 +1,29 @@
 @inherits WorkspaceComponentBase
-<div
-    class="workspace-progress workspace-progress--@(Indeterminate ? "indeterminate" : "determinate")"
-    role="progressbar"
-    aria-label="@Label"
-    aria-valuemin="0"
-    aria-valuemax="100"
-    aria-valuenow="@(Indeterminate ? null : Value)"
-    @attributes="AdditionalAttributes">
-    @if (BufferValue.HasValue)
-    {
-        <div class="workspace-progress__buffer" style="width:@(BufferValue.Value)%"></div>
-    }
-    <div class="workspace-progress__track" style="@(Indeterminate ? "" : $"width:{Value}%")"></div>
+<div class="pb-progress-bar pb-progress-bar--@(Indeterminate ? "indeterminate" : "determinate") @UserClass"
+     role="progressbar" aria-label="@Label" aria-valuemin="0" aria-valuemax="100"
+     aria-valuenow="@(Indeterminate ? null : Clamp(Value).ToString(System.Globalization.CultureInfo.InvariantCulture))"
+     @attributes="Attrs">
+    <div class="pb-progress-bar__buffer" aria-hidden="true">
+        @if (BufferValue.HasValue && !Indeterminate)
+        {
+            <div class="pb-progress-bar__buffer-bar" style="flex-basis:@Css(BufferValue.Value)%"></div>
+            <div class="pb-progress-bar__buffer-dots"></div>
+        }
+        else
+        {
+            <div class="pb-progress-bar__buffer-bar"></div>
+        }
+    </div>
+    <div class="pb-progress-bar__bar pb-progress-bar__primary" style="@(Indeterminate ? null : $"transform:scaleX({Css(Value / 100)})")" aria-hidden="true">
+        <span class="pb-progress-bar__bar-inner"></span>
+    </div>
+    <div class="pb-progress-bar__bar pb-progress-bar__secondary" aria-hidden="true">
+        <span class="pb-progress-bar__bar-inner"></span>
+    </div>
 </div>
+
+@code {
+    private static double Clamp(double v) => Math.Clamp(v, 0, 100);
+
+    private static string Css(double v) => (v > 1 ? Clamp(v) : Math.Clamp(v, 0, 1)).ToString("0.####", System.Globalization.CultureInfo.InvariantCulture);
+}

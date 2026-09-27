@@ -1,2 +1,2 @@
 @inherits WorkspaceComponentBase
-<div class="workspace-radio-group" role="radiogroup" aria-label="@Label" @attributes="AdditionalAttributes">@ChildContent</div>
+<div class="pb-radio-group @(Vertical ? "pb-radio-group--vertical" : null) @UserClass" role="radiogroup" aria-label="@Label" @attributes="Attrs">@ChildContent</div>

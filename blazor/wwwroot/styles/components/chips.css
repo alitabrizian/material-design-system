@@ -1,0 +1,260 @@
+/*
+ * PBChips / PBChip: mat-chip-set / mat-chip-listbox / mat-chip-grid with mat-chip (assist),
+ * mat-chip-option (filter) and mat-chip-row (input). Reference: chips/_m3-chip.scss + structural.
+ *
+ *   32px tall, 8px radius, 1px outline border, transparent container, label-large on-surface-variant
+ *   primary action padding 12px; with a leading graphic: graphic 18px + 6px each side, action
+ *   padding-left 0; trailing remove action 18px icon, 8px each side
+ *   selected (filter/highlighted): secondary-container, no border, on-secondary-container,
+ *   20px checkmark drawn in as the graphic grows 0 -> 18px (150ms)
+ *   state layer on-surface-variant (on-secondary-container when selected): hover 8%, focus 12%
+ *   disabled: label on-surface 38%, border on-surface 12%, icons 38%
+ *   chip set: 8px gaps, 4px vertical margins
+ */
+
+.pb-chip-set {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 8px;
+  padding: 4px 0;
+}
+
+.pb-chip-set:focus {
+  outline: none;
+}
+
+.pb-chip-set--stacked {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.pb-chip {
+  --pb-state-layer-color: var(--md-sys-color-on-surface-variant);
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  max-width: 100%;
+  height: 32px;
+  border: 1px solid var(--md-sys-color-outline);
+  border-radius: 8px;
+  background-color: transparent;
+  color: var(--md-sys-color-on-surface-variant);
+  font-family: var(--md-sys-typescale-label-large-font);
+  font-size: var(--md-sys-typescale-label-large-size);
+  line-height: var(--md-sys-typescale-label-large-line-height);
+  font-weight: var(--md-sys-typescale-label-large-weight);
+  letter-spacing: var(--md-sys-typescale-label-large-tracking);
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+}
+
+.pb-chip-set--stacked .pb-chip {
+  width: 100%;
+}
+
+.pb-chip__action {
+  position: relative;
+  display: inline-flex;
+  flex-basis: 100%;
+  align-items: center;
+  height: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 0 12px;
+  border: none;
+  border-radius: inherit;
+  outline: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  cursor: default;
+}
+
+button.pb-chip__action {
+  cursor: pointer;
+}
+
+.pb-chip__focus-overlay {
+  position: absolute;
+  inset: -1px;
+  border-radius: 8px;
+  background-color: var(--pb-state-layer-color);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 150ms linear;
+}
+
+.pb-chip:has(button.pb-chip__action):hover .pb-chip__focus-overlay {
+  opacity: var(--md-sys-state-hover-state-layer-opacity);
+}
+
+.pb-chip:has(.pb-chip__action:focus-visible) .pb-chip__focus-overlay {
+  opacity: var(--md-sys-state-focus-state-layer-opacity);
+}
+
+.pb-chip__graphic {
+  position: relative;
+  display: inline-flex;
+  flex: 1 0 auto;
+  align-items: center;
+  justify-content: center;
+  box-sizing: content-box;
+  width: 18px;
+  height: 18px;
+  padding: 0 6px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.pb-chip--with-graphic .pb-chip__action {
+  padding-left: 0;
+}
+
+.pb-chip--with-trailing .pb-chip__action {
+  padding-right: 0;
+}
+
+.pb-chip__icon {
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+  color: var(--md-sys-color-on-surface-variant);
+  transition: opacity 75ms;
+}
+
+.pb-chip--selected .pb-chip__icon {
+  opacity: 0;
+}
+
+.pb-chip__checkmark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  opacity: 0;
+  color: var(--md-sys-color-on-secondary-container);
+}
+
+.pb-chip__checkmark path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2px;
+  stroke-dasharray: 29.7833385;
+  stroke-dashoffset: 29.7833385;
+  transition: stroke-dashoffset 150ms 45ms var(--md-sys-motion-easing-legacy);
+}
+
+.pb-chip--selected .pb-chip__checkmark {
+  opacity: 1;
+}
+
+.pb-chip--selected .pb-chip__checkmark path {
+  stroke-dashoffset: 0;
+}
+
+/* Filter chip without an icon: the graphic only takes space once selected. */
+.pb-chip--filter:not(.pb-chip--selected):not(.pb-chip--with-icon) .pb-chip__graphic {
+  width: 0;
+  padding: 0;
+}
+
+.pb-chip--filter:not(.pb-chip--selected):not(.pb-chip--with-icon) .pb-chip__action {
+  padding-left: 12px;
+}
+
+.pb-chip--filter .pb-chip__graphic,
+.pb-chip--filter .pb-chip__action {
+  transition: width 150ms var(--md-sys-motion-easing-legacy), padding 150ms var(--md-sys-motion-easing-legacy);
+}
+
+.pb-chip__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pb-chip__remove {
+  position: relative;
+  display: inline-flex;
+  flex: 1 0 auto;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  margin: 0;
+  padding: 0 8px;
+  border: none;
+  outline: none;
+  background: none;
+  color: var(--md-sys-color-on-surface-variant);
+  cursor: pointer;
+}
+
+.pb-chip__remove .material-icons {
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+}
+
+.pb-chip__remove::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 5px;
+  right: 5px;
+  border-radius: 50%;
+  background-color: var(--pb-state-layer-color);
+  opacity: 0;
+}
+
+.pb-chip__remove:hover::after {
+  opacity: calc(var(--md-sys-state-hover-state-layer-opacity) * 2);
+}
+
+.pb-chip__remove:focus-visible::after {
+  opacity: calc(var(--md-sys-state-hover-state-layer-opacity) + var(--md-sys-state-focus-state-layer-opacity));
+}
+
+/* Selected (filter) / highlighted */
+.pb-chip--selected,
+.pb-chip--highlighted {
+  --pb-state-layer-color: var(--md-sys-color-on-secondary-container);
+  border-color: transparent;
+  background-color: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-on-secondary-container);
+}
+
+.pb-chip--selected .pb-chip__remove,
+.pb-chip--highlighted .pb-chip__remove {
+  color: var(--md-sys-color-on-secondary-container);
+}
+
+/* Disabled */
+.pb-chip--disabled {
+  border-color: color-mix(in srgb, var(--md-sys-color-on-surface) 12%, transparent);
+  color: color-mix(in srgb, var(--md-sys-color-on-surface) 38%, transparent);
+  pointer-events: none;
+}
+
+.pb-chip--disabled.pb-chip--selected {
+  border-color: transparent;
+  background-color: color-mix(in srgb, var(--md-sys-color-on-surface) 12%, transparent);
+}
+
+.pb-chip--disabled :is(.pb-chip__icon, .pb-chip__remove, .pb-chip__checkmark) {
+  color: var(--md-sys-color-on-surface);
+  opacity: 0.38;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pb-chip *,
+  .pb-chip__checkmark path {
+    transition: none !important;
+  }
+}

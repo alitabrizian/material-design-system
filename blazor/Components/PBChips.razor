@@ -1,2 +1,16 @@
 @inherits WorkspaceComponentBase
-<div class="workspace-chips" role="list" @attributes="AdditionalAttributes">@ChildContent</div>
+<div class="pb-chip-set @(Stacked ? "pb-chip-set--stacked" : null) @UserClass" role="@(Selectable ? "listbox" : "list")"
+     aria-label="@Label" aria-multiselectable="@(Selectable ? (Multiple ? "true" : "false") : null)" @attributes="Attrs">
+    <CascadingValue Value="this" IsFixed="true">@ChildContent</CascadingValue>
+</div>
+
+@code {
+    /// <summary>Renders as a listbox of selectable filter chips (mat-chip-listbox) instead of a list.</summary>
+    [Parameter] public bool Selectable { get; set; }
+
+    /// <summary>For selectable sets: more than one chip may be selected.</summary>
+    [Parameter] public bool Multiple { get; set; } = true;
+
+    /// <summary>One chip per row, full width (mat-chip-set-stacked).</summary>
+    [Parameter] public bool Stacked { get; set; }
+}

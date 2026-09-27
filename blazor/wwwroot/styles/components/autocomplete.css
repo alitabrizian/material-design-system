@@ -1,0 +1,9 @@
+/*
+ * PBAutoComplete: mat-autocomplete. The field is the shared form-field shell (form-field.css) and
+ * the panel/options are the shared option panel (select.css): autocomplete/_m3-autocomplete.scss
+ * sets surface-container, corner-extra-small and the z2 shadow, identical to mat-select's panel.
+ */
+
+.pb-autocomplete .pb-form-field__control {
+  text-overflow: ellipsis;
+}

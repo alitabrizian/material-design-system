@@ -1,2 +1,14 @@
 @inherits WorkspaceComponentBase
-<span class="workspace-tooltip" data-tooltip="@Label" @attributes="AdditionalAttributes">@ChildContent</span>
+<span class="pb-tooltip-host @UserClass" data-pb-tooltip-position="@Position.ToString().ToLowerInvariant()" @attributes="Attrs">
+    @ChildContent
+    <span id="@Id" class="pb-tooltip pb-overlay" popover="manual" role="tooltip">
+        <span class="pb-tooltip__surface">@Label</span>
+    </span>
+</span>
+
+@code {
+    /// <summary>matTooltipPosition. <c>Below</c> by default; flips when there is no room.</summary>
+    [Parameter] public PBTooltipPosition Position { get; set; } = PBTooltipPosition.Below;
+
+    private readonly string Id = "pb-tooltip-" + Guid.NewGuid().ToString("N")[..8];
+}

@@ -1,0 +1,24 @@
+@inherits WorkspaceComponentBase
+<div class="pb-accordion @UserClass" @attributes="Attrs">
+    <CascadingValue Value="this" IsFixed="true">@ChildContent</CascadingValue>
+</div>
+
+@code {
+    /// <summary>Allows several panels to be expanded at once (mat-accordion's <c>multi</c>).</summary>
+    [Parameter] public bool Multi { get; set; }
+
+    private readonly List<PBExpansionPanel> panels = [];
+
+    internal void Register(PBExpansionPanel panel) => panels.Add(panel);
+
+    internal void Unregister(PBExpansionPanel panel) => panels.Remove(panel);
+
+    internal async Task CollapseOthersAsync(PBExpansionPanel opened)
+    {
+        if (Multi) return;
+        foreach (var panel in panels.Where(p => p != opened).ToList())
+        {
+            await panel.SetExpandedAsync(false);
+        }
+    }
+}
