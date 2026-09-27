@@ -109,6 +109,21 @@ function resolveAnchor(panel, anchor, options) {
  * }
  * Flips vertically when there is not enough room and clamps into the viewport (8px margin).
  */
+// The visible viewport, without classic scrollbars (window.innerWidth/Height include them).
+const viewport = () => ({
+  width: document.documentElement.clientWidth,
+  height: document.documentElement.clientHeight,
+});
+
+// An overlay's untransformed size, measured from the viewport origin. Enter animations scale the
+// panel (0.8 -> 1), which getBoundingClientRect would report; and a fixed element left near the
+// right edge from its last placement shrinks to the space that remains, wrapping its content.
+function overlaySize(panel) {
+  panel.style.left = "0px";
+  panel.style.top = "0px";
+  return { width: panel.offsetWidth, height: panel.offsetHeight };
+}
+
 export function position(panel, anchor, options = {}) {
   if (!panel) return;
   anchor = resolveAnchor(panel, anchor, options);
@@ -126,22 +141,23 @@ export function position(panel, anchor, options = {}) {
     }
     const a = anchor.getBoundingClientRect();
     if (options.matchWidth) panel.style.width = `${a.width}px`;
-    const p = panel.getBoundingClientRect();
+    const p = overlaySize(panel);
+    const vp = viewport();
     const margin = 8;
     const offset = options.offset ?? 0;
     const rtl = getComputedStyle(anchor).direction === "rtl";
     const alignEnd = (options.x === "end") !== rtl;
 
     let left = alignEnd ? a.right - p.width : a.left;
-    left = Math.min(Math.max(margin, left), window.innerWidth - p.width - margin);
+    left = Math.min(Math.max(margin, left), vp.width - p.width - margin);
 
     const belowTop = options.overlap ? a.top : a.bottom + offset;
     const aboveTop = (options.overlap ? a.bottom : a.top - offset) - p.height;
-    const fitsBelow = belowTop + p.height <= window.innerHeight - margin;
+    const fitsBelow = belowTop + p.height <= vp.height - margin;
     const fitsAbove = aboveTop >= margin;
     const above = options.y === "above" ? fitsAbove || !fitsBelow : !fitsBelow && fitsAbove;
     let top = above ? aboveTop : belowTop;
-    top = Math.min(Math.max(margin, top), Math.max(margin, window.innerHeight - p.height - margin));
+    top = Math.min(Math.max(margin, top), Math.max(margin, vp.height - p.height - margin));
 
     panel.style.left = `${Math.round(left)}px`;
     panel.style.top = `${Math.round(top)}px`;
@@ -367,17 +383,18 @@ function tooltipOf(host) {
 
 function placeTooltip(host, tip) {
   const a = host.getBoundingClientRect();
-  const p = tip.getBoundingClientRect();
+  const p = overlaySize(tip);
+  const vp = viewport();
   const rtl = getComputedStyle(host).direction === "rtl";
   let position = host.dataset.pbTooltipPosition || "below";
   if (position === "before") position = rtl ? "right" : "left";
   if (position === "after") position = rtl ? "left" : "right";
 
   const fits = {
-    below: a.bottom + TOOLTIP_GAP + p.height <= window.innerHeight,
+    below: a.bottom + TOOLTIP_GAP + p.height <= vp.height,
     above: a.top - TOOLTIP_GAP - p.height >= 0,
     left: a.left - TOOLTIP_GAP - p.width >= 0,
-    right: a.right + TOOLTIP_GAP + p.width <= window.innerWidth,
+    right: a.right + TOOLTIP_GAP + p.width <= vp.width,
   };
   const flip = { below: "above", above: "below", left: "right", right: "left" };
   if (!fits[position] && fits[flip[position]]) position = flip[position];
@@ -391,8 +408,8 @@ function placeTooltip(host, tip) {
     top = a.top + a.height / 2 - p.height / 2;
     left = position === "right" ? a.right + TOOLTIP_GAP : a.left - TOOLTIP_GAP - p.width;
   }
-  left = Math.min(Math.max(TOOLTIP_GAP, left), window.innerWidth - p.width - TOOLTIP_GAP);
-  top = Math.min(Math.max(TOOLTIP_GAP, top), window.innerHeight - p.height - TOOLTIP_GAP);
+  left = Math.min(Math.max(TOOLTIP_GAP, left), vp.width - p.width - TOOLTIP_GAP);
+  top = Math.min(Math.max(TOOLTIP_GAP, top), vp.height - p.height - TOOLTIP_GAP);
   tip.style.left = `${Math.round(left)}px`;
   tip.style.top = `${Math.round(top)}px`;
 }
