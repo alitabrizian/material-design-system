@@ -40,6 +40,15 @@ Use this only to check what external consumers get. Never develop in this mode.
 | `node tools/scripts/audit-colors.mts` | No literal colors anywhere in library/demo styles or markup |
 | `node tools/scripts/verify-demo.mts` | With the demo running: all 51 color roles × 4 themes equal Angular Material's, theme switch < 100 ms, 38 pages × 4 themes render without errors, no overflow at 360px, icon fonts render; screenshots in `.verify/` |
 
+## GitHub link in the demo toolbar
+
+The toolbar shows a GitHub link only when the checkout was cloned from GitHub. At build time,
+`Design.Demo.csproj` (target `ResolveGitHubRepositoryUrl`) reads `git config remote.origin.url`. For a
+`github.com` remote it embeds `https://github.com/<owner>/<repo>` (never the raw remote, which may
+carry credentials); for any other origin (such as the GitLab mirror), or without git, it embeds
+nothing and the link is hidden. To force a result, pass the remote explicitly:
+`dotnet build -p:RepositoryOriginUrl=<url>`.
+
 ## Rules for component work
 
 The project constitution (`.specify/memory/constitution.md`) is binding:

@@ -52,18 +52,26 @@
             </PBTooltip>
         </div>
 
-        <PBButton Variant="PBButtonVariant.Text" Href="@GitHubUrl" class="docs-navbar__hide-small" target="_blank" rel="noopener" aria-label="GitHub Repository">
-            <IconStart>@GitHubIcon</IconStart>
-            <ChildContent>GitHub</ChildContent>
-        </PBButton>
-        <PBButton Variant="PBButtonVariant.Icon" Href="@GitHubUrl" class="docs-navbar__show-small" target="_blank" rel="noopener" aria-label="GitHub Repository">
-            @GitHubIcon
-        </PBButton>
+        @if (GitHubUrl is not null)
+        {
+            <PBButton Variant="PBButtonVariant.Text" Href="@GitHubUrl" class="docs-navbar__hide-small" target="_blank" rel="noopener" aria-label="GitHub Repository">
+                <IconStart>@GitHubIcon</IconStart>
+                <ChildContent>GitHub</ChildContent>
+            </PBButton>
+            <PBButton Variant="PBButtonVariant.Icon" Href="@GitHubUrl" class="docs-navbar__show-small" target="_blank" rel="noopener" aria-label="GitHub Repository">
+                @GitHubIcon
+            </PBButton>
+        }
     </nav>
 </header>
 
 @code {
-    private const string GitHubUrl = "https://github.com/alitabrizian/material-design-system";
+    // Set at build time only when the checkout's git origin is on github.com (see Design.Demo.csproj,
+    // ResolveGitHubRepositoryUrl); null for the GitLab mirror, so no GitHub link is shown there.
+    private static readonly string? GitHubUrl = typeof(TopAppBar).Assembly
+        .GetCustomAttributes(typeof(System.Reflection.AssemblyMetadataAttribute), inherit: false)
+        .OfType<System.Reflection.AssemblyMetadataAttribute>()
+        .FirstOrDefault(a => a.Key == "GitHubRepositoryUrl")?.Value;
 
     // The GitHub mark as the docs navbar draws it (currentColor, so it follows the toolbar).
     private static readonly RenderFragment GitHubIcon = @<svg viewBox="0 0 20 20" class="docs-github-logo" aria-hidden="true" focusable="false">
