@@ -536,90 +536,97 @@ code {
   border-top: 1px solid var(--md-sys-color-outline-variant);
 }
 
-/* ------------------------------------------------------------------ home page */
+/* ------------------------------------------------------------------ home page
+   Angular Material's components/categories page (component-category-list): a centered intro
+   line over a wrapping, centered grid of 280px cards. Values measured from that page. */
 
-.catalog-search {
-  max-width: 560px;
-  margin-bottom: 24px;
-}
-
-.component-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
-  gap: 16px;
-}
-
-.component-card {
-  position: relative;
+.docs-category-list-page {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  min-height: 148px;
-  padding: 16px;
+  align-items: center;
+  /* The docs page keeps default tracking, not the body's M3 body-large 0.5px; with it, summaries
+     wrap an extra line. */
+  letter-spacing: normal;
+}
+
+.docs-category-list-summary {
+  padding: 40px 40px 0;
+  color: var(--md-sys-color-on-surface);
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.docs-category-list-summary a {
+  color: var(--md-sys-color-primary);
+  text-decoration: none;
+}
+
+.docs-category-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 40px;
+  padding: 20px 20px 100px;
+}
+
+.docs-category-list-item {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+/* 280px including the 1px border (278px inside, as on the docs page). line-height: normal like the
+   docs; the body's 28px would also enlarge the gap under the inline scene image. */
+.docs-category-list-card {
+  position: relative;
+  width: 280px;
   overflow: hidden;
   border: 1px solid var(--md-sys-color-outline-variant);
-  border-radius: var(--md-sys-shape-corner-medium);
-  background: var(--md-sys-color-surface);
-  color: var(--md-sys-color-on-surface);
-  text-decoration: none;
-  transition: box-shadow 280ms var(--md-sys-motion-easing-legacy);
+  border-radius: 12px;
+  line-height: normal;
+  cursor: pointer;
+  transition: background 0.3s;
 }
 
-.component-card:hover {
-  box-shadow: var(--md-sys-elevation-level-1);
+.docs-category-list-card:hover {
+  background: var(--md-sys-color-surface-dim);
 }
 
-.component-card:hover::before,
-.component-card:focus-visible::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: var(--md-sys-color-on-surface);
-  opacity: var(--md-sys-state-hover-state-layer-opacity);
-  pointer-events: none;
+/* A 156px-tall scene plus its 1px divider; the width follows the 360x200 image's aspect ratio
+   (slightly wider than the card, clipped). */
+.docs-category-list-card-image {
+  height: 157px;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
 }
 
-.component-card:focus-visible {
-  outline: none;
-}
-
-.card-icon {
-  display: grid;
-  width: 40px;
-  height: 40px;
-  place-items: center;
-  border-radius: var(--md-sys-shape-corner-medium);
-  background: var(--md-sys-color-secondary-container);
-  color: var(--md-sys-color-on-secondary-container);
-}
-
-.card-copy strong,
-.card-copy small {
-  display: block;
-}
-
-.card-copy strong {
-  margin-bottom: 4px;
-  font: var(--md-sys-typescale-title-medium);
-}
-
-.card-copy small {
+.docs-category-list-card-title,
+.docs-category-list-card-summary {
   color: var(--md-sys-color-on-surface-variant);
-  font: var(--md-sys-typescale-body-medium);
 }
 
-.empty-search {
-  padding: 48px 24px;
-  border: 1px dashed var(--md-sys-color-outline-variant);
-  border-radius: var(--md-sys-shape-corner-medium);
-  color: var(--md-sys-color-on-surface-variant);
-  text-align: center;
+.docs-category-list-card-title {
+  padding: 16px;
+  font-size: 20px;
+  font-weight: 500;
 }
 
-.empty-search strong {
-  display: block;
-  color: var(--md-sys-color-on-surface);
-  font: var(--md-sys-typescale-title-medium);
+/* Two lines tall (38.4px) plus the bottom padding whatever the text, so every card is 273px. */
+.docs-category-list-card-summary {
+  height: 54.4px;
+  padding: 0 16px 16px;
+  font-size: 16px;
+}
+
+@media (max-width: 1255px) {
+  .docs-category-list-summary {
+    max-width: 600px;
+  }
+}
+
+@media (max-width: 694px) {
+  .docs-category-list-summary {
+    max-width: 280px;
+  }
 }
 
 /* ------------------------------------------------------------------ page-specific demo helpers */

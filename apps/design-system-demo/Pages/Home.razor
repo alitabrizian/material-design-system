@@ -1,49 +1,27 @@
 @page "/"
 @rendermode InteractiveServer
 
-<PageTitle>Design System</PageTitle>
+<PageTitle>Components · Design System</PageTitle>
 
-<div class="catalog-content">
-    <PageHeader Title="Components">
-        Material Design 3 components built on framework-neutral design tokens: M3 dimensions,
-        states and keyboard behavior, in four themes. Pick a component to see its examples and API.
-    </PageHeader>
-
-    <div class="catalog-search">
-        <PBInput Label="Search components" Appearance="PBFormFieldAppearance.Outline" Block type="search"
-                 value="@searchTerm" @oninput="e => searchTerm = e.Value?.ToString() ?? string.Empty">
-            <Prefix><span class="material-icons">search</span></Prefix>
-        </PBInput>
+@* Mirrors Angular Material's components/categories page: an intro line and a centered grid of
+   fixed-width cards, each a scene image, a title and a one-line summary. *@
+<div class="docs-category-list-page">
+    <div class="docs-category-list-summary">
+        Workspace offers a wide variety of UI components based on the
+        <a href="https://material.io/components">Material Design specification</a>
     </div>
 
-    @if (filteredComponents.Any())
-    {
-        <div class="component-grid" aria-live="polite">
-            @foreach (var component in filteredComponents)
-            {
-                <a class="component-card pb-ripple-host" href="@component.Route">
-                    <span class="card-icon" aria-hidden="true"><span class="material-icons">@component.Icon</span></span>
-                    <span class="card-copy"><strong>@component.Name</strong><small>@component.Description</small></span>
-                </a>
-            }
-        </div>
-    }
-    else
-    {
-        <div class="empty-search" role="status">
-            <strong>No components found</strong>
-            <span>Try a different search term.</span>
-        </div>
-    }
+    <div class="docs-category-list">
+        @foreach (var component in ComponentCatalog.Items)
+        {
+            <a class="docs-category-list-item" href="@component.Route">
+                <div class="docs-category-list-card pb-ripple-host">
+                    <img class="docs-category-list-card-image" src="assets/screenshots/@(component.Scene).scene.png"
+                         alt="" aria-hidden="true" loading="lazy" />
+                    <div class="docs-category-list-card-title">@component.Name</div>
+                    <div class="docs-category-list-card-summary">@component.Summary</div>
+                </div>
+            </a>
+        }
+    </div>
 </div>
-
-@code {
-    private string searchTerm = string.Empty;
-
-    private IEnumerable<ComponentCatalogItem> filteredComponents =>
-        string.IsNullOrWhiteSpace(searchTerm)
-            ? ComponentCatalog.Items
-            : ComponentCatalog.Items.Where(component =>
-                component.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
-                component.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
-}
