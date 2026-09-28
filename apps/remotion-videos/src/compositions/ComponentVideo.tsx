@@ -4,13 +4,12 @@ import {
   interpolate,
   OffthreadVideo,
   Sequence,
-  spring,
   staticFile,
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
 import type { Caption, RecordingMeta } from "../scenes";
-import { theme } from "../scenes";
+import { Centered, clamp, Stage, TitleCard, token } from "./ui";
 
 export const INTRO_FRAMES = 50;
 export const OUTRO_FRAMES = 36;
@@ -24,10 +23,6 @@ export type ComponentVideoProps = {
   captionsAt: "top" | "bottom";
   recording: RecordingMeta | null;
 };
-
-// All colors and type come from the design tokens (tokens.css / material-tokens.css,
-// imported in Root.tsx), so the video always matches the design system's theme.
-const token = (name: string) => `var(--md-sys-${name})`;
 
 export const ComponentVideo = ({ sceneId, title, example, captionsAt, recording }: ComponentVideoProps) => {
   const frame = useCurrentFrame();
@@ -85,52 +80,7 @@ export const ComponentVideo = ({ sceneId, title, example, captionsAt, recording 
   );
 };
 
-const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
-
-const Stage = ({ children }: { children: React.ReactNode }) => (
-  <AbsoluteFill
-    data-theme={theme}
-    style={{ background: token("color-background"), fontFamily: token("typescale-font-family") }}
-  >
-    {children}
-  </AbsoluteFill>
-);
-
-const Centered = ({ children }: { children: React.ReactNode }) => (
-  <AbsoluteFill style={{ alignItems: "center", justifyContent: "center", textAlign: "center" }}>
-    {children}
-  </AbsoluteFill>
-);
-
-const TitleCard = ({ title, subtitle }: { title: string; subtitle: string }) => {
-  const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
-  const enter = spring({ frame, fps, config: { damping: 200 } });
-
-  return (
-    <AbsoluteFill style={{ background: token("color-surface-container-low") }}>
-      <Centered>
-        <div style={{ transform: `translateY(${interpolate(enter, [0, 1], [24, 0])}px)`, opacity: enter }}>
-          <div
-            style={{
-              width: 64,
-              height: 6,
-              margin: "0 auto 32px",
-              borderRadius: 3,
-              background: token("color-primary"),
-            }}
-          />
-          <div style={{ fontSize: 88, fontWeight: 400, letterSpacing: -1, color: token("color-on-surface") }}>
-            {title}
-          </div>
-          <div style={{ fontSize: 30, marginTop: 12, color: token("color-on-surface-variant") }}>{subtitle}</div>
-        </div>
-      </Centered>
-    </AbsoluteFill>
-  );
-};
-
-const CaptionPill = ({ caption, at, from, to }: { caption: Caption; at: "top" | "bottom"; from: number; to: number }) => {
+export const CaptionPill = ({ caption, at, from, to }: { caption: Caption; at: "top" | "bottom"; from: number; to: number }) => {
   const frame = useCurrentFrame();
   const fade = 8;
   const opacity = interpolate(frame, [from, from + fade, to - fade, to], [0, 1, 1, 0], {

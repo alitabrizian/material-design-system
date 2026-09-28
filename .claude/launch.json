@@ -7,6 +7,13 @@
       "runtimeArgs": ["tools/scripts/dev-design-system-demo.mts"],
       "port": 5080,
       "autoPort": true
+    },
+    {
+      "name": "remotion-studio",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["tools/scripts/dev-remotion-studio.mts"],
+      "port": 3000,
+      "autoPort": true
     }
   ]
 }

@@ -24,7 +24,7 @@
       "executor": "nx:run-commands",
       "dependsOn": ["^build"],
       "options": {
-        "command": "remotion studio src/index.ts",
+        "command": "remotion studio src/index.ts --public-dir=\"{workspaceRoot}/apps/remotion-videos/public\"",
         "cwd": "apps/remotion-videos"
       }
     },

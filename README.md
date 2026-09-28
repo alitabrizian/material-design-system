@@ -32,15 +32,26 @@ component markup and `.razor.cs` for C# parameters and behavior.
 
 ## Remotion Videos
 
-`apps/remotion-videos` renders short demo videos of the design-system
-components using [Remotion](https://www.remotion.dev/) (React + TypeScript).
-Each component gets its own composition under `src/compositions`, registered
-in `src/Root.tsx`.
+`apps/remotion-videos` renders demo videos of the design system using
+[Remotion](https://www.remotion.dev/) (React + TypeScript). Compositions,
+registered in `src/Root.tsx`:
+
+- `showreel`: the whole system in one video. It has a title card, the token
+  tour, each component's recorded example played full-size in turn, and a
+  closing card with the counts.
+- `design-tokens`: an animated tour of `libs/design-system/tokens`. It covers
+  themes, color roles, typescale, shape, elevation, motion, spacing and state
+  layers. Values are read from the built `tokens.css`, so the video follows the
+  tokens package.
+- one composition per component (`button`, `dialog`, ...), made from
+  recordings of the live demo app.
 
 ```bash
 npm install
 npx nx run remotion-videos:studio   # interactive preview/editor
-npx nx run remotion-videos:render   # renders AutocompleteDemo to out/autocomplete-demo.mp4
+npx nx run remotion-videos:record   # re-record component demos (demo app must be running)
+npx nx run remotion-videos:render   # renders every composition to out/<id>.mp4
+npx nx run remotion-videos:render -- showreel design-tokens   # just these
 ```
 
 The first render downloads a headless Chrome build, so it can take a while. If

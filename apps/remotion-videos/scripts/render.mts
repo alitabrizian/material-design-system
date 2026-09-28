@@ -1,12 +1,13 @@
 /**
- * Renders one MP4 per component into out/<id>.mp4. Bundles the Remotion
- * project once and reuses it for every composition, instead of paying the
- * bundle cost per video as separate `remotion render` calls would.
+ * Renders one MP4 per composition (every component, plus design-tokens and
+ * showreel) into out/<id>.mp4. Bundles the Remotion project once and reuses
+ * it for every composition, instead of paying the bundle cost per video as
+ * separate `remotion render` calls would.
  *
- * Scenes without a recording are skipped with a warning -- run
+ * Component scenes without a recording are skipped with a warning -- run
  * scripts/record.mts first (npx nx run remotion-videos:record).
  *
- * Usage:  node scripts/render.mts [scene-id ...]   (no ids = all scenes)
+ * Usage:  node scripts/render.mts [composition-id ...]   (no ids = all)
  */
 
 import path from "node:path";
@@ -35,7 +36,7 @@ const selected = requested.length ? compositions.filter((c) => requested.include
 const skipped: string[] = [];
 
 for (const composition of selected) {
-  if (!composition.props.recording) {
+  if ("recording" in composition.props && !composition.props.recording) {
     skipped.push(composition.id);
     continue;
   }
