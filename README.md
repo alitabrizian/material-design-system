@@ -7,8 +7,6 @@ package and managed as an Nx workspace.
 ## Structure
 
 - `apps/design-system-demo`: standalone Blazor showcase for the design system.
-- `apps/samamat`: Samamat application as a Git submodule on
-	`chore/structure-initiations`.
 - `apps/remotion-videos`: Remotion (React) project that renders short demo
 	videos of the design-system components.
 - `libs/design-system/blazor`: reusable Blazor components and shared Material Web
@@ -89,12 +87,6 @@ verification mode and the quality gates (`tools/scripts/audit-colors.mts`,
   no CDN dependency.
 - **Spec Kit:** the constitution lives in `.specify/memory/constitution.md` and feature specs in
   `specs/`.
-
-Initialize the Samamat submodule after cloning the workspace:
-
-```bash
-git submodule update --init --recursive
-```
 
 ## Material Web
 
