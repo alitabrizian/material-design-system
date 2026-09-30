@@ -7,10 +7,10 @@
  * same version again after a local repack does NOT re-copy the new content,
  * it just reuses whatever was cached from the FIRST pack. Since this
  * project's version stays fixed at 0.1.0 during local dev, every local
- * consumer (design-system-demo, ...) would silently keep running stale
+ * consumer (pb-design-system, ...) would silently keep running stale
  * component code after any change here, no matter which path triggers the
  * pack (`nx run design-system-blazor:pack` directly, `nx run
- * design-system-demo:serve`'s dependsOn, or the .claude/launch.json dev
+ * pb-design-system:serve`'s dependsOn, or the .claude/launch.json dev
  * script) -- so the eviction has to live here, not in any one caller.
  */
 

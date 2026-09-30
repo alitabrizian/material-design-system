@@ -7,7 +7,7 @@
 ## 1. Dev loop (US1)
 
 ```bash
-npx nx run design-system-demo:serve      # or: node tools/scripts/dev-design-system-demo.mts
+npx nx run pb-design-system:serve      # or: node tools/scripts/dev-pb-design-system.mts
 ```
 
 1. Open http://127.0.0.1:5080/button.
@@ -20,7 +20,7 @@ Expected: works 10/10 times, with no pack, cache clear or restart.
 Package verification (opt-in):
 
 ```bash
-npx nx run design-system-demo:serve-package   # packs, evicts cache, runs demo against the nupkg
+npx nx run pb-design-system:serve-package   # packs, evicts cache, runs demo against the nupkg
 ```
 
 ## 2. Themes (US2)

@@ -2,12 +2,12 @@
 
 ## R1: Why CSS edits did not appear after refresh
 
-- **Finding**: `apps/design-system-demo/Design.Demo.csproj` consumed `PartoBita.DesignSystem.Blazor` 0.1.0
+- **Finding**: `apps/pb-design-system/Design.Demo.csproj` consumed `PartoBita.DesignSystem.Blazor` 0.1.0
   via `PackageReference` from `local-nuget-feed/`. NuGet extracts a package version once into the
   global-packages folder and treats it as immutable. A running demo served
   `.nuget/packages/partobita.designsystem.blazor/0.1.0/staticwebassets/design-system.css`, not the
   file being edited. `pack.mts` evicted the cache, but only when explicitly re-run, and `dotnet watch`
-  on the demo never re-packed. `tools/scripts/dev-design-system-demo.mts` even documented the
+  on the demo never re-packed. `tools/scripts/dev-pb-design-system.mts` even documented the
   limitation ("Editing a component/.razor file inside libs/design-system/blazor will NOT hot-reload").
   A fresh clone also failed to restore (`NU1301: local source … doesn't exist`).
 - **Decision**: The demo uses `ProjectReference` to `Design.csproj` by default. Package verification
@@ -51,7 +51,7 @@
 ## R4: Enforcing "no hardcoded colors"
 
 - **Decision**: `tools/scripts/audit-colors.mts` scans `libs/design-system/blazor/{Components,wwwroot}`
-  and `apps/design-system-demo/{Pages,Shared,Layout,wwwroot}` for these patterns, ignoring comments
+  and `apps/pb-design-system/{Pages,Shared,Layout,wwwroot}` for these patterns, ignoring comments
   and generated token files:
   - hex colors
   - `rgb[a]()` / `hsl[a]()` / `hwb()` / `lab()` / `lch()` / `oklab()` / `oklch()` literals

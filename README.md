@@ -6,7 +6,7 @@ package and managed as an Nx workspace.
 
 ## Structure
 
-- `apps/design-system-demo`: standalone Blazor showcase for the design system.
+- `apps/pb-design-system`: standalone Blazor showcase for the design system.
 - `apps/remotion-videos`: Remotion (React) project that renders short demo
 	videos of the design-system components.
 - `libs/design-system/blazor`: reusable Blazor components and shared Material Web
@@ -20,11 +20,11 @@ framework-neutral Material 3 foundation; custom tokens, wrappers, and
 composition belong in the design-system libraries.
 
 The Blazor implementation is available at `libs/design-system/blazor`, with the
-interactive showcase in `apps/design-system-demo`. Open `DesignSystem.sln` in
+interactive showcase in `apps/pb-design-system`. Open `DesignSystem.sln` in
 Visual Studio or run:
 
 ```powershell
-dotnet run --project apps/design-system-demo/Design.Demo.csproj
+dotnet run --project apps/pb-design-system/Design.Demo.csproj
 ```
 
 Each Blazor component uses the standard two-file structure: `.razor` for
@@ -79,7 +79,7 @@ because the library build generates the design tokens with Node):
 ```bash
 npm ci
 dotnet build DesignSystem.sln          # 0 warnings required; also runs the color audit
-npx nx run design-system-demo:serve    # dev loop: library CSS edits show up on browser refresh
+npx nx run pb-design-system:serve    # dev loop: library CSS edits show up on browser refresh
 ```
 
 See [docs/development/blazor.md](docs/development/blazor.md) for the dev loop, the package

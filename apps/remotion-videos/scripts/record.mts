@@ -1,6 +1,6 @@
 /**
  * Records one video per scene in src/scenes.json by driving the real
- * design-system-demo app in Edge, so videos always show the actual Blazor
+ * pb-design-system app in Edge, so videos always show the actual Blazor
  * components rather than a re-drawn imitation.
  *
  * For each scene: opens the page, isolates the chosen example card in the
@@ -9,7 +9,7 @@
  * public/recordings/<id>.webm plus <id>.json with the caption timings that
  * the Remotion composition reads.
  *
- * Requires the demo app to be running:  npx nx run design-system-demo:serve
+ * Requires the demo app to be running:  npx nx run pb-design-system:serve
  * Usage:  node scripts/record.mts [scene-id ...]   (no ids = all scenes)
  */
 
@@ -48,7 +48,7 @@ async function main() {
   try {
     await fetch(manifest.baseUrl);
   } catch {
-    console.error(`The demo app is not reachable at ${manifest.baseUrl}.\nStart it first: npx nx run design-system-demo:serve`);
+    console.error(`The demo app is not reachable at ${manifest.baseUrl}.\nStart it first: npx nx run pb-design-system:serve`);
     process.exit(1);
   }
 

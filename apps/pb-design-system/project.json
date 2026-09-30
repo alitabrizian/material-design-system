@@ -1,5 +1,5 @@
 {
-  "name": "design-system-demo",
+  "name": "pb-design-system",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "implicitDependencies": ["design-system-blazor"],
@@ -9,13 +9,13 @@
       "dependsOn": ["tokens:build"],
       "options": {
         "command": "dotnet build Design.Demo.csproj",
-        "cwd": "apps/design-system-demo"
+        "cwd": "apps/pb-design-system"
       }
     },
     "serve": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node tools/scripts/dev-design-system-demo.mts",
+        "command": "node tools/scripts/dev-pb-design-system.mts",
         "cwd": "{workspaceRoot}"
       }
     },
@@ -24,7 +24,7 @@
       "dependsOn": ["design-system-blazor:pack"],
       "options": {
         "command": "dotnet run --project Design.Demo.csproj -p:UseDesignSystemPackage=true",
-        "cwd": "apps/design-system-demo"
+        "cwd": "apps/pb-design-system"
       }
     },
     "verify": {

@@ -48,9 +48,9 @@ verification script (T010), per Constitution Principle VI.
 **Goal**: A library CSS/Razor edit is visible on refresh with no repack.
 **Independent test**: quickstart §1.
 
-- [X] T011 [US1] Switch apps/design-system-demo/Design.Demo.csproj to `ProjectReference` ../../libs/design-system/blazor/Design.csproj by default; use `PackageReference` only when `UseDesignSystemPackage=true`; keep the dev `Cache-Control: no-cache` static-file header (FR-005)
+- [X] T011 [US1] Switch apps/pb-design-system/Design.Demo.csproj to `ProjectReference` ../../libs/design-system/blazor/Design.csproj by default; use `PackageReference` only when `UseDesignSystemPackage=true`; keep the dev `Cache-Control: no-cache` static-file header (FR-005)
 - [X] T012 [US1] Make NuGet restore work on a fresh clone: create `local-nuget-feed/` from Directory.Build.props (`MakeDir` before restore) or keep the source conditional; verify with `git clean -xfd` + `dotnet build`
-- [X] T013 [US1] Update tools/scripts/dev-design-system-demo.mts (tokens build → `dotnet watch`, no pack) and apps/design-system-demo/project.json (`serve` = ProjectReference; `serve-package` = pack + `-p:UseDesignSystemPackage=true`)
+- [X] T013 [US1] Update tools/scripts/dev-pb-design-system.mts (tokens build → `dotnet watch`, no pack) and apps/pb-design-system/project.json (`serve` = ProjectReference; `serve-package` = pack + `-p:UseDesignSystemPackage=true`)
 - [X] T014 [US1] Document the loop and the package mode in README.md and docs/development/blazor.md
 
 **Checkpoint**: edit → refresh works (SC-001).
@@ -62,10 +62,10 @@ verification script (T010), per Constitution Principle VI.
 **Goal**: Exact Angular Material themes; picker with radio + token-rendered swatch + name; no FOUC.
 **Independent test**: quickstart §2.
 
-- [X] T015 [US2] Remove seed hex fields from apps/design-system-demo/Services/ThemeState.cs (`ThemeOption(Key, Name, IsDark)`)
-- [X] T016 [US2] Rewrite the theme picker in apps/design-system-demo/Shared/TopAppBar.razor with PBMenu/PBMenuItem (Role=menuitemradio), a radio indicator and a `data-theme`-scoped swatch showing primary/secondary/tertiary
-- [X] T017 [US2] Harden the boot script in apps/design-system-demo/App.razor (try/catch around storage; validate the key) and apps/design-system-demo/wwwroot/js/theme.js (single `select(theme)` call that applies and persists)
-- [X] T018 [US2] Restyle the demo shell in apps/design-system-demo/wwwroot/app.css and apps/design-system-demo/Layout/MainLayout.razor: tokens only; full-height sticky sidebar; drawer navigation ≤ 840px with a menu button; remove the `h1:focus` outline artifact; code samples use token colors
+- [X] T015 [US2] Remove seed hex fields from apps/pb-design-system/Services/ThemeState.cs (`ThemeOption(Key, Name, IsDark)`)
+- [X] T016 [US2] Rewrite the theme picker in apps/pb-design-system/Shared/TopAppBar.razor with PBMenu/PBMenuItem (Role=menuitemradio), a radio indicator and a `data-theme`-scoped swatch showing primary/secondary/tertiary
+- [X] T017 [US2] Harden the boot script in apps/pb-design-system/App.razor (try/catch around storage; validate the key) and apps/pb-design-system/wwwroot/js/theme.js (single `select(theme)` call that applies and persists)
+- [X] T018 [US2] Restyle the demo shell in apps/pb-design-system/wwwroot/app.css and apps/pb-design-system/Layout/MainLayout.razor: tokens only; full-height sticky sidebar; drawer navigation ≤ 840px with a menu button; remove the `h1:focus` outline artifact; code samples use token colors
 
 **Checkpoint**: 4 themes match exactly (SC-002) and switch live (SC-006).
 
@@ -78,7 +78,7 @@ verification script (T010), per Constitution Principle VI.
 
 Each task covers the component's `.razor`/`.razor.cs`, its CSS file in
 libs/design-system/blazor/wwwroot/styles/components/, and its demo page in
-apps/design-system-demo/Pages/.
+apps/pb-design-system/Pages/.
 
 ### Buttons
 
@@ -143,14 +143,14 @@ apps/design-system-demo/Pages/.
 
 ## Phase 6: User Story 4 — No hardcoded colors, guaranteed (P2)
 
-- [X] T052 [US4] Run the audit, fix any remaining violations in libs/design-system/blazor and apps/design-system-demo, then switch the audit to build-failing mode in libs/design-system/blazor/Design.csproj
+- [X] T052 [US4] Run the audit, fix any remaining violations in libs/design-system/blazor and apps/pb-design-system, then switch the audit to build-failing mode in libs/design-system/blazor/Design.csproj
 - [X] T053 [US4] Prove the gate: add a literal color, confirm the build fails with file:line, then remove it
 
 ---
 
 ## Phase 7: User Story 5 — Offline and proxy-safe (P3)
 
-- [X] T054 [US5] Emit dist/css/icons.css + fonts and dist/css/fonts.css (roboto + icons) from libs/design-system/tokens/scripts/build-tokens.mts; remove the Google Fonts links from apps/design-system-demo/App.razor; update libs/design-system/blazor/README.md
+- [X] T054 [US5] Emit dist/css/icons.css + fonts and dist/css/fonts.css (roboto + icons) from libs/design-system/tokens/scripts/build-tokens.mts; remove the Google Fonts links from apps/pb-design-system/App.razor; update libs/design-system/blazor/README.md
 
 ---
 
