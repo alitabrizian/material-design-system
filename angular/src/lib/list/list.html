@@ -1,0 +1,28 @@
+@if (nav()) {
+  <mat-nav-list>
+    @for (item of items(); track item) {
+      <a mat-list-item [attr.href]="item.href()" [activated]="item.selected()" [disabled]="item.disabled()"
+         (click)="item.clicked.emit()">
+        @if (item.icon(); as name) { <mat-icon matListItemIcon>{{ name }}</mat-icon> }
+        @if (item.avatar(); as src) { <img matListItemAvatar class="pb-list-item__avatar" [src]="src" alt="" /> }
+        <span matListItemTitle>{{ item.title() }}</span>
+        @if (item.subtitle(); as text) { <span matListItemLine>{{ text }}</span> }
+        @if (item.line3(); as text) { <span matListItemLine>{{ text }}</span> }
+        @if (item.meta(); as text) { <span matListItemMeta>{{ text }}</span> }
+      </a>
+    }
+  </mat-nav-list>
+} @else {
+  <mat-list>
+    @for (item of items(); track item) {
+      <mat-list-item [activated]="item.selected()" [disabled]="item.disabled()" (click)="item.clicked.emit()">
+        @if (item.icon(); as name) { <mat-icon matListItemIcon>{{ name }}</mat-icon> }
+        @if (item.avatar(); as src) { <img matListItemAvatar class="pb-list-item__avatar" [src]="src" alt="" /> }
+        <span matListItemTitle>{{ item.title() }}</span>
+        @if (item.subtitle(); as text) { <span matListItemLine>{{ text }}</span> }
+        @if (item.line3(); as text) { <span matListItemLine>{{ text }}</span> }
+        @if (item.meta(); as text) { <span matListItemMeta>{{ text }}</span> }
+      </mat-list-item>
+    }
+  </mat-list>
+}

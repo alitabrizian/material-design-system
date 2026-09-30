@@ -1,0 +1,7 @@
+<ng-template #body>
+  @if (title(); as text) {
+    <h2 mat-dialog-title>{{ text }}</h2>
+  }
+  <mat-dialog-content><ng-content /></mat-dialog-content>
+  <mat-dialog-actions align="end"><ng-content select="[pbDialogActions]" /></mat-dialog-actions>
+</ng-template>

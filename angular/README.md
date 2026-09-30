@@ -45,7 +45,7 @@ Every component is standalone: import the ones you use.
 | `PBButton` | `pb-button` | `variant`: text, filled, tonal, outlined, elevated, icon, fab, mini-fab, extended-fab; `href`, `iconStart`/`iconEnd`, `disabledInteractive`, `showProgress` |
 | `PBButtonToggleGroup` / `PBButtonToggle` | `pb-button-toggle-group` / `pb-button-toggle` | `[(value)]`, or `multiple` + `[(values)]` |
 | `PBBadge` | `[pbBadge]` | directive on any element |
-| `PBCard` (+ Header, Content, Actions) | `pb-card`, `pb-card-header`, `pb-card-content`, `pb-card-actions` | `variant`: elevated, filled, outlined |
+| `PBCard` (+ Header, Content, Actions) | `pb-card`, `pb-card-header`, `pb-card-content`, `pb-card-actions` | `variant`: elevated, filled, outlined; `[pbCardAvatar]` in the header |
 | `PBCheckbox`, `PBSlideToggle` | `pb-checkbox`, `pb-slide-toggle` | `[(checked)]` |
 | `PBChips` / `PBChip` | `pb-chips` / `pb-chip` | `variant`: assist, filter (`[(selected)]`), input (`(removed)`) |
 | `PBDatepicker`, `PBTimepicker` | `pb-datepicker`, `pb-timepicker` | `[(value)]: Date \| null`, native Date adapter |
@@ -55,7 +55,7 @@ Every component is standalone: import the ones you use.
 | `PBGridList` / `PBGridTile` | `pb-grid-list` / `pb-grid-tile` | |
 | `PBIcon` | `pb-icon` | `fontSet`: icons, symbols; `color` |
 | `PBInput` | `pb-input` | `[pbPrefix]` / `[pbSuffix]` content |
-| `PBAutoComplete` | `pb-autocomplete` | suggests the `pb-option` children matching the text |
+| `PBAutoComplete` | `pb-autocomplete` | suggests the `pb-option` children the `filter` accepts; `autoActiveFirstOption`, `requireSelection` |
 | `PBSelect` / `PBOption` | `pb-select` / `pb-option` | |
 | `PBList` / `PBListItem` | `pb-list` / `pb-list-item` | a nav list when an item has `href` |
 | `PBMenu` / `PBMenuItem` | `pb-menu` / `pb-menu-item` | own trigger: `triggerVariant`, `triggerLabel`, `triggerIcon` |
@@ -67,9 +67,9 @@ Every component is standalone: import the ones you use.
 | `PBSlider` | `pb-slider` | `discrete`, `showTickMarks` |
 | `PBSnackbar` | `pb-snackbar` | `[(open)]`, `actionLabel`, `(action)` |
 | `PBBottomSheet` | `pb-bottom-sheet` | `[(open)]`, `(dismissed)` |
-| `PBStepper` | `pb-stepper` / `pb-step` | `pbStepperNext` / `pbStepperPrevious` buttons |
-| `PBTable` / `PBSortHeader` | `pb-table` | `columns` (`sortable`), `data`, `<ng-template pbCell="key" let-row>` |
-| `PBTabs` | `pb-tabs` / `pb-tab` | `[(selectedIndex)]`, `stretch`, `align` |
+| `PBStepper` | `pb-stepper` / `pb-step` | `pbStepperNext` / `pbStepperPrevious` / `pbStepperReset` buttons |
+| `PBTable` / `PBSortHeader` | `pb-table` | `columns` (`sortable`), `data`, `pageSize`, `<ng-template pbCell="key" let-row>` |
+| `PBTabs` | `pb-tabs` / `pb-tab` | `[(selectedIndex)]`, `stretch`, `align`; tab `icon` |
 | `PBToolbar` | `pb-toolbar` | |
 | `PBTooltip` | `[pbTooltip]` | directive |
 | `PBTree` / `PBTreeNode` | `pb-tree` | data-driven: `[nodes]` of `PbTreeNode` |
@@ -94,8 +94,15 @@ its PB children (`pb-option`, `pb-tab`, ...) and renders the matching `mat-*` ch
 npx nx run design-system-angular:build   # ng-packagr -> dist/libs/design-system/angular
 ```
 
-`apps/pb-design-system-angular-showcase` renders every component on one page with a theme switcher:
+`apps/pb-design-system-angular-docs` is the Angular docs site: the same layout, pages and examples as the
+Blazor docs (`apps/pb-design-system-docs`), one page component per library component, each example with
+a "show code" view of its real markup and code:
 
 ```bash
-npx nx run pb-design-system-angular-showcase:serve   # http://localhost:4200
+npx nx run pb-design-system-angular-docs:serve   # http://localhost:4200
 ```
+
+## Source layout
+
+One folder per component under `src/lib/`, named like the Blazor component, with the class in `.ts`,
+the template in `.html` and styles in `.css` (shared ones in `src/lib/core/`).

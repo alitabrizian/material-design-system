@@ -6,11 +6,9 @@ import { Directive, TemplateRef, viewChild } from '@angular/core';
  * wrapper's <ng-content>, so each PB container collects its PB children instead and renders the
  * matching mat-* child itself, stamping this template inside it.
  *
- * Subclasses use the template `<ng-template><ng-content /></ng-template>`.
+ * Subclasses use templateUrl '../core/content-template.html'.
  */
 @Directive()
 export abstract class PbContentTemplate {
   readonly template = viewChild.required(TemplateRef);
 }
-
-export const PB_CONTENT_TEMPLATE = '<ng-template><ng-content /></ng-template>';

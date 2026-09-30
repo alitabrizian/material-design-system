@@ -1,0 +1,7 @@
+:host {
+  display: block;
+}
+
+.pb-tab__icon {
+  margin-inline-end: 8px;
+}

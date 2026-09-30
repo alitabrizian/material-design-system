@@ -1,0 +1,7 @@
+<mat-checkbox
+  [checked]="checked()"
+  [(indeterminate)]="indeterminate"
+  [disabled]="isDisabled()"
+  (change)="update($event.checked)"
+  (blur)="markTouched()"
+><ng-content /></mat-checkbox>

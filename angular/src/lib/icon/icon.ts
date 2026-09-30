@@ -16,14 +16,8 @@ export type PbIconColor = 'inherit' | 'primary' | 'secondary' | 'tertiary' | 'er
   imports: [MatIcon],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'pb-icon' },
-  styles: `
-    :host { display: inline-flex; }
-    .pb-icon--primary { color: var(--mat-sys-primary); }
-    .pb-icon--secondary { color: var(--mat-sys-secondary); }
-    .pb-icon--tertiary { color: var(--mat-sys-tertiary); }
-    .pb-icon--error { color: var(--mat-sys-error); }
-  `,
-  template: `<mat-icon [fontSet]="fontSetClass()" [class]="colorClass()" aria-hidden="true"><ng-content /></mat-icon>`,
+  templateUrl: './icon.html',
+  styleUrl: './icon.css',
 })
 export class PbIcon {
   readonly fontSet = input<PbIconFontSet>('icons');

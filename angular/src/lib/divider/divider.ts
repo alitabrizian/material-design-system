@@ -6,8 +6,8 @@ import { MatDivider } from '@angular/material/divider';
   selector: 'pb-divider',
   imports: [MatDivider],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  styles: ':host { display: contents; }',
-  template: `<mat-divider [vertical]="vertical()" [inset]="inset()" />`,
+  host: { style: 'display: contents' },
+  templateUrl: './divider.html',
 })
 export class PbDivider {
   readonly vertical = input(false, { transform: booleanAttribute });
