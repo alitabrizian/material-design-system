@@ -3,7 +3,7 @@
  *
  *   node tools/scripts/verify-demo.mts [--url http://127.0.0.1:5080] [--out .verify] [--no-shots]
  *
- * Requires the demo to be running (npx nx run design-system-demo:serve) and a Chromium: the
+ * Requires the demo to be running (npx nx run pb-design-system:serve) and a Chromium: the
  * PLAYWRIGHT_CHROMIUM env var, or Playwright's cache (npx playwright-core install chromium).
  *
  * Checks, failing with a non-zero exit code:
@@ -48,7 +48,7 @@ function findChromium(): string | undefined {
 }
 
 function catalogRoutes(): string[] {
-  const source = fs.readFileSync(path.join(repoRoot, "apps/design-system-demo/Navigation/ComponentCatalog.cs"), "utf8");
+  const source = fs.readFileSync(path.join(repoRoot, "apps/pb-design-system/Navigation/ComponentCatalog.cs"), "utf8");
   return ["/", ...[...source.matchAll(/new\("[^"]+", "(\/[^"]+)"/g)].map((m) => m[1])];
 }
 

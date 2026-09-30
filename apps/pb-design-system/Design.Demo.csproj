@@ -13,7 +13,7 @@
 
     Package verification (opt-in): `-p:UseDesignSystemPackage=true` consumes the packed nupkg from
     local-nuget-feed instead, exactly like an external consumer. Use `npx nx run
-    design-system-demo:serve-package`, which repacks first (evicting the cached 0.1.0 copy).
+    pb-design-system:serve-package`, which repacks first (evicting the cached 0.1.0 copy).
     Never develop in this mode: NuGet caches a package version as immutable, which is why library
     CSS edits used to "not show up after refresh".
   -->

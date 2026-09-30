@@ -1,14 +1,14 @@
 # Blazor development
 
 The Blazor component library (`libs/design-system/blazor`, NuGet id `PartoBita.DesignSystem.Blazor`)
-reproduces Angular Material's Material 3 components. The showcase app (`apps/design-system-demo`)
+reproduces Angular Material's Material 3 components. The showcase app (`apps/pb-design-system`)
 documents every component.
 
 ## Run the demo (edit → refresh loop)
 
 ```bash
 npm ci                                   # once: token/font build dependencies
-npx nx run design-system-demo:serve      # = node tools/scripts/dev-design-system-demo.mts
+npx nx run pb-design-system:serve      # = node tools/scripts/dev-pb-design-system.mts
 ```
 
 Open http://127.0.0.1:5080.
@@ -27,7 +27,7 @@ show up after refresh".
 ### Verifying the packaged library
 
 ```bash
-npx nx run design-system-demo:serve-package   # packs (evicting the cached 0.1.0), runs the demo on the nupkg
+npx nx run pb-design-system:serve-package   # packs (evicting the cached 0.1.0), runs the demo on the nupkg
 ```
 
 Use this only to check what external consumers get. Never develop in this mode.

@@ -24,11 +24,11 @@ const reportOnly = process.argv.includes("--report");
 const ROOTS = [
   "libs/design-system/blazor/Components",
   "libs/design-system/blazor/wwwroot",
-  "apps/design-system-demo/Pages",
-  "apps/design-system-demo/Shared",
-  "apps/design-system-demo/Layout",
-  "apps/design-system-demo/wwwroot",
-  "apps/design-system-demo/App.razor",
+  "apps/pb-design-system/Pages",
+  "apps/pb-design-system/Shared",
+  "apps/pb-design-system/Layout",
+  "apps/pb-design-system/wwwroot",
+  "apps/pb-design-system/App.razor",
 ];
 
 // Generated/copied token files: the one sanctioned home of literal color values.

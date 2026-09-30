@@ -107,7 +107,7 @@ libs/design-system/blazor/
 │   └── design-system.js               # ripple + overlay positioning + dialog/focus helpers
 └── Design.csproj                      # SyncDesignTokens + AuditColors targets
 
-apps/design-system-demo/
+apps/pb-design-system/
 ├── Design.Demo.csproj                 # ProjectReference (default) | PackageReference (-p:UseDesignSystemPackage=true)
 ├── App.razor                          # no CDN links; FOUC-safe theme boot script
 ├── Shared/TopAppBar.razor             # theme picker (radio + token-rendered swatch + name)
@@ -117,7 +117,7 @@ apps/design-system-demo/
 tools/scripts/
 ├── audit-colors.mts                   # Principle II gate
 ├── verify-demo.mts                    # Playwright: 37 pages × 4 themes screenshots + checks
-└── dev-design-system-demo.mts         # tokens build → dotnet watch (no pack)
+└── dev-pb-design-system.mts         # tokens build → dotnet watch (no pack)
 ```
 
 **Structure Decision**: Keep the existing three-package layout (tokens → blazor RCL → demo). Only the

@@ -2,9 +2,9 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "design-system-demo",
+      "name": "pb-design-system",
       "runtimeExecutable": "node",
-      "runtimeArgs": ["tools/scripts/dev-design-system-demo.mts"],
+      "runtimeArgs": ["tools/scripts/dev-pb-design-system.mts"],
       "port": 5080,
       "autoPort": true
     },
