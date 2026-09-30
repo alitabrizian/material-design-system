@@ -1,0 +1,35 @@
+<div class="catalog-content">
+  <docs-page-header title="Bottom Sheet">
+    pb-bottom-sheet slides a panel of content up from the bottom of the screen over a scrim, typically
+    holding a list of actions.
+  </docs-page-header>
+
+  <section class="doc-section">
+    <docs-example title="Bottom sheet overview" page="bottom-sheet" id="overview">
+      <pb-button variant="filled" (click)="open.set(true)">Open bottom sheet</pb-button>
+      <p class="status">Picked: {{ picked() }}</p>
+
+      <pb-bottom-sheet [(open)]="open">
+        <pb-list>
+          <pb-list-item title="Google Keep" subtitle="Add to a note" icon="note" (clicked)="pick('Google Keep')" />
+          <pb-list-item title="Google Docs" subtitle="Embed in a document" icon="description" (clicked)="pick('Google Docs')" />
+          <pb-list-item title="Google Plus" subtitle="Share with your friends" icon="share" (clicked)="pick('Google Plus')" />
+          <pb-list-item title="Google Hangouts" subtitle="Show to your coworkers" icon="chat" (clicked)="pick('Google Hangouts')" />
+        </pb-list>
+      </pb-bottom-sheet>
+    </docs-example>
+  </section>
+
+  <section class="doc-section">
+    <h2>API reference</h2>
+    <div class="doc-table-wrapper">
+      <table class="doc-table">
+        <thead><tr><th>Input / output</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>[(open)]</code></td><td><code>boolean</code></td><td>Shows the sheet; set back to <code>false</code> when it's dismissed.</td></tr>
+          <tr><td><code>(dismissed)</code></td><td><code>void</code></td><td>The sheet closed (scrim click, Escape, or <code>open</code> set to false).</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

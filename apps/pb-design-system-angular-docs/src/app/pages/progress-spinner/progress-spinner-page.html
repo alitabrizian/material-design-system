@@ -1,0 +1,37 @@
+<div class="catalog-content">
+  <docs-page-header title="Progress Spinner">
+    A progress spinner communicates that an operation is in progress, indeterminate when the duration is
+    unknown.
+  </docs-page-header>
+
+  <section class="doc-section">
+    <docs-example title="Loading" page="progress-spinner" id="loading">
+      <div class="demo-row">
+        <pb-progress-spinner />
+        <pb-progress-spinner [diameter]="32" />
+        <pb-progress-spinner [diameter]="24" [strokeWidth]="3" />
+      </div>
+    </docs-example>
+
+    <docs-example title="Determinate" page="progress-spinner" id="determinate">
+      <div class="demo-row">
+        <pb-progress-spinner [value]="value()" />
+        <pb-slider [(value)]="value" discrete style="width: 240px" />
+      </div>
+    </docs-example>
+  </section>
+
+  <section class="doc-section">
+    <h2>API reference</h2>
+    <div class="doc-table-wrapper">
+      <table class="doc-table">
+        <thead><tr><th>Input</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>value</code></td><td><code>number</code></td><td>Progress from 0 to 100; unset means indeterminate.</td></tr>
+          <tr><td><code>diameter</code></td><td><code>number</code></td><td>Size in pixels. Defaults to 48.</td></tr>
+          <tr><td><code>strokeWidth</code></td><td><code>number</code></td><td>Stroke width in pixels. Defaults to a tenth of the diameter.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

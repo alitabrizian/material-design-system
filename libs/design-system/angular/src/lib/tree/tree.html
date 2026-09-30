@@ -1,0 +1,13 @@
+<mat-tree #tree [dataSource]="data()" [childrenAccessor]="childrenAccessor">
+  <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding [isExpandable]="hasChildren(node)">
+    @if (hasChildren(node)) {
+      <button matIconButton matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.label">
+        <mat-icon>{{ tree.isExpanded(node) ? 'expand_more' : 'chevron_right' }}</mat-icon>
+      </button>
+    } @else {
+      <span class="pb-tree__spacer"></span>
+    }
+    @if (node.icon) { <mat-icon class="pb-tree__icon">{{ node.icon }}</mat-icon> }
+    {{ node.label }}
+  </mat-tree-node>
+</mat-tree>

@@ -63,7 +63,7 @@ Playwright (`playwright-core` + system Chromium) screenshot/computed-style scrip
 | Principle | Gate | Pre-design | Post-design |
 |-----------|------|-----------|-------------|
 | I. Angular Material is the reference | Every token and component value cites `_m3-*.scss`, structural CSS or the prebuilt theme | PASS (sources vendored; see research R2, R5) | PASS: each component CSS file header cites its source file |
-| II. No hardcoded colors | Audit script, build-blocking | PASS (R4) | PASS: audit runs in `Design.csproj` `BeforeBuild` |
+| II. No hardcoded colors | Audit script, build-blocking | PASS (R4) | PASS: audit runs in `PartoBita.DesignSystem.Blazor.csproj` `BeforeBuild` |
 | III. Four fixed themes | Values from prebuilt themes; live switch; no FOUC | PASS (R2, R3) | PASS: swatches rendered via `data-theme` scoping, not seed hex |
 | IV. Reliable dev loop | ProjectReference; fresh clone builds | PASS (R1) | PASS |
 | V. Accessible | Roles/states/keyboard per CDK | PASS (contracts list ARIA per component) | PASS |
@@ -105,10 +105,10 @@ libs/design-system/blazor/
 │   ├── styles/base.css                # state layer, focus, ripple, typography helpers
 │   ├── styles/components/*.css        # one file per component
 │   └── design-system.js               # ripple + overlay positioning + dialog/focus helpers
-└── Design.csproj                      # SyncDesignTokens + AuditColors targets
+└── PartoBita.DesignSystem.Blazor.csproj                      # SyncDesignTokens + AuditColors targets
 
-apps/pb-design-system/
-├── Design.Demo.csproj                 # ProjectReference (default) | PackageReference (-p:UseDesignSystemPackage=true)
+apps/pb-design-system-docs/
+├── PartoBita.DesignSystem.Docs.csproj                 # ProjectReference (default) | PackageReference (-p:UseDesignSystemPackage=true)
 ├── App.razor                          # no CDN links; FOUC-safe theme boot script
 ├── Shared/TopAppBar.razor             # theme picker (radio + token-rendered swatch + name)
 ├── wwwroot/app.css                    # shell styles, tokens only
@@ -117,7 +117,7 @@ apps/pb-design-system/
 tools/scripts/
 ├── audit-colors.mts                   # Principle II gate
 ├── verify-demo.mts                    # Playwright: 37 pages × 4 themes screenshots + checks
-└── dev-pb-design-system.mts         # tokens build → dotnet watch (no pack)
+└── dev-pb-design-system-docs.mts         # tokens build → dotnet watch (no pack)
 ```
 
 **Structure Decision**: Keep the existing three-package layout (tokens → blazor RCL → demo). Only the

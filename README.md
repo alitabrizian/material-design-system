@@ -6,25 +6,42 @@ package and managed as an Nx workspace.
 
 ## Structure
 
-- `apps/pb-design-system`: standalone Blazor showcase for the design system.
-- `apps/remotion-videos`: Remotion (React) project that renders short demo
-	videos of the design-system components.
-- `libs/design-system/blazor`: reusable Blazor components and shared Material Web
-	resources.
-- `DesignSystem.sln`: solution for the workspace-level Blazor design-system code.
-- `tools`: generators, scripts, and CI helpers.
+| Folder | Nx project | Published as |
+| --- | --- | --- |
+| `libs/design-system/tokens` | `design-tokens` | npm `@partobita/design-tokens` |
+| `libs/design-system/blazor` | `design-system-blazor` | NuGet `PartoBita.DesignSystem.Blazor` |
+| `libs/design-system/angular` | `design-system-angular` | npm `@partobita/design-system-angular` (ng-packagr) |
+| `apps/pb-design-system-docs` | `pb-design-system-docs` | Blazor docs site (`PartoBita.DesignSystem.Docs`) |
+| `apps/pb-design-system-angular-docs` | `pb-design-system-angular-docs` | Angular docs site, same layout and pages as the Blazor docs |
+| `apps/remotion-videos` | `remotion-videos` | demo videos |
+
+Both component libraries inherit everything visual from `@partobita/design-tokens`: Blazor copies its
+`dist/` into the NuGet package, and Angular imports it, binding Angular Material's `--mat-sys-*`
+variables to the tokens through `css/angular-material.css`.
+
+- `DesignSystem.sln`: solution for the Blazor library and docs app.
+- `tools`: scripts (dev loop, color audit, browser verification, repo mirrors).
 - `docs`: architecture, development, and migration documentation.
 
-Applications consume the design-system libraries. Material Web is the
-framework-neutral Material 3 foundation; custom tokens, wrappers, and
-composition belong in the design-system libraries.
+## Monorepo and mirror repos
+
+This repository is the source of truth: a change to the tokens, a library and an app is one commit.
+Each project is also published, with its history, to its own read-only repo by
+`tools/scripts/mirror-repos.mts` (configured in `tools/mirror-repos.json`):
+
+```bash
+npm run mirror                              # every mirror that has a url
+node tools/scripts/mirror-repos.mts --dry-run
+```
+
+Run it on master after merging. Don't commit to a mirror directly: the next mirror push overwrites it.
 
 The Blazor implementation is available at `libs/design-system/blazor`, with the
-interactive showcase in `apps/pb-design-system`. Open `DesignSystem.sln` in
+interactive showcase in `apps/pb-design-system-docs`. Open `DesignSystem.sln` in
 Visual Studio or run:
 
 ```powershell
-dotnet run --project apps/pb-design-system/Design.Demo.csproj
+dotnet run --project apps/pb-design-system-docs/PartoBita.DesignSystem.Docs.csproj
 ```
 
 Each Blazor component uses the standard two-file structure: `.razor` for
@@ -79,7 +96,7 @@ because the library build generates the design tokens with Node):
 ```bash
 npm ci
 dotnet build DesignSystem.sln          # 0 warnings required; also runs the color audit
-npx nx run pb-design-system:serve    # dev loop: library CSS edits show up on browser refresh
+npx nx run pb-design-system-docs:serve    # dev loop: library CSS edits show up on browser refresh
 ```
 
 See [docs/development/blazor.md](docs/development/blazor.md) for the dev loop, the package

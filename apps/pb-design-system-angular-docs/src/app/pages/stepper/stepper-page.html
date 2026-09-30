@@ -1,0 +1,64 @@
+<div class="catalog-content">
+  <docs-page-header title="Stepper">
+    pb-stepper provides a wizard-like workflow by dividing content into logical steps, horizontal or
+    vertical, linear or free.
+  </docs-page-header>
+
+  <section class="doc-section">
+    <docs-example title="Stepper overview" page="stepper" id="overview">
+      <pb-stepper>
+        <pb-step label="Fill out your name">
+          <pb-input label="Name" />
+          <div><pb-button variant="filled" pbStepperNext>Next</pb-button></div>
+        </pb-step>
+        <pb-step label="Fill out your address" optional>
+          <pb-input label="Address" />
+          <div>
+            <pb-button pbStepperPrevious>Back</pb-button>
+            <pb-button variant="filled" pbStepperNext>Next</pb-button>
+          </div>
+        </pb-step>
+        <pb-step label="Done">
+          <p>You are now done.</p>
+          <div>
+            <pb-button pbStepperPrevious>Back</pb-button>
+            <pb-button pbStepperReset>Reset</pb-button>
+          </div>
+        </pb-step>
+      </pb-stepper>
+    </docs-example>
+
+    <docs-example title="Vertical stepper" page="stepper" id="vertical">
+      <pb-stepper orientation="vertical">
+        <pb-step label="Choose a plan">
+          <div><pb-button variant="filled" pbStepperNext>Next</pb-button></div>
+        </pb-step>
+        <pb-step label="Payment">
+          <div>
+            <pb-button pbStepperPrevious>Back</pb-button>
+            <pb-button variant="filled" pbStepperNext>Next</pb-button>
+          </div>
+        </pb-step>
+        <pb-step label="Confirm">
+          <div><pb-button pbStepperReset>Start over</pb-button></div>
+        </pb-step>
+      </pb-stepper>
+    </docs-example>
+  </section>
+
+  <section class="doc-section">
+    <h2>API reference</h2>
+    <div class="doc-table-wrapper">
+      <table class="doc-table">
+        <thead><tr><th>Input</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>orientation</code></td><td><code>'horizontal' | 'vertical'</code></td><td>Header layout.</td></tr>
+          <tr><td><code>linear</code></td><td><code>boolean</code></td><td>Steps must be completed in order.</td></tr>
+          <tr><td><code>[(selectedIndex)]</code></td><td><code>number</code></td><td>The current step.</td></tr>
+          <tr><td><code>pb-step label</code>, <code>optional</code>, <code>editable</code></td><td></td><td>Step header text and options; the content is the step body.</td></tr>
+          <tr><td><code>pbStepperNext</code>, <code>pbStepperPrevious</code>, <code>pbStepperReset</code></td><td>directives</td><td>Buttons inside a step that move the stepper.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BB2217D-0F2D-49D1-97BC-3654EDB2A4D4}") = "Design", "libs\design-system\blazor\Design.csproj", "{7CFEA4B0-2CBB-4A45-A36A-7D6DAB0C1E01}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654EDB2A4D4}") = "PartoBita.DesignSystem.Blazor", "libs\design-system\blazor\PartoBita.DesignSystem.Blazor.csproj", "{7CFEA4B0-2CBB-4A45-A36A-7D6DAB0C1E01}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Design.Demo", "apps\pb-design-system\Design.Demo.csproj", "{C2E8D34A-5A5E-4F62-8F95-824BD6AE2D1E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PartoBita.DesignSystem.Docs", "apps\pb-design-system-docs\PartoBita.DesignSystem.Docs.csproj", "{C2E8D34A-5A5E-4F62-8F95-824BD6AE2D1E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

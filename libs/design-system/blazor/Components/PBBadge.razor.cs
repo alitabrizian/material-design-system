@@ -1,4 +1,4 @@
-namespace Design.Components;
+namespace PartoBita.DesignSystem.Blazor.Components;
 
 /// <summary><c>Dot</c> hides the text (same as <see cref="PBBadgeSize.Small"/>).</summary>
 public enum PBBadgeVariant { Standard, Dot }

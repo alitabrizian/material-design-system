@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components.Web;
 
-namespace Design.Components;
+namespace PartoBita.DesignSystem.Blazor.Components;
 
 /// <summary>
 /// A node of a <see cref="PBTree"/> (mat-nested-tree-node). Nest child nodes as child content; a node

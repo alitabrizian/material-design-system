@@ -1,4 +1,4 @@
-namespace Design.Components;
+namespace PartoBita.DesignSystem.Blazor.Components;
 
 /// <summary>
 /// MatSnackBar's simple snack bar as a component: set <see cref="Open"/> (bind it) to show the message at the

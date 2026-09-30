@@ -1,0 +1,10 @@
+<mat-slider
+  [min]="min()"
+  [max]="max()"
+  [step]="step()"
+  [discrete]="discrete()"
+  [showTickMarks]="showTickMarks()"
+  [disabled]="isDisabled()"
+>
+  <input matSliderThumb [value]="value()" (valueChange)="update($event)" (blur)="markTouched()" />
+</mat-slider>

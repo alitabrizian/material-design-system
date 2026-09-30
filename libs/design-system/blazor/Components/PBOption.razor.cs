@@ -1,4 +1,4 @@
-namespace Design.Components;
+namespace PartoBita.DesignSystem.Blazor.Components;
 
 /// <summary>
 /// mat-option inside a <see cref="PBSelect{TValue}"/>. The option text is <see cref="WorkspaceComponentBase.ChildContent"/>

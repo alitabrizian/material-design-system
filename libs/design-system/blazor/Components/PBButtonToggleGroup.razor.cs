@@ -1,4 +1,4 @@
-namespace Design.Components;
+namespace PartoBita.DesignSystem.Blazor.Components;
 
 /// <summary>
 /// Groups <see cref="PBButtonToggle"/>s into one connected control and owns the selection,

@@ -1,4 +1,4 @@
-namespace Design.Components;
+namespace PartoBita.DesignSystem.Blazor.Components;
 
 /// <summary>mat-progress-bar: determinate (<see cref="Value"/> 0-100), buffer (<see cref="BufferValue"/>) or indeterminate.</summary>
 public partial class PBProgressBar : WorkspaceComponentBase

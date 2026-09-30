@@ -1,0 +1,12 @@
+:host {
+  display: block;
+}
+
+.pb-tree__spacer {
+  display: inline-block;
+  width: 48px;
+}
+
+mat-icon.pb-tree__icon {
+  margin-inline-end: 8px;
+}

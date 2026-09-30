@@ -2,9 +2,9 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "pb-design-system",
+      "name": "pb-design-system-docs",
       "runtimeExecutable": "node",
-      "runtimeArgs": ["tools/scripts/dev-pb-design-system.mts"],
+      "runtimeArgs": ["tools/scripts/dev-pb-design-system-docs.mts"],
       "port": 5080,
       "autoPort": true
     },
@@ -14,6 +14,12 @@
       "runtimeArgs": ["tools/scripts/dev-remotion-studio.mts"],
       "port": 3000,
       "autoPort": true
+    },
+    {
+      "name": "pb-design-system-angular-docs",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["node_modules/nx/bin/nx.js", "serve", "pb-design-system-angular-docs"],
+      "port": 4200
     }
   ]
 }

@@ -1,4 +1,4 @@
-namespace Design.Components;
+namespace PartoBita.DesignSystem.Blazor.Components;
 
 /// <summary>mat-divider: a 1px outline-variant rule.</summary>
 public partial class PBDivider : WorkspaceComponentBase

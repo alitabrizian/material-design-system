@@ -1,4 +1,4 @@
-namespace Design.Components;
+namespace PartoBita.DesignSystem.Blazor.Components;
 
 /// <summary>
 /// matRipple: any content inside gets MatRipple ink from the pointer position (enter 450ms, fade

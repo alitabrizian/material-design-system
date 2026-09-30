@@ -1,0 +1,6 @@
+<mat-progress-spinner
+  [mode]="value() === undefined ? 'indeterminate' : 'determinate'"
+  [value]="value() ?? 0"
+  [diameter]="diameter()"
+  [strokeWidth]="strokeWidth() ?? diameter() / 10"
+/>

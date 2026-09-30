@@ -1,0 +1,30 @@
+<div class="catalog-content">
+  <docs-page-header title="Timepicker">
+    The timepicker lets users type a time of day or pick it from a list.
+  </docs-page-header>
+
+  <section class="doc-section">
+    <docs-example title="Default" page="timepicker" id="default">
+      <pb-timepicker label="Pick a time" interval="30m" [(value)]="time" />
+      <p class="status">Selected: {{ time() ? (time() | date: 'shortTime') : 'none' }}</p>
+    </docs-example>
+
+    <docs-example title="Disabled" page="timepicker" id="disabled">
+      <pb-timepicker label="Disabled" disabled />
+    </docs-example>
+  </section>
+
+  <section class="doc-section">
+    <h2>API reference</h2>
+    <div class="doc-table-wrapper">
+      <table class="doc-table">
+        <thead><tr><th>Input</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>[(value)]</code></td><td><code>Date | null</code></td><td>The chosen time (native Date adapter).</td></tr>
+          <tr><td><code>interval</code></td><td><code>string</code></td><td>Gap between listed times, e.g. <code>"30m"</code> or <code>"1h"</code>.</td></tr>
+          <tr><td><code>label</code>, <code>supportingText</code>, <code>errorText</code>, <code>appearance</code>, <code>required</code>, <code>disabled</code>, <code>block</code></td><td></td><td>Shared by every text field.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

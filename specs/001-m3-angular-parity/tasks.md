@@ -34,9 +34,9 @@ verification script (T010), per Constitution Principle VI.
 - [X] T004 Reduce libs/design-system/tokens/src/material-tokens.css to motion, spacing and the font stack (everything else is now generated), keeping the existing token names working
 - [X] T005 [P] Create libs/design-system/blazor/wwwroot/styles/base.css (state-layer `::before` helper, focus-visible handling, ripple styles, `.pb-visually-hidden`) and turn libs/design-system/blazor/wwwroot/design-system.css into the `@import` index
 - [X] T006 [P] Extend libs/design-system/blazor/wwwroot/design-system.js with overlay positioning (`pb.position(panel, anchor, opts)`), dialog helpers (`showModal`/`close`), focus helpers and Angular ripple timings
-- [X] T007 Update .gitignore and libs/design-system/blazor/Design.csproj SyncDesignTokens for the new dist files (fonts.css, icons.css, icon woff2)
+- [X] T007 Update .gitignore and libs/design-system/blazor/PartoBita.DesignSystem.Blazor.csproj SyncDesignTokens for the new dist files (fonts.css, icons.css, icon woff2)
 - [X] T008 Create tools/scripts/audit-colors.mts (hex, rgb/hsl/hwb/lab/lch/oklab/oklch literals, named colors in color properties, SVG fill/stroke; ignores comments and generated token files; prints file:line; exit 1 on violations)
-- [X] T009 Wire the audit into libs/design-system/blazor/Design.csproj (`AuditColors` target, BeforeBuild; fails with a clear message when node is unavailable, like SyncDesignTokens) and into the Nx `lint` target in libs/design-system/blazor/project.json
+- [X] T009 Wire the audit into libs/design-system/blazor/PartoBita.DesignSystem.Blazor.csproj (`AuditColors` target, BeforeBuild; fails with a clear message when node is unavailable, like SyncDesignTokens) and into the Nx `lint` target in libs/design-system/blazor/project.json
 - [X] T010 Create tools/scripts/verify-demo.mts (Playwright + system Chromium: every catalog route × 4 themes screenshots to .verify/, page-error check, 360px overflow check, unrendered-icon check, `--tokens` computed-role comparison against the vendored prebuilt CSS, theme-switch timing < 100 ms for SC-006)
 
 **Checkpoint**: tokens are exact, the base CSS and JS exist, and the verification tooling exists.
@@ -48,9 +48,9 @@ verification script (T010), per Constitution Principle VI.
 **Goal**: A library CSS/Razor edit is visible on refresh with no repack.
 **Independent test**: quickstart §1.
 
-- [X] T011 [US1] Switch apps/pb-design-system/Design.Demo.csproj to `ProjectReference` ../../libs/design-system/blazor/Design.csproj by default; use `PackageReference` only when `UseDesignSystemPackage=true`; keep the dev `Cache-Control: no-cache` static-file header (FR-005)
+- [X] T011 [US1] Switch apps/pb-design-system-docs/PartoBita.DesignSystem.Docs.csproj to `ProjectReference` ../../libs/design-system/blazor/PartoBita.DesignSystem.Blazor.csproj by default; use `PackageReference` only when `UseDesignSystemPackage=true`; keep the dev `Cache-Control: no-cache` static-file header (FR-005)
 - [X] T012 [US1] Make NuGet restore work on a fresh clone: create `local-nuget-feed/` from Directory.Build.props (`MakeDir` before restore) or keep the source conditional; verify with `git clean -xfd` + `dotnet build`
-- [X] T013 [US1] Update tools/scripts/dev-pb-design-system.mts (tokens build → `dotnet watch`, no pack) and apps/pb-design-system/project.json (`serve` = ProjectReference; `serve-package` = pack + `-p:UseDesignSystemPackage=true`)
+- [X] T013 [US1] Update tools/scripts/dev-pb-design-system-docs.mts (tokens build → `dotnet watch`, no pack) and apps/pb-design-system-docs/project.json (`serve` = ProjectReference; `serve-package` = pack + `-p:UseDesignSystemPackage=true`)
 - [X] T014 [US1] Document the loop and the package mode in README.md and docs/development/blazor.md
 
 **Checkpoint**: edit → refresh works (SC-001).
@@ -62,10 +62,10 @@ verification script (T010), per Constitution Principle VI.
 **Goal**: Exact Angular Material themes; picker with radio + token-rendered swatch + name; no FOUC.
 **Independent test**: quickstart §2.
 
-- [X] T015 [US2] Remove seed hex fields from apps/pb-design-system/Services/ThemeState.cs (`ThemeOption(Key, Name, IsDark)`)
-- [X] T016 [US2] Rewrite the theme picker in apps/pb-design-system/Shared/TopAppBar.razor with PBMenu/PBMenuItem (Role=menuitemradio), a radio indicator and a `data-theme`-scoped swatch showing primary/secondary/tertiary
-- [X] T017 [US2] Harden the boot script in apps/pb-design-system/App.razor (try/catch around storage; validate the key) and apps/pb-design-system/wwwroot/js/theme.js (single `select(theme)` call that applies and persists)
-- [X] T018 [US2] Restyle the demo shell in apps/pb-design-system/wwwroot/app.css and apps/pb-design-system/Layout/MainLayout.razor: tokens only; full-height sticky sidebar; drawer navigation ≤ 840px with a menu button; remove the `h1:focus` outline artifact; code samples use token colors
+- [X] T015 [US2] Remove seed hex fields from apps/pb-design-system-docs/Services/ThemeState.cs (`ThemeOption(Key, Name, IsDark)`)
+- [X] T016 [US2] Rewrite the theme picker in apps/pb-design-system-docs/Shared/TopAppBar.razor with PBMenu/PBMenuItem (Role=menuitemradio), a radio indicator and a `data-theme`-scoped swatch showing primary/secondary/tertiary
+- [X] T017 [US2] Harden the boot script in apps/pb-design-system-docs/App.razor (try/catch around storage; validate the key) and apps/pb-design-system-docs/wwwroot/js/theme.js (single `select(theme)` call that applies and persists)
+- [X] T018 [US2] Restyle the demo shell in apps/pb-design-system-docs/wwwroot/app.css and apps/pb-design-system-docs/Layout/MainLayout.razor: tokens only; full-height sticky sidebar; drawer navigation ≤ 840px with a menu button; remove the `h1:focus` outline artifact; code samples use token colors
 
 **Checkpoint**: 4 themes match exactly (SC-002) and switch live (SC-006).
 
@@ -78,7 +78,7 @@ verification script (T010), per Constitution Principle VI.
 
 Each task covers the component's `.razor`/`.razor.cs`, its CSS file in
 libs/design-system/blazor/wwwroot/styles/components/, and its demo page in
-apps/pb-design-system/Pages/.
+apps/pb-design-system-docs/Pages/.
 
 ### Buttons
 
@@ -143,14 +143,14 @@ apps/pb-design-system/Pages/.
 
 ## Phase 6: User Story 4 — No hardcoded colors, guaranteed (P2)
 
-- [X] T052 [US4] Run the audit, fix any remaining violations in libs/design-system/blazor and apps/pb-design-system, then switch the audit to build-failing mode in libs/design-system/blazor/Design.csproj
+- [X] T052 [US4] Run the audit, fix any remaining violations in libs/design-system/blazor and apps/pb-design-system-docs, then switch the audit to build-failing mode in libs/design-system/blazor/PartoBita.DesignSystem.Blazor.csproj
 - [X] T053 [US4] Prove the gate: add a literal color, confirm the build fails with file:line, then remove it
 
 ---
 
 ## Phase 7: User Story 5 — Offline and proxy-safe (P3)
 
-- [X] T054 [US5] Emit dist/css/icons.css + fonts and dist/css/fonts.css (roboto + icons) from libs/design-system/tokens/scripts/build-tokens.mts; remove the Google Fonts links from apps/pb-design-system/App.razor; update libs/design-system/blazor/README.md
+- [X] T054 [US5] Emit dist/css/icons.css + fonts and dist/css/fonts.css (roboto + icons) from libs/design-system/tokens/scripts/build-tokens.mts; remove the Google Fonts links from apps/pb-design-system-docs/App.razor; update libs/design-system/blazor/README.md
 
 ---
 

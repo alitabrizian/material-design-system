@@ -1,0 +1,9 @@
+:host {
+  display: block;
+}
+
+.pb-radio-group--vertical {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}

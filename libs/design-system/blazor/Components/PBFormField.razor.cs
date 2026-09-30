@@ -1,4 +1,4 @@
-namespace Design.Components;
+namespace PartoBita.DesignSystem.Blazor.Components;
 
 /// <summary>
 /// mat-form-field around your own native control (<c>&lt;input&gt;</c>, <c>&lt;textarea&gt;</c> or

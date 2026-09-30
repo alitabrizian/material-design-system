@@ -1,4 +1,4 @@
-namespace Design.Components;
+namespace PartoBita.DesignSystem.Blazor.Components;
 
 /// <summary>Which icon font renders a ligature name (mat-icon <c>fontSet</c>).</summary>
 public enum PBIconFontSet

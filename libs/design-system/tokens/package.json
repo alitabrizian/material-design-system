@@ -7,9 +7,7 @@
     "dist"
   ],
   "exports": {
-    "./css/tokens.css": "./dist/css/tokens.css",
-    "./css/material-tokens.css": "./dist/css/material-tokens.css",
-    "./css/roboto.css": "./dist/css/roboto.css",
+    "./css/*": "./dist/css/*",
     "./fonts/*": "./dist/fonts/*",
     "./data/palettes.json": "./dist/data/palettes.json"
   }

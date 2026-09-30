@@ -1,0 +1,48 @@
+<div class="catalog-content">
+  <docs-page-header title="Dialog">
+    pb-dialog opens a modal dialog with M3 styling and focus management: it floats over a scrim, traps
+    focus while open, and closes with Escape unless disableClose is set.
+  </docs-page-header>
+
+  <section class="doc-section">
+    <docs-example title="Dialog with title, content and actions" page="dialog" id="overview">
+      <pb-button variant="filled" (click)="open.set(true)">Delete file</pb-button>
+      <p class="status">Result: {{ result() }}</p>
+
+      <pb-dialog [(open)]="open" title="Delete file?">
+        This file will be permanently deleted. This cannot be undone.
+        <ng-container pbDialogActions>
+          <pb-button (click)="close('cancelled')">Cancel</pb-button>
+          <pb-button variant="filled" (click)="close('deleted')">Delete</pb-button>
+        </ng-container>
+      </pb-dialog>
+    </docs-example>
+
+    <docs-example title="Dialog that requires an action" page="dialog" id="required-action">
+      <pb-button variant="outlined" (click)="termsOpen.set(true)">Show terms</pb-button>
+
+      <pb-dialog [(open)]="termsOpen" title="Terms of service" disableClose>
+        Escape and clicks on the scrim don't close this dialog: choose an action.
+        <ng-container pbDialogActions>
+          <pb-button (click)="termsOpen.set(false)">Decline</pb-button>
+          <pb-button variant="filled" (click)="termsOpen.set(false)">Accept</pb-button>
+        </ng-container>
+      </pb-dialog>
+    </docs-example>
+  </section>
+
+  <section class="doc-section">
+    <h2>API reference</h2>
+    <div class="doc-table-wrapper">
+      <table class="doc-table">
+        <thead><tr><th>Input</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>[(open)]</code></td><td><code>boolean</code></td><td>Opens the dialog; set back to <code>false</code> when it closes.</td></tr>
+          <tr><td><code>title</code></td><td><code>string</code></td><td>The headline.</td></tr>
+          <tr><td><code>disableClose</code></td><td><code>boolean</code></td><td>Keeps Escape and scrim clicks from closing it.</td></tr>
+          <tr><td><code>[pbDialogActions]</code></td><td>content</td><td>Elements shown in the end-aligned action row.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
