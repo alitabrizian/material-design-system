@@ -1,4 +1,4 @@
-namespace Design.Components;
+namespace PartoBita.DesignSystem.Blazor.Components;
 
 /// <summary>
 /// mat-timepicker's field: like <see cref="PBDatepicker"/> but with <c>&lt;input type="time"&gt;</c> and a

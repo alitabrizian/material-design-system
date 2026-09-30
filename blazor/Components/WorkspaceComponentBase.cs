@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components;
 
-namespace Design.Components;
+namespace PartoBita.DesignSystem.Blazor.Components;
 
 public abstract class WorkspaceComponentBase : ComponentBase
 {

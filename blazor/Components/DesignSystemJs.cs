@@ -1,16 +1,16 @@
 using System.Runtime.CompilerServices;
 using Microsoft.JSInterop;
 
-namespace Design.Components;
+namespace PartoBita.DesignSystem.Blazor.Components;
 
 /// <summary>
-/// Lazily imports <c>_content/Design/design-system.js</c> once per JS runtime (per circuit on Blazor
+/// Lazily imports <c>_content/PartoBita.DesignSystem.Blazor/design-system.js</c> once per JS runtime (per circuit on Blazor
 /// Server, once on WebAssembly) and exposes the helpers the components need. Every call is a no-op
 /// while prerendering, when no JS runtime is available yet.
 /// </summary>
 internal static class DesignSystemJs
 {
-    private const string ModulePath = "./_content/Design/design-system.js";
+    private const string ModulePath = "./_content/PartoBita.DesignSystem.Blazor/design-system.js";
 
     private static readonly ConditionalWeakTable<IJSRuntime, Task<IJSObjectReference>> Modules = new();
 

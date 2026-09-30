@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
 
-namespace Design.Components;
+namespace PartoBita.DesignSystem.Blazor.Components;
 
 /// <summary>
 /// mat-select: an M3 form field whose trigger opens a listbox panel of <see cref="PBOption{TValue}"/>s.

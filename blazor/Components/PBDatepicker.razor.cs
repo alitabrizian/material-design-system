@@ -1,4 +1,4 @@
-namespace Design.Components;
+namespace PartoBita.DesignSystem.Blazor.Components;
 
 /// <summary>
 /// mat-datepicker's field: an M3 form field with a native <c>&lt;input type="date"&gt;</c> and a

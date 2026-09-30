@@ -6,7 +6,7 @@
 //    autocomplete panels with position:fixed (never clipped by an ancestor's overflow).
 //  - Dialog + focus helpers used by PBDialog, PBMenu, PBSelect.
 //
-// The Blazor components import this module through IJSRuntime ("./_content/Design/design-system.js").
+// The Blazor components import this module through IJSRuntime ("./_content/PartoBita.DesignSystem.Blazor/design-system.js").
 
 const RIPPLE_ENTER_MS = 450;
 const RIPPLE_EXIT_MS = 400;

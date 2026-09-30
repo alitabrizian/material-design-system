@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components;
 
-namespace Design.Components;
+namespace PartoBita.DesignSystem.Blazor.Components;
 
 /// <summary>
 /// The five Material 3 button appearances (m3.material.io/components/buttons),

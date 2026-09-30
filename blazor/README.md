@@ -10,13 +10,13 @@ then reference the assets from your `App.razor` / host page:
 ```html
 <html data-theme="rose-red">
 ...
-<link rel="stylesheet" href="_content/Design/css/fonts.css" />   <!-- Roboto + Material Icons/Symbols -->
-<link rel="stylesheet" href="_content/Design/css/tokens.css" />  <!-- every --md-sys-* token -->
-<link rel="stylesheet" href="_content/Design/design-system.css" />
-<script type="module" src="_content/Design/design-system.js"></script>
+<link rel="stylesheet" href="_content/PartoBita.DesignSystem.Blazor/css/fonts.css" />   <!-- Roboto + Material Icons/Symbols -->
+<link rel="stylesheet" href="_content/PartoBita.DesignSystem.Blazor/css/tokens.css" />  <!-- every --md-sys-* token -->
+<link rel="stylesheet" href="_content/PartoBita.DesignSystem.Blazor/design-system.css" />
+<script type="module" src="_content/PartoBita.DesignSystem.Blazor/design-system.js"></script>
 ```
 
-- The path segment is `_content/Design/` (pinned by `StaticWebAssetBasePath` in `Design.csproj`), not
+- The path segment is `_content/PartoBita.DesignSystem.Blazor/` (pinned by `StaticWebAssetBasePath` in `PartoBita.DesignSystem.Blazor.csproj`), not
   the package id.
 - `data-theme` selects one of Angular Material's four prebuilt M3 themes: `rose-red` (default),
   `azure-blue`, `magenta-violet` or `cyan-orange`. Any element can carry `data-theme` to re-theme
@@ -27,7 +27,7 @@ then reference the assets from your `App.razor` / host page:
   for existing consumers.
 
 Design tokens and fonts come from the framework-neutral
-[`libs/design-system/tokens`](../tokens/README.md) package. `Design.csproj` regenerates it when its
+[`libs/design-system/tokens`](../tokens/README.md) package. `PartoBita.DesignSystem.Blazor.csproj` regenerates it when its
 sources change and copies its `dist/` into `wwwroot/`, so consumers never need Node/npm.
 
 ## Components
@@ -38,5 +38,5 @@ for the public API of each one and the demo app for live examples.
 ## Versioning
 
 This package's version is owned here, not by consuming apps. Bump `<Version>` in
-[`Design.csproj`](./Design.csproj) when releasing a new version; consuming apps upgrade by bumping their own
+[`PartoBita.DesignSystem.Blazor.csproj`](./PartoBita.DesignSystem.Blazor.csproj) when releasing a new version; consuming apps upgrade by bumping their own
 `PackageReference` version, same as any NuGet package.

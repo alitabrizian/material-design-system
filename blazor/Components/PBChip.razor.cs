@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components.Web;
 
-namespace Design.Components;
+namespace PartoBita.DesignSystem.Blazor.Components;
 
 /// <summary>
 /// <c>Assist</c> = mat-chip (optionally clickable), <c>Filter</c> = mat-chip-option (toggles

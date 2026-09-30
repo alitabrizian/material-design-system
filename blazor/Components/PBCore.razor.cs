@@ -1,4 +1,4 @@
-namespace Design.Components;
+namespace PartoBita.DesignSystem.Blazor.Components;
 
 /// <summary>
 /// Applies the M3 base typography and colors (mat.core / mat-typography equivalent: body-medium,

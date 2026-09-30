@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components.Web;
 
-namespace Design.Components;
+namespace PartoBita.DesignSystem.Blazor.Components;
 
 /// <summary><c>Standard</c> = mat-sidenav mode="side"; <c>Over</c> = mode="over" (floats above content with a scrim).</summary>
 public enum PBSidenavMode { Standard, Over }

@@ -1,4 +1,4 @@
-namespace Design.Components;
+namespace PartoBita.DesignSystem.Blazor.Components;
 
 /// <summary>
 /// mat-list-item. Title is <see cref="Title"/> and/or child content; <see cref="Subtitle"/> and

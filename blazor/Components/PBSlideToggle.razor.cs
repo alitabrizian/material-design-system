@@ -1,4 +1,4 @@
-namespace Design.Components;
+namespace PartoBita.DesignSystem.Blazor.Components;
 
 /// <summary>
 /// mat-slide-toggle. Attributes (<c>checked</c>, <c>disabled</c>, <c>@onchange</c>, …) go to the native

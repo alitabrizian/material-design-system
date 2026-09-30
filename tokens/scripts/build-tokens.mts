@@ -134,7 +134,7 @@ const header = (lines: string[]) => ["/**", " * GENERATED FILE -- do not edit by
 
 const tokensCss: string[] = [
   header([
-    "Produced by libs/design-system/tokens/scripts/build-tokens.mts (nx run tokens:build) from",
+    "Produced by libs/design-system/tokens/scripts/build-tokens.mts (nx run design-tokens:build) from",
     `Angular Material ${angularVersion}'s prebuilt M3 themes (reference/angular-material/*.css).`,
     "",
     "Theme color roles are scoped by [data-theme]; any element may carry data-theme to re-scope",

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components.Web;
 
-namespace Design.Components;
+namespace PartoBita.DesignSystem.Blazor.Components;
 
 /// <summary>
 /// One option inside a <see cref="PBButtonToggleGroup"/> (like Angular Material's mat-button-toggle).

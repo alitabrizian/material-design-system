@@ -16,10 +16,10 @@
       Without this, the _content/{X}/... static web asset path segment defaults to the assembly
       name ("Design") when consumed via ProjectReference, but to the NuGet PackageId
       ("PartoBita.DesignSystem.Blazor") when consumed via PackageReference to the packed nupkg,
-      silently breaking every _content/Design/... link the moment a consumer switches from a
+      silently breaking every _content/PartoBita.DesignSystem.Blazor/... link the moment a consumer switches from a
       source reference to the real package. Pinning it keeps the asset path stable either way.
     -->
-    <StaticWebAssetBasePath>_content/Design</StaticWebAssetBasePath>
+    <StaticWebAssetBasePath>_content/PartoBita.DesignSystem.Blazor</StaticWebAssetBasePath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -57,7 +57,7 @@
     Design tokens are owned by the framework-neutral libs/design-system/tokens package, not by
     this library. Its build output (dist/css/*.css, dist/data/palettes.json) is copied into
     wwwroot here on every build, so it ships as ordinary static web assets under
-    _content/Design/..., so consumers see no difference. The copies are gitignored.
+    _content/PartoBita.DesignSystem.Blazor/..., so consumers see no difference. The copies are gitignored.
 
     The copied files are also (re)declared as Content items: wwwroot's default glob is evaluated
     before any target runs, so on a first build the freshly copied files would otherwise be
@@ -78,7 +78,7 @@
   <!--
     (Re)generates libs/design-system/tokens/dist whenever its sources changed (incremental: skipped
     when dist/css/tokens.css is newer than every source), so a fresh clone or an edited token file
-    never needs a manual `nx run tokens:build`. Requires `npm ci` at the workspace root.
+    never needs a manual `nx run design-tokens:build`. Requires `npm ci` at the workspace root.
   -->
   <Target Name="BuildDesignTokens" BeforeTargets="SyncDesignTokens"
           Inputs="@(_DesignTokenSource)" Outputs="$(DesignTokensDist)css\tokens.css">
@@ -88,7 +88,7 @@
   <Target Name="SyncDesignTokens" BeforeTargets="BeforeBuild">
     <Error
       Condition="!Exists('$(DesignTokensDist)css\tokens.css')"
-      Text="Design tokens not built ($(DesignTokensDist) is missing). Run 'npm ci' and 'npx nx run tokens:build'." />
+      Text="Design tokens not built ($(DesignTokensDist) is missing). Run 'npm ci' and 'npx nx run design-tokens:build'." />
     <ItemGroup>
       <_DesignTokenFile Include="$(DesignTokensDist)**\*" />
       <_DesignTokenCopy Include="@(_DesignTokenFile->'wwwroot\%(RecursiveDir)%(Filename)%(Extension)')" />

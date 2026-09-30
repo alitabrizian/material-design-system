@@ -1,4 +1,4 @@
-namespace Design.Components;
+namespace PartoBita.DesignSystem.Blazor.Components;
 
 /// <summary>mat-card appearances. <c>Elevated</c> is Angular Material's default ("raised").</summary>
 public enum PBCardVariant { Elevated, Filled, Outlined }

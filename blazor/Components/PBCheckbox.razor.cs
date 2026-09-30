@@ -1,4 +1,4 @@
-namespace Design.Components;
+namespace PartoBita.DesignSystem.Blazor.Components;
 
 /// <summary>
 /// mat-checkbox. Attributes (<c>checked</c>, <c>disabled</c>, <c>name</c>, <c>@onchange</c>, …) are
