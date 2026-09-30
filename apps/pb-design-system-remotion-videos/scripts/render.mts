@@ -5,7 +5,7 @@
  * separate `remotion render` calls would.
  *
  * Component scenes without a recording are skipped with a warning -- run
- * scripts/record.mts first (npx nx run remotion-videos:record).
+ * scripts/record.mts first (npx nx run pb-design-system-remotion-videos:record).
  *
  * Usage:  node scripts/render.mts [composition-id ...]   (no ids = all)
  */
@@ -46,5 +46,5 @@ for (const composition of selected) {
 }
 
 if (skipped.length) {
-  console.warn(`\nSkipped (no recording yet): ${skipped.join(", ")}\nRun: npx nx run remotion-videos:record -- ${skipped.join(" ")}`);
+  console.warn(`\nSkipped (no recording yet): ${skipped.join(", ")}\nRun: npx nx run pb-design-system-remotion-videos:record -- ${skipped.join(" ")}`);
 }

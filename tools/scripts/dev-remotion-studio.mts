@@ -2,7 +2,7 @@
  * Dev-loop entry point for Remotion Studio (also used by .claude/launch.json).
  *
  *   1. build the design tokens package (the compositions import its dist/ CSS)
- *   2. start `remotion studio` for apps/remotion-videos without opening a browser
+ *   2. start `remotion studio` for apps/pb-design-system-remotion-videos without opening a browser
  *
  * The preview tool assigns a free port via PORT; Remotion's default is 3000.
  */
@@ -17,7 +17,7 @@ if (tokens.status !== 0) {
 
 // Remotion resolves public/ against the nearest package.json (the workspace root), not the app,
 // so point it at the app's public/ explicitly or every staticFile() -- the recordings -- 404s.
-const app = path.resolve("apps/remotion-videos");
+const app = path.resolve("apps/pb-design-system-remotion-videos");
 const studio = spawnSync(
   process.execPath,
   [

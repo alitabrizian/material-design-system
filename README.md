@@ -13,7 +13,7 @@ package and managed as an Nx workspace.
 | `libs/design-system/angular` | `design-system-angular` | npm `@partobita/design-system-angular` (ng-packagr) |
 | `apps/pb-design-system-docs` | `pb-design-system-docs` | Blazor docs site (`PartoBita.DesignSystem.Docs`) |
 | `apps/pb-design-system-angular-docs` | `pb-design-system-angular-docs` | Angular docs site, same layout and pages as the Blazor docs |
-| `apps/remotion-videos` | `remotion-videos` | demo videos |
+| `apps/pb-design-system-remotion-videos` | `pb-design-system-remotion-videos` | demo videos |
 
 Both component libraries inherit everything visual from `@partobita/design-tokens`: Blazor copies its
 `dist/` into the NuGet package, and Angular imports it, binding Angular Material's `--mat-sys-*`
@@ -49,7 +49,7 @@ component markup and `.razor.cs` for C# parameters and behavior.
 
 ## Remotion Videos
 
-`apps/remotion-videos` renders demo videos of the design system using
+`apps/pb-design-system-remotion-videos` renders demo videos of the design system using
 [Remotion](https://www.remotion.dev/) (React + TypeScript). Compositions,
 registered in `src/Root.tsx`:
 
@@ -65,10 +65,10 @@ registered in `src/Root.tsx`:
 
 ```bash
 npm install
-npx nx run remotion-videos:studio   # interactive preview/editor
-npx nx run remotion-videos:record   # re-record component demos (demo app must be running)
-npx nx run remotion-videos:render   # renders every composition to out/<id>.mp4
-npx nx run remotion-videos:render -- showreel design-tokens   # just these
+npx nx run pb-design-system-remotion-videos:studio   # interactive preview/editor
+npx nx run pb-design-system-remotion-videos:record   # re-record component demos (demo app must be running)
+npx nx run pb-design-system-remotion-videos:render   # renders every composition to out/<id>.mp4
+npx nx run pb-design-system-remotion-videos:render -- showreel design-tokens   # just these
 ```
 
 The first render downloads a headless Chrome build, so it can take a while. If
@@ -76,7 +76,7 @@ that download is blocked on your network (e.g. a corporate proxy), point
 Remotion at an existing Chrome/Edge install instead:
 
 ```bash
-npx nx run remotion-videos:render -- --browser-executable="C:\Program Files\Google\Chrome\Application\chrome.exe"
+npx nx run pb-design-system-remotion-videos:render -- --browser-executable="C:\Program Files\Google\Chrome\Application\chrome.exe"
 ```
 
 ## Nx and Tooling

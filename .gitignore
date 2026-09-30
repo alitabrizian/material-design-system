@@ -5,9 +5,9 @@ coverage/
 bin/
 obj/
 .vs
-apps/remotion-videos/out/
-apps/remotion-videos/public/recordings/
-apps/remotion-videos/.remotion/
+apps/pb-design-system-remotion-videos/out/
+apps/pb-design-system-remotion-videos/public/recordings/
+apps/pb-design-system-remotion-videos/.remotion/
 
 # Copied from libs/design-system/tokens/dist by PartoBita.DesignSystem.Blazor.csproj's SyncDesignTokens target
 libs/design-system/blazor/wwwroot/css/
