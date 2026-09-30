@@ -15,6 +15,8 @@
  * Output (dist/, gitignored; the Blazor library copies it into wwwroot at build time):
  *   - css/tokens.css            color roles per theme + all system tokens + src/material-tokens.css
  *   - css/material-tokens.css   copy of src/material-tokens.css (motion, spacing, font stack)
+ *   - css/angular-material.css  every --mat-sys-* Angular Material reads, bound to its --md-sys-* token,
+ *                               so Angular Material components follow these tokens (and data-theme)
  *   - css/roboto.css            self-hosted Roboto @font-face rules (from @fontsource-variable/roboto)
  *   - css/icons.css             self-hosted Material Icons + Material Symbols Outlined + class rules
  *   - css/fonts.css             roboto.css + icons.css in one file
@@ -112,6 +114,9 @@ for (const [key, tokens] of Object.entries(themes)) {
 
 const reference = themes[DEFAULT_THEME];
 const system: [string, string][] = [];
+// [--mat-sys-* name, --md-sys-* name] for css/angular-material.css (the mapping above, reversed).
+const matSysColors: [string, string][] = COLOR_ROLES.map((role) => [`--mat-sys-${role}`, `--md-sys-color-${role}`]);
+const matSysSystem: [string, string][] = [];
 for (const [name, value] of reference) {
   if ((COLOR_ROLES as readonly string[]).includes(name)) continue;
   const mapped = systemToken(name, value);
@@ -122,6 +127,7 @@ for (const [name, value] of reference) {
     }
   }
   system.push(mapped);
+  matSysSystem.push([`--mat-sys-${name}`, mapped[0]]);
 }
 
 const modes = Object.fromEntries(
@@ -256,6 +262,25 @@ const write = (rel: string, content: string) => {
 
 write("css/tokens.css", tokensCss.join("\n"));
 write("css/material-tokens.css", handAuthored);
+write(
+  "css/angular-material.css",
+  [
+    header([
+      `Angular Material ${angularVersion} system variables (--mat-sys-*) bound to this package's --md-sys-* tokens.`,
+      "Load after tokens.css in an Angular Material app instead of a prebuilt theme: every mat-* component",
+      "then reads these tokens. Colors are re-declared on [data-theme] so a nested data-theme re-themes its",
+      "subtree, exactly as it does for tokens.css.",
+    ]),
+    ":root,",
+    "[data-theme] {",
+    ...matSysColors.map(([mat, md]) => `  ${mat}: var(${md});`),
+    "}",
+    "",
+    ":root {",
+    ...matSysSystem.map(([mat, md]) => `  ${mat}: var(${md});`),
+    "}",
+  ].join("\n")
+);
 const robotoOut = header(["Self-hosted Roboto (variable 100-900, normal + italic), SIL OFL 1.1 (../fonts/OFL.txt)."]) + "\n" + robotoCss.trim();
 const iconsOut = header(["Self-hosted Material Icons + Material Symbols Outlined, Apache 2.0 (../fonts/Apache-2.0.txt)."]) + "\n" + iconsCss.trim();
 write("css/roboto.css", robotoOut);
