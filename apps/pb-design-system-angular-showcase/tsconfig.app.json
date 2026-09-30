@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "../../dist/out-tsc/pb-design-system-angular-showcase",
+    "lib": ["DOM", "ES2022"],
+    "types": [],
+    "useDefineForClassFields": false,
+    "noImplicitOverride": true
+  },
+  "angularCompilerOptions": {
+    "strictTemplates": true,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true
+  },
+  "files": ["src/main.ts"]
+}

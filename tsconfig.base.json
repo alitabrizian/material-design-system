@@ -8,10 +8,8 @@
     "isolatedModules": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "baseUrl": ".",
     "paths": {
-      "@workspace/design-system/tokens": ["libraries/design-system/foundations/tokens/index.ts"],
-      "@workspace/design-system/angular": ["libraries/design-system/angular/index.ts"]
+      "@partobita/design-system-angular": ["./libs/design-system/angular/src/public-api.ts"]
     }
   }
 }

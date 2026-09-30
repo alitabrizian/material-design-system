@@ -1,0 +1,22 @@
+/**
+ * Global styles for @partobita/design-system-angular. Add once to the app's angular.json "styles":
+ *
+ *   "styles": ["@partobita/design-system-angular/styles/design-system.css", "src/styles.css"]
+ *
+ * Everything visual comes from @partobita/design-tokens: its self-hosted fonts, its --md-sys-* tokens
+ * (four themes, switched with <html data-theme="...">) and angular-material.css, which binds every
+ * --mat-sys-* variable Angular Material reads to those tokens. No prebuilt Angular Material theme and
+ * no literal colors are needed here.
+ */
+
+@import "@partobita/design-tokens/css/fonts.css";
+@import "@partobita/design-tokens/css/tokens.css";
+@import "@partobita/design-tokens/css/angular-material.css";
+
+body {
+  margin: 0;
+  background: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-body-medium);
+  letter-spacing: var(--mat-sys-body-medium-tracking);
+}

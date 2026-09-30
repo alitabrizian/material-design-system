@@ -1,0 +1,14 @@
+{
+  "$comment": "Read-only mirror repos: tools/scripts/mirror-repos.mts pushes each prefix, with its history, to url. An empty url is skipped.",
+  "branch": "master",
+  "mirrors": [
+    {
+      "name": "pb-design-system",
+      "prefix": "libs/design-system",
+      "url": "http://86.106.142.146/ali.tabrizian/pb-design-system.git"
+    },
+    { "name": "pb-design-system-docs", "prefix": "apps/pb-design-system-docs", "url": "" },
+    { "name": "pb-design-system-angular-showcase", "prefix": "apps/pb-design-system-angular-showcase", "url": "" },
+    { "name": "pb-remotion-videos", "prefix": "apps/remotion-videos", "url": "" }
+  ]
+}
