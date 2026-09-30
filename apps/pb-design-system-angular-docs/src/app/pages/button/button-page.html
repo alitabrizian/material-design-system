@@ -1,0 +1,85 @@
+<div class="catalog-content">
+  <docs-page-header title="Button">
+    Buttons trigger an action or event, such as submitting a form or opening a dialog. pb-button renders a
+    native button, or a link when given an href, in the Material 3 text, elevated, outlined, filled and
+    tonal appearances, plus icon buttons and FABs.
+  </docs-page-header>
+
+  <section class="doc-section">
+    <docs-example title="Button overview" page="button" id="overview">
+      <div class="demo-stack">
+        <div class="demo-row">
+          <pb-button>Text</pb-button>
+          <pb-button disabled>Disabled</pb-button>
+          <pb-button href="https://material.angular.dev">Link</pb-button>
+        </div>
+        <div class="demo-row">
+          <pb-button variant="elevated">Elevated</pb-button>
+          <pb-button variant="elevated" disabled>Disabled</pb-button>
+        </div>
+        <div class="demo-row">
+          <pb-button variant="outlined">Outlined</pb-button>
+          <pb-button variant="outlined" disabled>Disabled</pb-button>
+        </div>
+        <div class="demo-row">
+          <pb-button variant="filled">Filled</pb-button>
+          <pb-button variant="filled" disabled>Disabled</pb-button>
+        </div>
+        <div class="demo-row">
+          <pb-button variant="tonal">Tonal</pb-button>
+          <pb-button variant="tonal" disabled>Disabled</pb-button>
+        </div>
+        <div class="demo-row">
+          <pb-button variant="icon" icon="more_vert" aria-label="More options" />
+          <pb-button variant="icon" icon="home" aria-label="Home" disabled />
+          <pb-button variant="fab" icon="delete" aria-label="Delete" />
+          <pb-button variant="mini-fab" icon="menu" aria-label="Menu" />
+          <pb-button variant="extended-fab" icon="favorite">Extended fab</pb-button>
+        </div>
+      </div>
+    </docs-example>
+
+    <docs-example title="Interactive disabled buttons" page="button" id="disabled-interactive">
+      <div class="demo-row">
+        <pb-button variant="filled" disabled disabledInteractive pbTooltip="This button stays focusable and shows a tooltip">
+          Disabled, interactive
+        </pb-button>
+        <pb-button variant="icon" icon="info" aria-label="Info" disabled disabledInteractive pbTooltip="Also works on icon buttons" />
+      </div>
+    </docs-example>
+
+    <docs-example title="Buttons with progress indicators" page="button" id="progress">
+      <div class="demo-row">
+        <pb-button variant="filled" [showProgress]="saving()" (click)="save()">Save</pb-button>
+        <pb-button variant="icon" icon="refresh" aria-label="Refresh" [showProgress]="saving()" (click)="save()" />
+      </div>
+    </docs-example>
+
+    <docs-example title="Icon positioning" page="button" id="icons">
+      <div class="demo-row">
+        <pb-button variant="filled" iconStart="add">Icon start</pb-button>
+        <pb-button variant="outlined" iconEnd="arrow_forward">Icon end</pb-button>
+      </div>
+    </docs-example>
+  </section>
+
+  <section class="doc-section">
+    <h2>API reference</h2>
+    <div class="doc-table-wrapper">
+      <table class="doc-table">
+        <thead><tr><th>Input</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>variant</code></td><td><code>'text' | 'filled' | 'tonal' | 'outlined' | 'elevated' | 'icon' | 'fab' | 'mini-fab' | 'extended-fab'</code></td><td>The M3 button type. Defaults to <code>'text'</code>.</td></tr>
+          <tr><td><code>href</code></td><td><code>string</code></td><td>Renders a link instead of a button.</td></tr>
+          <tr><td><code>icon</code></td><td><code>string</code></td><td>Icon name for the icon, fab and mini-fab variants.</td></tr>
+          <tr><td><code>iconStart</code>, <code>iconEnd</code></td><td><code>string</code></td><td>Icon name before or after the label.</td></tr>
+          <tr><td><code>type</code></td><td><code>'button' | 'submit' | 'reset'</code></td><td>The native button type. Defaults to <code>'button'</code>.</td></tr>
+          <tr><td><code>disabled</code></td><td><code>boolean</code></td><td>Disables the button.</td></tr>
+          <tr><td><code>disabledInteractive</code></td><td><code>boolean</code></td><td>Keeps a disabled button focusable and hoverable, e.g. for a tooltip explaining why.</td></tr>
+          <tr><td><code>showProgress</code></td><td><code>boolean</code></td><td>Replaces the content with a progress spinner.</td></tr>
+          <tr><td><code>aria-label</code></td><td><code>string</code></td><td>Accessible name; required for icon-only buttons.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,53 @@
+<div class="catalog-content">
+  <docs-page-header title="Chips">
+    Chips allow users to view information, make selections, filter content and enter data: assist, filter
+    and input chips.
+  </docs-page-header>
+
+  <section class="doc-section">
+    <docs-example title="Filter chips" page="chips" id="filter">
+      <pb-chips>
+        @for (amenity of amenities(); track amenity.name) {
+          <pb-chip variant="filter" [selected]="amenity.selected" (selectedChange)="toggle(amenity.name, $event)">
+            {{ amenity.name }}
+          </pb-chip>
+        }
+      </pb-chips>
+    </docs-example>
+
+    <docs-example title="Input chips" page="chips" id="input">
+      <pb-chips>
+        @for (tag of tags(); track tag) {
+          <pb-chip variant="input" (removed)="remove(tag)">{{ tag }}</pb-chip>
+        }
+      </pb-chips>
+      <p class="status">{{ tags().length }} tags</p>
+    </docs-example>
+
+    <docs-example title="Assist chips" page="chips" id="assist">
+      <pb-chips>
+        <pb-chip icon="event" (chipClick)="lastAction.set('Add to calendar')">Add to calendar</pb-chip>
+        <pb-chip icon="directions" (chipClick)="lastAction.set('Directions')">Directions</pb-chip>
+        <pb-chip icon="share" disabled>Share</pb-chip>
+      </pb-chips>
+      <p class="status">Last action: {{ lastAction() }}</p>
+    </docs-example>
+  </section>
+
+  <section class="doc-section">
+    <h2>API reference</h2>
+    <div class="doc-table-wrapper">
+      <table class="doc-table">
+        <thead><tr><th>Input / output</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>variant</code></td><td><code>'assist' | 'filter' | 'input'</code></td><td>The M3 chip type. Chips go inside a <code>pb-chips</code>.</td></tr>
+          <tr><td><code>[(selected)]</code></td><td><code>boolean</code></td><td>Filter chips: whether the chip is selected.</td></tr>
+          <tr><td><code>(removed)</code></td><td><code>void</code></td><td>Input chips: the remove button was pressed.</td></tr>
+          <tr><td><code>(chipClick)</code></td><td><code>MouseEvent</code></td><td>Assist chips: the chip was clicked.</td></tr>
+          <tr><td><code>icon</code></td><td><code>string</code></td><td>Leading icon name.</td></tr>
+          <tr><td><code>disabled</code>, <code>highlighted</code></td><td><code>boolean</code></td><td>Disabled or highlighted appearance.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en" data-theme="rose-red">
+  <head>
+    <meta charset="utf-8" />
+    <title>Components · Design System · Angular</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <script>
+      // Apply the saved theme before any stylesheet paints, so a reload never flashes the default.
+      (function () {
+        var themes = ['rose-red', 'azure-blue', 'magenta-violet', 'cyan-orange'];
+        var theme = null;
+        try { theme = localStorage.getItem('theme'); } catch (e) { /* storage blocked: keep default */ }
+        if (themes.indexOf(theme) === -1) theme = 'rose-red';
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
+  </head>
+  <body>
+    <docs-root></docs-root>
+  </body>
+</html>

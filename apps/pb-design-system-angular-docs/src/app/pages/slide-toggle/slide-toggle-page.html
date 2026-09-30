@@ -1,0 +1,37 @@
+<div class="catalog-content">
+  <docs-page-header title="Slide Toggle">
+    A slide toggle switches a single setting between an on and an off state.
+  </docs-page-header>
+
+  <section class="doc-section">
+    <docs-example title="Dark mode" page="slide-toggle" id="dark-mode">
+      <pb-slide-toggle [(checked)]="darkMode">Dark mode</pb-slide-toggle>
+      <p class="status">Dark mode is {{ darkMode() ? 'on' : 'off' }}</p>
+    </docs-example>
+
+    <docs-example title="Disabled" page="slide-toggle" id="disabled">
+      <div class="demo-row">
+        <pb-slide-toggle disabled>Disabled</pb-slide-toggle>
+        <pb-slide-toggle disabled [checked]="true">Disabled, on</pb-slide-toggle>
+      </div>
+    </docs-example>
+
+    <docs-example title="Hidden icon" page="slide-toggle" id="hide-icon">
+      <pb-slide-toggle hideIcon [checked]="true">No check icon in the handle</pb-slide-toggle>
+    </docs-example>
+  </section>
+
+  <section class="doc-section">
+    <h2>API reference</h2>
+    <div class="doc-table-wrapper">
+      <table class="doc-table">
+        <thead><tr><th>Input</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>[(checked)]</code></td><td><code>boolean</code></td><td>On or off. Also works with <code>ngModel</code> and <code>formControl</code>.</td></tr>
+          <tr><td><code>hideIcon</code></td><td><code>boolean</code></td><td>Hides the icon in the handle.</td></tr>
+          <tr><td><code>disabled</code></td><td><code>boolean</code></td><td>Disables the toggle.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

@@ -12,7 +12,7 @@ package and managed as an Nx workspace.
 | `libs/design-system/blazor` | `design-system-blazor` | NuGet `PartoBita.DesignSystem.Blazor` |
 | `libs/design-system/angular` | `design-system-angular` | npm `@partobita/design-system-angular` (ng-packagr) |
 | `apps/pb-design-system-docs` | `pb-design-system-docs` | Blazor docs site (`PartoBita.DesignSystem.Docs`) |
-| `apps/pb-design-system-angular-showcase` | `pb-design-system-angular-showcase` | every Angular component on one page |
+| `apps/pb-design-system-angular-docs` | `pb-design-system-angular-docs` | Angular docs site, same layout and pages as the Blazor docs |
 | `apps/remotion-videos` | `remotion-videos` | demo videos |
 
 Both component libraries inherit everything visual from `@partobita/design-tokens`: Blazor copies its

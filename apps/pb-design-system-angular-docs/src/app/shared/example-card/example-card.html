@@ -1,0 +1,39 @@
+<div class="example-card" [id]="id()">
+  <div class="example-card-header">
+    <span class="example-card-title">{{ title() }}</span>
+    <span class="example-card-actions">
+      <button type="button" class="icon-btn" title="Copy link" aria-label="Copy link to this example" (click)="copyLink()">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 14a5 5 0 0 0 7.07 0l2.83-2.83a5 5 0 0 0-7.07-7.07l-1.5 1.5" /><path d="M14 10a5 5 0 0 0-7.07 0L4.1 12.83a5 5 0 0 0 7.07 7.07l1.5-1.5" /></svg>
+      </button>
+      <button type="button" class="icon-btn" [class.is-active]="showCode()" [title]="showCode() ? 'Hide code' : 'Show code'"
+              aria-label="Toggle code" (click)="showCode.set(!showCode())">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="8 6 2 12 8 18" /><polyline points="16 6 22 12 16 18" /></svg>
+      </button>
+      <button type="button" class="icon-btn" title="Open in new tab" aria-label="Open this example in a new tab" (click)="openInNew()">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
+      </button>
+    </span>
+  </div>
+
+  @if (showCode()) {
+    <div class="example-tabs" role="tablist">
+      <button type="button" class="example-tab" [class.active]="tab() === 'html'" role="tab"
+              [attr.aria-selected]="tab() === 'html'" (click)="tab.set('html')">.html</button>
+      @if (code().ts) {
+        <button type="button" class="example-tab" [class.active]="tab() === 'ts'" role="tab"
+                [attr.aria-selected]="tab() === 'ts'" (click)="tab.set('ts')">.ts</button>
+      }
+    </div>
+
+    <div class="example-code-panel">
+      <button type="button" class="example-code-copy icon-btn" title="Copy code" aria-label="Copy code" (click)="copyCode()">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="12" height="12" rx="2" /><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1" /></svg>
+      </button>
+      <pre><code [innerHTML]="highlighted()"></code></pre>
+    </div>
+  }
+
+  <div class="example-live" [class.with-code]="showCode()">
+    <ng-content />
+  </div>
+</div>

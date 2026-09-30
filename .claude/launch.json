@@ -16,9 +16,9 @@
       "autoPort": true
     },
     {
-      "name": "pb-design-system-angular-showcase",
+      "name": "pb-design-system-angular-docs",
       "runtimeExecutable": "node",
-      "runtimeArgs": ["node_modules/nx/bin/nx.js", "serve", "pb-design-system-angular-showcase"],
+      "runtimeArgs": ["node_modules/nx/bin/nx.js", "serve", "pb-design-system-angular-docs"],
       "port": 4200
     }
   ]

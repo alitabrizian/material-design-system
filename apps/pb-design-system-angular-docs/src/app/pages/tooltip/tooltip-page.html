@@ -1,0 +1,35 @@
+<div class="catalog-content">
+  <docs-page-header title="Tooltip">
+    pbTooltip provides a text label that is displayed when the user hovers over or keyboard-focuses an
+    element.
+  </docs-page-header>
+
+  <section class="doc-section">
+    <docs-example title="Basic tooltip" page="tooltip" id="basic">
+      <pb-button variant="outlined" pbTooltip="Info about the action">Action</pb-button>
+    </docs-example>
+
+    <docs-example title="Positions" page="tooltip" id="positions">
+      <div class="demo-row">
+        @for (position of positions; track position) {
+          <pb-button variant="tonal" [pbTooltip]="'Tooltip ' + position" [pbTooltipPosition]="position">{{ position }}</pb-button>
+        }
+      </div>
+    </docs-example>
+  </section>
+
+  <section class="doc-section">
+    <h2>API reference</h2>
+    <div class="doc-table-wrapper">
+      <table class="doc-table">
+        <thead><tr><th>Input</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>pbTooltip</code></td><td><code>string</code></td><td>The tooltip text.</td></tr>
+          <tr><td><code>pbTooltipPosition</code></td><td><code>'below' | 'above' | 'before' | 'after'</code></td><td>Where it appears. Defaults to below.</td></tr>
+          <tr><td><code>pbTooltipDisabled</code></td><td><code>boolean</code></td><td>Turns it off.</td></tr>
+          <tr><td><code>pbTooltipShowDelay</code>, <code>pbTooltipHideDelay</code></td><td><code>number</code></td><td>Delays in milliseconds.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,42 @@
+<div class="catalog-content">
+  <docs-page-header title="Grid List">
+    pb-grid-list is a two-dimensional list view that arranges tiles into a grid, with tiles that can span
+    several columns or rows.
+  </docs-page-header>
+
+  <section class="doc-section">
+    <docs-example title="Basic grid list" page="grid-list" id="basic">
+      <pb-grid-list [cols]="2" rowHeight="2:1">
+        <pb-grid-tile><div class="grid-tile-fill grid-tile-fill--1">1</div></pb-grid-tile>
+        <pb-grid-tile><div class="grid-tile-fill grid-tile-fill--2">2</div></pb-grid-tile>
+        <pb-grid-tile><div class="grid-tile-fill grid-tile-fill--3">3</div></pb-grid-tile>
+        <pb-grid-tile><div class="grid-tile-fill grid-tile-fill--4">4</div></pb-grid-tile>
+      </pb-grid-list>
+    </docs-example>
+
+    <docs-example title="Dynamic grid list" page="grid-list" id="dynamic">
+      <pb-grid-list [cols]="4" rowHeight="100px" gutter="4px">
+        @for (tile of tiles; track tile.text) {
+          <pb-grid-tile [colspan]="tile.cols" [rowspan]="tile.rows">
+            <div class="grid-tile-fill" [class]="'grid-tile-fill--' + tile.fill">{{ tile.text }}</div>
+          </pb-grid-tile>
+        }
+      </pb-grid-list>
+    </docs-example>
+  </section>
+
+  <section class="doc-section">
+    <h2>API reference</h2>
+    <div class="doc-table-wrapper">
+      <table class="doc-table">
+        <thead><tr><th>Input</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>cols</code></td><td><code>number</code></td><td>Number of columns.</td></tr>
+          <tr><td><code>rowHeight</code></td><td><code>string</code></td><td>A fixed height (<code>"100px"</code>), a ratio (<code>"4:3"</code>) or <code>"fit"</code>.</td></tr>
+          <tr><td><code>gutter</code></td><td><code>string</code></td><td>Space between tiles.</td></tr>
+          <tr><td><code>pb-grid-tile colspan</code>, <code>rowspan</code></td><td><code>number</code></td><td>How many columns and rows a tile covers.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
