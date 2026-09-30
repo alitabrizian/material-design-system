@@ -1,0 +1,219 @@
+/*
+ * PBCheckbox: mat-checkbox. Reference: checkbox/_m3-checkbox.scss + MDC checkbox structure.
+ *
+ *   40px state-layer circle (11px padding) around an 18px box, 2px border, 2px radius
+ *   unselected border on-surface-variant (hover/focus on-surface); selected fill primary,
+ *   checkmark on-primary; label body-medium on-surface with 4px leading padding
+ *   state layer: unselected on-surface (pressed: primary), selected primary (pressed: on-surface)
+ *   disabled: on-surface 38% border/fill, checkmark surface, label on-surface 38%
+ */
+
+.pb-checkbox {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  color: var(--md-sys-color-on-surface);
+  font-family: var(--md-sys-typescale-body-medium-font);
+  font-size: var(--md-sys-typescale-body-medium-size);
+  line-height: var(--md-sys-typescale-body-medium-line-height);
+  font-weight: var(--md-sys-typescale-body-medium-weight);
+  letter-spacing: var(--md-sys-typescale-body-medium-tracking);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pb-checkbox__control {
+  position: relative;
+  display: inline-block;
+  flex: 0 0 18px;
+  box-sizing: content-box;
+  width: 18px;
+  height: 18px;
+  padding: 11px;
+  line-height: 0;
+  white-space: nowrap;
+  vertical-align: bottom;
+  cursor: pointer;
+}
+
+.pb-checkbox__input {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 40px;
+  height: 40px;
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+
+.pb-checkbox__state-layer {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.pb-checkbox__state-layer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background-color: var(--md-sys-color-on-surface);
+  opacity: 0;
+  transition: opacity 15ms linear;
+}
+
+.pb-checkbox__control:hover > .pb-checkbox__state-layer::before {
+  opacity: var(--md-sys-state-hover-state-layer-opacity);
+}
+
+.pb-checkbox__input:focus-visible ~ .pb-checkbox__state-layer::before {
+  opacity: var(--md-sys-state-focus-state-layer-opacity);
+}
+
+.pb-checkbox__control:active > .pb-checkbox__state-layer::before {
+  background-color: var(--md-sys-color-primary);
+  opacity: var(--md-sys-state-pressed-state-layer-opacity);
+}
+
+.pb-checkbox__input:is(:checked, :indeterminate) ~ .pb-checkbox__state-layer::before {
+  background-color: var(--md-sys-color-primary);
+}
+
+.pb-checkbox__control:active > .pb-checkbox__input:is(:checked, :indeterminate) ~ .pb-checkbox__state-layer::before {
+  background-color: var(--md-sys-color-on-surface);
+}
+
+.pb-checkbox__box {
+  position: absolute;
+  top: 11px;
+  left: 11px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--md-sys-color-on-surface-variant);
+  border-radius: 2px;
+  background-color: transparent;
+  pointer-events: none;
+  transition:
+    background-color 90ms cubic-bezier(0.4, 0, 0.6, 1),
+    border-color 90ms cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+.pb-checkbox__control:hover > .pb-checkbox__box,
+.pb-checkbox__input:focus-visible ~ .pb-checkbox__box {
+  border-color: var(--md-sys-color-on-surface);
+}
+
+.pb-checkbox__input:is(:checked, :indeterminate) ~ .pb-checkbox__box {
+  border-color: var(--md-sys-color-primary);
+  background-color: var(--md-sys-color-primary);
+}
+
+.pb-checkbox__checkmark {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  color: var(--md-sys-color-on-primary);
+  opacity: 0;
+  transition: opacity 180ms cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+.pb-checkbox__checkmark path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3.12px;
+  stroke-dasharray: 29.7833385;
+  stroke-dashoffset: 29.7833385;
+}
+
+.pb-checkbox__input:checked:not(:indeterminate) ~ .pb-checkbox__box .pb-checkbox__checkmark {
+  opacity: 1;
+  transition: opacity 180ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.pb-checkbox__input:checked:not(:indeterminate) ~ .pb-checkbox__box .pb-checkbox__checkmark path {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 180ms cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+.pb-checkbox__mixedmark {
+  width: 100%;
+  height: 0;
+  margin: 0 1px;
+  border-top: 2px solid var(--md-sys-color-on-primary);
+  transform: scaleX(0);
+  opacity: 0;
+  transition: opacity 90ms cubic-bezier(0.4, 0, 0.6, 1), transform 90ms cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+.pb-checkbox__input:indeterminate ~ .pb-checkbox__box .pb-checkbox__mixedmark {
+  transform: scaleX(1);
+  opacity: 1;
+}
+
+.pb-checkbox__label {
+  padding-left: 4px;
+  cursor: pointer;
+}
+
+/* Disabled */
+.pb-checkbox--disabled .pb-checkbox__control,
+.pb-checkbox--disabled .pb-checkbox__label {
+  cursor: default;
+}
+
+.pb-checkbox__input:disabled {
+  cursor: default;
+}
+
+.pb-checkbox__input:disabled ~ .pb-checkbox__state-layer {
+  display: none;
+}
+
+.pb-checkbox__input:disabled ~ .pb-checkbox__box,
+.pb-checkbox__control:hover > .pb-checkbox__input:disabled ~ .pb-checkbox__box {
+  border-color: color-mix(in srgb, var(--md-sys-color-on-surface) 38%, transparent);
+}
+
+.pb-checkbox__input:disabled:is(:checked, :indeterminate) ~ .pb-checkbox__box {
+  border-color: transparent;
+  background-color: color-mix(in srgb, var(--md-sys-color-on-surface) 38%, transparent);
+}
+
+.pb-checkbox__input:disabled ~ .pb-checkbox__box .pb-checkbox__checkmark {
+  color: var(--md-sys-color-surface);
+}
+
+.pb-checkbox__input:disabled ~ .pb-checkbox__box .pb-checkbox__mixedmark {
+  border-color: var(--md-sys-color-surface);
+}
+
+.pb-checkbox:has(.pb-checkbox__input:disabled) .pb-checkbox__label {
+  color: color-mix(in srgb, var(--md-sys-color-on-surface) 38%, transparent);
+  cursor: default;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pb-checkbox__box,
+  .pb-checkbox__checkmark,
+  .pb-checkbox__checkmark path,
+  .pb-checkbox__mixedmark {
+    transition: none !important;
+  }
+}
+
+/* Ripple ink color follows the state-layer color of the current state. */
+.pb-checkbox__control {
+  --pb-ripple-color: var(--md-sys-color-on-surface);
+}
+
+.pb-checkbox__control:has(.pb-checkbox__input:is(:checked, :indeterminate)) {
+  --pb-ripple-color: var(--md-sys-color-primary);
+}

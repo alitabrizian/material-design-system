@@ -1,0 +1,27 @@
+<div class="catalog-content">
+  <docs-page-header title="Core">
+    The core layer is what every component builds on: the Material Design 3 design tokens (color,
+    typography, shape, elevation, motion) from the design-tokens package. Angular Material reads them
+    through its --mat-sys-* variables, so every component follows the selected theme.
+  </docs-page-header>
+
+  <section class="doc-section">
+    <docs-example title="Typography" page="core" id="typography">
+      <div class="demo-stack">
+        @for (role of typescale; track role) {
+          <div [style.font]="'var(--mat-sys-' + role + ')'">{{ role }}</div>
+        }
+      </div>
+    </docs-example>
+
+    <docs-example title="Color roles" page="core" id="colors">
+      <div class="token-grid">
+        @for (role of roles; track role) {
+          <div class="token-swatch" [style.background]="'var(--mat-sys-' + role + ')'">
+            <code>--mat-sys-{{ role }}</code>
+          </div>
+        }
+      </div>
+    </docs-example>
+  </section>
+</div>

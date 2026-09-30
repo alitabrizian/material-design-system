@@ -1,0 +1,47 @@
+<div class="catalog-content">
+  <docs-page-header title="Sidenav">
+    pb-sidenav is a side panel for navigation or supplementary content: fixed beside the content (standard
+    mode) or floating over it with a scrim (over mode).
+  </docs-page-header>
+
+  <section class="doc-section">
+    <docs-example title="Sidenav in side mode" page="sidenav" id="side">
+      <pb-sidenav class="sidenav-demo" [(opened)]="sideOpen">
+        <pb-list pbSidenavPanel>
+          <pb-list-item title="Inbox" icon="inbox" />
+          <pb-list-item title="Starred" icon="star" />
+        </pb-list>
+        <div class="sidenav-demo__content">
+          <pb-button variant="outlined" (click)="sideOpen.set(!sideOpen())">Toggle sidenav</pb-button>
+        </div>
+      </pb-sidenav>
+    </docs-example>
+
+    <docs-example title="Sidenav in over mode" page="sidenav" id="over">
+      <pb-sidenav class="sidenav-demo" mode="over" [(opened)]="overOpen">
+        <pb-list pbSidenavPanel>
+          <pb-list-item title="Inbox" icon="inbox" (clicked)="overOpen.set(false)" />
+          <pb-list-item title="Starred" icon="star" (clicked)="overOpen.set(false)" />
+        </pb-list>
+        <div class="sidenav-demo__content">
+          <pb-button variant="filled" (click)="overOpen.set(true)">Open sidenav</pb-button>
+        </div>
+      </pb-sidenav>
+    </docs-example>
+  </section>
+
+  <section class="doc-section">
+    <h2>API reference</h2>
+    <div class="doc-table-wrapper">
+      <table class="doc-table">
+        <thead><tr><th>Input</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>mode</code></td><td><code>'standard' | 'over'</code></td><td>Beside the content, or over it with a scrim.</td></tr>
+          <tr><td><code>position</code></td><td><code>'start' | 'end'</code></td><td>Which side the drawer is on.</td></tr>
+          <tr><td><code>[(opened)]</code></td><td><code>boolean</code></td><td>Whether the drawer is open.</td></tr>
+          <tr><td><code>[pbSidenavPanel]</code></td><td>content</td><td>The drawer content; everything else is the main content.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

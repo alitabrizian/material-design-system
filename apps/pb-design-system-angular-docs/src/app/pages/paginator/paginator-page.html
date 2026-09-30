@@ -1,0 +1,36 @@
+<div class="catalog-content">
+  <docs-page-header title="Paginator">
+    pb-paginator provides navigation for paged information: a page-size select, a range label and
+    first/previous/next/last buttons.
+  </docs-page-header>
+
+  <section class="doc-section">
+    <docs-example title="Configurable paginator" page="paginator" id="configurable">
+      <pb-paginator [length]="100" [(pageIndex)]="pageIndex" [(pageSize)]="pageSize" showFirstLastButtons
+                    (page)="lastEvent.set($event)" />
+      <p class="status">Page {{ pageIndex() + 1 }}, {{ pageSize() }} per page</p>
+    </docs-example>
+
+    <docs-example title="Minimal and disabled" page="paginator" id="minimal">
+      <pb-paginator [length]="50" [pageSize]="10" hidePageSize />
+      <pb-paginator [length]="50" [pageSize]="10" disabled />
+    </docs-example>
+  </section>
+
+  <section class="doc-section">
+    <h2>API reference</h2>
+    <div class="doc-table-wrapper">
+      <table class="doc-table">
+        <thead><tr><th>Input / output</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>length</code></td><td><code>number</code></td><td>Total number of items.</td></tr>
+          <tr><td><code>[(pageIndex)]</code>, <code>[(pageSize)]</code></td><td><code>number</code></td><td>The current page (zero-based) and page size.</td></tr>
+          <tr><td><code>pageSizeOptions</code></td><td><code>number[]</code></td><td>Choices in the page-size select.</td></tr>
+          <tr><td><code>showFirstLastButtons</code>, <code>hidePageSize</code>, <code>disabled</code></td><td><code>boolean</code></td><td>Layout and state options.</td></tr>
+          <tr><td><code>itemsPerPageLabel</code>, <code>firstPageLabel</code>, <code>previousPageLabel</code>, <code>nextPageLabel</code>, <code>lastPageLabel</code></td><td><code>string</code></td><td>Labels, for localization.</td></tr>
+          <tr><td><code>(page)</code></td><td><code>PbPageEvent</code></td><td>The page or page size changed.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

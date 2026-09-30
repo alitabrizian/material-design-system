@@ -1,0 +1,14 @@
+<mat-button-toggle-group
+  [multiple]="multiple()"
+  [value]="multiple() ? values() : value()"
+  [disabled]="isDisabled()"
+  [hideSingleSelectionIndicator]="hideSingleSelectionIndicator()"
+  [hideMultipleSelectionIndicator]="hideMultipleSelectionIndicator()"
+  (change)="select($event)"
+>
+  @for (toggle of toggles(); track toggle) {
+    <mat-button-toggle [value]="toggle.value()" [disabled]="toggle.disabled()">
+      <ng-container [ngTemplateOutlet]="toggle.template()" />
+    </mat-button-toggle>
+  }
+</mat-button-toggle-group>

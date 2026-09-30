@@ -1,0 +1,28 @@
+<div class="catalog-content">
+  <docs-page-header title="Sort Header">
+    Sortable pb-table columns add sorting state and display to tabular data: clicking a header cycles
+    ascending, descending and unsorted, and the arrow previews on hover.
+  </docs-page-header>
+
+  <section class="doc-section">
+    <docs-example title="Sorting overview" page="sort-header" id="overview">
+      <pb-table [data]="desserts" [columns]="columns" (sortChange)="sort.set($event)" />
+      <p class="status">
+        Sorted by {{ sort()?.key || 'nothing' }}{{ sort() ? ', ' + sort()?.direction : '' }}
+      </p>
+    </docs-example>
+  </section>
+
+  <section class="doc-section">
+    <h2>API reference</h2>
+    <div class="doc-table-wrapper">
+      <table class="doc-table">
+        <thead><tr><th>Input / output</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>PbTableColumn.sortable</code></td><td><code>boolean</code></td><td>Adds a sort header to the column.</td></tr>
+          <tr><td><code>(sortChange)</code></td><td><code>PbSortEvent</code></td><td>The column <code>key</code> and <code>direction</code> (<code>'ascending' | 'descending' | 'none'</code>).</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

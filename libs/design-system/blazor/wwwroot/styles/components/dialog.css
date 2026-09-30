@@ -1,0 +1,113 @@
+/*
+ * PBDialog: MatDialog. Reference: dialog/_m3-dialog.scss + structural styles.
+ *   container surface, corner-extra-large (28px), no shadow, 280-560px wide (100vw - 32px on
+ *   small screens); title headline-small on-surface, padding 6px 24px 13px with a 40px baseline
+ *   strut; content body-medium on-surface-variant, padding 20px 24px (0 top after a title);
+ *   actions padding 16px 24px, end-aligned, 8px apart; backdrop scrim 32%; enters scale(.8)+fade
+ */
+
+.pb-dialog {
+  box-sizing: border-box;
+  min-width: 280px;
+  max-width: min(560px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  margin: auto;
+  padding: 0;
+  overflow: hidden;
+  border: none;
+  border-radius: var(--md-sys-shape-corner-extra-large);
+  outline: 0;
+  background-color: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface-variant);
+  box-shadow: none;
+}
+
+.pb-dialog[open] {
+  display: flex;
+  flex-direction: column;
+  animation: pb-dialog-enter 150ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.pb-dialog::backdrop {
+  background-color: color-mix(in srgb, var(--md-sys-color-scrim) 32%, transparent);
+  animation: pb-fade-in 150ms linear;
+}
+
+.pb-dialog__title {
+  position: relative;
+  display: block;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  margin: 0 0 1px;
+  padding: 6px 24px 13px;
+  color: var(--md-sys-color-on-surface);
+  font-family: var(--md-sys-typescale-headline-small-font);
+  font-size: var(--md-sys-typescale-headline-small-size);
+  line-height: var(--md-sys-typescale-headline-small-line-height);
+  font-weight: var(--md-sys-typescale-headline-small-weight);
+  letter-spacing: var(--md-sys-typescale-headline-small-tracking);
+}
+
+.pb-dialog__title::before {
+  content: "";
+  display: inline-block;
+  width: 0;
+  height: 40px;
+  vertical-align: 0;
+}
+
+.pb-dialog__content {
+  display: block;
+  flex-grow: 1;
+  box-sizing: border-box;
+  max-height: 65vh;
+  margin: 0;
+  padding: 20px 24px;
+  overflow: auto;
+  color: var(--md-sys-color-on-surface-variant);
+  font-family: var(--md-sys-typescale-body-medium-font);
+  font-size: var(--md-sys-typescale-body-medium-size);
+  line-height: var(--md-sys-typescale-body-medium-line-height);
+  font-weight: var(--md-sys-typescale-body-medium-weight);
+  letter-spacing: var(--md-sys-typescale-body-medium-tracking);
+}
+
+.pb-dialog__title + .pb-dialog__content {
+  padding-top: 0;
+}
+
+.pb-dialog__content:has(+ .pb-dialog__actions) {
+  padding-bottom: 0;
+}
+
+.pb-dialog__content > :first-child {
+  margin-top: 0;
+}
+
+.pb-dialog__content > :last-child {
+  margin-bottom: 0;
+}
+
+.pb-dialog__actions {
+  display: flex;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  box-sizing: border-box;
+  min-height: 52px;
+  margin: 0;
+  padding: 16px 24px;
+}
+
+@keyframes pb-dialog-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

@@ -1,0 +1,40 @@
+<div class="catalog-content">
+  <docs-page-header title="Tabs">
+    pb-tabs organizes content into separate views where only one view is visible at a time. The active
+    indicator slides between tabs.
+  </docs-page-header>
+
+  <section class="doc-section">
+    <docs-example title="Basic use of the tab group" page="tabs" id="basic">
+      <pb-tabs [(selectedIndex)]="selected">
+        <pb-tab label="First">Content 1</pb-tab>
+        <pb-tab label="Second">Content 2</pb-tab>
+        <pb-tab label="Third">Content 3</pb-tab>
+      </pb-tabs>
+      <p class="status">Selected tab index: {{ selected() }}</p>
+    </docs-example>
+
+    <docs-example title="Icons, disabled tab, alignment" page="tabs" id="icons">
+      <pb-tabs [stretch]="false" [align]="align()">
+        <pb-tab label="Flights" icon="flight">Where are you going?</pb-tab>
+        <pb-tab label="Hotels" icon="hotel">Where will you stay?</pb-tab>
+        <pb-tab label="Cars" icon="directions_car" disabled>Not available</pb-tab>
+      </pb-tabs>
+    </docs-example>
+  </section>
+
+  <section class="doc-section">
+    <h2>API reference</h2>
+    <div class="doc-table-wrapper">
+      <table class="doc-table">
+        <thead><tr><th>Input</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>[(selectedIndex)]</code></td><td><code>number</code></td><td>The active tab.</td></tr>
+          <tr><td><code>stretch</code></td><td><code>boolean</code></td><td>Stretches the tabs across the header. Defaults to true.</td></tr>
+          <tr><td><code>align</code></td><td><code>'start' | 'center' | 'end'</code></td><td>Tab alignment when not stretched.</td></tr>
+          <tr><td><code>pb-tab label</code>, <code>icon</code>, <code>disabled</code></td><td></td><td>Tab header; the content is the tab body.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

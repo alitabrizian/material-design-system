@@ -1,0 +1,39 @@
+<div class="catalog-content">
+  <docs-page-header title="Input">
+    The input component captures a single line of text from the user.
+  </docs-page-header>
+
+  <section class="doc-section">
+    <docs-example title="Default" page="input" id="default">
+      <pb-input label="Name" [(value)]="name" />
+      <p class="status">Hello, {{ name() || 'stranger' }}</p>
+    </docs-example>
+
+    <docs-example title="Disabled" page="input" id="disabled">
+      <pb-input label="Disabled" value="Can't touch this" disabled />
+    </docs-example>
+
+    <docs-example title="With supporting text" page="input" id="supporting-text">
+      <pb-input label="Username" supportingText="Letters and numbers only" />
+    </docs-example>
+
+    <docs-example title="With error text" page="input" id="error">
+      <pb-input label="Email" type="email" [(value)]="email" [errorText]="emailError()" supportingText="Looks good" />
+    </docs-example>
+  </section>
+
+  <section class="doc-section">
+    <h2>API reference</h2>
+    <div class="doc-table-wrapper">
+      <table class="doc-table">
+        <thead><tr><th>Input</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>[(value)]</code></td><td><code>string</code></td><td>The text. Also works with <code>ngModel</code> and <code>formControl</code>.</td></tr>
+          <tr><td><code>type</code></td><td><code>string</code></td><td>The native input type (<code>text</code>, <code>email</code>, <code>number</code>, ...).</td></tr>
+          <tr><td><code>placeholder</code>, <code>readonly</code></td><td></td><td>Native input attributes.</td></tr>
+          <tr><td><code>label</code>, <code>supportingText</code>, <code>errorText</code>, <code>appearance</code>, <code>required</code>, <code>disabled</code>, <code>block</code></td><td></td><td>Shared by every text field (see Form Field).</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

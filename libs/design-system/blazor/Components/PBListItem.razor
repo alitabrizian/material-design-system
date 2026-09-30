@@ -1,0 +1,51 @@
+@inherits WorkspaceComponentBase
+@if (Href is not null)
+{
+    <a class="@CssClass @UserClass" href="@(Disabled ? null : Href)" aria-current="@(Selected ? "page" : null)"
+       aria-disabled="@(Disabled ? "true" : null)" @attributes="Attrs">@Body</a>
+}
+else if (OnClick.HasDelegate)
+{
+    <button type="button" class="@CssClass @UserClass" aria-pressed="@(Selected ? "true" : null)"
+            disabled="@Disabled" @onclick="OnClick" @attributes="Attrs">@Body</button>
+}
+else
+{
+    <div class="@CssClass @UserClass" role="listitem" @attributes="Attrs">@Body</div>
+}
+
+@code {
+    private RenderFragment Body => @<text>
+        @if (IsInteractive)
+        {
+            <span class="pb-state-layer"></span>
+        }
+        @if (Avatar is not null)
+        {
+            <span class="pb-list-item__start pb-list-item__start--avatar" aria-hidden="true">@Avatar</span>
+        }
+        else if (Icon is not null)
+        {
+            <span class="pb-list-item__start pb-list-item__start--icon pb-icon-slot" aria-hidden="true">@Icon</span>
+        }
+        <span class="pb-list-item__content">
+            <span class="pb-list-item__title">@Title@ChildContent</span>
+            @if (Subtitle is not null)
+            {
+                <span class="pb-list-item__secondary @(Lines == 3 && Line3 is null ? "pb-list-item__secondary--wrap" : null)">@Subtitle</span>
+            }
+            @if (Line3 is not null)
+            {
+                <span class="pb-list-item__secondary">@Line3</span>
+            }
+        </span>
+        @if (Meta is not null)
+        {
+            <span class="pb-list-item__end pb-list-item__end--meta">@Meta</span>
+        }
+        else if (Trailing is not null)
+        {
+            <span class="pb-list-item__end">@Trailing</span>
+        }
+    </text>;
+}

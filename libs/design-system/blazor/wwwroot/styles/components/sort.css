@@ -1,0 +1,76 @@
+/*
+ * PBSortHeader: mat-sort-header. Reference: sort/_m3-sort.scss + structural styles.
+ *
+ *   label + 12px arrow box (24px arrow glyph, on-surface); the arrow previews at 54% on hover/focus,
+ *   is fully visible when sorted, rotates 180deg for descending (225ms)
+ */
+
+.pb-sort-header {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  border: none;
+  outline: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: normal;
+  cursor: pointer;
+}
+
+.pb-sort-header:focus-visible {
+  border-bottom: 1px solid currentColor;
+}
+
+.pb-sort-header--before {
+  flex-direction: row-reverse;
+}
+
+.pb-sort-header__content {
+  display: flex;
+  align-items: center;
+}
+
+.pb-sort-header__arrow {
+  position: relative;
+  width: 12px;
+  height: 12px;
+  margin: 0 0 0 6px;
+  overflow: visible;
+  color: var(--md-sys-color-on-surface);
+  opacity: 0;
+  transition:
+    transform 225ms var(--md-sys-motion-easing-legacy),
+    opacity 225ms var(--md-sys-motion-easing-legacy);
+}
+
+.pb-sort-header--before .pb-sort-header__arrow {
+  margin: 0 6px 0 0;
+}
+
+.pb-sort-header__arrow > svg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 24px;
+  height: 24px;
+  margin: -12px 0 0 -12px;
+  fill: currentColor;
+}
+
+.pb-sort-header:is(:hover, :focus-visible) .pb-sort-header__arrow {
+  opacity: 0.54;
+}
+
+.pb-sort-header--sorted .pb-sort-header__arrow {
+  opacity: 1;
+}
+
+.pb-sort-header--descending .pb-sort-header__arrow {
+  transform: rotate(180deg);
+}
+
+.pb-sort-header:disabled {
+  cursor: default;
+}

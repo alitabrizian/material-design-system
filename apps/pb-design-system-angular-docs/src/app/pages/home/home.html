@@ -1,0 +1,19 @@
+<div class="docs-category-list-page">
+  <div class="docs-category-list-summary">
+    Workspace offers a wide variety of UI components based on the
+    <a href="https://material.io/components">Material Design specification</a>
+  </div>
+
+  <div class="docs-category-list">
+    @for (item of catalog; track item.path) {
+      <a class="docs-category-list-item" [routerLink]="'/' + item.path">
+        <div class="docs-category-list-card" pbRipple>
+          <img class="docs-category-list-card-image" [src]="'assets/screenshots/' + item.scene + '.scene.png'"
+               alt="" aria-hidden="true" loading="lazy" />
+          <div class="docs-category-list-card-title">{{ item.name }}</div>
+          <div class="docs-category-list-card-summary">{{ item.summary }}</div>
+        </div>
+      </a>
+    }
+  </div>
+</div>
