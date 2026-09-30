@@ -18,8 +18,8 @@
       "url": ""
     },
     {
-      "name": "pb-remotion-videos",
-      "prefix": "apps/remotion-videos",
+      "name": "pb-design-system-remotion-videos",
+      "prefix": "apps/pb-design-system-remotion-videos",
       "url": ""
     }
   ]

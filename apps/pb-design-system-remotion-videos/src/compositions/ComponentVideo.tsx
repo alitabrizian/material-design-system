@@ -34,7 +34,7 @@ export const ComponentVideo = ({ sceneId, title, example, captionsAt, recording 
         <Centered>
           <div style={{ fontSize: 44, color: token("color-on-surface") }}>{title}</div>
           <div style={{ fontSize: 24, color: token("color-on-surface-variant"), marginTop: 16 }}>
-            No recording yet. Run: npx nx run remotion-videos:record -- {sceneId}
+            No recording yet. Run: npx nx run pb-design-system-remotion-videos:record -- {sceneId}
           </div>
         </Centered>
       </Stage>

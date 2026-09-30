@@ -7,8 +7,8 @@
     "build": "nx run-many -t build",
     "docs": "nx run pb-design-system-docs:serve",
     "docs:angular": "nx run pb-design-system-angular-docs:serve",
-    "remotion:studio": "nx run remotion-videos:studio",
-    "remotion:render": "nx run remotion-videos:render",
+    "remotion:studio": "nx run pb-design-system-remotion-videos:studio",
+    "remotion:render": "nx run pb-design-system-remotion-videos:render",
     "mirror": "node tools/scripts/mirror-repos.mts"
   },
   "dependencies": {

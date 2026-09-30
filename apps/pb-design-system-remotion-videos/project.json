@@ -1,7 +1,7 @@
 {
-  "name": "remotion-videos",
+  "name": "pb-design-system-remotion-videos",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/remotion-videos/src",
+  "sourceRoot": "apps/pb-design-system-remotion-videos/src",
   "projectType": "application",
   "implicitDependencies": ["design-tokens"],
   "targets": {
@@ -9,7 +9,7 @@
       "executor": "nx:run-commands",
       "options": {
         "command": "node scripts/record.mts",
-        "cwd": "apps/remotion-videos"
+        "cwd": "apps/pb-design-system-remotion-videos"
       }
     },
     "render": {
@@ -17,7 +17,7 @@
       "dependsOn": ["^build"],
       "options": {
         "command": "node scripts/render.mts",
-        "cwd": "apps/remotion-videos"
+        "cwd": "apps/pb-design-system-remotion-videos"
       }
     },
     "studio": {
@@ -33,7 +33,7 @@
       "dependsOn": ["^build"],
       "options": {
         "command": "remotion bundle src/index.ts",
-        "cwd": "apps/remotion-videos"
+        "cwd": "apps/pb-design-system-remotion-videos"
       }
     }
   },
