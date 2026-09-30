@@ -9,7 +9,7 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "paths": {
-      "@partobita/design-system-angular": ["./libs/design-system/angular/src/public-api.ts"]
+      "@partobita/design-system-angular": ["./libs/material-design-system/angular/src/public-api.ts"]
     }
   }
 }

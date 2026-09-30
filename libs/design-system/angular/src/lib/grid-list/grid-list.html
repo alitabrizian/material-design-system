@@ -1,7 +1,0 @@
-<mat-grid-list [cols]="cols()" [rowHeight]="rowHeight()" [gutterSize]="gutter()">
-  @for (tile of tiles(); track tile) {
-    <mat-grid-tile [colspan]="tile.colspan()" [rowspan]="tile.rowspan()">
-      <ng-container [ngTemplateOutlet]="tile.template()" />
-    </mat-grid-tile>
-  }
-</mat-grid-list>

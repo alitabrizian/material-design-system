@@ -1,8 +1,0 @@
-@inherits WorkspaceFieldComponentBase
-@inject Microsoft.JSInterop.IJSRuntime JS
-<div @ref="host" class="pb-form-field-host" style="display:contents">
-    <FormFieldFrame Appearance="Appearance" Label="@Label" LabelFor="@LabelFor" HasError="HasError" HintText="@FieldHintText"
-                    Block="Block" Prefix="Prefix" Suffix="Suffix" Attributes="Attrs" ExtraClass="@UserClass">
-        <Control>@ChildContent</Control>
-    </FormFieldFrame>
-</div>

@@ -3,12 +3,12 @@
  *
  *   node tools/scripts/verify-demo.mts [--url http://127.0.0.1:5080] [--out .verify] [--no-shots]
  *
- * Requires the demo to be running (npx nx run pb-design-system-docs:serve) and a Chromium: the
+ * Requires the demo to be running (npx nx run blazor-design-system-docs:serve) and a Chromium: the
  * PLAYWRIGHT_CHROMIUM env var, or Playwright's cache (npx playwright-core install chromium).
  *
  * Checks, failing with a non-zero exit code:
  *   1. tokens: for each theme, every --md-sys-color-* role computed on <html> equals the value in
- *      Angular Material's prebuilt theme (libs/design-system/tokens/reference/angular-material)
+ *      Angular Material's prebuilt theme (libs/material-design-system/tokens/reference/angular-material)
  *   2. theme switching applies in the same frame (< 100 ms) without a reload
  *   3. every catalog page renders in all 4 themes without page errors or failed requests
  *   4. no horizontal page overflow at 360px width
@@ -48,12 +48,12 @@ function findChromium(): string | undefined {
 }
 
 function catalogRoutes(): string[] {
-  const source = fs.readFileSync(path.join(repoRoot, "apps/pb-design-system-docs/Navigation/ComponentCatalog.cs"), "utf8");
+  const source = fs.readFileSync(path.join(repoRoot, "apps/blazor-design-system-docs/Navigation/ComponentCatalog.cs"), "utf8");
   return ["/", ...[...source.matchAll(/new\("[^"]+", "(\/[^"]+)"/g)].map((m) => m[1])];
 }
 
 function referenceColors(theme: string): Map<string, string> {
-  const css = fs.readFileSync(path.join(repoRoot, `libs/design-system/tokens/reference/angular-material/${theme}.css`), "utf8");
+  const css = fs.readFileSync(path.join(repoRoot, `libs/material-design-system/tokens/reference/angular-material/${theme}.css`), "utf8");
   const colors = new Map<string, string>();
   for (const m of css.matchAll(/--mat-sys-([a-z0-9-]+):\s*(#[0-9a-f]{6});/gi)) colors.set(m[1], m[2].toLowerCase());
   return colors;

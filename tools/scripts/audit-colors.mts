@@ -10,7 +10,7 @@
  *   - rgb()/rgba()/hsl()/hsla()/hwb()/lab()/lch()/oklab()/oklch() literals
  *   - CSS named colors used as values of color-bearing properties or SVG fill/stroke attributes
  * Allowed: var(--md-sys-*), color-mix() over tokens, currentColor, transparent, inherit, none.
- * Generated token files (wwwroot/css/*, copied from libs/design-system/tokens/dist) are the only
+ * Generated token files (wwwroot/css/*, copied from libs/material-design-system/tokens/dist) are the only
  * place literal colors may live, so they are excluded. Comments are ignored.
  */
 
@@ -22,17 +22,17 @@ const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../
 const reportOnly = process.argv.includes("--report");
 
 const ROOTS = [
-  "libs/design-system/blazor/Components",
-  "libs/design-system/blazor/wwwroot",
-  "apps/pb-design-system-docs/Pages",
-  "apps/pb-design-system-docs/Shared",
-  "apps/pb-design-system-docs/Layout",
-  "apps/pb-design-system-docs/wwwroot",
-  "apps/pb-design-system-docs/App.razor",
+  "libs/material-design-system/blazor/Components",
+  "libs/material-design-system/blazor/wwwroot",
+  "apps/blazor-design-system-docs/Pages",
+  "apps/blazor-design-system-docs/Shared",
+  "apps/blazor-design-system-docs/Layout",
+  "apps/blazor-design-system-docs/wwwroot",
+  "apps/blazor-design-system-docs/App.razor",
 ];
 
 // Generated/copied token files: the one sanctioned home of literal color values.
-const EXCLUDED_DIRS = ["libs/design-system/blazor/wwwroot/css", "libs/design-system/blazor/wwwroot/fonts", "libs/design-system/blazor/wwwroot/data"];
+const EXCLUDED_DIRS = ["libs/material-design-system/blazor/wwwroot/css", "libs/material-design-system/blazor/wwwroot/fonts", "libs/material-design-system/blazor/wwwroot/data"];
 const EXTENSIONS = new Set([".css", ".razor", ".cs", ".js", ".html"]);
 
 const NAMED_COLORS = [
