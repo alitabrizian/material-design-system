@@ -1,8 +1,0 @@
-<mat-stepper [orientation]="orientation()" [linear]="linear()" [(selectedIndex)]="selectedIndex">
-  @for (step of steps(); track step) {
-    <mat-step [optional]="step.optional()" [editable]="step.editable()">
-      <ng-template matStepLabel>{{ step.label() }}</ng-template>
-      <ng-container [ngTemplateOutlet]="step.template()" />
-    </mat-step>
-  }
-</mat-stepper>

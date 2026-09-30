@@ -1,5 +1,0 @@
-# .NET build output
-bin/
-obj/
-.vs/
-*.user

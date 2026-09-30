@@ -1,9 +1,0 @@
-@inherits WorkspaceComponentBase
-<span class="@CssClass @UserClass" @attributes="Attrs">
-    @ChildContent
-    <span class="pb-badge__content" aria-hidden="true">@(Size == PBBadgeSize.Small || Variant == PBBadgeVariant.Dot ? null : Content)</span>
-    @if (Description is not null)
-    {
-        <span class="pb-visually-hidden">@Description</span>
-    }
-</span>

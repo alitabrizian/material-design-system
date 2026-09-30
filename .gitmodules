@@ -1,0 +1,12 @@
+[submodule "apps/blazor-design-system-docs"]
+	path = apps/blazor-design-system-docs
+	url = http://86.106.142.146/ali.tabrizian/blazor-design-system-docs.git
+[submodule "apps/angular-design-system-docs"]
+	path = apps/angular-design-system-docs
+	url = http://86.106.142.146/ali.tabrizian/angular-design-system-docs.git
+[submodule "apps/design-system-remotion-videos"]
+	path = apps/design-system-remotion-videos
+	url = http://86.106.142.146/ali.tabrizian/design-system-remotion-videos.git
+[submodule "libs/material-design-system"]
+	path = libs/material-design-system
+	url = http://86.106.142.146/ali.tabrizian/material-design-system.git

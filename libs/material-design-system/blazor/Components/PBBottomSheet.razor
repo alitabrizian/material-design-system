@@ -1,7 +1,0 @@
-@inherits WorkspaceComponentBase
-@inject Microsoft.JSInterop.IJSRuntime JS
-<div class="pb-bottom-sheet-backdrop" @onclick="CloseAsync" aria-hidden="true"></div>
-<div class="pb-bottom-sheet-wrapper">
-    <section @ref="sheet" class="pb-bottom-sheet @UserClass" role="dialog" aria-modal="true" aria-label="@Label" tabindex="-1"
-             @onkeydown="OnKeyDownAsync" @attributes="Attrs">@ChildContent</section>
-</div>
