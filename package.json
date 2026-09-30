@@ -5,11 +5,10 @@
   "packageManager": "npm@10.9.2",
   "scripts": {
     "build": "nx run-many -t build",
-    "docs": "nx run pb-design-system-docs:serve",
-    "docs:angular": "nx run pb-design-system-angular-docs:serve",
-    "remotion:studio": "nx run pb-design-system-remotion-videos:studio",
-    "remotion:render": "nx run pb-design-system-remotion-videos:render",
-    "mirror": "node tools/scripts/mirror-repos.mts"
+    "docs": "nx run blazor-design-system-docs:serve",
+    "docs:angular": "nx run angular-design-system-docs:serve",
+    "remotion:studio": "nx run design-system-remotion-videos:studio",
+    "remotion:render": "nx run design-system-remotion-videos:render"
   },
   "dependencies": {
     "@angular/cdk": "^22.2.0",
@@ -45,6 +44,6 @@
     "typescript": "~6.0.3"
   },
   "workspaces": [
-    "libs/design-system/tokens"
+    "libs/material-design-system/tokens"
   ]
 }

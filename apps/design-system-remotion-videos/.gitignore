@@ -1,0 +1,6 @@
+node_modules/
+
+# Rendered videos and recorded demos (scripts/render.mts, scripts/record.mts)
+out/
+public/recordings/
+.remotion/

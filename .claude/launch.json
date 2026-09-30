@@ -2,9 +2,9 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "pb-design-system-docs",
+      "name": "blazor-design-system-docs",
       "runtimeExecutable": "node",
-      "runtimeArgs": ["tools/scripts/dev-pb-design-system-docs.mts"],
+      "runtimeArgs": ["tools/scripts/dev-blazor-design-system-docs.mts"],
       "port": 5080,
       "autoPort": true
     },
@@ -16,9 +16,9 @@
       "autoPort": true
     },
     {
-      "name": "pb-design-system-angular-docs",
+      "name": "angular-design-system-docs",
       "runtimeExecutable": "node",
-      "runtimeArgs": ["node_modules/nx/bin/nx.js", "serve", "pb-design-system-angular-docs"],
+      "runtimeArgs": ["node_modules/nx/bin/nx.js", "serve", "angular-design-system-docs"],
       "port": 4200
     }
   ]

@@ -6,42 +6,51 @@ package and managed as an Nx workspace.
 
 ## Structure
 
-| Folder | Nx project | Published as |
+| Folder (git submodule) | Nx project | Published as |
 | --- | --- | --- |
-| `libs/design-system/tokens` | `design-tokens` | npm `@partobita/design-tokens` |
-| `libs/design-system/blazor` | `design-system-blazor` | NuGet `PartoBita.DesignSystem.Blazor` |
-| `libs/design-system/angular` | `design-system-angular` | npm `@partobita/design-system-angular` (ng-packagr) |
-| `apps/pb-design-system-docs` | `pb-design-system-docs` | Blazor docs site (`PartoBita.DesignSystem.Docs`) |
-| `apps/pb-design-system-angular-docs` | `pb-design-system-angular-docs` | Angular docs site, same layout and pages as the Blazor docs |
-| `apps/pb-design-system-remotion-videos` | `pb-design-system-remotion-videos` | demo videos |
+| `libs/material-design-system/tokens` | `design-tokens` | npm `@partobita/design-tokens` |
+| `libs/material-design-system/blazor` | `design-system-blazor` | NuGet `PartoBita.DesignSystem.Blazor` |
+| `libs/material-design-system/angular` | `design-system-angular` | npm `@partobita/design-system-angular` (ng-packagr) |
+| `apps/blazor-design-system-docs` | `blazor-design-system-docs` | Blazor docs site (`PartoBita.DesignSystem.Docs`) |
+| `apps/angular-design-system-docs` | `angular-design-system-docs` | Angular docs site, same layout and pages as the Blazor docs |
+| `apps/design-system-remotion-videos` | `design-system-remotion-videos` | demo videos |
 
 Both component libraries inherit everything visual from `@partobita/design-tokens`: Blazor copies its
 `dist/` into the NuGet package, and Angular imports it, binding Angular Material's `--mat-sys-*`
 variables to the tokens through `css/angular-material.css`.
 
 - `DesignSystem.sln`: solution for the Blazor library and docs app.
-- `tools`: scripts (dev loop, color audit, browser verification, repo mirrors).
+- `tools`: scripts (dev loop, color audit, browser verification).
 - `docs`: architecture, development, and migration documentation.
 
-## Monorepo and mirror repos
+## Monorepo and submodules
 
-This repository is the source of truth: a change to the tokens, a library and an app is one commit.
-Each project is also published, with its history, to its own read-only repo by
-`tools/scripts/mirror-repos.mts` (configured in `tools/mirror-repos.json`):
+The workspace is the monorepo that builds and runs everything together; each project folder is a git
+submodule with its own repository on GitLab (86.106.142.146, `ali.tabrizian/...`):
+
+| Submodule | Repository |
+| --- | --- |
+| `libs/material-design-system` | `material-design-system` (tokens, Blazor and Angular libraries) |
+| `apps/blazor-design-system-docs` | `blazor-design-system-docs` |
+| `apps/angular-design-system-docs` | `angular-design-system-docs` |
+| `apps/design-system-remotion-videos` | `design-system-remotion-videos` |
 
 ```bash
-npm run mirror                              # every mirror that has a url
-node tools/scripts/mirror-repos.mts --dry-run
+git clone --recurse-submodules <workspace url>   # or, in an existing clone:
+git submodule update --init --recursive
 ```
 
-Run it on master after merging. Don't commit to a mirror directly: the next mirror push overwrites it.
+A change inside a project is committed and pushed in that submodule first, then the workspace commits
+the new submodule pointer. The apps reference the libraries by path (`../../libs/material-design-system`),
+so they build inside the workspace; a standalone clone of an app needs the libraries' published
+packages instead.
 
-The Blazor implementation is available at `libs/design-system/blazor`, with the
-interactive showcase in `apps/pb-design-system-docs`. Open `DesignSystem.sln` in
+The Blazor implementation is available at `libs/material-design-system/blazor`, with the
+interactive showcase in `apps/blazor-design-system-docs`. Open `DesignSystem.sln` in
 Visual Studio or run:
 
 ```powershell
-dotnet run --project apps/pb-design-system-docs/PartoBita.DesignSystem.Docs.csproj
+dotnet run --project apps/blazor-design-system-docs/PartoBita.DesignSystem.Docs.csproj
 ```
 
 Each Blazor component uses the standard two-file structure: `.razor` for
@@ -49,14 +58,14 @@ component markup and `.razor.cs` for C# parameters and behavior.
 
 ## Remotion Videos
 
-`apps/pb-design-system-remotion-videos` renders demo videos of the design system using
+`apps/design-system-remotion-videos` renders demo videos of the design system using
 [Remotion](https://www.remotion.dev/) (React + TypeScript). Compositions,
 registered in `src/Root.tsx`:
 
 - `showreel`: the whole system in one video. It has a title card, the token
   tour, each component's recorded example played full-size in turn, and a
   closing card with the counts.
-- `design-tokens`: an animated tour of `libs/design-system/tokens`. It covers
+- `design-tokens`: an animated tour of `libs/material-design-system/tokens`. It covers
   themes, color roles, typescale, shape, elevation, motion, spacing and state
   layers. Values are read from the built `tokens.css`, so the video follows the
   tokens package.
@@ -65,10 +74,10 @@ registered in `src/Root.tsx`:
 
 ```bash
 npm install
-npx nx run pb-design-system-remotion-videos:studio   # interactive preview/editor
-npx nx run pb-design-system-remotion-videos:record   # re-record component demos (demo app must be running)
-npx nx run pb-design-system-remotion-videos:render   # renders every composition to out/<id>.mp4
-npx nx run pb-design-system-remotion-videos:render -- showreel design-tokens   # just these
+npx nx run design-system-remotion-videos:studio   # interactive preview/editor
+npx nx run design-system-remotion-videos:record   # re-record component demos (demo app must be running)
+npx nx run design-system-remotion-videos:render   # renders every composition to out/<id>.mp4
+npx nx run design-system-remotion-videos:render -- showreel design-tokens   # just these
 ```
 
 The first render downloads a headless Chrome build, so it can take a while. If
@@ -76,7 +85,7 @@ that download is blocked on your network (e.g. a corporate proxy), point
 Remotion at an existing Chrome/Edge install instead:
 
 ```bash
-npx nx run pb-design-system-remotion-videos:render -- --browser-executable="C:\Program Files\Google\Chrome\Application\chrome.exe"
+npx nx run design-system-remotion-videos:render -- --browser-executable="C:\Program Files\Google\Chrome\Application\chrome.exe"
 ```
 
 ## Nx and Tooling
@@ -96,7 +105,7 @@ because the library build generates the design tokens with Node):
 ```bash
 npm ci
 dotnet build DesignSystem.sln          # 0 warnings required; also runs the color audit
-npx nx run pb-design-system-docs:serve    # dev loop: library CSS edits show up on browser refresh
+npx nx run blazor-design-system-docs:serve    # dev loop: library CSS edits show up on browser refresh
 ```
 
 See [docs/development/blazor.md](docs/development/blazor.md) for the dev loop, the package

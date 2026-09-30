@@ -1,23 +1,23 @@
 # Blazor development
 
-The Blazor component library (`libs/design-system/blazor`, NuGet id `PartoBita.DesignSystem.Blazor`)
-reproduces Angular Material's Material 3 components. The showcase app (`apps/pb-design-system-docs`)
+The Blazor component library (`libs/material-design-system/blazor`, NuGet id `PartoBita.DesignSystem.Blazor`)
+reproduces Angular Material's Material 3 components. The showcase app (`apps/blazor-design-system-docs`)
 documents every component.
 
 ## Run the demo (edit → refresh loop)
 
 ```bash
 npm ci                                   # once: token/font build dependencies
-npx nx run pb-design-system-docs:serve      # = node tools/scripts/dev-pb-design-system-docs.mts
+npx nx run blazor-design-system-docs:serve      # = node tools/scripts/dev-blazor-design-system-docs.mts
 ```
 
 Open http://127.0.0.1:5080.
 
-- **CSS and JS in the library** (`libs/design-system/blazor/wwwroot/**`) are served straight from
+- **CSS and JS in the library** (`libs/material-design-system/blazor/wwwroot/**`) are served straight from
   source. Save the file and refresh the browser. There is no repack, no cache clearing and no restart.
 - **`.razor` / `.cs` in the library or the demo** are picked up by `dotnet watch` (hot reload, or an
   automatic rebuild and restart).
-- **Token sources** (`libs/design-system/tokens/src`, `reference/`) are rebuilt automatically by the
+- **Token sources** (`libs/material-design-system/tokens/src`, `reference/`) are rebuilt automatically by the
   next `dotnet build` / watch rebuild.
 
 Why this works: the demo references the library by `ProjectReference`. It used to consume the packed
@@ -27,7 +27,7 @@ show up after refresh".
 ### Verifying the packaged library
 
 ```bash
-npx nx run pb-design-system-docs:serve-package   # packs (evicting the cached 0.1.0), runs the demo on the nupkg
+npx nx run blazor-design-system-docs:serve-package   # packs (evicting the cached 0.1.0), runs the demo on the nupkg
 ```
 
 Use this only to check what external consumers get. Never develop in this mode.
@@ -58,7 +58,7 @@ The project constitution (`.specify/memory/constitution.md`) is binding:
    the source in the CSS file header.
 2. **Tokens only.** Every color is a `var(--md-sys-color-*)` role (or `color-mix()` of roles). The build
    fails otherwise.
-3. **One CSS file per component** under `libs/design-system/blazor/wwwroot/styles/components/`,
+3. **One CSS file per component** under `libs/material-design-system/blazor/wwwroot/styles/components/`,
    registered in `wwwroot/design-system.css`.
 4. **State layers** use `.pb-state-layer` + `.pb-interactive` (base.css) with
    `--pb-state-layer-color`; ripples come from `.pb-ripple-host`.

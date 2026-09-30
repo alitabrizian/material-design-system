@@ -2,13 +2,13 @@
 
 ## R1: Why CSS edits did not appear after refresh
 
-- **Finding**: `apps/pb-design-system-docs/PartoBita.DesignSystem.Docs.csproj` consumed `PartoBita.DesignSystem.Blazor` 0.1.0
+- **Finding**: `apps/blazor-design-system-docs/PartoBita.DesignSystem.Docs.csproj` consumed `PartoBita.DesignSystem.Blazor` 0.1.0
   via `PackageReference` from `local-nuget-feed/`. NuGet extracts a package version once into the
   global-packages folder and treats it as immutable. A running demo served
   `.nuget/packages/partobita.designsystem.blazor/0.1.0/staticwebassets/design-system.css`, not the
   file being edited. `pack.mts` evicted the cache, but only when explicitly re-run, and `dotnet watch`
-  on the demo never re-packed. `tools/scripts/dev-pb-design-system-docs.mts` even documented the
-  limitation ("Editing a component/.razor file inside libs/design-system/blazor will NOT hot-reload").
+  on the demo never re-packed. `tools/scripts/dev-blazor-design-system-docs.mts` even documented the
+  limitation ("Editing a component/.razor file inside libs/material-design-system/blazor will NOT hot-reload").
   A fresh clone also failed to restore (`NU1301: local source … doesn't exist`).
 - **Decision**: The demo uses `ProjectReference` to `PartoBita.DesignSystem.Blazor.csproj` by default. Package verification
   is opt-in with `-p:UseDesignSystemPackage=true`, which the Nx `serve:package` target sets after
@@ -27,7 +27,7 @@
   `CorePalette.fromColors` with guessed seeds, which produced different hues. For example, Rose & Red
   primary should be `#ba005c` and on-primary-container `#8f0045` (tone 30, per the 2024 M3 spec,
   which the generator got as tone 10). Dark surfaces were hand-set to `#2d2d2d`.
-- **Decision**: Vendor the four CSS files under `libs/design-system/tokens/reference/angular-material/`
+- **Decision**: Vendor the four CSS files under `libs/material-design-system/tokens/reference/angular-material/`
   (with `VERSION`), and parse them in `build-tokens.mts`:
   - color roles → `--md-sys-color-*` per `[data-theme]`
   - theme-independent roles (typescale, shape, elevation, state) → `--md-sys-*` once on `:root`.
@@ -50,8 +50,8 @@
 
 ## R4: Enforcing "no hardcoded colors"
 
-- **Decision**: `tools/scripts/audit-colors.mts` scans `libs/design-system/blazor/{Components,wwwroot}`
-  and `apps/pb-design-system-docs/{Pages,Shared,Layout,wwwroot}` for these patterns, ignoring comments
+- **Decision**: `tools/scripts/audit-colors.mts` scans `libs/material-design-system/blazor/{Components,wwwroot}`
+  and `apps/blazor-design-system-docs/{Pages,Shared,Layout,wwwroot}` for these patterns, ignoring comments
   and generated token files:
   - hex colors
   - `rgb[a]()` / `hsl[a]()` / `hwb()` / `lab()` / `lch()` / `oklab()` / `oklch()` literals

@@ -7,11 +7,11 @@
 ## 1. Dev loop (US1)
 
 ```bash
-npx nx run pb-design-system-docs:serve      # or: node tools/scripts/dev-pb-design-system-docs.mts
+npx nx run blazor-design-system-docs:serve      # or: node tools/scripts/dev-blazor-design-system-docs.mts
 ```
 
 1. Open http://127.0.0.1:5080/button.
-2. In `libs/design-system/blazor/wwwroot/styles/components/button.css`, change the filled button's
+2. In `libs/material-design-system/blazor/wwwroot/styles/components/button.css`, change the filled button's
    `background` role to `var(--md-sys-color-tertiary)` and save.
 3. Refresh the browser: filled buttons turn tertiary. Revert, refresh: primary again.
 
@@ -20,7 +20,7 @@ Expected: works 10/10 times, with no pack, cache clear or restart.
 Package verification (opt-in):
 
 ```bash
-npx nx run pb-design-system-docs:serve-package   # packs, evicts cache, runs demo against the nupkg
+npx nx run blazor-design-system-docs:serve-package   # packs, evicts cache, runs demo against the nupkg
 ```
 
 ## 2. Themes (US2)

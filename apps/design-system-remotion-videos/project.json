@@ -1,0 +1,41 @@
+{
+  "name": "design-system-remotion-videos",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/design-system-remotion-videos/src",
+  "projectType": "application",
+  "implicitDependencies": ["design-tokens"],
+  "targets": {
+    "record": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node scripts/record.mts",
+        "cwd": "apps/design-system-remotion-videos"
+      }
+    },
+    "render": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["^build"],
+      "options": {
+        "command": "node scripts/render.mts",
+        "cwd": "apps/design-system-remotion-videos"
+      }
+    },
+    "studio": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["^build"],
+      "options": {
+        "command": "node tools/scripts/dev-remotion-studio.mts",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["^build"],
+      "options": {
+        "command": "remotion bundle src/index.ts",
+        "cwd": "apps/design-system-remotion-videos"
+      }
+    }
+  },
+  "tags": ["type:app", "scope:media"]
+}

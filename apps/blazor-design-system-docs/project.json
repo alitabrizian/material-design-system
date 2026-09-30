@@ -1,0 +1,39 @@
+{
+  "name": "blazor-design-system-docs",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "implicitDependencies": ["design-system-blazor"],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["design-tokens:build"],
+      "options": {
+        "command": "dotnet build PartoBita.DesignSystem.Docs.csproj",
+        "cwd": "apps/blazor-design-system-docs"
+      }
+    },
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/scripts/dev-blazor-design-system-docs.mts",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "serve-package": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["design-system-blazor:pack"],
+      "options": {
+        "command": "dotnet run --project PartoBita.DesignSystem.Docs.csproj -p:UseDesignSystemPackage=true",
+        "cwd": "apps/blazor-design-system-docs"
+      }
+    },
+    "verify": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/scripts/verify-demo.mts",
+        "cwd": "{workspaceRoot}"
+      }
+    }
+  },
+  "tags": ["type:app", "scope:design-system"]
+}

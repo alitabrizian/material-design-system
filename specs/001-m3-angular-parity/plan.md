@@ -91,14 +91,14 @@ specs/001-m3-angular-parity/
 ### Source Code (repository root)
 
 ```text
-libs/design-system/tokens/
+libs/material-design-system/tokens/
 ├── reference/angular-material/        # vendored prebuilt-themes/*.css (22.2.0) + VERSION
 ├── scripts/
 │   ├── build-tokens.mts               # prebuilt CSS → dist/css/tokens.css (+ system tokens), fonts, icons
 │   └── sync-angular-themes.mts        # refresh reference/ from npm (npm pack @angular/material@X)
 └── src/material-tokens.css            # motion + spacing + font stacks only (not in prebuilt)
 
-libs/design-system/blazor/
+libs/material-design-system/blazor/
 ├── Components/                        # PB*.razor + .razor.cs (+ new sub-components)
 ├── wwwroot/
 │   ├── design-system.css              # @import index (order-stable)
@@ -107,7 +107,7 @@ libs/design-system/blazor/
 │   └── design-system.js               # ripple + overlay positioning + dialog/focus helpers
 └── PartoBita.DesignSystem.Blazor.csproj                      # SyncDesignTokens + AuditColors targets
 
-apps/pb-design-system-docs/
+apps/blazor-design-system-docs/
 ├── PartoBita.DesignSystem.Docs.csproj                 # ProjectReference (default) | PackageReference (-p:UseDesignSystemPackage=true)
 ├── App.razor                          # no CDN links; FOUC-safe theme boot script
 ├── Shared/TopAppBar.razor             # theme picker (radio + token-rendered swatch + name)
@@ -117,7 +117,7 @@ apps/pb-design-system-docs/
 tools/scripts/
 ├── audit-colors.mts                   # Principle II gate
 ├── verify-demo.mts                    # Playwright: 37 pages × 4 themes screenshots + checks
-└── dev-pb-design-system-docs.mts         # tokens build → dotnet watch (no pack)
+└── dev-blazor-design-system-docs.mts         # tokens build → dotnet watch (no pack)
 ```
 
 **Structure Decision**: Keep the existing three-package layout (tokens → blazor RCL → demo). Only the

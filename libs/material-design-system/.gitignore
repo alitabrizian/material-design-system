@@ -1,0 +1,10 @@
+node_modules/
+dist/
+bin/
+obj/
+.vs/
+
+# Copied from tokens/dist by the Blazor library build (SyncDesignTokens)
+blazor/wwwroot/css/
+blazor/wwwroot/data/
+blazor/wwwroot/fonts/

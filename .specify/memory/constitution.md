@@ -81,7 +81,7 @@ A change is done only when all of the following hold:
 - Pure CSS in the library: no Bootstrap, Tailwind, SCSS or other CSS frameworks.
 - No runtime CDN dependencies: Roboto and the Material icon fonts ship with the tokens package.
 - Layouts MUST work from 360px wide (mobile) to desktop, with no horizontal page scroll.
-- Framework-neutral tokens live in `libs/design-system/tokens`; framework packages consume its
+- Framework-neutral tokens live in `libs/material-design-system/tokens`; framework packages consume its
   `dist/` output.
 
 ## Development Workflow & Quality Gates
