@@ -1,4 +1,4 @@
-namespace Design.Components;
+namespace PartoBita.DesignSystem.Blazor.Components;
 
 /// <summary>The page event raised by <see cref="PBPaginator"/> (MatPaginator's PageEvent).</summary>
 public sealed record PBPageEvent(int PageIndex, int PreviousPageIndex, int PageSize, int Length);

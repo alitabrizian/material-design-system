@@ -1,4 +1,4 @@
-# @partobita/design-tokens (Nx project: `tokens`)
+# @partobita/design-tokens (Nx project: `design-tokens`)
 
 Framework-neutral Material 3 design tokens — plain CSS custom properties
 (`--md-sys-*`) — and the single source of truth for every PartoBita design
@@ -37,7 +37,7 @@ renders the same file. Consumers load `css/roboto.css` next to the token stylesh
 ## Build
 
 ```bash
-npx nx run tokens:build
+npx nx run design-tokens:build
 ```
 
 You rarely need to run it by hand: `design-system-blazor:build`/`pack` depend
@@ -45,13 +45,13 @@ on it through the Nx graph (`implicitDependencies` + `dependsOn: ["^build"]`).
 
 ## Consumers
 
-- **Blazor** — `libs/design-system/blazor/Design.csproj` copies `dist/` into its
+- **Blazor** — `libs/design-system/blazor/PartoBita.DesignSystem.Blazor.csproj` copies `dist/` into its
   `wwwroot/` on every build (`SyncDesignTokens` target), so the files ship inside
-  the NuGet package as `_content/Design/css/tokens.css`, `_content/Design/fonts/...` etc. Apps using the
+  the NuGet package as `_content/PartoBita.DesignSystem.Blazor/css/tokens.css`, `_content/PartoBita.DesignSystem.Blazor/fonts/...` etc. Apps using the
   NuGet package need no Node/npm at all.
 - **Angular (later)** — this folder is already an npm package (`package.json`,
   `files: ["dist"]`). Publish it with `npm publish` from here after
-  `nx run tokens:build`, then import the CSS in the Angular app (including
+  `nx run design-tokens:build`, then import the CSS in the Angular app (including
   `@partobita/design-tokens/css/roboto.css` in place of the Google Fonts
   `<link>` from Angular Material's setup guide) and theme Angular Material
   from the same variables.

@@ -1,14 +1,14 @@
 # Blazor development
 
 The Blazor component library (`libs/design-system/blazor`, NuGet id `PartoBita.DesignSystem.Blazor`)
-reproduces Angular Material's Material 3 components. The showcase app (`apps/pb-design-system`)
+reproduces Angular Material's Material 3 components. The showcase app (`apps/pb-design-system-docs`)
 documents every component.
 
 ## Run the demo (edit → refresh loop)
 
 ```bash
 npm ci                                   # once: token/font build dependencies
-npx nx run pb-design-system:serve      # = node tools/scripts/dev-pb-design-system.mts
+npx nx run pb-design-system-docs:serve      # = node tools/scripts/dev-pb-design-system-docs.mts
 ```
 
 Open http://127.0.0.1:5080.
@@ -27,7 +27,7 @@ show up after refresh".
 ### Verifying the packaged library
 
 ```bash
-npx nx run pb-design-system:serve-package   # packs (evicting the cached 0.1.0), runs the demo on the nupkg
+npx nx run pb-design-system-docs:serve-package   # packs (evicting the cached 0.1.0), runs the demo on the nupkg
 ```
 
 Use this only to check what external consumers get. Never develop in this mode.
@@ -43,7 +43,7 @@ Use this only to check what external consumers get. Never develop in this mode.
 ## GitHub link in the demo toolbar
 
 The toolbar shows a GitHub link only when the checkout was cloned from GitHub. At build time,
-`Design.Demo.csproj` (target `ResolveGitHubRepositoryUrl`) reads `git config remote.origin.url`. For a
+`PartoBita.DesignSystem.Docs.csproj` (target `ResolveGitHubRepositoryUrl`) reads `git config remote.origin.url`. For a
 `github.com` remote it embeds `https://github.com/<owner>/<repo>` (never the raw remote, which may
 carry credentials); for any other origin (such as the GitLab mirror), or without git, it embeds
 nothing and the link is hidden. To force a result, pass the remote explicitly:

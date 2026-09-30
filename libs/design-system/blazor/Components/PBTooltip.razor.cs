@@ -1,4 +1,4 @@
-namespace Design.Components;
+namespace PartoBita.DesignSystem.Blazor.Components;
 
 /// <summary>matTooltipPosition values.</summary>
 public enum PBTooltipPosition { Below, Above, Before, After }

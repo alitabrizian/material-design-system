@@ -1,4 +1,4 @@
-namespace Design.Demo.Services;
+namespace PartoBita.DesignSystem.Docs.Services;
 
 /// <summary>
 /// The demo's current theme: one of the design system's four Material Design 3 themes, each a

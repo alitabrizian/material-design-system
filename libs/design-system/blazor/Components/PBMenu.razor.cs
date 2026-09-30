@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
 
-namespace Design.Components;
+namespace PartoBita.DesignSystem.Blazor.Components;
 
 /// <summary>Horizontal side of the trigger the panel opens toward (mat-menu xPosition).</summary>
 public enum PBMenuXPosition { Before, After }

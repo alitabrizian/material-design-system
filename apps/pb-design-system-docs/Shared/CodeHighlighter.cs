@@ -3,7 +3,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Components;
 
-namespace Design.Demo.Shared;
+namespace PartoBita.DesignSystem.Docs.Shared;
 
 /// <summary>
 /// Minimal regex-based token coloring for code snippets shown in <see cref="ExampleCard"/>.

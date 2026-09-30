@@ -2,17 +2,17 @@
 
 ## R1: Why CSS edits did not appear after refresh
 
-- **Finding**: `apps/pb-design-system/Design.Demo.csproj` consumed `PartoBita.DesignSystem.Blazor` 0.1.0
+- **Finding**: `apps/pb-design-system-docs/PartoBita.DesignSystem.Docs.csproj` consumed `PartoBita.DesignSystem.Blazor` 0.1.0
   via `PackageReference` from `local-nuget-feed/`. NuGet extracts a package version once into the
   global-packages folder and treats it as immutable. A running demo served
   `.nuget/packages/partobita.designsystem.blazor/0.1.0/staticwebassets/design-system.css`, not the
   file being edited. `pack.mts` evicted the cache, but only when explicitly re-run, and `dotnet watch`
-  on the demo never re-packed. `tools/scripts/dev-pb-design-system.mts` even documented the
+  on the demo never re-packed. `tools/scripts/dev-pb-design-system-docs.mts` even documented the
   limitation ("Editing a component/.razor file inside libs/design-system/blazor will NOT hot-reload").
   A fresh clone also failed to restore (`NU1301: local source … doesn't exist`).
-- **Decision**: The demo uses `ProjectReference` to `Design.csproj` by default. Package verification
+- **Decision**: The demo uses `ProjectReference` to `PartoBita.DesignSystem.Blazor.csproj` by default. Package verification
   is opt-in with `-p:UseDesignSystemPackage=true`, which the Nx `serve:package` target sets after
-  packing. In Development, ASP.NET Core's static-web-assets manifest maps `_content/Design/*` to
+  packing. In Development, ASP.NET Core's static-web-assets manifest maps `_content/PartoBita.DesignSystem.Blazor/*` to
   the library's source `wwwroot/`, so a saved CSS file is served on the next request. The existing
   `Cache-Control: no-cache` header forces revalidation. `dotnet watch` watches referenced projects,
   so `.razor` and `.cs` changes rebuild and hot-reload.
@@ -51,14 +51,14 @@
 ## R4: Enforcing "no hardcoded colors"
 
 - **Decision**: `tools/scripts/audit-colors.mts` scans `libs/design-system/blazor/{Components,wwwroot}`
-  and `apps/pb-design-system/{Pages,Shared,Layout,wwwroot}` for these patterns, ignoring comments
+  and `apps/pb-design-system-docs/{Pages,Shared,Layout,wwwroot}` for these patterns, ignoring comments
   and generated token files:
   - hex colors
   - `rgb[a]()` / `hsl[a]()` / `hwb()` / `lab()` / `lch()` / `oklab()` / `oklch()` literals
   - CSS named colors in color-bearing properties
   - `fill=` / `stroke=` attributes that are not `currentColor` or `none`
 
-  It exits non-zero and prints `file:line`. `Design.csproj` runs it in a `BeforeBuild` target when
+  It exits non-zero and prints `file:line`. `PartoBita.DesignSystem.Blazor.csproj` runs it in a `BeforeBuild` target when
   Node is available. It is skipped with a message in NuGet-consumer contexts and runs in the Nx
   `lint` target.
 - The demo's code-sample syntax colors move to tokens (primary, tertiary, secondary, error,

@@ -1,21 +1,21 @@
 {
-  "name": "pb-design-system",
+  "name": "pb-design-system-docs",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "implicitDependencies": ["design-system-blazor"],
   "targets": {
     "build": {
       "executor": "nx:run-commands",
-      "dependsOn": ["tokens:build"],
+      "dependsOn": ["design-tokens:build"],
       "options": {
-        "command": "dotnet build Design.Demo.csproj",
-        "cwd": "apps/pb-design-system"
+        "command": "dotnet build PartoBita.DesignSystem.Docs.csproj",
+        "cwd": "apps/pb-design-system-docs"
       }
     },
     "serve": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node tools/scripts/dev-pb-design-system.mts",
+        "command": "node tools/scripts/dev-pb-design-system-docs.mts",
         "cwd": "{workspaceRoot}"
       }
     },
@@ -23,8 +23,8 @@
       "executor": "nx:run-commands",
       "dependsOn": ["design-system-blazor:pack"],
       "options": {
-        "command": "dotnet run --project Design.Demo.csproj -p:UseDesignSystemPackage=true",
-        "cwd": "apps/pb-design-system"
+        "command": "dotnet run --project PartoBita.DesignSystem.Docs.csproj -p:UseDesignSystemPackage=true",
+        "cwd": "apps/pb-design-system-docs"
       }
     },
     "verify": {

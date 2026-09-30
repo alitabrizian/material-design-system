@@ -1,4 +1,4 @@
-namespace Design.Demo.Data;
+namespace PartoBita.DesignSystem.Docs.Data;
 
 /// <summary>The sample data set Angular Material's table, sort and paginator examples use.</summary>
 public sealed record PeriodicElement(int Position, string Name, double Weight, string Symbol);

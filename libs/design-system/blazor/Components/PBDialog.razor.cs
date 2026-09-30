@@ -1,6 +1,6 @@
 using Microsoft.JSInterop;
 
-namespace Design.Components;
+namespace PartoBita.DesignSystem.Blazor.Components;
 
 /// <summary>
 /// MatDialog as a component: a native modal <c>&lt;dialog&gt;</c> (top layer, focus trapped, background

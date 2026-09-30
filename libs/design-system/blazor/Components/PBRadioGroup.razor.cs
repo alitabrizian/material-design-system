@@ -1,4 +1,4 @@
-namespace Design.Components;
+namespace PartoBita.DesignSystem.Blazor.Components;
 
 /// <summary>
 /// mat-radio-group: groups <see cref="PBRadioButton"/>s under <c>role="radiogroup"</c>. Give the

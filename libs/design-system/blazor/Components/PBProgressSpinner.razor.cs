@@ -1,4 +1,4 @@
-namespace Design.Components;
+namespace PartoBita.DesignSystem.Blazor.Components;
 
 /// <summary>
 /// mat-progress-spinner. Indeterminate by default; set <see cref="Value"/> (0-100) for determinate.

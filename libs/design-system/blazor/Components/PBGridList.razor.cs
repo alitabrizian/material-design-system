@@ -1,6 +1,6 @@
 using System.Globalization;
 
-namespace Design.Components;
+namespace PartoBita.DesignSystem.Blazor.Components;
 
 /// <summary>
 /// mat-grid-list: a two-dimensional list of <see cref="PBGridTile"/>s in <see cref="Cols"/> equal columns.

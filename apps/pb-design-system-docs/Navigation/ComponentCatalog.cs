@@ -1,4 +1,4 @@
-namespace Design.Demo.Navigation;
+namespace PartoBita.DesignSystem.Docs.Navigation;
 
 /// <summary>
 /// A catalog entry. <c>Scene</c> is the card illustration under wwwroot/assets/screenshots: Angular

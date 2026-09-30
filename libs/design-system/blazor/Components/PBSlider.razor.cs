@@ -1,6 +1,6 @@
 using System.Globalization;
 
-namespace Design.Components;
+namespace PartoBita.DesignSystem.Blazor.Components;
 
 /// <summary>
 /// mat-slider (single thumb). Attributes (<c>min</c>, <c>max</c>, <c>step</c>, <c>value</c>, <c>disabled</c>,

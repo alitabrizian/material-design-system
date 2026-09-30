@@ -1,4 +1,4 @@
-namespace Design.Components;
+namespace PartoBita.DesignSystem.Blazor.Components;
 
 /// <summary>
 /// matInput inside a mat-form-field. Attributes (<c>value</c>, <c>type</c>, <c>placeholder</c>,

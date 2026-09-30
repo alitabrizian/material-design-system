@@ -6,7 +6,7 @@
  *
  * Only these four small CSS files are needed, so the package is fetched with `npm pack` into a temp
  * folder instead of becoming a devDependency (which would pull in @angular/core, cdk, rxjs as peers).
- * After syncing, run `npx nx run tokens:build` and review the token diff before committing.
+ * After syncing, run `npx nx run design-tokens:build` and review the token diff before committing.
  */
 
 import { execFileSync } from "node:child_process";

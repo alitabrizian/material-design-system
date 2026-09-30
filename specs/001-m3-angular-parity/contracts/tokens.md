@@ -3,10 +3,10 @@
 Consumers link, in order:
 
 ```html
-<link rel="stylesheet" href="_content/Design/css/fonts.css" />   <!-- Roboto + icon fonts -->
-<link rel="stylesheet" href="_content/Design/css/tokens.css" />  <!-- all --md-sys-* -->
-<link rel="stylesheet" href="_content/Design/design-system.css" />
-<script type="module" src="_content/Design/design-system.js"></script>
+<link rel="stylesheet" href="_content/PartoBita.DesignSystem.Blazor/css/fonts.css" />   <!-- Roboto + icon fonts -->
+<link rel="stylesheet" href="_content/PartoBita.DesignSystem.Blazor/css/tokens.css" />  <!-- all --md-sys-* -->
+<link rel="stylesheet" href="_content/PartoBita.DesignSystem.Blazor/design-system.css" />
+<script type="module" src="_content/PartoBita.DesignSystem.Blazor/design-system.js"></script>
 ```
 
 `roboto.css`, `icons.css` and `material-tokens.css` remain as individual files for compatibility.

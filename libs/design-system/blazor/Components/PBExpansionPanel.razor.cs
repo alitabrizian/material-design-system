@@ -1,4 +1,4 @@
-namespace Design.Components;
+namespace PartoBita.DesignSystem.Blazor.Components;
 
 /// <summary>
 /// mat-expansion-panel. <see cref="WorkspaceComponentBase.Label"/> (or <see cref="Title"/>) is the header

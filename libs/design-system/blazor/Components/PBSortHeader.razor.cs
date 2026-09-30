@@ -1,4 +1,4 @@
-namespace Design.Components;
+namespace PartoBita.DesignSystem.Blazor.Components;
 
 public enum PBSortDirection { None, Ascending, Descending }
 

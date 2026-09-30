@@ -1,5 +1,5 @@
-using Design.Demo;
-using Design.Demo.Services;
+using PartoBita.DesignSystem.Docs;
+using PartoBita.DesignSystem.Docs.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()

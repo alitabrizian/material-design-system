@@ -1,4 +1,4 @@
-namespace Design.Components;
+namespace PartoBita.DesignSystem.Blazor.Components;
 
 /// <summary>mat-form-field appearances.</summary>
 public enum PBFormFieldAppearance { Fill, Outline }
