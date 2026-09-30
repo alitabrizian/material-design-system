@@ -1,0 +1,8 @@
+<ng-template #message>
+  <span matSnackBarLabel><ng-content /></span>
+  @if (actionLabel(); as label) {
+    <span matSnackBarActions>
+      <button matButton matSnackBarAction (click)="runAction()">{{ label }}</button>
+    </span>
+  }
+</ng-template>

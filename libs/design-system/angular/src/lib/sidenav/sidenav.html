@@ -1,0 +1,6 @@
+<mat-sidenav-container>
+  <mat-sidenav [mode]="mode() === 'over' ? 'over' : 'side'" [position]="position()" [(opened)]="opened">
+    <ng-content select="[pbSidenavPanel]" />
+  </mat-sidenav>
+  <mat-sidenav-content><ng-content /></mat-sidenav-content>
+</mat-sidenav-container>

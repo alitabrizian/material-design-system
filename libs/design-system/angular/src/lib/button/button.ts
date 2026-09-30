@@ -29,78 +29,8 @@ type ButtonKind = 'button' | 'icon' | 'fab' | 'mini-fab';
   imports: [NgTemplateOutlet, MatButton, MatIconButton, MatFabButton, MatMiniFabButton, MatIcon, MatProgressSpinner],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'pb-button' },
-  styles: ':host { display: inline-block; }',
-  template: `
-    <ng-template #label><ng-content /></ng-template>
-    <ng-template #progress>
-      <mat-progress-spinner mode="indeterminate" [diameter]="18" />
-    </ng-template>
-
-    @switch (kind()) {
-      @case ('icon') {
-        @if (href(); as url) {
-          <a matIconButton [href]="url" [disabled]="disabled()" [disabledInteractive]="disabledInteractive()"
-             [showProgress]="showProgress()" [attr.aria-label]="ariaLabel()">
-            <mat-icon>{{ icon() }}</mat-icon>
-            <ng-container progressIndicator [ngTemplateOutlet]="progress" />
-          </a>
-        } @else {
-          <button matIconButton [type]="type()" [disabled]="disabled()" [disabledInteractive]="disabledInteractive()"
-                  [showProgress]="showProgress()" [attr.aria-label]="ariaLabel()">
-            <mat-icon>{{ icon() }}</mat-icon>
-            <ng-container progressIndicator [ngTemplateOutlet]="progress" />
-          </button>
-        }
-      }
-      @case ('fab') {
-        @if (href(); as url) {
-          <a matFab [extended]="extended()" [href]="url" [disabled]="disabled()"
-             [disabledInteractive]="disabledInteractive()" [attr.aria-label]="ariaLabel()">
-            @if (icon(); as name) { <mat-icon>{{ name }}</mat-icon> }
-            @if (extended()) { <ng-container [ngTemplateOutlet]="label" /> }
-          </a>
-        } @else {
-          <button matFab [extended]="extended()" [type]="type()" [disabled]="disabled()"
-                  [disabledInteractive]="disabledInteractive()" [attr.aria-label]="ariaLabel()">
-            @if (icon(); as name) { <mat-icon>{{ name }}</mat-icon> }
-            @if (extended()) { <ng-container [ngTemplateOutlet]="label" /> }
-          </button>
-        }
-      }
-      @case ('mini-fab') {
-        @if (href(); as url) {
-          <a matMiniFab [href]="url" [disabled]="disabled()" [disabledInteractive]="disabledInteractive()"
-             [attr.aria-label]="ariaLabel()">
-            <mat-icon>{{ icon() }}</mat-icon>
-          </a>
-        } @else {
-          <button matMiniFab [type]="type()" [disabled]="disabled()" [disabledInteractive]="disabledInteractive()"
-                  [attr.aria-label]="ariaLabel()">
-            <mat-icon>{{ icon() }}</mat-icon>
-          </button>
-        }
-      }
-      @default {
-        @if (href(); as url) {
-          <a [matButton]="appearance()" [href]="url" [disabled]="disabled()"
-             [disabledInteractive]="disabledInteractive()" [showProgress]="showProgress()">
-            @if (iconStart(); as name) { <mat-icon>{{ name }}</mat-icon> }
-            <ng-container [ngTemplateOutlet]="label" />
-            @if (iconEnd(); as name) { <mat-icon iconPositionEnd>{{ name }}</mat-icon> }
-            <ng-container progressIndicator [ngTemplateOutlet]="progress" />
-          </a>
-        } @else {
-          <button [matButton]="appearance()" [type]="type()" [disabled]="disabled()"
-                  [disabledInteractive]="disabledInteractive()" [showProgress]="showProgress()">
-            @if (iconStart(); as name) { <mat-icon>{{ name }}</mat-icon> }
-            <ng-container [ngTemplateOutlet]="label" />
-            @if (iconEnd(); as name) { <mat-icon iconPositionEnd>{{ name }}</mat-icon> }
-            <ng-container progressIndicator [ngTemplateOutlet]="progress" />
-          </button>
-        }
-      }
-    }
-  `,
+  templateUrl: './button.html',
+  styleUrl: './button.css',
 })
 export class PbButton {
   readonly variant = input<PbButtonVariant>('text');
