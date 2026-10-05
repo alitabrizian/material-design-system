@@ -20,6 +20,19 @@
       "runtimeExecutable": "node",
       "runtimeArgs": ["node_modules/nx/bin/nx.js", "serve", "angular-design-system-docs"],
       "port": 4200
+    },
+    {
+      "name": "pb-chain-api",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["tools/scripts/dev-pb-chain-api.mts"],
+      "port": 44306,
+      "url": "https://localhost:44306"
+    },
+    {
+      "name": "pb-chain-web",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["tools/scripts/dev-pb-chain-web.mts"],
+      "port": 4400
     }
   ]
 }

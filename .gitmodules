@@ -10,3 +10,6 @@
 [submodule "libs/material-design-system"]
 	path = libs/material-design-system
 	url = http://86.106.142.146/ali.tabrizian/material-design-system.git
+[submodule "apps/pb.chain"]
+	path = apps/pb.chain
+	url = http://86.106.142.146/dev6.partobita/pb.chain.git
