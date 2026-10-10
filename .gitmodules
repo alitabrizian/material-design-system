@@ -13,3 +13,6 @@
 [submodule "apps/pb.chain"]
 	path = apps/pb.chain
 	url = http://86.106.142.146/dev6.partobita/pb.chain.git
+[submodule "apps/samamat"]
+	path = apps/samamat
+	url = http://86.106.142.146/samamat/samamat.git
