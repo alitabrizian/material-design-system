@@ -309,6 +309,11 @@
 }
 
 
+/* No label, no notch: the outline matches the field's box (mdc-notched-outline without a notch). */
+.pb-form-field__outline:not(:has(> legend)) {
+  inset: 0;
+}
+
 .pb-form-field__outline > legend {
   display: block;
   float: unset;

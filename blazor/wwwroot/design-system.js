@@ -474,3 +474,370 @@ document.addEventListener("keydown", (event) => {
 export function showInlineDialog(dialog) {
   if (dialog && !dialog.open) dialog.show();
 }
+
+// ---------------------------------------------------------------------------------- data grid
+// PBDataGrid: column resizing, header drag (reorder / group / ungroup), row drag and drop (within
+// and between grids of one DragDropGroup), sticky fixed-column offsets, adaptivity width reports,
+// and the browser defaults the grid's keyboard navigation must suppress. One delegated listener set
+// per grid root; nested grids (master-detail) are told apart with closest(".pb-grid").
+
+const gridStates = new WeakMap();
+let gridDrag = null;
+
+const gridOf = (el) => el?.closest?.(".pb-grid");
+const gridTable = (root) => root.querySelector(".pb-grid__scroll > .pb-grid__table");
+const measureCells = (table) => [...(table?.tHead?.rows[0]?.cells ?? [])];
+
+function syncFixedColumns(root) {
+  const table = gridTable(root);
+  const cells = measureCells(table);
+  let start = 0;
+  cells.forEach((cell, i) => {
+    if (cell.dataset.fixed === "left") {
+      table.style.setProperty(`--pbg-fl-${i}`, `${start}px`);
+      start += cell.getBoundingClientRect().width;
+    }
+  });
+  let end = 0;
+  for (let i = cells.length - 1; i >= 0; i--) {
+    if (cells[i].dataset.fixed === "right") {
+      table.style.setProperty(`--pbg-fr-${i}`, `${end}px`);
+      end += cells[i].getBoundingClientRect().width;
+    }
+  }
+}
+
+function clearDropMarks(root) {
+  root.querySelectorAll(".pb-grid__drop-before, .pb-grid__drop-after, .pb-grid__row--drop-before, .pb-grid__row--drop-after")
+    .forEach((el) => el.classList.remove("pb-grid__drop-before", "pb-grid__drop-after", "pb-grid__row--drop-before", "pb-grid__row--drop-after"));
+  root.querySelectorAll(".pb-grid__group-panel--drop").forEach((el) => el.classList.remove("pb-grid__group-panel--drop"));
+  root.classList.remove("pb-grid--drop-target");
+}
+
+function isRtl(root) {
+  return getComputedStyle(root).direction === "rtl";
+}
+
+function startColumnResize(root, state, event, handle) {
+  const table = gridTable(root);
+  const cells = measureCells(table);
+  const cols = [...table.querySelectorAll(":scope > colgroup > col")];
+  const index = cells.findIndex((c) => c.dataset.colKey === handle.dataset.colKey);
+  if (index < 0 || cols.length !== cells.length) return;
+  event.preventDefault();
+  event.stopPropagation();
+
+  const widths = cells.map((c) => c.getBoundingClientRect().width);
+  cols.forEach((col, i) => { col.style.width = `${widths[i]}px`; });
+  const mode = state.options.resizeMode;
+  let next = -1;
+  if (mode === "next") {
+    for (let i = index + 1; i < cells.length; i++) {
+      if (cells[i].dataset.colKey) { next = i; break; }
+    }
+  }
+  const tableWidth = table.getBoundingClientRect().width;
+  const originalWidth = table.style.width;
+  table.style.width = `${tableWidth}px`;
+  const min = Number(cells[index].dataset.minWidth || 40);
+  const nextMin = next >= 0 ? Number(cells[next].dataset.minWidth || 40) : 0;
+  const startX = event.clientX;
+  const direction = isRtl(root) ? -1 : 1;
+  root.classList.add("pb-grid--resizing");
+  // A draggable header would start a native drag (and cancel the pointer) on the first move.
+  const header = handle.closest("th");
+  const wasDraggable = header?.getAttribute("draggable");
+  header?.removeAttribute("draggable");
+  try { handle.setPointerCapture(event.pointerId); } catch { /* synthetic event */ }
+
+  const move = (e) => {
+    let dx = (e.clientX - startX) * direction;
+    if (next >= 0) {
+      dx = Math.min(Math.max(dx, min - widths[index]), widths[next] - nextMin);
+      cols[index].style.width = `${widths[index] + dx}px`;
+      cols[next].style.width = `${widths[next] - dx}px`;
+    } else {
+      const width = Math.max(min, widths[index] + dx);
+      cols[index].style.width = `${width}px`;
+      table.style.width = `${tableWidth + width - widths[index]}px`;
+    }
+    syncFixedColumns(root);
+  };
+  const up = () => {
+    window.removeEventListener("pointermove", move);
+    window.removeEventListener("pointerup", up);
+    window.removeEventListener("pointercancel", up);
+    root.classList.remove("pb-grid--resizing");
+    if (wasDraggable !== null && header) header.setAttribute("draggable", wasDraggable);
+    // Blazor only rewrites the style attribute when its own value changes: put back what it rendered.
+    if (next >= 0 || mode !== "container") table.style.width = originalWidth;
+    // The click that ends a drag on the header must not sort.
+    const swallow = (e) => { e.stopPropagation(); e.preventDefault(); };
+    window.addEventListener("click", swallow, { capture: true, once: true });
+    setTimeout(() => window.removeEventListener("click", swallow, { capture: true }), 0);
+    const keys = [];
+    const result = [];
+    cells.forEach((cell, i) => {
+      if (cell.dataset.colKey) {
+        keys.push(cell.dataset.colKey);
+        result.push(parseFloat(cols[i].style.width));
+      }
+    });
+    state.dotNet.invokeMethodAsync("OnColumnsResized", keys, result);
+  };
+  window.addEventListener("pointermove", move);
+  window.addEventListener("pointerup", up);
+  window.addEventListener("pointercancel", up);
+}
+
+function groupPanelIndex(panel, x, rtl) {
+  const chips = [...panel.querySelectorAll(".pb-grid__group-chip")].filter((c) => !c.classList.contains("pb-grid__group-chip--dragging"));
+  let index = 0;
+  chips.forEach((chip, i) => {
+    const r = chip.getBoundingClientRect();
+    const middle = r.left + r.width / 2;
+    if (rtl ? x < middle : x > middle) index = i + 1;
+  });
+  return index;
+}
+
+function rowDropAllowed(state) {
+  if (!gridDrag || gridDrag.kind !== "row" || !state.options.acceptsDrops) return false;
+  if (gridDrag.group !== state.options.dragGroup) return false;
+  return gridDrag.gridId === state.options.gridId ? gridDrag.allowInternal : gridDrag.allowExternal;
+}
+
+function onGridDragStart(root, state, event) {
+  if (gridOf(event.target) !== root) return;
+  // A resize drag starts on a draggable header: keep the browser from turning it into a column drag.
+  if (root.classList.contains("pb-grid--resizing") || event.target.closest?.(".pb-grid__resizer")) {
+    event.preventDefault();
+    return;
+  }
+  const handle = event.target.closest?.(".pb-grid__drag-handle");
+  if (handle) {
+    const row = handle.closest("tr[data-row]");
+    if (!row || !state.options.dragGroup) return;
+    gridDrag = {
+      kind: "row",
+      gridId: state.options.gridId,
+      group: state.options.dragGroup,
+      allowInternal: state.options.allowInternal,
+      allowExternal: state.options.allowExternal,
+    };
+    event.dataTransfer.effectAllowed = "move";
+    event.dataTransfer.setData("text/plain", "");
+    try { event.dataTransfer.setDragImage(row, 24, 24); } catch { /* not supported */ }
+    row.classList.add("pb-grid__row--dragging");
+    state.dotNet.invokeMethodAsync("OnRowDragStart", Number(row.dataset.row));
+    return;
+  }
+  const header = event.target.closest?.("th[data-col-key][draggable='true'], .pb-grid__group-chip");
+  if (header && state.options.columnDrag) {
+    gridDrag = { kind: "column", gridId: state.options.gridId, key: header.dataset.colKey, fromPanel: header.classList.contains("pb-grid__group-chip") };
+    header.classList.add(header.matches("th") ? "pb-grid__header-cell--dragging" : "pb-grid__group-chip--dragging");
+    event.dataTransfer.effectAllowed = "move";
+    event.dataTransfer.setData("text/plain", header.dataset.colKey);
+  }
+}
+
+function columnDropTarget(root, event) {
+  const panel = event.target.closest?.("[data-pb-group-panel]");
+  if (panel && gridOf(panel) === root) return { panel };
+  const th = event.target.closest?.("th[data-col-key]");
+  if (th && gridOf(th) === root) return { th };
+  const head = event.target.closest?.("thead");
+  if (head && gridOf(head) === root) return { head };
+  return null;
+}
+
+function onGridDragOver(root, state, event) {
+  if (!gridDrag || gridOf(event.target) !== root) return;
+  clearDropMarks(root);
+  if (gridDrag.kind === "column") {
+    if (gridDrag.gridId !== state.options.gridId) return;
+    const target = columnDropTarget(root, event);
+    if (!target) return;
+    if (target.panel) {
+      event.preventDefault();
+      target.panel.classList.add("pb-grid__group-panel--drop");
+    } else if ((target.th || target.head) && gridDrag.fromPanel) {
+      event.preventDefault();
+    } else if (target.th && target.th.dataset.colKey !== gridDrag.key) {
+      event.preventDefault();
+      const r = target.th.getBoundingClientRect();
+      const after = (event.clientX - r.left > r.width / 2) !== isRtl(root);
+      target.th.classList.add(after ? "pb-grid__drop-after" : "pb-grid__drop-before");
+    }
+    return;
+  }
+  if (!rowDropAllowed(state)) return;
+  event.preventDefault();
+  event.dataTransfer.dropEffect = "move";
+  const row = event.target.closest?.("tbody > tr[data-row]");
+  if (row && gridOf(row) === root) {
+    const r = row.getBoundingClientRect();
+    row.classList.add(event.clientY < r.top + r.height / 2 ? "pb-grid__row--drop-before" : "pb-grid__row--drop-after");
+  } else {
+    root.classList.add("pb-grid--drop-target");
+  }
+}
+
+function onGridDrop(root, state, event) {
+  if (!gridDrag || gridOf(event.target) !== root) return;
+  const drag = gridDrag;
+  clearDropMarks(root);
+  if (drag.kind === "column") {
+    if (drag.gridId !== state.options.gridId) return;
+    const target = columnDropTarget(root, event);
+    if (!target) return;
+    event.preventDefault();
+    if (target.panel) {
+      state.dotNet.invokeMethodAsync("OnColumnDrop", drag.key, null, "group", groupPanelIndex(target.panel, event.clientX, isRtl(root)));
+    } else if (drag.fromPanel) {
+      state.dotNet.invokeMethodAsync("OnColumnDrop", drag.key, null, "ungroup", -1);
+    } else if (target.th && target.th.dataset.colKey !== drag.key) {
+      const r = target.th.getBoundingClientRect();
+      const after = (event.clientX - r.left > r.width / 2) !== isRtl(root);
+      state.dotNet.invokeMethodAsync("OnColumnDrop", drag.key, target.th.dataset.colKey, after ? "after" : "before", -1);
+    }
+    gridDrag = null;
+    return;
+  }
+  if (!rowDropAllowed(state)) return;
+  event.preventDefault();
+  const row = event.target.closest?.("tbody > tr[data-row]");
+  if (row && gridOf(row) === root) {
+    const r = row.getBoundingClientRect();
+    state.dotNet.invokeMethodAsync("OnRowDrop", drag.gridId, Number(row.dataset.row), event.clientY < r.top + r.height / 2 ? "before" : "after");
+  } else {
+    state.dotNet.invokeMethodAsync("OnRowDrop", drag.gridId, -1, "after");
+  }
+  gridDrag = null;
+}
+
+const GRID_ROW_KEYS = ["ArrowDown", "ArrowUp", "ArrowLeft", "ArrowRight", "Home", "End", "PageDown", "PageUp", " "];
+
+export function gridInit(root, dotNet, options) {
+  if (!root || gridStates.has(root)) return;
+  const state = { dotNet, options };
+  const handlers = {
+    pointerdown: (e) => {
+      const handle = e.target.closest?.(".pb-grid__resizer");
+      if (handle && gridOf(handle) === root && state.options.resizeMode && e.button === 0) startColumnResize(root, state, e, handle);
+    },
+    dragstart: (e) => onGridDragStart(root, state, e),
+    dragover: (e) => onGridDragOver(root, state, e),
+    dragleave: (e) => { if (!root.contains(e.relatedTarget)) clearDropMarks(root); },
+    drop: (e) => onGridDrop(root, state, e),
+    dragend: () => {
+      gridDrag = null;
+      document.querySelectorAll(".pb-grid__row--dragging, .pb-grid__header-cell--dragging, .pb-grid__group-chip--dragging")
+        .forEach((el) => el.classList.remove("pb-grid__row--dragging", "pb-grid__header-cell--dragging", "pb-grid__group-chip--dragging"));
+      clearDropMarks(root);
+    },
+    keydown: (e) => {
+      if (gridOf(e.target) !== root) return;
+      if (e.target.matches?.("tr[data-row], .pb-grid__new-item-row") && GRID_ROW_KEYS.includes(e.key)) e.preventDefault();
+      if (e.target.matches?.("th[tabindex]") && (e.key === " " || e.key === "Enter")) e.preventDefault();
+    },
+  };
+  for (const [name, handler] of Object.entries(handlers)) root.addEventListener(name, handler);
+  let lastWidth = 0;
+  state.observer = new ResizeObserver(() => {
+    syncFixedColumns(root);
+    const width = root.clientWidth;
+    if (state.options.adaptivity && Math.abs(width - lastWidth) >= 1) {
+      lastWidth = width;
+      state.dotNet.invokeMethodAsync("OnGridResized", width);
+    }
+  });
+  state.observer.observe(root);
+  state.handlers = handlers;
+  gridStates.set(root, state);
+  syncFixedColumns(root);
+}
+
+export function gridSync(root, options) {
+  const state = gridStates.get(root);
+  if (!state) return;
+  const adaptivityChanged = options.adaptivity && !state.options.adaptivity;
+  state.options = options;
+  syncFixedColumns(root);
+  if (adaptivityChanged) state.dotNet.invokeMethodAsync("OnGridResized", root.clientWidth);
+}
+
+export function gridDispose(root) {
+  const state = gridStates.get(root);
+  if (!state) return;
+  for (const [name, handler] of Object.entries(state.handlers)) root.removeEventListener(name, handler);
+  state.observer.disconnect();
+  gridStates.delete(root);
+}
+
+/** Natural content width of every leaf column (auto fit). */
+export function gridMeasureContent(root) {
+  const table = gridTable(root);
+  if (!table) return {};
+  const cols = [...table.querySelectorAll(":scope > colgroup > col")];
+  const saved = cols.map((c) => c.style.width);
+  const savedWidth = table.style.width;
+  cols.forEach((c) => { if (c.dataset.colKey) c.style.width = ""; });
+  root.classList.add("pb-grid--measuring");
+  table.style.width = "max-content";
+  const result = {};
+  measureCells(table).forEach((cell) => {
+    if (cell.dataset.colKey) result[cell.dataset.colKey] = Math.max(Number(cell.dataset.minWidth || 40), cell.getBoundingClientRect().width + 1);
+  });
+  root.classList.remove("pb-grid--measuring");
+  table.style.width = savedWidth;
+  cols.forEach((c, i) => { c.style.width = saved[i]; });
+  return result;
+}
+
+/** Shows `panel` (a popover) at a pointer position, like a context menu; closes on outside press or scroll. */
+export function positionAtPoint(panel, x, y, options = {}) {
+  if (!panel) return;
+  unposition(panel);
+  if (panel.hasAttribute("popover") && !panel.matches(":popover-open")) {
+    try { panel.showPopover(); } catch { /* not connected */ }
+  }
+  const p = overlaySize(panel);
+  const vp = viewport();
+  const margin = 8;
+  const rtl = getComputedStyle(panel).direction === "rtl";
+  let left = rtl ? x - p.width : x;
+  left = Math.min(Math.max(margin, left), vp.width - p.width - margin);
+  let top = y;
+  const above = top + p.height > vp.height - margin;
+  if (above) top = Math.max(margin, y - p.height);
+  panel.style.left = `${Math.round(left)}px`;
+  panel.style.top = `${Math.round(top)}px`;
+  panel.style.transformOrigin = `${rtl ? "right" : "left"} ${above ? "bottom" : "top"}`;
+  panel.classList.remove("pb-overlay--pending");
+  const close = () => options.dotNet?.invokeMethodAsync(options.closeMethod ?? "ClosePopup");
+  const listener = (event) => {
+    if (event?.type === "scroll" && panel.contains(event.target)) return;
+    close();
+  };
+  const outside = (event) => {
+    if (!event.composedPath().includes(panel)) close();
+  };
+  window.addEventListener("resize", listener);
+  window.addEventListener("scroll", listener, true);
+  document.addEventListener("pointerdown", outside, true);
+  positioned.set(panel, { listener, outside });
+}
+
+/** Saves a file the server streamed (DotNetStreamReference) with the browser's download. */
+export async function downloadFile(fileName, contentType, streamRef) {
+  const buffer = await streamRef.arrayBuffer();
+  const url = URL.createObjectURL(new Blob([buffer], { type: contentType }));
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = fileName;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
