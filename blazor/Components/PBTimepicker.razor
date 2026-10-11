@@ -1,28 +1,26 @@
 @inherits WorkspaceFieldComponentBase
 @inject Microsoft.JSInterop.IJSRuntime JS
+@* mat-timepicker's field: an M3 form field with a native <input type="time"> and a trailing clock
+   toggle that opens the browser's time picker. Attributes (value, min, max, step, disabled, @onchange…)
+   go to the input. *@
 <FormFieldFrame Appearance="Appearance" Label="@Label" LabelFor="@ControlId" HasError="HasError" HintText="@FieldHintText"
                 Disabled="IsDisabledAttribute" Required="IsRequiredAttribute" Floating="true" Block="Block" Prefix="Prefix"
                 ExtraClass="@("pb-datepicker " + UserClass)">
     <Control>
-        <input @ref="input" class="pb-form-field__control" id="@ControlId" type="@InputType"
+        <input @ref="input" class="pb-form-field__control" id="@ControlId" type="time"
                aria-invalid="@(HasError ? "true" : null)"
                aria-describedby="@(FieldHintText is null ? null : ControlId + "-hint")"
                @attributes="Attrs" />
     </Control>
     <Suffix>
-        <PBButton Variant="PBButtonVariant.Icon" Disabled="IsDisabledAttribute" aria-label="@ToggleLabel" @onclick="OpenPickerAsync">
-            <span class="material-icons" aria-hidden="true">@ToggleIcon</span>
+        <PBButton Variant="PBButtonVariant.Icon" Disabled="IsDisabledAttribute" aria-label="Open time picker" @onclick="OpenPickerAsync">
+            <span class="material-icons" aria-hidden="true">schedule</span>
         </PBButton>
     </Suffix>
 </FormFieldFrame>
 
 @code {
     private ElementReference input;
-
-    /// <summary>The native input type; PBTimepicker overrides it with <c>time</c>.</summary>
-    protected virtual string InputType => "date";
-    protected virtual string ToggleIcon => "calendar_today";
-    protected virtual string ToggleLabel => "Open calendar";
 
     private async Task OpenPickerAsync() => await DesignSystemJs.InvokeVoidAsync(JS, "showPicker", input);
 }

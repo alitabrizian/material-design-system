@@ -1,0 +1,582 @@
+/*
+ * PBDatepicker / PBDateRangePicker / PBCalendar: mat-datepicker, mat-date-range-picker and mat-calendar.
+ * Reference: datepicker/_m3-datepicker.scss + calendar structural styles, measured against Angular
+ * Material 22 in the Angular docs.
+ *
+ *   panel 296px, surface-container-high, corner-large, no elevation
+ *   header: padding 8px 8px 0, controls 40px (margin 14px 0); period button 40px pill, label-large
+ *     on-surface-variant with a 10x5 caret; previous/next 40px icon buttons
+ *   content padding 0 8px 8px; weekday header title-small on-surface-variant (25px + 8px divider)
+ *   cells 40x40 with a 36px circle (63x36 pill in the year and multi-year views), body-medium;
+ *     today: 1px primary ring; selected: primary / on-primary; hover on-surface 8%, focus 12%;
+ *     disabled on-surface 38%; range band primary-container (preview: dashed outline)
+ */
+
+.pb-date-edit {
+  display: contents;
+}
+
+/* InputDisabled: the field looks disabled, but its enabled calendar button stays usable (like mat-datepicker-toggle). */
+.pb-date-edit .pb-form-field .pb-form-field__suffix:has(> .pb-button:not(:disabled)) {
+  pointer-events: auto;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.pb-date-edit__panel {
+  width: 296px;
+  max-width: calc(100vw - 16px);
+  overflow: hidden;
+  border-radius: var(--md-sys-shape-corner-large);
+  background-color: var(--md-sys-color-surface-container-high);
+  color: var(--md-sys-color-on-surface);
+  font-family: var(--md-sys-typescale-body-large-font);
+  animation: pb-overlay-enter 120ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.pb-date-edit__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 0 8px 8px;
+}
+
+.pb-date-edit__spacer {
+  flex: 1 1 auto;
+}
+
+.pb-date-edit__clear .material-icons {
+  font-size: 20px;
+}
+
+/* ------------------------------------------------------------------ time section */
+
+.pb-date-edit__time {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 16px 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.pb-date-edit__time-label {
+  flex: 1 1 auto;
+  color: var(--md-sys-color-on-surface-variant);
+  font-family: var(--md-sys-typescale-title-small-font);
+  font-size: var(--md-sys-typescale-title-small-size);
+  font-weight: var(--md-sys-typescale-title-small-weight);
+}
+
+.pb-date-edit__time-field {
+  width: 48px;
+  height: 40px;
+  box-sizing: border-box;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--md-sys-shape-corner-small);
+  outline: none;
+  background-color: var(--md-sys-color-surface-container-highest);
+  color: var(--md-sys-color-on-surface);
+  font-family: var(--md-sys-typescale-title-medium-font);
+  font-size: var(--md-sys-typescale-title-medium-size);
+  font-weight: var(--md-sys-typescale-title-medium-weight);
+  text-align: center;
+  -moz-appearance: textfield;
+}
+
+.pb-date-edit__time-field::-webkit-inner-spin-button,
+.pb-date-edit__time-field::-webkit-outer-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+}
+
+.pb-date-edit__time-field:focus {
+  border-color: var(--md-sys-color-primary);
+  box-shadow: inset 0 0 0 1px var(--md-sys-color-primary);
+  background-color: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+}
+
+.pb-date-edit__time-separator {
+  color: var(--md-sys-color-on-surface);
+  font-size: var(--md-sys-typescale-title-medium-size);
+}
+
+.pb-date-edit__period {
+  display: inline-flex;
+  flex-direction: column;
+  margin-inline-start: 8px;
+  overflow: hidden;
+  border: 1px solid var(--md-sys-color-outline);
+  border-radius: var(--md-sys-shape-corner-small);
+}
+
+.pb-date-edit__period-button {
+  height: 20px;
+  padding: 0 8px;
+  border: 0;
+  background: none;
+  color: var(--md-sys-color-on-surface-variant);
+  font-family: var(--md-sys-typescale-label-medium-font);
+  font-size: var(--md-sys-typescale-label-medium-size);
+  font-weight: var(--md-sys-typescale-label-medium-weight);
+  cursor: pointer;
+}
+
+.pb-date-edit__period-button + .pb-date-edit__period-button {
+  border-top: 1px solid var(--md-sys-color-outline);
+}
+
+.pb-date-edit__period-button[aria-checked="true"] {
+  background-color: var(--md-sys-color-tertiary-container);
+  color: var(--md-sys-color-on-tertiary-container);
+}
+
+/* ------------------------------------------------------------------ calendar */
+
+.pb-calendar {
+  display: block;
+  font-family: var(--md-sys-typescale-body-medium-font);
+  font-size: var(--md-sys-typescale-body-medium-size);
+  letter-spacing: var(--md-sys-typescale-body-medium-tracking);
+}
+
+.pb-calendar__header {
+  padding: 8px 8px 0;
+}
+
+.pb-calendar__controls {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  margin: 14px 0;
+}
+
+.pb-calendar__spacer {
+  flex: 1 1 auto;
+}
+
+.pb-calendar__period-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: 40px;
+  margin: 0 8px;
+  padding: 0 12px;
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--md-sys-shape-corner-full);
+  outline: none;
+  background: none;
+  color: var(--md-sys-color-on-surface-variant);
+  font-family: var(--md-sys-typescale-title-small-font);
+  font-size: var(--md-sys-typescale-title-small-size);
+  font-weight: var(--md-sys-typescale-title-small-weight);
+  letter-spacing: var(--md-sys-typescale-title-small-tracking);
+  cursor: pointer;
+}
+
+.pb-calendar__period-button:disabled {
+  cursor: default;
+}
+
+.pb-calendar__period-button > .pb-state-layer {
+  position: absolute;
+  inset: 0;
+  background-color: var(--md-sys-color-on-surface-variant);
+  opacity: 0;
+}
+
+.pb-calendar__period-button:not(:disabled):hover > .pb-state-layer {
+  opacity: var(--md-sys-state-hover-state-layer-opacity);
+}
+
+.pb-calendar__period-button:focus-visible > .pb-state-layer {
+  opacity: var(--md-sys-state-focus-state-layer-opacity);
+}
+
+.pb-calendar__arrow {
+  width: 10px;
+  height: 5px;
+  margin-inline-start: 5px;
+  fill: currentColor;
+  transition: transform 150ms;
+}
+
+.pb-calendar__arrow--up {
+  transform: rotate(180deg);
+}
+
+.pb-calendar__period-button:disabled .pb-calendar__arrow {
+  display: none;
+}
+
+.pb-calendar__nav svg {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+}
+
+[dir="rtl"] .pb-calendar__nav svg {
+  transform: scaleX(-1);
+}
+
+.pb-calendar__content {
+  padding: 0 8px 8px;
+  outline: none;
+}
+
+.pb-calendar__table {
+  width: 100%;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+.pb-calendar__table-header th {
+  height: 25px;
+  padding: 0 0 8px;
+  color: var(--md-sys-color-on-surface-variant);
+  font-family: var(--md-sys-typescale-title-small-font);
+  font-size: var(--md-sys-typescale-title-small-size);
+  font-weight: var(--md-sys-typescale-title-small-weight);
+  text-align: center;
+}
+
+.pb-calendar__table-header .pb-calendar__table-header-divider {
+  position: relative;
+  height: 1px;
+  padding: 0 0 8px;
+}
+
+.pb-calendar__visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.pb-calendar__body-label {
+  height: 40px;
+  padding: 0 0 0 13px;
+  color: var(--md-sys-color-on-surface);
+  font-family: var(--md-sys-typescale-title-small-font);
+  font-size: var(--md-sys-typescale-title-small-size);
+  font-weight: var(--md-sys-typescale-title-small-weight);
+  text-align: start;
+}
+
+.pb-calendar__cell {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  text-align: center;
+}
+
+.pb-calendar__cell--wide {
+  width: auto;
+  height: 40px;
+}
+
+.pb-calendar__table--wide .pb-calendar__cell {
+  width: 25%;
+}
+
+.pb-calendar__cell-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.pb-calendar__cell-button:disabled {
+  cursor: default;
+}
+
+.pb-calendar__cell-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 36px;
+  height: 36px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  color: var(--md-sys-color-on-surface);
+  font-size: var(--md-sys-typescale-body-medium-size);
+  line-height: 1;
+}
+
+.pb-calendar__cell--wide .pb-calendar__cell-content {
+  width: 63px;
+}
+
+.pb-calendar__cell-button:disabled .pb-calendar__cell-content {
+  color: color-mix(in srgb, var(--md-sys-color-on-surface) 38%, transparent);
+}
+
+.pb-calendar__cell-content--today {
+  border-color: var(--md-sys-color-primary);
+}
+
+.pb-calendar__cell-button:disabled .pb-calendar__cell-content--today {
+  border-color: color-mix(in srgb, var(--md-sys-color-on-surface) 38%, transparent);
+}
+
+.pb-calendar__cell-content--selected,
+.pb-calendar__cell--range-start .pb-calendar__cell-content,
+.pb-calendar__cell--range-end .pb-calendar__cell-content {
+  border-color: transparent;
+  background-color: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+}
+
+.pb-calendar__focus-indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  transform: translate(-50%, -50%);
+}
+
+.pb-calendar__cell--wide .pb-calendar__focus-indicator {
+  width: 63px;
+}
+
+.pb-calendar__cell-button:not(:disabled):hover .pb-calendar__focus-indicator {
+  background-color: color-mix(in srgb, var(--md-sys-color-on-surface) calc(var(--md-sys-state-hover-state-layer-opacity) * 100%), transparent);
+}
+
+.pb-calendar__cell-button:focus-visible .pb-calendar__focus-indicator {
+  background-color: color-mix(in srgb, var(--md-sys-color-on-surface) calc(var(--md-sys-state-focus-state-layer-opacity) * 100%), transparent);
+}
+
+.pb-calendar__cell-button:not(:disabled):hover .pb-calendar__cell-content--selected,
+.pb-calendar__cell-button:focus-visible .pb-calendar__cell-content--selected {
+  background-color: color-mix(in srgb, var(--md-sys-color-on-primary) calc(var(--md-sys-state-hover-state-layer-opacity) * 100%), var(--md-sys-color-primary));
+}
+
+/* Range: a primary-container band behind the cells, rounded at the ends; a dashed band while previewing. */
+.pb-calendar__cell--in-range::before,
+.pb-calendar__cell--in-preview::before {
+  content: "";
+  position: absolute;
+  inset: 2px 0;
+  z-index: 0;
+}
+
+.pb-calendar__cell--in-range::before {
+  background-color: var(--md-sys-color-primary-container);
+}
+
+.pb-calendar__cell--in-preview::before {
+  border-top: 1px dashed var(--md-sys-color-on-surface-variant);
+  border-bottom: 1px dashed var(--md-sys-color-on-surface-variant);
+}
+
+.pb-calendar__cell--range-start::before {
+  inset-inline-start: 50%;
+}
+
+.pb-calendar__cell--range-end::before {
+  inset-inline-end: 50%;
+}
+
+.pb-calendar__cell--range-start.pb-calendar__cell--range-end::before {
+  display: none;
+}
+
+.pb-calendar__cell--in-range .pb-calendar__cell-content:not(.pb-calendar__cell-content--selected) {
+  color: var(--md-sys-color-on-primary-container);
+}
+
+/* ------------------------------------------------------------------ range input */
+
+.pb-date-range__inputs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+}
+
+.pb-date-range__input {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.pb-date-range__separator {
+  color: var(--md-sys-color-on-surface-variant);
+  transition: opacity 150ms;
+}
+
+.pb-form-field:not(.pb-form-field--floating) .pb-date-range__separator {
+  opacity: 0;
+}
+
+/* ------------------------------------------------------------------ scroll picker */
+
+.pb-scroll-picker {
+  --pb-scroll-item-height: 40px;
+  position: relative;
+  display: flex;
+  gap: 4px;
+  height: calc(var(--pb-scroll-item-height) * 5);
+  margin: 8px;
+  overflow: hidden;
+  font-family: var(--md-sys-typescale-body-large-font);
+  font-size: var(--md-sys-typescale-body-large-size);
+}
+
+.pb-scroll-picker__column {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 0;
+  min-width: 56px;
+  overflow-y: auto;
+  outline: none;
+  scroll-snap-type: y mandatory;
+  scrollbar-width: none;
+  mask-image: linear-gradient(transparent, black 30%, black 70%, transparent);
+}
+
+.pb-scroll-picker__column::-webkit-scrollbar {
+  display: none;
+}
+
+.pb-scroll-picker__column:focus-visible {
+  border-radius: var(--md-sys-shape-corner-small);
+  box-shadow: inset 0 0 0 2px var(--md-sys-color-primary);
+}
+
+.pb-scroll-picker__spacer {
+  height: calc(var(--pb-scroll-item-height) * 2);
+}
+
+.pb-scroll-picker__item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--pb-scroll-item-height);
+  padding: 0 8px;
+  color: var(--md-sys-color-on-surface-variant);
+  white-space: nowrap;
+  cursor: pointer;
+  scroll-snap-align: center;
+  user-select: none;
+}
+
+.pb-scroll-picker__item--selected {
+  color: var(--md-sys-color-on-surface);
+  font-weight: 500;
+}
+
+.pb-scroll-picker__item--disabled {
+  color: color-mix(in srgb, var(--md-sys-color-on-surface) 38%, transparent);
+  cursor: default;
+}
+
+.pb-scroll-picker__band {
+  position: absolute;
+  top: calc(var(--pb-scroll-item-height) * 2);
+  right: 0;
+  left: 0;
+  height: var(--pb-scroll-item-height);
+  border-radius: var(--md-sys-shape-corner-medium);
+  background-color: var(--md-sys-color-secondary-container);
+  pointer-events: none;
+}
+
+.pb-date-edit__dialog .pb-dialog__content {
+  min-width: min(320px, 86vw);
+  padding: 0;
+}
+
+/* mat-datepicker-content gives the calendar a fixed 354px height (header + six rows), so views don't jump. */
+.pb-date-edit__panel > .pb-calendar {
+  box-sizing: border-box;
+  height: 354px;
+}
+
+/* Comparison range (mat-date-range-input comparisonStart/End): tertiary-container band; where it
+   overlaps the selected range: secondary-container. */
+.pb-calendar__cell--in-comparison::after {
+  content: "";
+  position: absolute;
+  inset: 2px 0;
+  z-index: 0;
+  background-color: var(--md-sys-color-tertiary-container);
+}
+
+.pb-calendar__cell--comparison-start::after {
+  inset-inline-start: 50%;
+}
+
+.pb-calendar__cell--comparison-end::after {
+  inset-inline-end: 50%;
+}
+
+.pb-calendar__cell--in-comparison.pb-calendar__cell--in-range::after {
+  background-color: var(--md-sys-color-secondary-container);
+}
+
+.pb-calendar__cell--in-comparison .pb-calendar__cell-content:not(.pb-calendar__cell-content--selected) {
+  color: var(--md-sys-color-on-tertiary-container);
+}
+
+/* Custom header (HeaderTemplate): a row like mat-calendar's, laid out by the template. */
+.pb-calendar__header--custom {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 40px;
+  padding: 8px 8px 8px;
+}
+
+/* Touch UI (mat-datepicker touchUi): the calendar in a modal dialog, sized to the viewport, with larger cells. */
+.pb-dialog.pb-date-edit__dialog--touch {
+  width: min(80vw, 64vh, 750px);
+  min-width: 250px;
+  max-width: 750px;
+  max-height: 80vh;
+  padding: 0;
+  overflow: auto;
+  border-radius: var(--md-sys-shape-corner-extra-large);
+  background-color: var(--md-sys-color-surface-container-high);
+}
+
+.pb-date-edit__dialog--touch .pb-calendar__cell {
+  width: auto;
+  height: clamp(40px, 8vh, 72px);
+}
+
+.pb-date-edit__dialog--touch .pb-calendar__cell-content,
+.pb-date-edit__dialog--touch .pb-calendar__focus-indicator {
+  width: min(90%, 64px);
+  height: auto;
+  aspect-ratio: 1;
+}
+
+.pb-date-edit__dialog--touch .pb-calendar__cell--wide .pb-calendar__cell-content,
+.pb-date-edit__dialog--touch .pb-calendar__cell--wide .pb-calendar__focus-indicator {
+  width: 90%;
+  aspect-ratio: auto;
+  height: 36px;
+}

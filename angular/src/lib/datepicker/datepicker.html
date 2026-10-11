@@ -1,24 +1,134 @@
-<mat-form-field [appearance]="appearance()">
+<mat-form-field [appearance]="appearance()" cdkOverlayOrigin #origin="cdkOverlayOrigin">
   @if (label(); as text) {
     <mat-label>{{ text }}</mat-label>
   }
   <input
+    #input
     matInput
+    autocomplete="off"
     [matDatepicker]="picker"
     [min]="min()"
     [max]="max()"
+    [matDatepickerFilter]="filter()"
     [required]="required()"
-    [disabled]="isDisabled()"
+    [disabled]="isDisabled() || inputDisabled()"
+    [readonly]="readOnly()"
+    [placeholder]="nullText() ?? ''"
     [errorStateMatcher]="errorStateMatcher"
     [value]="value()"
-    (dateChange)="update($event.value)"
-    (blur)="markTouched()"
+    (dateChange)="onDateChange($event.value)"
+    (dateInput)="onDateInput($event.value)"
+    (focus)="onFocus()"
+    (blur)="onBlur()"
+    (keydown)="onKeyDown($event)"
   />
-  <mat-datepicker-toggle matSuffix [for]="picker" />
-  <mat-datepicker #picker />
+  @if (showClear() && !inputDisabled()) {
+    <button matIconButton matSuffix type="button" class="pb-date-edit__clear" aria-label="Clear" (click)="clear()">
+      <span class="material-icons" aria-hidden="true">close</span>
+    </button>
+  }
+  <!-- One root element per block: matSuffix is only projected from a control-flow block with a single root. -->
+  @if (showDropDownButton() && usesScrollPicker()) {
+    <button matIconButton matSuffix type="button" aria-label="Open calendar" aria-haspopup="dialog" [disabled]="isDisabled() || readOnly() || pickerDisabled()" (click)="toggleFromButton()">
+      <span class="material-icons" aria-hidden="true">{{ toggleIcon() ?? 'calendar_today' }}</span>
+    </button>
+  }
+  @if (showDropDownButton() && !usesScrollPicker()) {
+    <mat-datepicker-toggle matSuffix [for]="picker" [disabled]="isDisabled() || readOnly() || pickerDisabled()">
+      @if (toggleIcon(); as icon) {
+        <span class="material-icons" matDatepickerToggleIcon>{{ icon }}</span>
+      }
+    </mat-datepicker-toggle>
+  }
+  <mat-datepicker
+    #picker
+    panelClass="pb-datepicker-panel"
+    [startView]="openView()"
+    [startAt]="startAt()"
+    [touchUi]="touchUi()"
+    [disabled]="isDisabled() || pickerDisabled()"
+    [calendarHeaderComponent]="$any(calendarHeader())"
+    [dateClass]="cellClass()"
+    (monthSelected)="onMonthSelected($event)"
+    (yearSelected)="onYearSelected($event)"
+    (opened)="onOpened()"
+    (closed)="onClosed()"
+  >
+    @if (timeSectionVisible()) {
+      <mat-datepicker-actions>
+        <div class="pb-date-edit__time-section">
+          <div class="pb-date-edit__time" role="group" aria-label="Time">
+            <span class="pb-date-edit__time-label">Time</span>
+            <input
+              class="pb-date-edit__time-field"
+              type="number"
+              inputmode="numeric"
+              aria-label="Hour"
+              [min]="twelveHour() ? 1 : 0"
+              [max]="twelveHour() ? 12 : 23"
+              [value]="pad(displayHour())"
+              (change)="setTime('hour', $any($event.target).value)"
+            />
+            <span class="pb-date-edit__time-separator" aria-hidden="true">:</span>
+            <input class="pb-date-edit__time-field" type="number" inputmode="numeric" aria-label="Minute" min="0" max="59" [value]="pad(minute())" (change)="setTime('minute', $any($event.target).value)" />
+            @if (showSeconds()) {
+              <span class="pb-date-edit__time-separator" aria-hidden="true">:</span>
+              <input class="pb-date-edit__time-field" type="number" inputmode="numeric" aria-label="Second" min="0" max="59" [value]="pad(second())" (change)="setTime('second', $any($event.target).value)" />
+            }
+            @if (twelveHour()) {
+              <span class="pb-date-edit__period" role="radiogroup" aria-label="AM or PM">
+                <button type="button" role="radio" class="pb-date-edit__period-button" [attr.aria-checked]="hour() < 12" (click)="setPm(false)">{{ names().am }}</button>
+                <button type="button" role="radio" class="pb-date-edit__period-button" [attr.aria-checked]="hour() >= 12" (click)="setPm(true)">{{ names().pm }}</button>
+              </span>
+            }
+          </div>
+          <div class="pb-date-edit__actions">
+            <button matButton type="button" (click)="now()">Now</button>
+            <span class="pb-date-edit__spacer"></span>
+            <button matButton type="button" matDatepickerCancel>Cancel</button>
+            <button matButton type="button" matDatepickerApply (click)="applyTime()">OK</button>
+          </div>
+        </div>
+      </mat-datepicker-actions>
+    } @else if (showActionButtons()) {
+      <mat-datepicker-actions>
+        <button matButton type="button" matDatepickerCancel>Cancel</button>
+        <button matButton type="button" matDatepickerApply>Apply</button>
+      </mat-datepicker-actions>
+    }
+  </mat-datepicker>
   @if (errorText(); as text) {
     <mat-error>{{ text }}</mat-error>
   } @else if (supportingText(); as text) {
     <mat-hint>{{ text }}</mat-hint>
   }
 </mat-form-field>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="origin"
+  [cdkConnectedOverlayOpen]="scrollOpen()"
+  [cdkConnectedOverlayPositions]="positions"
+  (overlayOutsideClick)="close()"
+  (detach)="close()"
+>
+  <div class="pb-date-edit__panel" role="dialog" [attr.aria-label]="label() ?? 'Choose date'" (keydown.escape)="cancelScroll()">
+    <ng-container [ngTemplateOutlet]="scrollTemplate" />
+  </div>
+</ng-template>
+
+<ng-template #scrollTemplate>
+  <pb-scroll-picker
+    [(value)]="pending"
+    [format]="scrollFormat()"
+    [min]="min()"
+    [max]="max()"
+    [isAllowed]="allowedFn"
+    [locale]="localeId()"
+    [label]="label() ?? 'Date'"
+  />
+  <div class="pb-date-edit__actions">
+    <button matButton type="button" (click)="cancelScroll()">Cancel</button>
+    <button matButton type="button" (click)="applyScroll()">OK</button>
+  </div>
+</ng-template>

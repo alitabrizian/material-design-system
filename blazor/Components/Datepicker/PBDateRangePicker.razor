@@ -1,0 +1,200 @@
+@namespace PartoBita.DesignSystem.Blazor.Components
+@typeparam TValue
+@inherits DateEditorBase<TValue>
+@using System.Linq.Expressions
+@* mat-date-range-input + mat-date-range-picker: start and end inputs in one M3 field, and a calendar
+   that picks the start, previews the range under the pointer, and closes when the end is picked. *@
+<div class="pb-date-edit @(Block ? "pb-date-edit--block" : null)">
+    <FormFieldFrame Appearance="Appearance" Label="@Label" LabelFor="@ControlId" HasError="@(ErrorMessage is not null)" HintText="@Hint"
+                    Disabled="@(IsDisabled || InputDisabled)" Required="IsRequired" Floating="Floating" Block="Block" Prefix="Prefix"
+                    ExtraClass="@("pb-datepicker pb-date-range " + UserClass)">
+        <Control>
+            <div class="pb-date-range__inputs" role="group" aria-labelledby="@(Label is null ? null : ControlId + "-label")">
+                <input @ref="startInput" class="pb-form-field__control pb-date-range__input" id="@ControlId" type="text" autocomplete="off"
+                       value="@Text(Start)" placeholder="@(StartNullText ?? NullText ?? " ")" aria-label="Start date"
+                       readonly="@ReadOnly" disabled="@(IsDisabled || InputDisabled)" required="@IsRequired" aria-haspopup="dialog" aria-expanded="@(IsOpen ? "true" : "false")"
+                       aria-invalid="@(ErrorMessage is not null ? "true" : null)" aria-describedby="@(Hint is null ? null : ControlId + "-hint")"
+                       @onfocus="() => Focused = true" @onblur="OnBlurAsync" @onchange="e => OnTextChangedAsync(true, e)" @onkeydown="OnInputKeyDownAsync" />
+                <span class="pb-date-range__separator" aria-hidden="true">–</span>
+                <input @ref="endInput" class="pb-form-field__control pb-date-range__input" type="text" autocomplete="off"
+                       value="@Text(End)" placeholder="@(EndNullText ?? (NullText is null ? " " : ""))" aria-label="End date"
+                       readonly="@ReadOnly" disabled="@(IsDisabled || InputDisabled)" required="@IsRequired"
+                       aria-invalid="@(ErrorMessage is not null ? "true" : null)"
+                       @onfocus="() => Focused = true" @onblur="OnBlurAsync" @onchange="e => OnTextChangedAsync(false, e)" @onkeydown="OnInputKeyDownAsync" />
+            </div>
+        </Control>
+        <Suffix>
+            @if (ClearButtonDisplayMode == PBClearButtonDisplayMode.Auto && (Start is not null || End is not null) && !ReadOnly && !IsDisabled)
+            {
+                <PBButton Variant="PBButtonVariant.Icon" class="pb-date-edit__clear" aria-label="Clear" @onclick="ClearAsync">
+                    <span class="material-icons" aria-hidden="true">close</span>
+                </PBButton>
+            }
+            @if (ShowDropDownButton)
+            {
+                <PBButton Variant="PBButtonVariant.Icon" Disabled="@(IsDisabled || ReadOnly || DropDownDisabled)" aria-label="Open calendar"
+                          aria-haspopup="dialog" aria-expanded="@(IsOpen ? "true" : "false")" @onclick="ToggleAsync">
+                    @if (ToggleIconTemplate is not null)
+                    {
+                        @ToggleIconTemplate
+                    }
+                    else
+                    {
+                        <span class="material-icons" aria-hidden="true">@DropDownIcon("date_range")</span>
+                    }
+                </PBButton>
+            }
+        </Suffix>
+    </FormFieldFrame>
+
+    @if (IsOpen)
+    {
+        @if (DialogMode)
+        {
+            <dialog @ref="Panel" id="@PanelId" class="pb-dialog pb-date-edit__dialog pb-date-edit__dialog--touch" aria-label="@(Label ?? "Choose a date range")"
+                    @onkeydown="OnPanelKeyDownAsync">@CalendarContent</dialog>
+        }
+        else
+        {
+            <div @ref="Panel" id="@PanelId" class="pb-date-edit__panel pb-overlay pb-overlay--pending" popover="manual" role="dialog"
+                 aria-label="@(Label ?? "Choose a date range")" @onkeydown="OnPanelKeyDownAsync">@CalendarContent</div>
+        }
+    }
+</div>
+
+@code {
+    [Parameter] public TValue? StartDate { get; set; }
+    [Parameter] public EventCallback<TValue?> StartDateChanged { get; set; }
+    [Parameter] public Expression<Func<TValue>>? StartDateExpression { get; set; }
+    [Parameter] public TValue? EndDate { get; set; }
+    [Parameter] public EventCallback<TValue?> EndDateChanged { get; set; }
+    [Parameter] public Expression<Func<TValue>>? EndDateExpression { get; set; }
+
+    /// <summary>A second range drawn for comparison (e.g. last year's period).</summary>
+    [Parameter] public DateTime? ComparisonStart { get; set; }
+    [Parameter] public DateTime? ComparisonEnd { get; set; }
+
+    /// <summary>Maps a clicked or hovered date to the whole range (e.g. the 5-day week around it).</summary>
+    [Parameter] public Func<DateTime, (DateTime Start, DateTime End)>? RangeSelectionStrategy { get; set; }
+
+    /// <summary>Placeholders of the two inputs (<c>NullText</c> goes to the start input when these are unset).</summary>
+    [Parameter] public string? StartNullText { get; set; }
+    [Parameter] public string? EndNullText { get; set; }
+
+    private ElementReference startInput;
+    private ElementReference endInput;
+    private DateTime? pendingStart;
+    private DateTime? pendingEnd;
+
+    private (DateTime Value, TimeSpan Offset)? StoredStart => DateValue<TValue>.Read(StartDate) is { } v ? ToClient(v.Value, v.Offset) : null;
+    private (DateTime Value, TimeSpan Offset)? StoredEnd => DateValue<TValue>.Read(EndDate) is { } v ? ToClient(v.Value, v.Offset) : null;
+    private DateTime? Start => StoredStart?.Value;
+    private DateTime? End => StoredEnd?.Value;
+
+    private string EditFormat => Format ?? "d";
+    private string? ErrorMessage => ErrorText ?? ValidationMessage(StartDateExpression) ?? ValidationMessage(EndDateExpression);
+    private string? Hint => ErrorMessage ?? SupportingText;
+    private bool Floating => Start is not null || End is not null || Focused || IsOpen || NullText is not null || StartNullText is not null;
+
+    private string Text(DateTime? value) =>
+        value is { } v ? DateFormat.Format(v, ClientOffset, Focused ? EditFormat : DisplayFormat ?? EditFormat, CurrentCulture, DateValue<TValue>.IsOffset) : "";
+
+    protected override void OnOpening()
+    {
+        pendingStart = Start?.Date;
+        pendingEnd = End?.Date;
+    }
+
+    protected override async Task FocusInputAsync() => await DesignSystemJs.InvokeVoidAsync(JS, "focus", startInput, null);
+
+    private async Task CommitAsync(DateTime? start, DateTime? end)
+    {
+        var offset = EditOffset(StoredStart?.Offset ?? ClientOffset);
+        StartDate = DateValue<TValue>.Write(start, offset);
+        EndDate = DateValue<TValue>.Write(end, offset);
+        await StartDateChanged.InvokeAsync(StartDate);
+        await EndDateChanged.InvokeAsync(EndDate);
+        NotifyFieldChanged(StartDateExpression);
+        NotifyFieldChanged(EndDateExpression);
+        await SyncInputsAsync();
+    }
+
+    private async Task SyncInputsAsync()
+    {
+        await DesignSystemJs.InvokeVoidAsync(JS, "setInputValue", startInput, Text(Start));
+        await DesignSystemJs.InvokeVoidAsync(JS, "setInputValue", endInput, Text(End));
+    }
+
+    public async Task ClearAsync()
+    {
+        await CommitAsync(null, null);
+        await FocusInputAsync();
+    }
+
+    private RenderFragment CalendarContent => __builder =>
+    {
+        <PBCalendar @ref="Calendar" RangeSelection="true" StartDate="pendingStart" StartDateChanged="d => pendingStart = d"
+                    EndDate="pendingEnd" EndDateChanged="d => pendingEnd = d" VisibleDate="@(pendingStart ?? Start ?? CalendarStartDate)"
+                    StartView="CalendarStartView" HeaderTemplate="CalendarHeaderTemplate"
+                    ComparisonStart="ComparisonStart" ComparisonEnd="ComparisonEnd" RangeSelectionStrategy="RangeSelectionStrategy"
+                    MinDate="MinDate" MaxDate="MaxDate" CustomDisabledDate="CustomDisabledDate" FirstDayOfWeek="FirstDayOfWeek"
+                    Culture="Culture" DayCellTemplate="DayCellTemplate" DatePicked="OnRangePickedAsync" />
+        @if (ShowActionButtons)
+        {
+            <div class="pb-date-edit__actions">
+                <PBButton @onclick="() => SetOpenAsync(false, focusInput: true)">Cancel</PBButton>
+                <PBButton Disabled="@(pendingStart is null || pendingEnd is null)" @onclick="ApplyAsync">Apply</PBButton>
+            </div>
+        }
+    };
+
+    private async Task ApplyAsync()
+    {
+        if (pendingStart is null || pendingEnd is null) return;
+        await CommitAsync(pendingStart, pendingEnd);
+        await SetOpenAsync(false, focusInput: true);
+    }
+
+    private async Task OnRangePickedAsync(DateTime _)
+    {
+        if (pendingStart is null || pendingEnd is null || ShowActionButtons) return;
+        await CommitAsync(pendingStart, pendingEnd);
+        await SetOpenAsync(false, focusInput: true);
+    }
+
+    private async Task OnTextChangedAsync(bool start, ChangeEventArgs e)
+    {
+        var text = e.Value?.ToString() ?? "";
+        DateTime? value = null;
+        if (!string.IsNullOrWhiteSpace(text))
+        {
+            if (!DateFormat.TryParse(text, EditFormat, CurrentCulture, DateValue<TValue>.IsOffset, out var parsed, out _) || !IsAllowed(parsed))
+            {
+                await SyncInputsAsync();
+                return;
+            }
+            value = parsed.Date;
+        }
+        var newStart = start ? value : Start;
+        var newEnd = start ? End : value;
+        if (newStart is { } s && newEnd is { } en && en < s)
+        {
+            // An end before the start (or a start after the end) keeps the range valid by moving the other side.
+            if (start) newEnd = null;
+            else newStart = en;
+        }
+        await CommitAsync(newStart, newEnd);
+    }
+
+    private async Task OnBlurAsync()
+    {
+        Focused = false;
+        await SyncInputsAsync();
+    }
+
+    private async Task OnInputKeyDownAsync(KeyboardEventArgs e)
+    {
+        if ((e.AltKey && e.Key == "ArrowDown") || e.Key == "F4") await SetOpenAsync(true);
+        else if (e.Key == "Escape" && IsOpen) await SetOpenAsync(false);
+    }
+}

@@ -841,3 +841,456 @@ export async function downloadFile(fileName, contentType, streamRef) {
   link.remove();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
+
+// ---------------------------------------------------------------------------------- date editors
+// PBDatepicker / PBDateRangePicker / PBCalendar helpers: the browser's UTC offset, touch-phone
+// detection (Auto picker mode), input text sync, scroll picker snapping, and the date-time mask engine.
+
+export function clientTimeOffset() {
+  return -new Date().getTimezoneOffset();
+}
+
+export function isTouchPhone() {
+  return window.matchMedia("(pointer: coarse)").matches && Math.min(screen.width, screen.height) < 600;
+}
+
+export function setInputValue(input, value) {
+  if (input && input.value !== (value ?? "")) input.value = value ?? "";
+}
+
+// Calendar cells move focus with arrows/Page/Home/End (handled in C#); keep the page from scrolling.
+document.addEventListener("keydown", (event) => {
+  if (event.target.matches?.(".pb-calendar__cell-button") && ["ArrowDown", "ArrowUp", "ArrowLeft", "ArrowRight", "Home", "End", "PageUp", "PageDown", " "].includes(event.key)) {
+    event.preventDefault();
+  }
+  if (event.target.matches?.(".pb-scroll-picker__column") && ["ArrowDown", "ArrowUp", "Home", "End", "PageUp", "PageDown"].includes(event.key)) {
+    event.preventDefault();
+  }
+});
+
+// ------------------------------------------------------------------ scroll picker
+
+const scrollPickers = new WeakMap();
+
+function itemHeight(column) {
+  return column.querySelector(".pb-scroll-picker__item")?.offsetHeight || 40;
+}
+
+export function scrollPickerInit(root, dotNet) {
+  if (!root || scrollPickers.has(root)) return;
+  const state = { dotNet, timers: new Map(), syncing: 0 };
+  // Scroll events don't bubble: listen in the capture phase for every column, current and future.
+  state.onScroll = (event) => {
+    const column = event.target;
+    if (!column.classList?.contains("pb-scroll-picker__column") || state.syncing > Date.now()) return;
+    clearTimeout(state.timers.get(column));
+    state.timers.set(column, setTimeout(() => {
+      const index = Math.round(column.scrollTop / itemHeight(column));
+      dotNet.invokeMethodAsync("OnScrollPick", Number(column.dataset.column), index);
+    }, 120));
+  };
+  root.addEventListener("scroll", state.onScroll, true);
+  scrollPickers.set(root, state);
+  scrollPickerSync(root, false);
+}
+
+/** Scrolls every column so its selected item sits in the middle band. */
+export function scrollPickerSync(root, smooth) {
+  const state = scrollPickers.get(root);
+  if (!root) return;
+  root.querySelectorAll(".pb-scroll-picker__column").forEach((column) => {
+    const items = [...column.querySelectorAll(".pb-scroll-picker__item")];
+    const index = items.findIndex((item) => item.classList.contains("pb-scroll-picker__item--selected"));
+    if (index < 0) return;
+    const top = index * itemHeight(column);
+    if (Math.abs(column.scrollTop - top) <= 1) return;
+    if (state) state.syncing = Date.now() + (smooth ? 400 : 80);
+    column.scrollTo({ top, behavior: smooth ? "smooth" : "instant" });
+  });
+}
+
+export function scrollPickerDispose(root) {
+  const state = scrollPickers.get(root);
+  if (!state) return;
+  root.removeEventListener("scroll", state.onScroll, true);
+  state.timers.forEach((timer) => clearTimeout(timer));
+  scrollPickers.delete(root);
+}
+
+// ------------------------------------------------------------------ date-time mask
+// The mask shows the value through the format's sections (day, month, month name, year, hours, minutes,
+// seconds, AM/PM, UTC offset). The caret always selects one section: digits/letters type into it,
+// Up/Down and the mouse wheel change it (carrying into the next section when cascading), Left/Right
+// and Tab move between sections. Changes go to .NET through OnMaskChanged.
+
+const masks = new WeakMap();
+
+const pad = (n, length) => String(Math.abs(n)).padStart(length, "0");
+
+function daysIn(year, month) {
+  return new Date(year, month, 0).getDate();
+}
+
+function today(defaultOffset) {
+  const now = new Date();
+  return { year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate(), hour: 0, minute: 0, second: 0, offset: defaultOffset ?? 0 };
+}
+
+function sectionText(state, section, parts) {
+  const o = state.options;
+  if (!parts) return section.kind === "literal" ? section.text : placeholder(section);
+  switch (section.kind) {
+    case "literal": return section.text;
+    case "day": return section.length >= 2 ? pad(parts.day, 2) : String(parts.day);
+    case "month": return section.length >= 2 ? pad(parts.month, 2) : String(parts.month);
+    case "monthName": return (section.length === 3 ? o.monthAbbr : o.monthNames)[parts.month - 1];
+    case "year": return section.length <= 2 ? pad(parts.year % 100, 2) : pad(parts.year, Math.max(4, section.length));
+    case "hour24": return section.length >= 2 ? pad(parts.hour, 2) : String(parts.hour);
+    case "hour12": { const h = parts.hour % 12 || 12; return section.length >= 2 ? pad(h, 2) : String(h); }
+    case "minute": return section.length >= 2 ? pad(parts.minute, 2) : String(parts.minute);
+    case "second": return section.length >= 2 ? pad(parts.second, 2) : String(parts.second);
+    case "fraction": return "0".repeat(section.length);
+    case "ampm": { const t = parts.hour < 12 ? o.am : o.pm; return section.length === 1 ? t.charAt(0) : t; }
+    case "weekday": {
+      const day = new Date(parts.year, parts.month - 1, parts.day).getDay();
+      return (section.length === 3 ? o.dayAbbr : o.dayNames)[day];
+    }
+    case "offset": {
+      const sign = parts.offset < 0 ? "-" : "+";
+      const h = Math.floor(Math.abs(parts.offset) / 60);
+      const m = Math.abs(parts.offset) % 60;
+      return section.length === 1 ? `${sign}${h}` : section.length === 2 ? `${sign}${pad(h, 2)}` : `${sign}${pad(h, 2)}:${pad(m, 2)}`;
+    }
+    default: return "";
+  }
+}
+
+function placeholder(section) {
+  switch (section.kind) {
+    case "day": return "dd";
+    case "month": return "mm";
+    case "monthName": return section.length === 3 ? "mmm" : "month";
+    case "year": return section.length <= 2 ? "yy" : "yyyy";
+    case "hour24": case "hour12": return "hh";
+    case "minute": return "mm";
+    case "second": return "ss";
+    case "fraction": return "f".repeat(section.length);
+    case "ampm": return "--";
+    case "weekday": return "---";
+    case "offset": return "+00:00";
+    default: return "";
+  }
+}
+
+const EDITABLE = new Set(["day", "month", "monthName", "year", "hour24", "hour12", "minute", "second", "ampm", "offset"]);
+
+function layout(state, parts) {
+  let text = "";
+  const editable = [];
+  for (const section of state.options.sections) {
+    const value = sectionText(state, section, parts);
+    if (EDITABLE.has(section.kind)) editable.push({ section, start: text.length, end: text.length + value.length });
+    text += value;
+  }
+  return { text, editable };
+}
+
+function render(state, select = true) {
+  const input = state.input;
+  const showEmpty = !state.parts && document.activeElement !== input;
+  const { text, editable } = layout(state, state.parts);
+  state.editable = editable;
+  input.value = showEmpty ? "" : text;
+  if (select && document.activeElement === input && editable.length) {
+    const active = editable[Math.min(state.active, editable.length - 1)];
+    try { input.setSelectionRange(active.start, active.end); } catch { /* not focusable */ }
+  }
+}
+
+function notify(state, immediate) {
+  clearTimeout(state.timer);
+  const send = () => {
+    const key = JSON.stringify(state.parts);
+    if (key === state.sent) return;
+    state.sent = key;
+    state.dotNet.invokeMethodAsync("OnMaskChanged", state.parts ? { ...state.parts } : null);
+  };
+  if (immediate) send();
+  else state.timer = setTimeout(send, 300);
+}
+
+function limits(kind, parts) {
+  switch (kind) {
+    case "day": return [1, daysIn(parts.year, parts.month)];
+    case "month": case "monthName": return [1, 12];
+    case "year": return [1, 9999];
+    case "hour24": return [0, 23];
+    case "hour12": return [1, 12];
+    case "minute": case "second": return [0, 59];
+    case "offset": return [-14 * 60, 14 * 60];
+    default: return [0, 1];
+  }
+}
+
+function setField(parts, kind, value) {
+  const next = { ...parts };
+  switch (kind) {
+    case "day": next.day = value; break;
+    case "month": case "monthName": next.month = value; break;
+    case "year": next.year = value; break;
+    case "hour24": next.hour = value; break;
+    case "hour12": next.hour = (value % 12) + (parts.hour >= 12 ? 12 : 0); break;
+    case "minute": next.minute = value; break;
+    case "second": next.second = value; break;
+    case "ampm": next.hour = (parts.hour % 12) + (value ? 12 : 0); break;
+    case "offset": next.offset = value; break;
+  }
+  next.day = Math.min(next.day, daysIn(next.year, next.month));
+  return next;
+}
+
+function fieldValue(parts, kind) {
+  switch (kind) {
+    case "day": return parts.day;
+    case "month": case "monthName": return parts.month;
+    case "year": return parts.year;
+    case "hour24": return parts.hour;
+    case "hour12": return parts.hour % 12 || 12;
+    case "minute": return parts.minute;
+    case "second": return parts.second;
+    case "ampm": return parts.hour >= 12 ? 1 : 0;
+    case "offset": return parts.offset;
+    default: return 0;
+  }
+}
+
+/** Up/Down: with cascading, overflow carries into the neighbouring unit (Dec 31 + 1 day = Jan 1 next year). */
+function step(state, kind, delta) {
+  const parts = state.parts;
+  if (kind === "offset") return setField(parts, kind, Math.max(-840, Math.min(840, parts.offset + delta * 60)));
+  if (kind === "ampm") return setField(parts, kind, fieldValue(parts, kind) ? 0 : 1);
+  if (state.options.cascade) {
+    const date = new Date(parts.year, parts.month - 1, parts.day, parts.hour, parts.minute, parts.second);
+    switch (kind) {
+      case "day": date.setDate(date.getDate() + delta); break;
+      case "month": case "monthName": {
+        const day = date.getDate();
+        date.setDate(1);
+        date.setMonth(date.getMonth() + delta);
+        date.setDate(Math.min(day, daysIn(date.getFullYear(), date.getMonth() + 1)));
+        break;
+      }
+      case "year": date.setFullYear(date.getFullYear() + delta); break;
+      case "hour24": case "hour12": date.setHours(date.getHours() + delta); break;
+      case "minute": date.setMinutes(date.getMinutes() + delta); break;
+      case "second": date.setSeconds(date.getSeconds() + delta); break;
+    }
+    if (date.getFullYear() < 1 || date.getFullYear() > 9999) return parts;
+    return { ...parts, year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate(), hour: date.getHours(), minute: date.getMinutes(), second: date.getSeconds() };
+  }
+  const [min, max] = limits(kind, parts);
+  let value = fieldValue(parts, kind) + delta;
+  if (value > max) value = min;
+  if (value < min) value = max;
+  return setField(parts, kind, value);
+}
+
+function moveSection(state, delta) {
+  const next = state.active + delta;
+  if (next < 0 || next >= state.editable.length) return false;
+  state.active = next;
+  state.buffer = "";
+  render(state);
+  return true;
+}
+
+function typeDigit(state, digit) {
+  const entry = state.editable[state.active];
+  if (!entry) return;
+  const kind = entry.section.kind;
+  if (!state.parts) state.parts = today(state.options.defaultOffset);
+  if (kind === "ampm" || kind === "offset") return;
+  const maxDigits = kind === "year" ? (entry.section.length <= 2 ? 2 : 4) : 2;
+  let buffer = state.buffer + digit;
+  let value = Number(buffer);
+  if (kind === "year" && entry.section.length <= 2) value = 2000 + value;
+  const [min, max] = limits(kind === "monthName" ? "month" : kind, state.parts);
+  if (kind !== "year" && value > max) {
+    buffer = digit;
+    value = Number(digit);
+  }
+  state.buffer = buffer;
+  if (kind === "year") {
+    state.parts = setField(state.parts, kind, Math.max(1, value));
+  } else if (value >= min || buffer.length < maxDigits) {
+    state.parts = setField(state.parts, kind, Math.max(min, Math.min(max, value)));
+  }
+  const complete = buffer.length >= maxDigits || (kind !== "year" && value * 10 > max);
+  render(state);
+  notify(state);
+  if (complete) {
+    state.buffer = "";
+    if (state.options.caretMode === "advancing") moveSection(state, 1);
+  }
+}
+
+function typeLetter(state, letter) {
+  const entry = state.editable[state.active];
+  if (!entry) return;
+  const kind = entry.section.kind;
+  if (!state.parts) state.parts = today(state.options.defaultOffset);
+  if (kind === "ampm") {
+    const l = letter.toLowerCase();
+    if (state.options.am.toLowerCase().startsWith(l)) state.parts = setField(state.parts, kind, 0);
+    else if (state.options.pm.toLowerCase().startsWith(l)) state.parts = setField(state.parts, kind, 1);
+    else return;
+  } else if (kind === "monthName") {
+    state.buffer += letter.toLowerCase();
+    const names = entry.section.length === 3 ? state.options.monthAbbr : state.options.monthNames;
+    let index = names.findIndex((n) => n.toLowerCase().startsWith(state.buffer));
+    if (index < 0) {
+      state.buffer = letter.toLowerCase();
+      index = names.findIndex((n) => n.toLowerCase().startsWith(state.buffer));
+    }
+    if (index < 0) return;
+    state.parts = setField(state.parts, kind, index + 1);
+  } else return;
+  render(state);
+  notify(state);
+  if (kind === "ampm" && state.options.caretMode === "advancing") moveSection(state, 1);
+}
+
+function sectionAt(state, position) {
+  let best = 0;
+  state.editable.forEach((entry, i) => {
+    if (position >= entry.start) best = i;
+  });
+  return best;
+}
+
+export function dateMaskInit(input, dotNet, options) {
+  if (!input || masks.has(input)) return;
+  const state = { input, dotNet, options, parts: options.value ? { ...options.value } : null, active: 0, buffer: "", editable: [], sent: JSON.stringify(options.value ?? null) };
+  state.handlers = {
+    focus: () => {
+      state.buffer = "";
+      setTimeout(() => render(state), 0);
+    },
+    blur: () => {
+      state.buffer = "";
+      render(state, false);
+      notify(state, true);
+    },
+    mouseup: () => {
+      if (document.activeElement !== input) return;
+      state.active = sectionAt(state, input.selectionStart ?? 0);
+      state.buffer = "";
+      render(state);
+    },
+    keydown: (event) => {
+      if (state.options.readOnly || event.ctrlKey && !["a", "A"].includes(event.key) || event.metaKey || event.altKey) return;
+      const entry = state.editable[state.active];
+      switch (event.key) {
+        case "ArrowUp":
+        case "ArrowDown":
+          event.preventDefault();
+          if (!entry) return;
+          if (!state.parts) state.parts = today(state.options.defaultOffset);
+          else state.parts = step(state, entry.section.kind, event.key === "ArrowUp" ? 1 : -1);
+          state.buffer = "";
+          render(state);
+          notify(state);
+          return;
+        case "ArrowLeft":
+          event.preventDefault();
+          moveSection(state, -1);
+          return;
+        case "ArrowRight":
+          event.preventDefault();
+          moveSection(state, 1);
+          return;
+        case "Home":
+          event.preventDefault();
+          moveSection(state, -state.active);
+          return;
+        case "End":
+          event.preventDefault();
+          moveSection(state, state.editable.length - 1 - state.active);
+          return;
+        case "Tab":
+          if (moveSection(state, event.shiftKey ? -1 : 1)) event.preventDefault();
+          return;
+        case "Backspace":
+        case "Delete": {
+          event.preventDefault();
+          const all = input.selectionStart === 0 && input.selectionEnd === input.value.length && state.editable.length > 1;
+          if (all || !state.parts) {
+            state.parts = null;
+            state.active = 0;
+          } else if (entry) {
+            const [min] = limits(entry.section.kind, state.parts);
+            if (entry.section.kind !== "ampm" && entry.section.kind !== "offset") state.parts = setField(state.parts, entry.section.kind, entry.section.kind === "year" ? state.parts.year : min);
+          }
+          state.buffer = "";
+          render(state);
+          notify(state);
+          return;
+        }
+        case "Enter":
+          notify(state, true);
+          return;
+      }
+      if (event.key === "a" && event.ctrlKey) return;
+      if (/^\d$/.test(event.key)) {
+        event.preventDefault();
+        typeDigit(state, event.key);
+      } else if (event.key === "+" || event.key === "-") {
+        event.preventDefault();
+        if (entry?.section.kind === "offset" && state.parts) {
+          const magnitude = Math.abs(state.parts.offset);
+          state.parts = setField(state.parts, "offset", event.key === "-" ? -magnitude : magnitude);
+          render(state);
+          notify(state);
+        }
+      } else if (event.key.length === 1) {
+        event.preventDefault();
+        if (/\p{L}/u.test(event.key)) typeLetter(state, event.key);
+        else moveSection(state, 1); // a typed separator moves on
+      }
+    },
+    wheel: (event) => {
+      if (document.activeElement !== input || state.options.readOnly) return;
+      event.preventDefault();
+      const entry = state.editable[state.active];
+      if (!entry) return;
+      if (!state.parts) state.parts = today(state.options.defaultOffset);
+      else state.parts = step(state, entry.section.kind, event.deltaY < 0 ? 1 : -1);
+      render(state);
+      notify(state);
+    },
+    // Anything that slips past keydown (IME, autofill, drag-and-drop text): restore the mask text.
+    input: () => render(state),
+    paste: (event) => event.preventDefault(),
+  };
+  for (const [name, handler] of Object.entries(state.handlers)) input.addEventListener(name, handler, name === "wheel" ? { passive: false } : undefined);
+  masks.set(input, state);
+  render(state, false);
+}
+
+export function dateMaskUpdate(input, options) {
+  const state = masks.get(input);
+  if (!state) return;
+  state.options = options;
+  state.parts = options.value ? { ...options.value } : null;
+  state.sent = JSON.stringify(options.value ?? null);
+  state.buffer = "";
+  render(state, document.activeElement === input);
+}
+
+export function dateMaskDispose(input) {
+  const state = masks.get(input);
+  if (!state) return;
+  clearTimeout(state.timer);
+  for (const [name, handler] of Object.entries(state.handlers)) input.removeEventListener(name, handler);
+  masks.delete(input);
+}

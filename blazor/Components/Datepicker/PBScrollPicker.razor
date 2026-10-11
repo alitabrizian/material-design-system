@@ -1,0 +1,230 @@
+@namespace PartoBita.DesignSystem.Blazor.Components
+@using System.Globalization
+@using Microsoft.JSInterop
+@implements IAsyncDisposable
+@inject Microsoft.JSInterop.IJSRuntime JS
+@* Wheel columns (day, month, year, and time parts) that snap to the item in the middle band. Order and
+   look come from the format: "ddd" = "15 Fri", "dddd" = "15 Friday", "MMM" = "Oct", "MMMM" = "October". *@
+<div @ref="root" class="pb-scroll-picker" role="group" aria-label="@Label">
+    @for (var c = 0; c < columns.Count; c++)
+    {
+        var column = columns[c];
+        var columnIndex = c;
+        <div class="pb-scroll-picker__column" role="listbox" tabindex="0" aria-label="@column.Label" data-column="@columnIndex"
+             aria-activedescendant="@($"{id}-{columnIndex}-{column.Selected}")" @onkeydown="e => OnKeyDownAsync(columnIndex, e)">
+            <div class="pb-scroll-picker__spacer" aria-hidden="true"></div>
+            @for (var i = 0; i < column.Items.Count; i++)
+            {
+                var item = column.Items[i];
+                var index = i;
+                <div id="@($"{id}-{columnIndex}-{index}")" role="option" class="pb-scroll-picker__item @(index == column.Selected ? "pb-scroll-picker__item--selected" : null) @(item.Disabled ? "pb-scroll-picker__item--disabled" : null)"
+                     aria-selected="@(index == column.Selected ? "true" : "false")" aria-disabled="@(item.Disabled ? "true" : null)" @onclick="() => SelectAsync(columnIndex, index)">@item.Text</div>
+            }
+            <div class="pb-scroll-picker__spacer" aria-hidden="true"></div>
+        </div>
+    }
+    <div class="pb-scroll-picker__band" aria-hidden="true"></div>
+</div>
+
+@code {
+    private sealed record Item(int Value, string Text, bool Disabled);
+
+    private sealed class Column
+    {
+        public required string Kind { get; init; }
+        public required string Label { get; init; }
+        public List<Item> Items { get; set; } = [];
+        public int Selected { get; set; }
+    }
+
+    [Parameter] public DateTime Value { get; set; }
+    [Parameter] public EventCallback<DateTime> ValueChanged { get; set; }
+
+    /// <summary>e.g. <c>dd MMMM yyyy</c> or <c>HH mm</c>.</summary>
+    [Parameter] public string Format { get; set; } = "d MMMM yyyy";
+    [Parameter] public DateTime? MinDate { get; set; }
+    [Parameter] public DateTime? MaxDate { get; set; }
+    [Parameter] public Func<DateTime, bool>? IsDateAllowed { get; set; }
+    [Parameter] public CultureInfo? Culture { get; set; }
+    [Parameter] public string? Label { get; set; }
+
+    private readonly string id = "pb-scroll-" + Guid.NewGuid().ToString("N")[..8];
+    private ElementReference root;
+    private List<Column> columns = [];
+    private DotNetObjectReference<PBScrollPicker>? selfReference;
+    private bool initialized;
+
+    private CultureInfo CurrentCulture => Culture ?? CultureInfo.CurrentCulture;
+
+    protected override void OnParametersSet() => Build();
+
+    private void Build()
+    {
+        var info = CurrentCulture.DateTimeFormat;
+        var result = new List<Column>();
+        var value = Value;
+        foreach (var token in Format.Split(' ', StringSplitOptions.RemoveEmptyEntries))
+        {
+            var c = token[0];
+            var length = token.Length;
+            switch (c)
+            {
+                case 'd':
+                    var days = DateTime.DaysInMonth(value.Year, value.Month);
+                    result.Add(new Column
+                    {
+                        Kind = "day",
+                        Label = "Day",
+                        Items = Enumerable.Range(1, days).Select(d =>
+                        {
+                            var date = new DateTime(value.Year, value.Month, d);
+                            var text = length == 3 ? $"{d} {info.GetAbbreviatedDayName(date.DayOfWeek)}" : length >= 4 ? $"{d} {info.GetDayName(date.DayOfWeek)}" : d.ToString(CurrentCulture);
+                            return new Item(d, text, !Allowed(date));
+                        }).ToList(),
+                        Selected = value.Day - 1,
+                    });
+                    break;
+                case 'M':
+                    result.Add(new Column
+                    {
+                        Kind = "month",
+                        Label = "Month",
+                        Items = Enumerable.Range(1, 12).Select(m => new Item(m, length == 3 ? info.GetAbbreviatedMonthName(m) : info.GetMonthName(m), !MonthAllowed(value.Year, m))).ToList(),
+                        Selected = value.Month - 1,
+                    });
+                    break;
+                case 'y':
+                    var from = MinDate?.Year ?? value.Year - 100;
+                    var to = MaxDate?.Year ?? value.Year + 100;
+                    result.Add(new Column
+                    {
+                        Kind = "year",
+                        Label = "Year",
+                        Items = Enumerable.Range(from, to - from + 1).Select(y => new Item(y, y.ToString(CurrentCulture), false)).ToList(),
+                        Selected = value.Year - from,
+                    });
+                    break;
+                case 'H' or 'h':
+                    var twelve = c == 'h';
+                    result.Add(new Column
+                    {
+                        Kind = twelve ? "hour12" : "hour24",
+                        Label = "Hour",
+                        Items = Enumerable.Range(twelve ? 1 : 0, twelve ? 12 : 24).Select(h => new Item(h, length == 2 ? h.ToString("00", CurrentCulture) : h.ToString(CurrentCulture), false)).ToList(),
+                        Selected = twelve ? (value.Hour % 12 == 0 ? 11 : value.Hour % 12 - 1) : value.Hour,
+                    });
+                    break;
+                case 'm':
+                    result.Add(new Column { Kind = "minute", Label = "Minute", Items = Enumerable.Range(0, 60).Select(m => new Item(m, m.ToString("00", CurrentCulture), false)).ToList(), Selected = value.Minute });
+                    break;
+                case 's':
+                    result.Add(new Column { Kind = "second", Label = "Second", Items = Enumerable.Range(0, 60).Select(s => new Item(s, s.ToString("00", CurrentCulture), false)).ToList(), Selected = value.Second });
+                    break;
+                case 't':
+                    result.Add(new Column
+                    {
+                        Kind = "ampm",
+                        Label = "AM/PM",
+                        Items = [new Item(0, info.AMDesignator, false), new Item(1, info.PMDesignator, false)],
+                        Selected = value.Hour >= 12 ? 1 : 0,
+                    });
+                    break;
+            }
+        }
+        columns = result;
+    }
+
+    private bool Allowed(DateTime date) =>
+        (MinDate is not { } min || date.Date >= min.Date) && (MaxDate is not { } max || date.Date <= max.Date) && (IsDateAllowed?.Invoke(date) ?? true);
+
+    private bool MonthAllowed(int year, int month)
+    {
+        var first = new DateTime(year, month, 1);
+        var last = first.AddMonths(1).AddDays(-1);
+        return (MinDate is not { } min || last >= min.Date) && (MaxDate is not { } max || first <= max.Date);
+    }
+
+    private DateTime With(Column column, int value)
+    {
+        var v = Value;
+        DateTime result;
+        switch (column.Kind)
+        {
+            case "day":
+                result = new DateTime(v.Year, v.Month, value, v.Hour, v.Minute, v.Second);
+                break;
+            case "month":
+                result = new DateTime(v.Year, value, Math.Min(v.Day, DateTime.DaysInMonth(v.Year, value)), v.Hour, v.Minute, v.Second);
+                break;
+            case "year":
+                result = new DateTime(value, v.Month, Math.Min(v.Day, DateTime.DaysInMonth(value, v.Month)), v.Hour, v.Minute, v.Second);
+                break;
+            case "hour24":
+                result = v.Date.AddHours(value).AddMinutes(v.Minute).AddSeconds(v.Second);
+                break;
+            case "hour12":
+                result = v.Date.AddHours(value % 12 + (v.Hour >= 12 ? 12 : 0)).AddMinutes(v.Minute).AddSeconds(v.Second);
+                break;
+            case "minute":
+                result = v.Date.AddHours(v.Hour).AddMinutes(value).AddSeconds(v.Second);
+                break;
+            case "second":
+                result = v.Date.AddHours(v.Hour).AddMinutes(v.Minute).AddSeconds(value);
+                break;
+            default:
+                result = v.Date.AddHours(v.Hour % 12 + (value == 1 ? 12 : 0)).AddMinutes(v.Minute).AddSeconds(v.Second);
+                break;
+        }
+        if (MinDate is { } min && result < min) result = min;
+        if (MaxDate is { } max && result > max) result = max;
+        return result;
+    }
+
+    private async Task SelectAsync(int columnIndex, int index)
+    {
+        var column = columns[columnIndex];
+        if (index < 0 || index >= column.Items.Count) return;
+        var next = With(column, column.Items[index].Value);
+        if (column.Kind == "day" && !Allowed(next)) return;
+        Value = next;
+        Build();
+        await ValueChanged.InvokeAsync(next);
+        await DesignSystemJs.InvokeVoidAsync(JS, "scrollPickerSync", root, true);
+    }
+
+    [JSInvokable]
+    public Task OnScrollPick(int columnIndex, int index) => InvokeAsync(async () =>
+    {
+        if (columnIndex < 0 || columnIndex >= columns.Count || columns[columnIndex].Selected == index) return;
+        await SelectAsync(columnIndex, index);
+    });
+
+    private async Task OnKeyDownAsync(int columnIndex, KeyboardEventArgs e)
+    {
+        var column = columns[columnIndex];
+        var delta = e.Key switch { "ArrowUp" => -1, "ArrowDown" => 1, "PageUp" => -5, "PageDown" => 5, _ => 0 };
+        if (e.Key == "Home") delta = -column.Selected;
+        if (e.Key == "End") delta = column.Items.Count - 1 - column.Selected;
+        if (delta != 0) await SelectAsync(columnIndex, Math.Clamp(column.Selected + delta, 0, column.Items.Count - 1));
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            selfReference = DotNetObjectReference.Create(this);
+            await DesignSystemJs.InvokeVoidAsync(JS, "scrollPickerInit", root, selfReference);
+            initialized = true;
+        }
+        else if (initialized)
+        {
+            await DesignSystemJs.InvokeVoidAsync(JS, "scrollPickerSync", root, false);
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await DesignSystemJs.InvokeVoidAsync(JS, "scrollPickerDispose", root);
+        selfReference?.Dispose();
+    }
+}

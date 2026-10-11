@@ -1,4 +1,5 @@
 import {
+  afterRenderEffect,
   booleanAttribute,
   computed,
   Directive,
@@ -7,10 +8,12 @@ import {
   Provider,
   signal,
   Type,
+  viewChild,
   WritableSignal,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
+import { MatFormField } from '@angular/material/form-field';
 
 /** Registers a component as its own ControlValueAccessor (ngModel, formControl, formControlName). */
 export function providePbValueAccessor(component: () => Type<unknown>): Provider {
@@ -83,4 +86,17 @@ export abstract class PbFieldBase<T> extends PbValueAccessor<T> {
   protected readonly errorStateMatcher: ErrorStateMatcher = {
     isErrorState: () => !!this.errorText(),
   };
+
+  private readonly formField = viewChild(MatFormField);
+
+  constructor() {
+    super();
+    // MatInput/MatSelect only re-check their error state when they have an NgControl, which the inner
+    // control never has (the PB component is the form control): re-check it whenever errorText changes.
+    afterRenderEffect(() => {
+      this.errorText();
+      const control = this.formField()?._control as unknown as { updateErrorState?: () => void } | undefined;
+      control?.updateErrorState?.();
+    });
+  }
 }

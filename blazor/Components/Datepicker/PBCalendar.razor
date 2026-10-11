@@ -1,0 +1,184 @@
+@namespace PartoBita.DesignSystem.Blazor.Components
+@inherits WorkspaceComponentBase
+<div id="@id" class="pb-calendar @UserClass" @attributes="Attrs">
+    @if (HeaderTemplate is not null)
+    {
+        <div class="pb-calendar__header pb-calendar__header--custom">@HeaderTemplate(HeaderContext)</div>
+    }
+    else
+    {
+    <div class="pb-calendar__header">
+        <div class="pb-calendar__controls">
+            <button type="button" class="pb-calendar__period-button pb-ripple-host" aria-label="@PeriodButtonLabel" aria-describedby="@(id + "-period")"
+                    disabled="@(MinView == View.MultiYear)" @onclick="TogglePeriod">
+                <span class="pb-state-layer"></span>
+                <span id="@(id + "-period")" aria-live="polite">@PeriodLabel</span>
+                <svg class="pb-calendar__arrow @(view != View.Month ? "pb-calendar__arrow--up" : null)" viewBox="0 0 10 5" focusable="false" aria-hidden="true"><polygon points="0,0 5,5 10,0" /></svg>
+            </button>
+            <span class="pb-calendar__spacer"></span>
+            <PBButton Variant="PBButtonVariant.Icon" class="pb-calendar__nav" Disabled="!CanPrevious" aria-label="@PreviousLabel" @onclick="Previous">
+                <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" /></svg>
+            </PBButton>
+            <PBButton Variant="PBButtonVariant.Icon" class="pb-calendar__nav" Disabled="!CanNext" aria-label="@NextLabel" @onclick="Next">
+                <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" /></svg>
+            </PBButton>
+        </div>
+    </div>
+    }
+
+    <div @ref="content" class="pb-calendar__content" @onkeydown="OnKeyDownAsync" @onmouseleave="() => OnHover(null)">
+        @switch (view)
+        {
+            case View.Month:
+                RenderMonth(__builder);
+                break;
+            case View.Year:
+                RenderYear(__builder);
+                break;
+            default:
+                RenderMultiYear(__builder);
+                break;
+        }
+    </div>
+</div>
+
+@code {
+    private void RenderMonth(Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder __builder)
+    {
+        var first = new DateTime(active.Year, active.Month, 1);
+        var days = DateTime.DaysInMonth(active.Year, active.Month);
+        var offset = ((int)first.DayOfWeek - (int)FirstDay + 7) % 7;
+        var range = DisplayRange;
+        var weekDays = WeekDays();
+        // mat-month-view puts the month label in the first row when at least 3 cells are free, else in a row of its own.
+        var labelInFirstRow = offset >= 3;
+        var cells = new List<int?>();
+        for (var i = 0; i < offset; i++) cells.Add(null);
+        for (var d = 1; d <= days; d++) cells.Add(d);
+        <table class="pb-calendar__table" role="grid" aria-label="@first.ToString("MMMM yyyy", CurrentCulture)">
+            <thead class="pb-calendar__table-header">
+                <tr>
+                    @foreach (var day in weekDays)
+                    {
+                        <th scope="col"><span class="pb-calendar__visually-hidden">@day.Long</span><span aria-hidden="true">@day.Narrow</span></th>
+                    }
+                </tr>
+                <tr aria-hidden="true"><th class="pb-calendar__table-header-divider" colspan="7"></th></tr>
+            </thead>
+            <tbody>
+                @if (!labelInFirstRow)
+                {
+                    <tr aria-hidden="true"><td class="pb-calendar__body-label" colspan="7">@MonthLabel(active.Month)</td></tr>
+                }
+                @for (var row = 0; row * 7 < cells.Count; row++)
+                {
+                    var rowCells = cells.Skip(row * 7).Take(7).ToList();
+                    <tr role="row">
+                        @if (row == 0 && labelInFirstRow)
+                        {
+                            <td class="pb-calendar__body-label" colspan="@offset" aria-hidden="true">@MonthLabel(active.Month)</td>
+                        }
+                        else if (row == 0 && offset > 0)
+                        {
+                            <td colspan="@offset" aria-hidden="true"></td>
+                        }
+                        @foreach (var day in rowCells.Where(c => c is not null))
+                        {
+                            var date = new DateTime(active.Year, active.Month, day!.Value);
+                            var disabled = IsDateDisabled(date);
+                            var selected = IsSelectedDay(date);
+                            var today = date == Today;
+                            var inRange = range is { } r && date >= r.Start && date <= r.End;
+                            var rangeStart = range is { } rs && date == rs.Start;
+                            var rangeEnd = range is { } re && date == re.End;
+                            var weekend = date.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday;
+                            var text = day.Value.ToString(CurrentCulture);
+                            var comparison = InComparison(date);
+                            var cellClass = "pb-calendar__cell"
+                                + (comparison ? " pb-calendar__cell--in-comparison" : "")
+                                + (comparison && ComparisonStart?.Date == date ? " pb-calendar__cell--comparison-start" : "")
+                                + (comparison && ComparisonEnd?.Date == date ? " pb-calendar__cell--comparison-end" : "")
+                                + (inRange ? (IsPreview ? " pb-calendar__cell--in-preview" : " pb-calendar__cell--in-range") : "")
+                                + (rangeStart ? " pb-calendar__cell--range-start" : "")
+                                + (rangeEnd ? " pb-calendar__cell--range-end" : "");
+                            <td role="gridcell" class="@cellClass" aria-selected="@(selected ? "true" : "false")">
+                                <button type="button" class="pb-calendar__cell-button" tabindex="@(date == active ? 0 : -1)"
+                                        disabled="@disabled" aria-pressed="@(selected ? "true" : "false")" aria-current="@(today ? "date" : null)"
+                                        aria-label="@date.ToString("D", CurrentCulture)"
+                                        @onclick="() => PickDay(date)" @onmouseenter="() => OnHover(date)">
+                                    <span class="pb-calendar__cell-content @(selected ? "pb-calendar__cell-content--selected" : null) @(today ? "pb-calendar__cell-content--today" : null)">
+                                        @if (DayCellTemplate is not null)
+                                        {
+                                            @DayCellTemplate(new PBCalendarDayContext(date, text, selected, today, disabled, weekend, inRange))
+                                        }
+                                        else
+                                        {
+                                            @text
+                                        }
+                                    </span>
+                                    <span class="pb-calendar__focus-indicator" aria-hidden="true"></span>
+                                </button>
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    private void RenderYear(Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder __builder)
+    {
+        <table class="pb-calendar__table pb-calendar__table--wide" role="grid" aria-label="@active.Year.ToString(CurrentCulture)">
+            <tbody>
+                <tr aria-hidden="true"><td class="pb-calendar__body-label" colspan="4">@active.Year.ToString(CurrentCulture)</td></tr>
+                @for (var row = 0; row < 3; row++)
+                {
+                    <tr role="row">
+                        @for (var col = 0; col < 4; col++)
+                        {
+                            var month = row * 4 + col + 1;
+                            var disabled = IsMonthDisabled(active.Year, month);
+                            var selected = IsSelectedMonth(active.Year, month);
+                            var current = Today.Year == active.Year && Today.Month == month;
+                            <td role="gridcell" class="pb-calendar__cell pb-calendar__cell--wide" aria-selected="@(selected ? "true" : "false")">
+                                <button type="button" class="pb-calendar__cell-button" tabindex="@(month == active.Month ? 0 : -1)" disabled="@disabled"
+                                        aria-pressed="@(selected ? "true" : "false")" aria-label="@(new DateTime(active.Year, month, 1).ToString("MMMM yyyy", CurrentCulture))"
+                                        @onclick="() => PickMonth(month)">
+                                    <span class="pb-calendar__cell-content @(selected ? "pb-calendar__cell-content--selected" : null) @(current ? "pb-calendar__cell-content--today" : null)">@MonthLabel(month)</span>
+                                    <span class="pb-calendar__focus-indicator" aria-hidden="true"></span>
+                                </button>
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    private void RenderMultiYear(Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder __builder)
+    {
+        var start = YearPageStart;
+        <table class="pb-calendar__table pb-calendar__table--wide" role="grid" aria-label="@PeriodLabel">
+            <tbody>
+                @for (var row = 0; row < YearsPerPage / YearsPerRow; row++)
+                {
+                    <tr role="row">
+                        @for (var col = 0; col < YearsPerRow; col++)
+                        {
+                            var year = start + row * YearsPerRow + col;
+                            var disabled = IsYearDisabled(year);
+                            var selected = IsSelectedYear(year);
+                            <td role="gridcell" class="pb-calendar__cell pb-calendar__cell--wide" aria-selected="@(selected ? "true" : "false")">
+                                <button type="button" class="pb-calendar__cell-button" tabindex="@(year == active.Year ? 0 : -1)" disabled="@disabled"
+                                        aria-pressed="@(selected ? "true" : "false")" aria-label="@year.ToString(CurrentCulture)" @onclick="() => PickYear(year)">
+                                    <span class="pb-calendar__cell-content @(selected ? "pb-calendar__cell-content--selected" : null) @(year == Today.Year ? "pb-calendar__cell-content--today" : null)">@year.ToString(CurrentCulture)</span>
+                                    <span class="pb-calendar__focus-indicator" aria-hidden="true"></span>
+                                </button>
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}

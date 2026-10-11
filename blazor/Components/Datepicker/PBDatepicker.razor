@@ -1,0 +1,132 @@
+@namespace PartoBita.DesignSystem.Blazor.Components
+@typeparam TValue
+@inherits DateEditorBase<TValue>
+@using System.Globalization
+<div class="pb-date-edit @(Block ? "pb-date-edit--block" : null)">
+    <FormFieldFrame Appearance="Appearance" Label="@Label" LabelFor="@ControlId" HasError="@(ErrorMessage is not null)" HintText="@Hint"
+                    Disabled="@(IsDisabled || InputDisabled)" Required="IsRequired" Floating="Floating" Block="Block" Prefix="Prefix"
+                    ExtraClass="@("pb-datepicker " + UserClass)">
+        <Control>
+            <input @ref="input" class="pb-form-field__control" id="@ControlId" type="text" autocomplete="off"
+                   value="@(Mask is null ? InputText : null)" placeholder="@(NullText ?? " ")"
+                   readonly="@ReadOnly" disabled="@(IsDisabled || InputDisabled)" required="@IsRequired"
+                   aria-haspopup="dialog" aria-expanded="@(IsOpen ? "true" : "false")" aria-controls="@(IsOpen ? PanelId : null)"
+                   aria-invalid="@(ErrorMessage is not null ? "true" : null)"
+                   aria-describedby="@(Hint is null ? null : ControlId + "-hint")"
+                   @onfocus="OnFocus" @onblur="OnBlurAsync" @oninput="OnTextInputAsync" @onchange="OnTextChangedAsync" @onkeydown="OnInputKeyDownAsync"
+                   @attributes="Attrs" />
+        </Control>
+        <Suffix>
+            @if (ClearButtonDisplayMode == PBClearButtonDisplayMode.Auto && HasValue && !ReadOnly && !IsDisabled && !InputDisabled)
+            {
+                <PBButton Variant="PBButtonVariant.Icon" class="pb-date-edit__clear" aria-label="Clear" @onclick="ClearAsync">
+                    <span class="material-icons" aria-hidden="true">close</span>
+                </PBButton>
+            }
+            @if (ShowDropDownButton)
+            {
+                <PBButton Variant="PBButtonVariant.Icon" Disabled="@(IsDisabled || ReadOnly || DropDownDisabled)" aria-label="Open calendar"
+                          aria-haspopup="dialog" aria-expanded="@(IsOpen ? "true" : "false")" @onclick="OpenFromButtonAsync">
+                    @if (ToggleIconTemplate is not null)
+                    {
+                        @ToggleIconTemplate
+                    }
+                    else
+                    {
+                        <span class="material-icons" aria-hidden="true">@DropDownIcon(TimeSectionVisible ? "event" : "calendar_today")</span>
+                    }
+                </PBButton>
+            }
+        </Suffix>
+    </FormFieldFrame>
+
+    @if (IsOpen)
+    {
+        @if (DialogMode)
+        {
+            <dialog @ref="Panel" id="@PanelId" class="pb-dialog pb-date-edit__dialog @(scrollPickerMode ? null : "pb-date-edit__dialog--touch")"
+                    aria-label="@(Label ?? "Choose date")" @onkeydown="OnPanelKeyDownAsync">
+                @if (scrollPickerMode)
+                {
+                    <h2 class="pb-dialog__title">@(Label ?? "Choose date")</h2>
+                    <div class="pb-dialog__content">@ScrollContent</div>
+                }
+                else
+                {
+                    @CalendarContent
+                }
+            </dialog>
+        }
+        else
+        {
+            <div @ref="Panel" id="@PanelId" class="pb-date-edit__panel pb-overlay pb-overlay--pending" popover="manual" role="dialog"
+                 aria-label="@(Label ?? "Choose date")" @onkeydown="OnPanelKeyDownAsync">
+                @if (PickerDisplayMode == PBDatePickerDisplayMode.ScrollPicker)
+                {
+                    @ScrollContent
+                }
+                else
+                {
+                    @CalendarContent
+                }
+            </div>
+        }
+    }
+</div>
+
+@code {
+    private RenderFragment ScrollContent => __builder =>
+    {
+        <PBScrollPicker Value="@(pending ?? DateTime.Today)" ValueChanged="OnScrollPickerChanged" Format="@ScrollFormat"
+                        MinDate="MinDate" MaxDate="MaxDate" IsDateAllowed="IsAllowed" Culture="Culture" Label="@(Label ?? "Date")" />
+        <div class="pb-date-edit__actions">
+            <PBButton @onclick="CancelAsync">Cancel</PBButton>
+            <PBButton @onclick="ApplyAsync">OK</PBButton>
+        </div>
+    };
+
+    private RenderFragment CalendarContent => __builder =>
+    {
+        <PBCalendar @ref="Calendar" SelectedDate="@(Staged ? pending : Current)" SelectedDateChanged="OnCalendarSelected"
+                    VisibleDate="@(pending ?? Current ?? CalendarStartDate)" StartView="CalendarStartView" HeaderTemplate="CalendarHeaderTemplate"
+                    MinDate="MinDate" MaxDate="MaxDate" CustomDisabledDate="CustomDisabledDate"
+                    ViewMode="CalendarViewMode" FirstDayOfWeek="FirstDayOfWeek" Culture="Culture" DayCellTemplate="DayCellTemplate"
+                    DatePicked="OnDatePickedAsync" />
+        @if (TimeSectionVisible && pending is { } p)
+        {
+            <div class="pb-date-edit__time" role="group" aria-label="Time">
+                <span class="pb-date-edit__time-label">Time</span>
+                <input class="pb-date-edit__time-field" type="number" inputmode="numeric" min="@(TwelveHour ? 1 : 0)" max="@(TwelveHour ? 12 : 23)"
+                       aria-label="Hour" value="@DisplayHour.ToString("00", CultureInfo.InvariantCulture)" @onchange="SetHour" />
+                <span class="pb-date-edit__time-separator" aria-hidden="true">@CurrentCulture.DateTimeFormat.TimeSeparator</span>
+                <input class="pb-date-edit__time-field" type="number" inputmode="numeric" min="0" max="59"
+                       aria-label="Minute" value="@p.Minute.ToString("00", CultureInfo.InvariantCulture)" @onchange="SetMinute" />
+                @if (ShowSeconds)
+                {
+                    <span class="pb-date-edit__time-separator" aria-hidden="true">@CurrentCulture.DateTimeFormat.TimeSeparator</span>
+                    <input class="pb-date-edit__time-field" type="number" inputmode="numeric" min="0" max="59"
+                           aria-label="Second" value="@p.Second.ToString("00", CultureInfo.InvariantCulture)" @onchange="SetSecond" />
+                }
+                @if (TwelveHour)
+                {
+                    <span class="pb-date-edit__period" role="radiogroup" aria-label="AM or PM">
+                        <button type="button" role="radio" class="pb-date-edit__period-button" aria-checked="@(p.Hour < 12 ? "true" : "false")" @onclick="() => SetPm(false)">@CurrentCulture.DateTimeFormat.AMDesignator</button>
+                        <button type="button" role="radio" class="pb-date-edit__period-button" aria-checked="@(p.Hour >= 12 ? "true" : "false")" @onclick="() => SetPm(true)">@CurrentCulture.DateTimeFormat.PMDesignator</button>
+                    </span>
+                }
+            </div>
+        }
+        @if (Staged)
+        {
+            <div class="pb-date-edit__actions">
+                @if (TimeSectionVisible)
+                {
+                    <PBButton class="pb-date-edit__now" @onclick="NowAsync">Now</PBButton>
+                    <span class="pb-date-edit__spacer"></span>
+                }
+                <PBButton @onclick="CancelAsync">Cancel</PBButton>
+                <PBButton @onclick="ApplyAsync">@(TimeSectionVisible ? "OK" : "Apply")</PBButton>
+            </div>
+        }
+    };
+}
