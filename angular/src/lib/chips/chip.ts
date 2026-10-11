@@ -15,6 +15,10 @@ export type PbChipVariant = 'assist' | 'filter' | 'input';
 export class PbChip extends PbContentTemplate {
   readonly variant = input<PbChipVariant>('assist');
   readonly icon = input<string>();
+  /** A leading 24px round image (matChipAvatar), e.g. a person photo. */
+  readonly avatar = input<string>();
+  /** Alternative text of the avatar image (empty: decorative). */
+  readonly avatarAlt = input('');
   readonly selected = model(false);
   readonly disabled = input(false, { transform: booleanAttribute });
   readonly highlighted = input(false, { transform: booleanAttribute });

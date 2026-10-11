@@ -137,6 +137,11 @@
   color: transparent;
 }
 
+/* Components that float the label for their placeholder (NullText) keep it visible. */
+.pb-form-field--has-label.pb-form-field--floating .pb-form-field__control::placeholder {
+  color: var(--md-sys-color-on-surface-variant);
+}
+
 /* Native date/time inputs: hide the browser's own picker glyph (PBDatepicker/PBTimepicker add an
    M3 toggle button instead) and keep their segment text on-surface. */
 .pb-form-field__control::-webkit-calendar-picker-indicator {

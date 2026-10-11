@@ -1,30 +1,310 @@
-<mat-chip-set>
-  @for (chip of chips(); track chip) {
-    @switch (chip.variant()) {
-      @case ('filter') {
-        <mat-chip-option
-          [selected]="chip.selected()"
-          [disabled]="chip.disabled()"
-          [highlighted]="chip.highlighted()"
-          (selectionChange)="chip.selected.set($event.selected)"
-        >
-          @if (chip.icon(); as name) { <mat-icon matChipAvatar>{{ name }}</mat-icon> }
-          <ng-container [ngTemplateOutlet]="chip.template()" />
-        </mat-chip-option>
+@if (!tagBox()) {
+  @if (selectable()) {
+    <mat-chip-listbox
+      [multiple]="multiple()"
+      [class.mat-mdc-chip-set-stacked]="stacked()"
+      [attr.aria-label]="label() ?? null"
+      cdkDropList
+      cdkDropListOrientation="mixed"
+      [cdkDropListDisabled]="!reorderable()"
+      (cdkDropListDropped)="drop($event)"
+    >
+      @for (chip of chips(); track chip) {
+        @switch (chip.variant()) {
+          @case ('filter') {
+            <mat-chip-option
+              cdkDrag
+              [cdkDragDisabled]="!reorderable()"
+              [selected]="chip.selected()"
+              [disabled]="chip.disabled()"
+              [highlighted]="chip.highlighted()"
+              (selectionChange)="chip.selected.set($event.selected)"
+            >
+              @if (chip.avatar(); as src) {
+                <img matChipAvatar [src]="src" [alt]="chip.avatarAlt()" />
+              } @else if (chip.icon(); as name) {
+                <mat-icon matChipAvatar>{{ name }}</mat-icon>
+              }
+              <ng-container [ngTemplateOutlet]="chip.template()" />
+            </mat-chip-option>
+          }
+          @case ('input') {
+            <mat-chip cdkDrag [cdkDragDisabled]="!reorderable()" [disabled]="chip.disabled()" [highlighted]="chip.highlighted()" (removed)="chip.removed.emit()">
+              @if (chip.avatar(); as src) {
+                <img matChipAvatar [src]="src" [alt]="chip.avatarAlt()" />
+              } @else if (chip.icon(); as name) {
+                <mat-icon matChipAvatar>{{ name }}</mat-icon>
+              }
+              <ng-container [ngTemplateOutlet]="chip.template()" />
+              <button matChipRemove aria-label="Remove"><mat-icon>cancel</mat-icon></button>
+            </mat-chip>
+          }
+          @default {
+            <mat-chip
+              cdkDrag
+              [cdkDragDisabled]="!reorderable()"
+              [disabled]="chip.disabled()"
+              [highlighted]="chip.highlighted()"
+              (click)="chip.chipClick.emit($event)"
+            >
+              @if (chip.avatar(); as src) {
+                <img matChipAvatar [src]="src" [alt]="chip.avatarAlt()" />
+              } @else if (chip.icon(); as name) {
+                <mat-icon matChipAvatar>{{ name }}</mat-icon>
+              }
+              <ng-container [ngTemplateOutlet]="chip.template()" />
+            </mat-chip>
+          }
+        }
       }
-      @case ('input') {
-        <mat-chip [disabled]="chip.disabled()" [highlighted]="chip.highlighted()" (removed)="chip.removed.emit()">
-          @if (chip.icon(); as name) { <mat-icon matChipAvatar>{{ name }}</mat-icon> }
-          <ng-container [ngTemplateOutlet]="chip.template()" />
-          <button matChipRemove aria-label="Remove"><mat-icon>cancel</mat-icon></button>
-        </mat-chip>
+    </mat-chip-listbox>
+  } @else {
+    <mat-chip-set
+      [class.mat-mdc-chip-set-stacked]="stacked()"
+      [attr.aria-label]="label() ?? null"
+      cdkDropList
+      [cdkDropListOrientation]="stacked() ? 'vertical' : 'mixed'"
+      [cdkDropListDisabled]="!reorderable()"
+      (cdkDropListDropped)="drop($event)"
+    >
+      @for (chip of chips(); track chip) {
+        @switch (chip.variant()) {
+          @case ('filter') {
+            <mat-chip-option
+              cdkDrag
+              [cdkDragDisabled]="!reorderable()"
+              [selected]="chip.selected()"
+              [disabled]="chip.disabled()"
+              [highlighted]="chip.highlighted()"
+              (selectionChange)="chip.selected.set($event.selected)"
+            >
+              @if (chip.avatar(); as src) {
+                <img matChipAvatar [src]="src" [alt]="chip.avatarAlt()" />
+              } @else if (chip.icon(); as name) {
+                <mat-icon matChipAvatar>{{ name }}</mat-icon>
+              }
+              <ng-container [ngTemplateOutlet]="chip.template()" />
+            </mat-chip-option>
+          }
+          @case ('input') {
+            <mat-chip cdkDrag [cdkDragDisabled]="!reorderable()" [disabled]="chip.disabled()" [highlighted]="chip.highlighted()" (removed)="chip.removed.emit()">
+              @if (chip.avatar(); as src) {
+                <img matChipAvatar [src]="src" [alt]="chip.avatarAlt()" />
+              } @else if (chip.icon(); as name) {
+                <mat-icon matChipAvatar>{{ name }}</mat-icon>
+              }
+              <ng-container [ngTemplateOutlet]="chip.template()" />
+              <button matChipRemove aria-label="Remove"><mat-icon>cancel</mat-icon></button>
+            </mat-chip>
+          }
+          @default {
+            <mat-chip
+              cdkDrag
+              [cdkDragDisabled]="!reorderable()"
+              [disabled]="chip.disabled()"
+              [highlighted]="chip.highlighted()"
+              (click)="chip.chipClick.emit($event)"
+            >
+              @if (chip.avatar(); as src) {
+                <img matChipAvatar [src]="src" [alt]="chip.avatarAlt()" />
+              } @else if (chip.icon(); as name) {
+                <mat-icon matChipAvatar>{{ name }}</mat-icon>
+              }
+              <ng-container [ngTemplateOutlet]="chip.template()" />
+            </mat-chip>
+          }
+        }
       }
-      @default {
-        <mat-chip [disabled]="chip.disabled()" [highlighted]="chip.highlighted()" (click)="chip.chipClick.emit($event)">
-          @if (chip.icon(); as name) { <mat-icon matChipAvatar>{{ name }}</mat-icon> }
-          <ng-container [ngTemplateOutlet]="chip.template()" />
-        </mat-chip>
-      }
-    }
+    </mat-chip-set>
   }
-</mat-chip-set>
+} @else {
+  <mat-form-field class="pb-chips-field" [appearance]="appearance()" [floatLabel]="floatLabel()">
+    @if (label(); as text) {
+      <mat-label>{{ text }}</mat-label>
+    }
+    <mat-chip-grid
+      #grid
+      [disabled]="isDisabled()"
+      [required]="required()"
+      [errorStateMatcher]="errorStateMatcher"
+      [attr.aria-label]="label() ?? 'Tags'"
+      cdkDropList
+      cdkDropListOrientation="mixed"
+      [cdkDropListDisabled]="!reorderable() || !interactive()"
+      (cdkDropListDropped)="drop($event)"
+    >
+      @for (tag of tagList(); track tag.key; let i = $index) {
+        @if (tagTemplate(); as template) {
+          <mat-chip-row
+            class="pb-chips__tag-row"
+            cdkDrag
+            [cdkDragDisabled]="!reorderable() || !interactive()"
+            [removable]="interactive()"
+            [attr.aria-label]="tag.text"
+            (removed)="removeTag(i)"
+          >
+            <ng-container [ngTemplateOutlet]="template.template" [ngTemplateOutletContext]="tagContext(i)" />
+          </mat-chip-row>
+        } @else {
+          <mat-chip-row
+            cdkDrag
+            [cdkDragDisabled]="!reorderable() || !interactive()"
+            [editable]="canEdit(tag)"
+            [removable]="interactive()"
+            (removed)="removeTag(i)"
+            (edited)="onEdited(i, $event.value)"
+          >
+            @if (canEdit(tag)) {
+              <button matChipEdit [attr.aria-label]="'Edit ' + tag.text"><mat-icon>edit</mat-icon></button>
+            }
+            {{ tag.text }}
+            @if (interactive()) {
+              <button matChipRemove [attr.aria-label]="'Remove ' + tag.text"><mat-icon>cancel</mat-icon></button>
+            }
+          </mat-chip-row>
+        }
+      }
+      <input
+        #chipInput
+        [id]="id + '-input'"
+        [matChipInputFor]="grid"
+        [matChipInputSeparatorKeyCodes]="[]"
+        [placeholder]="placeholder()"
+        [readonly]="readOnly()"
+        autocomplete="off"
+        role="combobox"
+        aria-autocomplete="list"
+        aria-haspopup="listbox"
+        [attr.aria-expanded]="panelVisible()"
+        [attr.aria-controls]="panelVisible() ? panelId : null"
+        [attr.aria-activedescendant]="activeDescendant()"
+        (focus)="onFocus()"
+        (blur)="onBlur()"
+        (input)="onInput($event)"
+        (keydown)="onKeydown($event)"
+        (click)="openPanel()"
+      />
+    </mat-chip-grid>
+    @if (clearVisible()) {
+      <button matIconButton matSuffix type="button" class="pb-chips__clear" aria-label="Clear" (click)="clear()">
+        <mat-icon>close</mat-icon>
+      </button>
+    }
+    @if (dropDownButtonVisible()) {
+      <button
+        matIconButton
+        matSuffix
+        type="button"
+        tabindex="-1"
+        class="pb-chips__toggle"
+        [class.pb-chips__toggle--open]="panelVisible()"
+        aria-label="Show suggestions"
+        [attr.aria-expanded]="panelVisible()"
+        [disabled]="!interactive()"
+        (mousedown)="$event.preventDefault()"
+        (click)="toggleFromButton()"
+      >
+        <mat-icon>arrow_drop_down</mat-icon>
+      </button>
+    }
+    @if (errorText(); as text) {
+      <mat-error>{{ text }}</mat-error>
+    } @else if (supportingText(); as text) {
+      <mat-hint>{{ text }}</mat-hint>
+    }
+  </mat-form-field>
+
+  @if (overlayOrigin(); as origin) {
+    <ng-template
+      cdkConnectedOverlay
+      [cdkConnectedOverlayOrigin]="origin"
+      [cdkConnectedOverlayOpen]="panelVisible()"
+      [cdkConnectedOverlayPositions]="positions"
+      [cdkConnectedOverlayWidth]="overlayWidth() ?? ''"
+      [cdkConnectedOverlayMinWidth]="overlayMinWidth() ?? ''"
+      (overlayOutsideClick)="onOutsideClick($event)"
+      (detach)="close()"
+    >
+      <div
+        #panel
+        [id]="panelId"
+        class="pb-chips-panel"
+        [class.pb-chips-panel--editor-width]="dropDownWidthMode() === 'editorWidth'"
+        role="listbox"
+        aria-multiselectable="true"
+        [attr.aria-label]="label() ?? 'Options'"
+        (mousedown)="$event.preventDefault()"
+        (scroll)="onPanelScroll($event)"
+      >
+        @if (visibleColumns().length && !itemTemplate()) {
+          <div class="pb-chips__columns-header" role="presentation" [style.grid-template-columns]="columnTemplate()">
+            @for (column of visibleColumns(); track column) {
+              <span class="pb-chips__column-caption">{{ column.caption() ?? column.fieldName() }}</span>
+            }
+          </div>
+        }
+        @if (rows().length === 0) {
+          <div class="pb-chips__empty" role="presentation">
+            @if (emptyTemplate(); as template) {
+              <ng-container [ngTemplateOutlet]="template.template" [ngTemplateOutletContext]="{ $implicit: { isDataLoading: loading() } }" />
+            } @else {
+              {{ loading() ? 'Loading…' : 'No data to display' }}
+            }
+          </div>
+        } @else {
+          <div class="pb-chips__rows" [style.height.px]="virtual() ? rows().length * itemSize() : null">
+            <div class="pb-chips__window" [style.transform]="virtual() ? 'translateY(' + renderedRange().start * itemSize() + 'px)' : null">
+              @for (row of renderedRange().rows; track row.index) {
+                @if (row.kind === 'group') {
+                  <div class="pb-chips__group" role="presentation" [style.height.px]="virtual() ? itemSize() : null">
+                    @if (groupHeaderTemplate(); as template) {
+                      <ng-container [ngTemplateOutlet]="template.template" [ngTemplateOutletContext]="{ $implicit: { groupName: row.group } }" />
+                    } @else {
+                      {{ row.group }}
+                    }
+                  </div>
+                } @else {
+                  <div
+                    [id]="panelId + '-' + row.index"
+                    role="option"
+                    class="pb-chips__option"
+                    [class.pb-chips__option--active]="row.index === activeRow()"
+                    [class.pb-chips__option--selected]="row.selected"
+                    [class.pb-chips__option--disabled]="row.disabled"
+                    [class.pb-chips__option--grouped]="!!groupFieldName()"
+                    [attr.aria-selected]="row.selected"
+                    [attr.aria-disabled]="row.disabled || null"
+                    [style.height.px]="virtual() ? itemSize() : null"
+                    (mousedown)="setActive(row.index); selectRow(row.index)"
+                    (mouseenter)="!row.disabled && setActive(row.index)"
+                  >
+                    @if (itemTemplate(); as template) {
+                      <ng-container [ngTemplateOutlet]="template.template" [ngTemplateOutletContext]="itemContext(row)" />
+                    } @else if (visibleColumns().length) {
+                      <span class="pb-chips__cells" [style.grid-template-columns]="columnTemplate()">
+                        @for (column of visibleColumns(); track column) {
+                          <span class="pb-chips__cell">
+                            @if (column.cellTemplate(); as cell) {
+                              <ng-container [ngTemplateOutlet]="cell.template" [ngTemplateOutletContext]="cellContext(row, column)" />
+                            } @else {
+                              <pb-chips-highlight [segments]="highlight(cellText(row, column))" />
+                            }
+                          </span>
+                        }
+                      </span>
+                    } @else {
+                      <span class="pb-chips__option-text"><pb-chips-highlight [segments]="highlight(textOf(row.item))" /></span>
+                    }
+                    @if (row.selected) {
+                      <span class="pb-chips__check" aria-hidden="true"></span>
+                    }
+                  </div>
+                }
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </ng-template>
+  }
+}

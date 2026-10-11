@@ -20,6 +20,12 @@ public partial class PBChip : WorkspaceComponentBase
     /// <summary>Leading 18px icon (matChipAvatar / leading icon).</summary>
     [Parameter] public RenderFragment? Icon { get; set; }
 
+    /// <summary>A leading 24px round image (matChipAvatar), e.g. a person photo.</summary>
+    [Parameter] public string? AvatarSrc { get; set; }
+
+    /// <summary>Alternative text of the avatar image (empty: decorative).</summary>
+    [Parameter] public string? AvatarAlt { get; set; }
+
     /// <summary>Shows a trailing remove button (matChipRemove).</summary>
     [Parameter] public bool Removable { get; set; }
 
@@ -35,14 +41,15 @@ public partial class PBChip : WorkspaceComponentBase
 
     private bool IsInteractive => Variant == PBChipVariant.Filter || OnClick.HasDelegate;
 
-    private bool HasGraphic => Icon is not null || Variant == PBChipVariant.Filter;
+    private bool HasGraphic => Icon is not null || AvatarSrc is not null || Variant == PBChipVariant.Filter;
 
     private string HostRole => Variant == PBChipVariant.Filter ? "option" : "listitem";
 
     private string CssClass =>
         "pb-chip pb-chip--" + Variant.ToString().ToLowerInvariant()
         + (HasGraphic ? " pb-chip--with-graphic" : "")
-        + (Icon is not null ? " pb-chip--with-icon" : "")
+        + (Icon is not null || AvatarSrc is not null ? " pb-chip--with-icon" : "")
+        + (AvatarSrc is not null ? " pb-chip--with-avatar" : "")
         + (Removable ? " pb-chip--with-trailing" : "")
         + (Selected && Variant == PBChipVariant.Filter ? " pb-chip--selected" : "")
         + (Highlighted ? " pb-chip--highlighted" : "")

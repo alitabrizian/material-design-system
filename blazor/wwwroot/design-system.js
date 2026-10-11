@@ -103,7 +103,7 @@ function resolveAnchor(panel, anchor, options) {
  * Shows `panel` in the top layer (Popover API, so no ancestor's overflow or z-index can clip it)
  * and positions it next to `anchor`, like the CDK's FlexibleConnectedPositionStrategy.
  * options: {
- *   x: "start" | "end", y: "below" | "above", overlap: bool, matchWidth: bool, offset: px,
+ *   x: "start" | "end", y: "below" | "above", overlap: bool, matchWidth: bool, minWidth: bool, offset: px,
  *   anchorClosest / anchorSelector: find the anchor relative to the panel instead,
  *   dotNet + closeMethod: invoked when the user presses the pointer outside panel and anchor
  * }
@@ -141,6 +141,7 @@ export function position(panel, anchor, options = {}) {
     }
     const a = anchor.getBoundingClientRect();
     if (options.matchWidth) panel.style.width = `${a.width}px`;
+    if (options.minWidth) panel.style.minWidth = `${a.width}px`;
     const p = overlaySize(panel);
     const vp = viewport();
     const margin = 8;
@@ -179,6 +180,11 @@ export function position(panel, anchor, options = {}) {
   window.addEventListener("scroll", listener, true);
   document.addEventListener("pointerdown", outside, true);
   positioned.set(panel, { listener, outside });
+}
+
+/** Places a panel shown by position() again, e.g. after its content or its anchor changed size. */
+export function reposition(panel) {
+  positioned.get(panel)?.listener();
 }
 
 export function unposition(panel) {
@@ -1293,4 +1299,213 @@ export function dateMaskDispose(input) {
   clearTimeout(state.timer);
   for (const [name, handler] of Object.entries(state.handlers)) input.removeEventListener(name, handler);
   masks.delete(input);
+}
+
+// ---------------------------------------------------------------------------------- chips
+
+const chipStates = new WeakMap();
+const chipSelector = ":scope > [data-chip]";
+
+/** The chips (input chips or tag templates) of a PBChips tag box, in order. */
+function gridChips(root) {
+  const grid = root?.querySelector(".pb-chip-grid");
+  return grid ? [...grid.querySelectorAll(chipSelector)] : [];
+}
+
+/**
+ * PBChips tag box keyboard handling (mat-chip-grid): `preventKeys` (separators like ",") never reach
+ * the input text; Enter does not submit forms while there is text or an open list; Left/Backspace at
+ * the start of the input move to the last chip; Left/Right/Home/End move between chips.
+ */
+export function chipsInit(root, input, preventKeys) {
+  if (!root || !input || chipStates.has(root)) return;
+  const onInputKey = (event) => {
+    if (event.altKey || event.ctrlKey || event.metaKey) return;
+    const key = event.key;
+    if (preventKeys.includes(key)) {
+      event.preventDefault();
+      return;
+    }
+    if (key === "Enter" && (input.value.trim() !== "" || input.getAttribute("aria-expanded") === "true")) event.preventDefault();
+    if (key === "ArrowDown" || key === "ArrowUp") event.preventDefault();
+    if ((key === "ArrowLeft" || key === "Backspace") && input.selectionStart === 0 && input.selectionEnd === 0) {
+      const chips = gridChips(root);
+      if (chips.length) {
+        event.preventDefault();
+        chips[chips.length - 1].focus();
+      }
+    }
+  };
+  const onChipKey = (event) => {
+    const chip = event.target;
+    if (!(chip instanceof HTMLElement) || !chip.matches("[data-chip]") || chip.tagName === "INPUT") return;
+    const chips = gridChips(root);
+    const index = chips.indexOf(chip);
+    let next = null;
+    switch (event.key) {
+      case "ArrowLeft": next = chips[Math.max(0, index - 1)]; break;
+      case "ArrowRight": next = chips[index + 1] ?? input; break;
+      case "Home": next = chips[0]; break;
+      case "End": next = input; break;
+      case "Backspace": case "Delete": case "Enter": event.preventDefault(); return;
+      default: return;
+    }
+    event.preventDefault();
+    next?.focus();
+  };
+  input.addEventListener("keydown", onInputKey);
+  root.addEventListener("keydown", onChipKey);
+  chipStates.set(root, { input, onInputKey, onChipKey });
+}
+
+export function chipsDispose(root) {
+  const state = chipStates.get(root);
+  if (!state) return;
+  state.input.removeEventListener("keydown", state.onInputKey);
+  root.removeEventListener("keydown", state.onChipKey);
+  chipStates.delete(root);
+}
+
+/** Focuses chip `index` of a tag box, or its input when there is no such chip. */
+export function chipsFocusTag(root, index) {
+  const chips = gridChips(root);
+  (index >= 0 && index < chips.length ? chips[index] : root?.querySelector(".pb-chip-input"))?.focus();
+}
+
+/** Focuses (and selects) the text of the chip being edited. */
+export function chipsFocusEdit(root) {
+  const input = root?.querySelector(".pb-chip__edit-input");
+  input?.focus();
+  input?.select();
+}
+
+/** Scrolls a list so a row at `top` (px from the first row) of `height` is visible (virtual lists). */
+export function scrollRowIntoView(panel, top, height) {
+  if (!panel) return;
+  const header = panel.querySelector(".pb-chips__columns-header");
+  const headerHeight = header ? header.offsetHeight : 0;
+  const rowTop = parseFloat(getComputedStyle(panel).paddingTop) + headerHeight + top;
+  if (rowTop - headerHeight < panel.scrollTop) panel.scrollTop = rowTop - headerHeight;
+  else if (rowTop + height > panel.scrollTop + panel.clientHeight) panel.scrollTop = rowTop + height - panel.clientHeight;
+}
+
+const reorderStates = new WeakMap();
+
+/**
+ * Drag-and-drop reordering of a chip set or a tag box's chips (cdkDropList with mixed orientation):
+ * the chip follows the pointer as a lifted preview, an insertion bar marks the drop position, and
+ * `dotNet.OnChipDrop(oldIndex, newIndex)` reports the move. Escape cancels.
+ */
+export function chipsReorderInit(root, dotNet) {
+  if (!root || reorderStates.has(root)) return;
+  const container = root.classList.contains("pb-chip-set") ? root : root.querySelector(".pb-chip-grid");
+  if (!container) return;
+  const chipsOf = () => [...container.children].filter((el) => el.matches("[data-chip], .pb-chip"));
+  let drag = null;
+
+  const clearMarks = () => container.querySelectorAll(".pb-chip--drop-before, .pb-chip--drop-after")
+    .forEach((el) => el.classList.remove("pb-chip--drop-before", "pb-chip--drop-after"));
+
+  const finish = (drop) => {
+    const d = drag;
+    drag = null;
+    if (!d?.active) return;
+    clearMarks();
+    d.preview.remove();
+    d.chip.classList.remove("pb-chip--drag-placeholder");
+    container.classList.remove("pb-chip-set--dragging");
+    const swallow = (event) => { event.stopPropagation(); event.preventDefault(); };
+    window.addEventListener("click", swallow, { capture: true, once: true });
+    setTimeout(() => window.removeEventListener("click", swallow, { capture: true }), 0);
+    if (drop && d.to != null && d.to !== d.from) dotNet.invokeMethodAsync("OnChipDrop", d.from, d.to);
+  };
+
+  const start = (event) => {
+    const rect = drag.chip.getBoundingClientRect();
+    drag.active = true;
+    drag.from = chipsOf().indexOf(drag.chip);
+    drag.to = drag.from;
+    drag.offsetX = event.clientX - rect.left;
+    drag.offsetY = event.clientY - rect.top;
+    drag.vertical = getComputedStyle(container).flexDirection === "column";
+    const preview = drag.chip.cloneNode(true);
+    preview.classList.add("pb-chip-drag-preview");
+    preview.removeAttribute("id");
+    preview.setAttribute("aria-hidden", "true");
+    preview.style.width = `${rect.width}px`;
+    preview.style.height = `${rect.height}px`;
+    document.body.appendChild(preview);
+    drag.preview = preview;
+    drag.chip.classList.add("pb-chip--drag-placeholder");
+    container.classList.add("pb-chip-set--dragging");
+  };
+
+  const target = (x, y) => {
+    const chips = chipsOf();
+    let best = null;
+    let bestDistance = Infinity;
+    for (const chip of chips) {
+      const r = chip.getBoundingClientRect();
+      const distance = Math.hypot(x - Math.max(r.left, Math.min(x, r.right)), y - Math.max(r.top, Math.min(y, r.bottom)));
+      if (distance < bestDistance) {
+        bestDistance = distance;
+        best = chip;
+      }
+    }
+    clearMarks();
+    if (!best) return;
+    const r = best.getBoundingClientRect();
+    const rtl = getComputedStyle(container).direction === "rtl";
+    const after = drag.vertical ? y > r.top + r.height / 2 : (x > r.left + r.width / 2) !== rtl;
+    let to = chips.indexOf(best) + (after ? 1 : 0);
+    if (to > drag.from) to -= 1;
+    drag.to = to;
+    if (best !== drag.chip) best.classList.add(after ? "pb-chip--drop-after" : "pb-chip--drop-before");
+  };
+
+  const down = (event) => {
+    if (event.button !== 0) return;
+    const chip = event.target.closest("[data-chip], .pb-chip");
+    if (!chip || chip.parentElement !== container) return;
+    if (event.target.closest(".pb-chip__remove, input, .pb-chip--editing") || chip.matches(".pb-chip--disabled")) return;
+    drag = { chip, pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, active: false };
+  };
+  const move = (event) => {
+    if (!drag || event.pointerId !== drag.pointerId) return;
+    if (!drag.active) {
+      if (Math.hypot(event.clientX - drag.startX, event.clientY - drag.startY) < 5) return;
+      start(event);
+    }
+    event.preventDefault();
+    drag.preview.style.transform = `translate(${event.clientX - drag.offsetX}px, ${event.clientY - drag.offsetY}px)`;
+    target(event.clientX, event.clientY);
+  };
+  const up = (event) => {
+    if (drag && event.pointerId === drag.pointerId) finish(true);
+  };
+  const cancel = () => finish(false);
+  const key = (event) => {
+    if (event.key === "Escape" && drag?.active) {
+      event.preventDefault();
+      finish(false);
+    }
+  };
+
+  container.addEventListener("pointerdown", down);
+  window.addEventListener("pointermove", move);
+  window.addEventListener("pointerup", up);
+  window.addEventListener("pointercancel", cancel);
+  window.addEventListener("keydown", key, true);
+  reorderStates.set(root, { container, down, move, up, cancel, key });
+}
+
+export function chipsReorderDispose(root) {
+  const state = reorderStates.get(root);
+  if (!state) return;
+  state.container.removeEventListener("pointerdown", state.down);
+  window.removeEventListener("pointermove", state.move);
+  window.removeEventListener("pointerup", state.up);
+  window.removeEventListener("pointercancel", state.cancel);
+  window.removeEventListener("keydown", state.key, true);
+  reorderStates.delete(root);
 }

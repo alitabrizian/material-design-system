@@ -1,3 +1,4 @@
+@namespace PartoBita.DesignSystem.Blazor.Components
 @inherits WorkspaceComponentBase
 <span class="@CssClass @UserClass" role="@HostRole" aria-selected="@(Variant == PBChipVariant.Filter ? (Selected ? "true" : "false") : null)"
       @attributes="Attrs">
@@ -27,7 +28,11 @@
 
 @code {
     private RenderFragment? Graphic => HasGraphic ? @<span class="pb-chip__graphic" aria-hidden="true">
-            @if (Icon is not null)
+            @if (AvatarSrc is not null)
+            {
+                <img class="pb-chip__avatar" src="@AvatarSrc" alt="@(AvatarAlt ?? string.Empty)" />
+            }
+            else if (Icon is not null)
             {
                 <span class="pb-chip__icon pb-icon-slot">@Icon</span>
             }

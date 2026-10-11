@@ -1,0 +1,224 @@
+@namespace PartoBita.DesignSystem.Blazor.Components
+@typeparam TItem
+@typeparam TValue
+@inherits WorkspaceFieldComponentBase
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@if (!TagBox)
+{
+    <div @ref="root" class="pb-chip-set @(Stacked ? "pb-chip-set--stacked" : null) @(Reorderable ? "pb-chip-set--reorderable" : null) @UserClass"
+         role="@(Selectable ? "listbox" : "list")" aria-label="@Label"
+         aria-multiselectable="@(Selectable ? (Multiple ? "true" : "false") : null)" @attributes="Attrs">
+        @ChildContent
+    </div>
+}
+else
+{
+    <div @ref="root" class="pb-chips">
+        <CascadingValue Value="(IPBChipsColumnOwner)this" IsFixed="true">@Columns</CascadingValue>
+        <FormFieldFrame Appearance="Appearance" Label="@Label" LabelFor="@ControlId" HasError="@(ErrorMessage is not null)" HintText="@Hint"
+                        Disabled="IsDisabled" Required="IsRequired" Floating="Floating" Block="Block" Prefix="Prefix"
+                        Suffix="@(SuffixVisible ? SuffixContent : null)" ExtraClass="@("pb-chips-field " + UserClass)">
+            <Control>
+                <div class="pb-chip-grid @(Reorderable ? "pb-chip-set--reorderable" : null)" role="grid" aria-label="@(Label ?? "Tags")"
+                     aria-disabled="@(IsDisabled ? "true" : null)" @onclick="FocusInputAsync">
+                    @for (var i = 0; i < tags.Count; i++)
+                    {
+                        var index = i;
+                        var tag = tags[i];
+                        @if (editingIndex == index)
+                        {
+                            <span class="pb-chip pb-chip--input pb-chip--editing" role="row" data-chip>
+                                <span role="gridcell" class="pb-chip__action">
+                                    <input class="pb-chip__edit-input" value="@editInitial" aria-label="@($"Edit {tag.Text}")" size="@Math.Max(editText.Length, 1)"
+                                           @oninput="e => editText = e.Value?.ToString() ?? string.Empty" @onkeydown="OnEditKeyDownAsync" @onblur="CommitEditAsync"
+                                           @onclick:stopPropagation="true" />
+                                </span>
+                            </span>
+                        }
+                        else if (TagDisplayTemplate is not null)
+                        {
+                            <span class="pb-chips__tag" role="row" tabindex="-1" data-chip aria-label="@tag.Text"
+                                  @onkeydown="e => OnTagKeyDownAsync(e, index)" @onclick:stopPropagation="true">
+                                @TagDisplayTemplate(TagContext(index))
+                            </span>
+                        }
+                        else
+                        {
+                            var editable = CanEdit(tag);
+                            <span class="pb-chip pb-chip--input @(Interactive ? "pb-chip--with-trailing" : null) @(editable ? "pb-chip--with-graphic pb-chip--editable" : null) @(IsDisabled ? "pb-chip--disabled" : null)"
+                                  role="row" tabindex="-1" data-chip aria-label="@tag.Text"
+                                  @onkeydown="e => OnTagKeyDownAsync(e, index)" @ondblclick="() => StartEdit(index)" @onclick:stopPropagation="true">
+                                <span class="pb-chip__focus-overlay" aria-hidden="true"></span>
+                                <span role="gridcell" class="pb-chip__action">
+                                    @if (editable)
+                                    {
+                                        <button type="button" class="pb-chip__graphic pb-chip__edit" tabindex="-1" aria-label="@($"Edit {tag.Text}")"
+                                                @onclick="() => StartEdit(index)">
+                                            <span class="material-icons pb-chip__icon" aria-hidden="true">edit</span>
+                                        </button>
+                                    }
+                                    <span class="pb-chip__label">@tag.Text</span>
+                                </span>
+                                @if (Interactive)
+                                {
+                                    <span role="gridcell">
+                                        <button type="button" class="pb-chip__remove" tabindex="-1" aria-label="@($"Remove {tag.Text}")"
+                                                @onclick="() => RemoveTagAsync(index)">
+                                            <span class="material-icons" aria-hidden="true">cancel</span>
+                                        </button>
+                                    </span>
+                                }
+                            </span>
+                        }
+                    }
+                    <input @ref="inputRef" id="@ControlId" class="pb-form-field__control pb-chip-input" type="text" autocomplete="off"
+                           value="@text" placeholder="@(tags.Count == 0 ? NullText ?? " " : " ")"
+                           readonly="@ReadOnly" disabled="@IsDisabled" required="@(IsRequired && tags.Count == 0)"
+                           role="combobox" aria-autocomplete="list" aria-haspopup="listbox"
+                           aria-expanded="@(PanelVisible ? "true" : "false")" aria-controls="@(PanelVisible ? PanelId : null)"
+                           aria-activedescendant="@ActiveDescendant"
+                           aria-invalid="@(ErrorMessage is not null ? "true" : null)"
+                           aria-describedby="@(Hint is null ? null : ControlId + "-hint")"
+                           @onfocus="OnFocus" @onblur="OnBlur" @oninput="OnInputAsync" @onkeydown="OnKeyDownAsync"
+                           @onclick="Open" @attributes="Attrs" />
+                </div>
+
+                @if (PanelVisible)
+                {
+                    <div @ref="panel" id="@PanelId" class="pb-option-panel pb-chips__panel pb-overlay pb-overlay--pending @WidthClass"
+                         popover="manual" role="listbox" aria-multiselectable="true" aria-label="@(Label ?? "Options")"
+                         @onmousedown:preventDefault="true">
+                        @if (VisibleColumns.Count > 0 && ItemDisplayTemplate is null)
+                        {
+                            <div class="pb-chips__columns-header" style="grid-template-columns: @ColumnTemplate" role="presentation">
+                                @foreach (var column in VisibleColumns)
+                                {
+                                    <span class="pb-chips__column-caption">@(column.Caption ?? column.FieldName)</span>
+                                }
+                            </div>
+                        }
+                        @if (rows.Count == 0)
+                        {
+                            <div class="pb-chips__empty" role="presentation">
+                                @if (EmptyDataAreaTemplate is not null)
+                                {
+                                    @EmptyDataAreaTemplate(new PBChipsEmptyDataAreaContext(dataLoading))
+                                }
+                                else
+                                {
+                                    @(dataLoading ? "Loading…" : "No data to display")
+                                }
+                            </div>
+                        }
+                        else if (ListRenderMode == PBListRenderMode.Virtual)
+                        {
+                            <Virtualize Items="rows" ItemSize="ItemSize" OverscanCount="6" Context="row">
+                                @RowContent(row)
+                            </Virtualize>
+                        }
+                        else
+                        {
+                            @foreach (var row in rows)
+                            {
+                                @RowContent(row)
+                            }
+                        }
+                    </div>
+                }
+            </Control>
+        </FormFieldFrame>
+    </div>
+}
+
+@code {
+    private bool ClearVisible => ClearButtonDisplayMode == PBClearButtonDisplayMode.Auto && tags.Count > 0 && Interactive;
+
+    private bool SuffixVisible => ClearVisible || DropDownButtonVisible || Suffix is not null;
+
+    private string? WidthClass => DropDownWidthMode switch
+    {
+        PBDropDownWidthMode.EditorWidth => "pb-chips__panel--editor-width",
+        PBDropDownWidthMode.ContentWidth => "pb-chips__panel--content-width",
+        _ => null,
+    };
+
+    private RenderFragment SuffixContent => @<text>
+        @if (ClearVisible)
+        {
+            <PBButton Variant="PBButtonVariant.Icon" class="pb-chips__clear" aria-label="Clear" @onclick="ClearAsync">
+                <span class="material-icons" aria-hidden="true">close</span>
+            </PBButton>
+        }
+        @if (DropDownButtonVisible)
+        {
+            <span class="pb-chips__toggle-host" @onmousedown:preventDefault="true">
+                <PBButton Variant="PBButtonVariant.Icon" class="@($"pb-chips__toggle {(PanelVisible ? "pb-chips__toggle--open" : null)}")"
+                          Disabled="!Interactive" aria-label="Show suggestions" aria-expanded="@(PanelVisible ? "true" : "false")"
+                          aria-controls="@(PanelVisible ? PanelId : null)" tabindex="-1" @onclick="ToggleFromButtonAsync">
+                    <span class="material-icons" aria-hidden="true">arrow_drop_down</span>
+                </PBButton>
+            </span>
+        }
+        @Suffix
+    </text>;
+
+    private RenderFragment RowContent(Row row) => @<text>
+        @if (row.Kind == RowKind.Group)
+        {
+            <div class="pb-chips__group" role="presentation" style="@GroupStyle">
+                @if (GroupHeaderDisplayTemplate is not null)
+                {
+                    @GroupHeaderDisplayTemplate(new PBChipsGroupContext(row.Group ?? ""))
+                }
+                else
+                {
+                    @row.Group
+                }
+            </div>
+        }
+        else
+        {
+            var index = row.Index;
+            var active = index == activeRow;
+            <div id="@OptionId(index)" role="option" aria-selected="@(row.Selected ? "true" : "false")" aria-disabled="@(row.ItemDisabled ? "true" : null)"
+                 class="pb-option pb-chips__option @(active ? "pb-option--active" : null) @(row.Selected ? "pb-option--selected" : null) @(row.ItemDisabled ? "pb-option--disabled" : null) @(GroupFieldName is null ? null : "pb-chips__option--grouped")"
+                 style="@RowStyle"
+                 @onmousedown="() => OnOptionMouseDownAsync(index)" @onmouseenter="() => { if (!row.ItemDisabled) activeRow = index; }">
+                @if (ItemDisplayTemplate is not null)
+                {
+                    @ItemDisplayTemplate(ItemContext(row))
+                }
+                else if (VisibleColumns.Count > 0)
+                {
+                    <span class="pb-chips__cells" style="grid-template-columns: @ColumnTemplate">
+                        @foreach (var column in VisibleColumns)
+                        {
+                            <span class="pb-chips__cell">
+                                @if (column.CellDisplayTemplate is not null)
+                                {
+                                    @column.CellDisplayTemplate(CellContext(row, column))
+                                }
+                                else
+                                {
+                                    @Highlight(Format(Field(row.Item, column.FieldName)))
+                                }
+                            </span>
+                        }
+                    </span>
+                }
+                else
+                {
+                    <span class="pb-option__text">@Highlight(TextOf(row.Item))</span>
+                }
+                @if (row.Selected)
+                {
+                    <span class="pb-option__check" aria-hidden="true"></span>
+                }
+            </div>
+        }
+    </text>;
+
+    private string? RowStyle => ListRenderMode == PBListRenderMode.Virtual ? $"height: {ItemSize.ToString(System.Globalization.CultureInfo.InvariantCulture)}px" : null;
+
+    private string? GroupStyle => RowStyle;
+}
