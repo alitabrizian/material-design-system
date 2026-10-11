@@ -1130,8 +1130,8 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
   }
 
   protected groupContext(group: GridGroup<T>): PbGridGroupRowContext {
-    return {
-      $implicit: group.text,
+    const context = {
+      $implicit: null as unknown as PbGridGroupRowContext,
       field: group.column.filterField,
       caption: group.column.displayCaption,
       value: group.key,
@@ -1141,6 +1141,8 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
       level: group.level,
       expanded: this.isExpanded(group),
     };
+    context.$implicit = context;
+    return context;
   }
 
   protected groupSummaryText(group: GridGroup<T>): string {

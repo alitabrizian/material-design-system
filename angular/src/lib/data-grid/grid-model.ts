@@ -74,7 +74,7 @@ export interface PbGridCellContext<T = unknown> {
   $implicit: T;
   item: T;
   field: string | undefined;
-  value: unknown;
+  value: any;
   text: string;
   rowIndex: number;
   searchText: string;
@@ -91,7 +91,8 @@ export interface PbGridEditContext<T = unknown> {
 }
 
 export interface PbGridGroupRowContext {
-  $implicit: string;
+  /** The context itself: <ng-template pbGridGroupRow let-group> then group.text, group.count… */
+  $implicit: PbGridGroupRowContext;
   field: string;
   caption: string;
   value: unknown;
@@ -242,10 +243,10 @@ export function setField(item: unknown, path: string, value: unknown): void {
   owner[parts[parts.length - 1]] = value;
 }
 
-/** A shallow copy that keeps the item's class (methods and getters keep working). */
+/** A shallow copy that keeps the item's class and own getters (computed fields keep working). */
 export function cloneItem<T>(item: T): T {
   if (item == null || typeof item !== 'object') return item;
-  return Object.assign(Object.create(Object.getPrototypeOf(item)), item);
+  return Object.create(Object.getPrototypeOf(item), Object.getOwnPropertyDescriptors(item));
 }
 
 /** Copies own writable fields from one item to another (applying an edit). */
@@ -472,6 +473,10 @@ export function filterText(filter: PbGridFilter, caption: (field: string) => str
 
 // ------------------------------------------------------------------------------ formatting
 
+// .NET's "d" / "g": 2/9/2025, 2/9/2025 8:00 AM.
+const SHORT_DATE: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'numeric', day: 'numeric' };
+const SHORT_DATE_TIME: Intl.DateTimeFormatOptions = { ...SHORT_DATE, hour: 'numeric', minute: '2-digit' };
+
 const numberFormats = new Map<string, Intl.NumberFormat>();
 const dateFormats = new Map<string, Intl.DateTimeFormat>();
 
@@ -506,22 +511,23 @@ export function formatValue(value: unknown, format: PbGridFormat | undefined, lo
     case 'currency':
       return numberFormat(locale, { style: 'currency', currency }).format(Number(value));
     case 'percent':
-      return numberFormat(locale, { style: 'percent', maximumFractionDigits: 1 }).format(Number(value));
+      return numberFormat(locale, { style: 'percent', maximumFractionDigits: 0 }).format(Number(value));
     case 'number':
       return numberFormat(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Number(value));
     case 'integer':
       return numberFormat(locale, { maximumFractionDigits: 0 }).format(Number(value));
     case 'date':
-      return toDate(value) ? dateFormat(locale, { dateStyle: 'short' }).format(toDate(value)!) : String(value);
+      return toDate(value) ? dateFormat(locale, SHORT_DATE).format(toDate(value)!) : String(value);
     case 'datetime':
-      return toDate(value) ? dateFormat(locale, { dateStyle: 'short', timeStyle: 'short' }).format(toDate(value)!) : String(value);
+      return toDate(value) ? dateFormat(locale, SHORT_DATE_TIME).format(toDate(value)!) : String(value);
     case 'month':
       return toDate(value) ? dateFormat(locale, { month: 'long', year: 'numeric' }).format(toDate(value)!) : String(value);
     case 'year':
       return toDate(value) ? String(toDate(value)!.getFullYear()) : String(value);
   }
-  if (value instanceof Date) return dateFormat(locale, isDay(value) ? { dateStyle: 'short' } : { dateStyle: 'short', timeStyle: 'short' }).format(value);
+  if (value instanceof Date) return dateFormat(locale, isDay(value) ? SHORT_DATE : SHORT_DATE_TIME).format(value);
   if (typeof value === 'boolean') return value ? 'Yes' : 'No';
-  if (typeof value === 'number') return numberFormat(locale, { maximumFractionDigits: 2 }).format(value);
+  // Like .NET's default ToString(): no thousands separators (ids and years stay "10248", "2026").
+  if (typeof value === 'number') return numberFormat(locale, { maximumFractionDigits: 2, useGrouping: false }).format(value);
   return String(value);
 }
