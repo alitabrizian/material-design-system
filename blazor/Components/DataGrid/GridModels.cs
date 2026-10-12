@@ -73,7 +73,8 @@ public enum PBGridDetailRowDisplayMode
     Always,
 }
 
-public enum PBGridDropPosition { Before, After }
+/// <summary>Where dropped rows go relative to the target row; <c>Inside</c> (tree mode) makes them its children.</summary>
+public enum PBGridDropPosition { Before, After, Inside }
 
 /// <summary>Where rows may be dropped while dragging rows of this grid.</summary>
 [Flags]
@@ -158,6 +159,9 @@ public sealed class PBGridEditModelSavingEventArgs<TItem>
 
     public bool IsNew { get; }
 
+    /// <summary>Tree mode: the parent of a new child row (default otherwise).</summary>
+    public TItem? ParentDataItem { get; internal init; }
+
     /// <summary>Keeps the editor open and changes nothing.</summary>
     public bool Cancel { get; set; }
 }
@@ -177,6 +181,9 @@ public sealed class PBGridCustomizeEditModelEventArgs<TItem>
     public TItem? DataItem { get; }
 
     public bool IsNew { get; }
+
+    /// <summary>Tree mode: the parent of a new child row (its parent key is already set for flat data).</summary>
+    public TItem? ParentDataItem { get; internal init; }
 }
 
 /// <summary>Context of a custom edit form (<c>EditFormTemplate</c>).</summary>

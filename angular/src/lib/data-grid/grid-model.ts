@@ -15,7 +15,8 @@ export type PbGridColumnResizeMode = 'disabled' | 'nextColumn' | 'columnsContain
 export type PbGridLines = 'horizontal' | 'vertical' | 'both' | 'none';
 export type PbGridPagerPosition = 'bottom' | 'top' | 'topAndBottom';
 export type PbGridDetailRowDisplayMode = 'auto' | 'always';
-export type PbGridDropPosition = 'before' | 'after';
+/** Where dropped rows go; 'inside' (tree list) makes them children of the target. */
+export type PbGridDropPosition = 'before' | 'after' | 'inside';
 export type PbGridFilterPanelDisplayMode = 'never' | 'auto' | 'always';
 export type PbGridGroupFooterDisplayMode = 'auto' | 'always' | 'never';
 export type PbGridDataType = 'string' | 'number' | 'date' | 'boolean' | 'enum';
@@ -124,6 +125,31 @@ export interface PbGridEditSavingEvent<T> {
   dataItem: T | null;
   isNew: boolean;
   cancel: boolean;
+  /** Tree list: the parent of a new child row. */
+  parentDataItem?: T | null;
+}
+
+/** Which nodes a tree list shows while filtering: the path to each match, plus their descendants, or only matches. */
+export type PbTreeListFilterTreeMode = 'parentBranch' | 'entireBranch' | 'matches';
+
+/** A tree list node was expanded or collapsed. */
+export interface PbTreeListNodeExpandedEvent<T> {
+  dataItem: T;
+  expanded: boolean;
+}
+
+/** Tree settings of a data grid (set by pb-tree-list). */
+export interface PbGridTreeConfig<T> {
+  parentKeyField?: string;
+  childrenField?: string;
+  hasChildrenField?: string;
+  rootValue?: unknown;
+  loadChildren?: (parent: T) => Promise<readonly T[]>;
+  autoExpandAllNodes: boolean;
+  filterTreeMode: PbTreeListFilterTreeMode;
+  recursiveSelection: boolean;
+  treeColumn?: string;
+  expandedChange?: (e: PbTreeListNodeExpandedEvent<T>) => void;
 }
 
 export interface PbGridItemDeletingEvent<T> {

@@ -69,6 +69,17 @@ public partial class PBDataGrid<TItem>
 
         /// <summary>A batch-mode row that is not in the data yet.</summary>
         public bool IsInserted { get; init; }
+
+        /// <summary>Tree mode: the node's depth (0 for root nodes).</summary>
+        public int TreeLevel { get; init; }
+
+        /// <summary>Tree mode: the node has (or may load) children, so it shows an expand button.</summary>
+        public bool TreeHasChildren { get; init; }
+
+        public bool TreeExpanded { get; init; }
+
+        /// <summary>Tree mode: the node's children are being loaded on demand.</summary>
+        public bool TreeLoading { get; init; }
     }
 
     private List<GridRow> allRows = [];
@@ -136,13 +147,20 @@ public partial class PBDataGrid<TItem>
     {
         if (!dirty) return;
         dirty = false;
-        groupedColumns = DataProvider is null ? GroupedColumns() : [];
+        groupedColumns = DataProvider is null && TreeConfig is null ? GroupedColumns() : [];
         activeUserFilter = UserFilter();
         var filter = EffectiveFilter();
         var sortKeys = SortKeys();
         allRows = [];
         dataRowCounter = 0;
         providedRows.Clear();
+
+        if (TreeConfig is { } tree)
+        {
+            groupedColumns = [];
+            BuildTree(tree, filter, sortKeys);
+            return;
+        }
 
         if (DataProvider is not null)
         {

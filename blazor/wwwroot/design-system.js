@@ -514,8 +514,8 @@ function syncFixedColumns(root) {
 }
 
 function clearDropMarks(root) {
-  root.querySelectorAll(".pb-grid__drop-before, .pb-grid__drop-after, .pb-grid__row--drop-before, .pb-grid__row--drop-after")
-    .forEach((el) => el.classList.remove("pb-grid__drop-before", "pb-grid__drop-after", "pb-grid__row--drop-before", "pb-grid__row--drop-after"));
+  root.querySelectorAll(".pb-grid__drop-before, .pb-grid__drop-after, .pb-grid__row--drop-before, .pb-grid__row--drop-after, .pb-grid__row--drop-inside")
+    .forEach((el) => el.classList.remove("pb-grid__drop-before", "pb-grid__drop-after", "pb-grid__row--drop-before", "pb-grid__row--drop-after", "pb-grid__row--drop-inside"));
   root.querySelectorAll(".pb-grid__group-panel--drop").forEach((el) => el.classList.remove("pb-grid__group-panel--drop"));
   root.classList.remove("pb-grid--drop-target");
 }
@@ -682,11 +682,18 @@ function onGridDragOver(root, state, event) {
   event.dataTransfer.dropEffect = "move";
   const row = event.target.closest?.("tbody > tr[data-row]");
   if (row && gridOf(row) === root) {
-    const r = row.getBoundingClientRect();
-    row.classList.add(event.clientY < r.top + r.height / 2 ? "pb-grid__row--drop-before" : "pb-grid__row--drop-after");
+    row.classList.add("pb-grid__row--drop-" + rowDropPosition(state, row, event.clientY));
   } else {
     root.classList.add("pb-grid--drop-target");
   }
+}
+
+/** Where a row drop lands: the upper or lower half, or (tree mode) the middle half makes it a child. */
+function rowDropPosition(state, row, clientY) {
+  const r = row.getBoundingClientRect();
+  const y = (clientY - r.top) / r.height;
+  if (state.options.treeDrop) return y < 0.25 ? "before" : y > 0.75 ? "after" : "inside";
+  return y < 0.5 ? "before" : "after";
 }
 
 function onGridDrop(root, state, event) {
@@ -714,8 +721,7 @@ function onGridDrop(root, state, event) {
   event.preventDefault();
   const row = event.target.closest?.("tbody > tr[data-row]");
   if (row && gridOf(row) === root) {
-    const r = row.getBoundingClientRect();
-    state.dotNet.invokeMethodAsync("OnRowDrop", drag.gridId, Number(row.dataset.row), event.clientY < r.top + r.height / 2 ? "before" : "after");
+    state.dotNet.invokeMethodAsync("OnRowDrop", drag.gridId, Number(row.dataset.row), rowDropPosition(state, row, event.clientY));
   } else {
     state.dotNet.invokeMethodAsync("OnRowDrop", drag.gridId, -1, "after");
   }

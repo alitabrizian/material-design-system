@@ -1,13 +1,35 @@
-<mat-tree #tree [dataSource]="data()" [childrenAccessor]="childrenAccessor">
-  <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding [isExpandable]="hasChildren(node)">
+<mat-tree
+  #tree
+  [dataSource]="data()"
+  [childrenAccessor]="matChildrenAccessor()!"
+  [levelAccessor]="levelAccessor()!"
+  [expansionKey]="expansionKey()!"
+  [attr.aria-label]="label() ?? null"
+>
+  <mat-tree-node
+    *matTreeNodeDef="let node"
+    matTreeNodePadding
+    [isExpandable]="hasChildren(node)"
+    [style.display]="isVisible(node, tree) ? null : 'none'"
+    (expandedChange)="expandedChange.emit({ node, expanded: $event })"
+  >
     @if (hasChildren(node)) {
-      <button matIconButton matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.label">
+      <button matIconButton matTreeNodeToggle [attr.aria-label]="'Toggle ' + labelOf(node)">
         <mat-icon>{{ tree.isExpanded(node) ? 'expand_more' : 'chevron_right' }}</mat-icon>
       </button>
     } @else {
       <span class="pb-tree__spacer"></span>
     }
-    @if (node.icon) { <mat-icon class="pb-tree__icon">{{ node.icon }}</mat-icon> }
-    {{ node.label }}
+    @if (nodeTemplate(); as custom) {
+      <ng-container [ngTemplateOutlet]="custom.template" [ngTemplateOutletContext]="{ $implicit: node }" />
+    } @else {
+      @if (iconOf(node); as icon) {
+        <mat-icon class="pb-tree__icon">{{ icon }}</mat-icon>
+      }
+      {{ labelOf(node) }}
+    }
+    @if (isLoading()?.(node)) {
+      <mat-progress-bar class="pb-tree__progress" mode="indeterminate" [attr.aria-label]="'Loading ' + labelOf(node)" />
+    }
   </mat-tree-node>
 </mat-tree>

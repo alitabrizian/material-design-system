@@ -236,7 +236,11 @@ public partial class PBDataGrid<TItem> : WorkspaceComponentBase, IPBDataGridHost
         initialized = true;
 
         // The parent re-rendered: its data may have changed in place, so rebuild.
-        if (!ReferenceEquals(lastData, Data)) providerResult = null;
+        if (!ReferenceEquals(lastData, Data))
+        {
+            providerResult = null;
+            ObserveCollection(Data);
+        }
         lastData = Data;
         dirty = true;
     }
@@ -264,6 +268,18 @@ public partial class PBDataGrid<TItem> : WorkspaceComponentBase, IPBDataGridHost
     {
         if (totalSummaryItems.Remove(item) | groupSummaryItems.Remove(item)) Invalidate();
     }
+
+    private System.Collections.Specialized.INotifyCollectionChanged? observedCollection;
+
+    /// <summary>Data that reports its changes (ObservableCollection) refreshes the grid by itself.</summary>
+    private void ObserveCollection(IEnumerable<TItem>? data)
+    {
+        if (observedCollection is not null) observedCollection.CollectionChanged -= OnDataCollectionChanged;
+        observedCollection = data as System.Collections.Specialized.INotifyCollectionChanged;
+        if (observedCollection is not null) observedCollection.CollectionChanged += OnDataCollectionChanged;
+    }
+
+    private void OnDataCollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) => Invalidate();
 
     public void Invalidate()
     {
@@ -399,6 +415,7 @@ public partial class PBDataGrid<TItem> : WorkspaceComponentBase, IPBDataGridHost
         allowInternal = AllowedDropTarget.HasFlag(PBGridDropTarget.Internal),
         allowExternal = AllowedDropTarget.HasFlag(PBGridDropTarget.External),
         acceptsDrops = ItemsDropped.HasDelegate,
+        treeDrop = IsTree,
         resizeMode = ColumnResizeMode switch
         {
             PBGridColumnResizeMode.NextColumn => "next",
@@ -413,6 +430,7 @@ public partial class PBDataGrid<TItem> : WorkspaceComponentBase, IPBDataGridHost
     {
         providerCancellation?.Cancel();
         providerCancellation?.Dispose();
+        ObserveCollection(null);
         GridDragRegistry.Unregister(JS, gridId);
         if (popupPositioned) await DesignSystemJs.InvokeVoidAsync(JS, "unposition", popup);
         if (jsInitialized) await DesignSystemJs.InvokeVoidAsync(JS, "gridDispose", root);

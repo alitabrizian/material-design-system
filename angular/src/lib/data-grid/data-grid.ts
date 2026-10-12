@@ -16,6 +16,7 @@ import {
   model,
   numberAttribute,
   output,
+  Signal,
   signal,
   TemplateRef,
   untracked,
@@ -49,6 +50,7 @@ import {
   formatValue,
   getField,
   inferType,
+  PbGridTreeConfig,
   isoDay,
   OPERATOR_GLYPH,
   OPERATOR_TEXT,
@@ -131,6 +133,27 @@ interface GridRow<T> {
   index: number;
   dataIndex: number;
   inserted?: boolean;
+  /** Tree list: the node's depth, whether it has (or may load) children, is expanded, is loading. */
+  treeLevel?: number;
+  treeHasChildren?: boolean;
+  treeExpanded?: boolean;
+  treeLoading?: boolean;
+}
+
+/** A tree list node (pb-tree-list). */
+interface TreeNode<T> {
+  item: T;
+  key: unknown;
+  parent: TreeNode<T> | null;
+  children: TreeNode<T>[];
+  level: number;
+  /** Has children that are not loaded yet (hasChildrenField, load on demand). */
+  mayHaveChildren: boolean;
+}
+
+function isAncestor<T>(candidate: TreeNode<T>, node: TreeNode<T> | null): boolean {
+  for (let current = node; current; current = current.parent) if (current === candidate) return true;
+  return false;
 }
 
 interface HeaderCell {
@@ -263,7 +286,7 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
   readonly editNewRowPosition = input<'top' | 'bottom'>('top');
   /** Creates the item for a new row (default: an empty object). */
   readonly createItem = input<() => T>();
-  readonly customizeEditModel = input<(e: { editModel: T; dataItem: T | null; isNew: boolean }) => void>();
+  readonly customizeEditModel = input<(e: { editModel: T; dataItem: T | null; isNew: boolean; parentDataItem?: T | null }) => void>();
   /** Saves an edit; without it the grid copies the edit into the item (or adds the new item to `data`). */
   readonly editSaving = input<(e: PbGridEditSavingEvent<T>) => void | Promise<void>>();
   readonly itemDeleting = input<(e: PbGridItemDeletingEvent<T>) => void | Promise<void>>();
@@ -823,6 +846,9 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
   protected readonly view = computed(() => {
     this.version();
     this.batchInserted();
+    const tree = this.treeConfig();
+    const treeModel = this.treeModel();
+    if (tree && treeModel) return this.buildTreeView(tree, treeModel);
     const provider = this.dataProvider();
     const grouped = this.groupedColumns();
     const rows: GridRow<T>[] = [];
@@ -1099,6 +1125,8 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
       const pair = this.batchUpdated().get(this.keyOf(item));
       if (pair) return pair.clone;
     }
+    // The row being edited shows (and writes to) the edit copy: validated on save, dropped on cancel.
+    if (this.isEditingRow(item)) return this.editModel()!;
     return item;
   }
 
@@ -1262,7 +1290,8 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
   }
 
   protected toggleRow(item: T): void {
-    void this.selectItem(item, !this.isSelected(item));
+    if (this.treeConfig()?.recursiveSelection && this.selectionMode() === 'multiple') this.toggleTreeSelection(item);
+    else void this.selectItem(item, !this.isSelected(item));
   }
 
   protected isFocused(item: T): boolean {
@@ -1766,6 +1795,18 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
     if (this.selectionMode() !== 'none') {
       items.push({ text: this.isSelected(item) ? 'Deselect Row' : 'Select Row', icon: 'check_box', beginGroup: items.length > 0, action: () => this.toggleRow(item) });
     }
+    if (this.isTree()) {
+      if (this.canEditRows() && !row.inserted) items.splice(Math.min(1, items.length), 0, { text: 'New Child Row', icon: 'subdirectory_arrow_right', action: () => this.startNewChildRow(item) });
+      if (row.treeHasChildren) {
+        items.push(
+          row.treeExpanded
+            ? { text: 'Collapse', icon: 'expand_less', beginGroup: true, action: () => this.collapseRow(item) }
+            : { text: 'Expand', icon: 'expand_more', beginGroup: true, action: () => this.expandRow(item) },
+        );
+      }
+      items.push({ text: 'Expand All', icon: 'unfold_more', beginGroup: !row.treeHasChildren, action: () => this.expandAllRows() });
+      items.push({ text: 'Collapse All', icon: 'unfold_less', action: () => this.collapseAllRows() });
+    }
     if (this.groupedColumns().length) {
       items.push({ text: 'Expand All Groups', icon: 'unfold_more', beginGroup: true, action: () => this.expandAllGroups() });
       items.push({ text: 'Collapse All Groups', icon: 'unfold_less', action: () => this.collapseAllGroups() });
@@ -2076,8 +2117,16 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
 
   /** Opens the editor for a new row (a pending row in batch mode). */
   async startNewRow(): Promise<void> {
-    const e = { editModel: this.newItem(), dataItem: null as T | null, isNew: true };
+    this.newRowParent.set(null);
+    await this.startNewRowCore();
+  }
+
+  private async startNewRowCore(): Promise<void> {
+    const parent = this.newRowParent();
+    const e = { editModel: this.newItem(), dataItem: null as T | null, isNew: true, parentDataItem: parent };
+    this.attachToParent(e.editModel);
     this.customizeEditModel()?.(e);
+    this.attachToParent(e.editModel);
     if (this.editMode() === 'batch') {
       this.batchInserted.update((list) => [e.editModel, ...list]);
       const first = this.leaves().find((c) => c.canEdit);
@@ -2144,10 +2193,12 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
       this.editErrors.set(errors);
       return false;
     }
-    const e: PbGridEditSavingEvent<T> = { editModel: model, dataItem: this.editItem(), isNew: this.editIsNew(), cancel: false };
+    const e: PbGridEditSavingEvent<T> = { editModel: model, dataItem: this.editItem(), isNew: this.editIsNew(), cancel: false, parentDataItem: this.editIsNew() ? this.newRowParent() : null };
     const handler = this.editSaving();
     if (handler) await handler(e);
-    else if (e.isNew) (this.data() as T[]).push(model);
+    else if (e.isNew) {
+      if (!this.addToParentChildren(model)) (this.data() as T[]).push(model);
+    }
     else if (e.dataItem) copyInto(model, e.dataItem);
     if (e.cancel) return false;
     this.endEdit();
@@ -2170,6 +2221,9 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
   }
 
   private endEdit(): void {
+    const model = this.editModel();
+    if (model) this.newRowParents.delete(model);
+    this.newRowParent.set(null);
     this.editModel.set(null);
     this.editItem.set(null);
     this.editCell.set(null);
@@ -2435,13 +2489,14 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
     else {
       for (const update of changes.updated) copyInto(update.editModel, update.dataItem);
       const list = this.data() as T[];
-      list.push(...changes.inserted);
+      list.push(...changes.inserted.filter((item) => !this.addToParentChildren(item)));
       for (const item of changes.deleted) {
         const index = list.indexOf(item);
         if (index >= 0) list.splice(index, 1);
       }
     }
     this.batchUpdated.set(new Map());
+    for (const item of this.batchInserted()) this.newRowParents.delete(item);
     this.batchInserted.set([]);
     this.batchDeleted.set(new Map());
     this.batchErrors.set(new Map());
@@ -2499,6 +2554,24 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
         break;
       case 'ArrowRight':
       case 'ArrowLeft':
+        // Tree list (treegrid): Right expands or enters a node, Left collapses or moves to the parent.
+        if (this.isTree() && row.kind === 'data' && row.item) {
+          const right = event.key === 'ArrowRight';
+          if (right ? row.treeHasChildren && !row.treeExpanded : row.treeExpanded) {
+            this.toggleTreeRow(row);
+            this.focusRowAfterRender = row.index;
+          } else if (right && row.treeExpanded) {
+            if ((rows[position + 1]?.treeLevel ?? 0) > (row.treeLevel ?? 0)) moveTo(position + 1);
+          } else if (!right && (row.treeLevel ?? 0) > 0) {
+            for (let p = position - 1; p >= 0; p--) {
+              if ((rows[p].treeLevel ?? 0) < (row.treeLevel ?? 0)) {
+                moveTo(p);
+                break;
+              }
+            }
+          }
+          break;
+        }
         if (row.kind === 'group' && row.group && this.isExpanded(row.group) !== (event.key === 'ArrowRight')) this.toggleGroup(row.group);
         else if (row.kind === 'data' && row.item && this.detailTemplate() && this.detailRowDisplayMode() === 'auto') {
           if (event.key === 'ArrowRight') this.expandDetailRow(row.item);
@@ -2600,6 +2673,10 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
         }
       };
       walk(this.buildGroups(items, 0, '', grouped));
+    } else if (this.isTree()) {
+      // Tree list: the outline level is the node depth (Excel shows the hierarchy as outline groups).
+      const nodes = this.treeModel()?.nodes;
+      rows.push(...items.map((i) => dataRow(i, nodes?.get(this.keyOf(i))?.level ?? 0)));
     } else rows.push(...items.map((i) => dataRow(i, 0)));
     if (options.totalSummary) {
       const defs = this.totalSummaryDefs();
@@ -2615,6 +2692,335 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
       }
     }
     return { columns, rows };
+  }
+
+  // ================================================================== tree list (pb-tree-list)
+
+  /** Tree settings; null for a plain grid (pb-tree-list overrides this). */
+  protected readonly treeConfig: Signal<PbGridTreeConfig<T> | null> = signal(null);
+  protected readonly isTree = computed(() => this.treeConfig() != null);
+  protected readonly treeRecursiveSelection = computed(() => !!this.treeConfig()?.recursiveSelection && this.selectionMode() === 'multiple');
+  private readonly treeExpanded = signal(new Map<unknown, boolean>());
+  private readonly treeExpandAll = signal<boolean | null>(null);
+  private readonly treeLoaded = signal(new Map<unknown, readonly T[]>());
+  private readonly treeLoading = signal(new Set<unknown>());
+  private readonly newRowParent = signal<T | null>(null);
+  /** New rows (pending or batch) under a parent: model -> parent key. */
+  private readonly newRowParents = new Map<T, unknown>();
+
+  /** The hierarchy: flat (key + parent key), nested (children field) and children loaded on demand. */
+  private readonly treeModel = computed(() => {
+    const tree = this.treeConfig();
+    if (!tree) return null;
+    this.version();
+    const inserted = this.batchInserted();
+    const loaded = this.treeLoaded();
+    const nodes = new Map<unknown, TreeNode<T>>();
+    const roots: TreeNode<T>[] = [];
+    const addNested = (item: T, parent: TreeNode<T> | null, level: number): TreeNode<T> | null => {
+      const key = this.keyOf(item);
+      if (item == null || nodes.has(key)) return null;
+      const node: TreeNode<T> = { item, key, parent, children: [], level, mayHaveChildren: false };
+      nodes.set(key, node);
+      const children: T[] = [];
+      if (tree.childrenField) {
+        const nested = getField(item, tree.childrenField);
+        if (Array.isArray(nested)) children.push(...(nested as T[]));
+      }
+      children.push(...(loaded.get(key) ?? []));
+      for (const ins of inserted) if (this.newRowParents.get(ins) === key) children.push(ins);
+      for (const child of children) {
+        const childNode = addNested(child, node, level + 1);
+        if (childNode) node.children.push(childNode);
+      }
+      return node;
+    };
+    if (tree.childrenField || (tree.loadChildren && !tree.parentKeyField)) {
+      for (const item of this.data()) {
+        const node = addNested(item, null, 0);
+        if (node) roots.push(node);
+      }
+      for (const ins of inserted) {
+        if (this.newRowParents.has(ins)) continue;
+        const node = addNested(ins, null, 0);
+        if (node) roots.push(node);
+      }
+    } else {
+      for (const item of [...this.data(), ...inserted]) {
+        const key = this.keyOf(item);
+        if (item != null && !nodes.has(key)) nodes.set(key, { item, key, parent: null, children: [], level: 0, mayHaveChildren: false });
+      }
+      for (const node of nodes.values()) {
+        const parentKey = tree.parentKeyField ? getField(node.item, tree.parentKeyField) : null;
+        const parent = parentKey != null && parentKey !== tree.rootValue && parentKey !== node.key ? nodes.get(parentKey) : undefined;
+        if (parent && !isAncestor(node, parent)) {
+          node.parent = parent;
+          parent.children.push(node);
+        }
+      }
+      for (const node of nodes.values()) if (!node.parent) roots.push(node);
+      const setLevels = (node: TreeNode<T>, level: number) => {
+        node.level = level;
+        node.children.forEach((c) => setLevels(c, level + 1));
+      };
+      roots.forEach((r) => setLevels(r, 0));
+      for (const [parentKey, children] of loaded) {
+        const parent = nodes.get(parentKey);
+        if (!parent) continue;
+        for (const child of children) {
+          const node = addNested(child, parent, parent.level + 1);
+          if (node) parent.children.push(node);
+        }
+      }
+    }
+    if (tree.hasChildrenField) {
+      for (const node of nodes.values()) {
+        node.mayHaveChildren = node.children.length === 0 && getField(node.item, tree.hasChildrenField) === true && !loaded.has(node.key);
+      }
+    }
+    return { nodes, roots };
+  });
+
+  /** Filters (keeping the matches' ancestors), sorts siblings and emits the expanded branches. */
+  private buildTreeView(tree: PbGridTreeConfig<T>, model: { nodes: Map<unknown, TreeNode<T>>; roots: TreeNode<T>[] }) {
+    const filter = this.filterEnabled() ? this.userFilter() : null;
+    const searching = this.searchWords().length > 0;
+    const filtered = !!filter || searching;
+    const matched = new Set<TreeNode<T>>();
+    const visible = new Set<TreeNode<T>>();
+    if (filtered) {
+      const matches = (item: T) => (!filter || filterMatches(filter, item, this)) && (!searching || this.matchesSearch(item));
+      const mark = (node: TreeNode<T>, ancestorMatches: boolean): boolean => {
+        const self = matches(node.item);
+        if (self) matched.add(node);
+        let below = false;
+        for (const child of node.children) below = mark(child, ancestorMatches || self) || below;
+        const mode = tree.filterTreeMode;
+        if (mode === 'entireBranch' ? self || below || ancestorMatches : mode === 'matches' ? self : self || below) visible.add(node);
+        return self || below;
+      };
+      model.roots.forEach((root) => mark(root, false));
+    }
+    const shownChildren = (node: TreeNode<T>): TreeNode<T>[] => {
+      if (!filtered) return node.children;
+      if (tree.filterTreeMode !== 'matches') return node.children.filter((c) => visible.has(c));
+      const result: TreeNode<T>[] = [];
+      const collect = (n: TreeNode<T>) => n.children.forEach((c) => (matched.has(c) ? result.push(c) : collect(c)));
+      collect(node);
+      return result;
+    };
+    let roots = model.roots;
+    if (filtered) {
+      roots =
+        tree.filterTreeMode === 'matches'
+          ? [...model.nodes.values()].filter((n) => {
+              if (!matched.has(n)) return false;
+              let parent = n.parent;
+              while (parent && !matched.has(parent)) parent = parent.parent;
+              return !parent;
+            })
+          : roots.filter((r) => visible.has(r));
+    }
+    const sortNodes = (nodes: TreeNode<T>[]) => {
+      const byItem = new Map(nodes.map((n) => [n.item, n] as const));
+      return this.sortItems(nodes.map((n) => n.item)).map((i) => byItem.get(i)!);
+    };
+    const rows: GridRow<T>[] = [];
+    const ordered: T[] = [];
+    let dataIndex = 0;
+    const expandedMap = this.treeExpanded();
+    const expandAll = this.treeExpandAll();
+    const loading = this.treeLoading();
+    const inserted = new Set(this.batchInserted());
+    const emit = (node: TreeNode<T>, level: number) => {
+      ordered.push(node.item);
+      const children = shownChildren(node);
+      const hasChildren = children.length > 0 || (node.mayHaveChildren && !filtered);
+      const expanded = hasChildren && (expandedMap.get(node.key) ?? (filtered && children.length > 0 ? true : (expandAll ?? tree.autoExpandAllNodes)));
+      rows.push({
+        kind: 'data',
+        item: node.item,
+        level: 0,
+        index: rows.length,
+        dataIndex: dataIndex++,
+        inserted: inserted.has(node.item),
+        treeLevel: level,
+        treeHasChildren: hasChildren,
+        treeExpanded: expanded,
+        treeLoading: loading.has(node.key),
+      });
+      if (expanded) sortNodes(children).forEach((c) => emit(c, level + 1));
+      else {
+        // Collapsed: still part of the filtered set (summaries, select all, export).
+        const collect = (n: TreeNode<T>) => {
+          ordered.push(n.item);
+          shownChildren(n).forEach(collect);
+        };
+        children.forEach(collect);
+      }
+    };
+    sortNodes(roots).forEach((root) => emit(root, 0));
+    const totals = this.totalSummaryDefs().map((d) => this.summary(d, ordered, null, false));
+    return { rows, items: ordered, total: ordered.length, rowCount: rows.length, totals };
+  }
+
+  /** Tree list: whether the item's node is expanded. */
+  isRowExpanded(item: T): boolean {
+    return this.view().rows.some((r) => r.item != null && r.treeExpanded && this.keyOf(r.item) === this.keyOf(item));
+  }
+
+  /** Tree list: expands the item's node (loading its children on demand). */
+  expandRow(item: T): Promise<void> {
+    return this.setNodeExpanded(item, true);
+  }
+
+  collapseRow(item: T): Promise<void> {
+    return this.setNodeExpanded(item, false);
+  }
+
+  /** Tree list: expands every node (nodes loaded on demand stay collapsed). */
+  expandAllRows(): void {
+    this.treeExpanded.set(new Map());
+    this.treeExpandAll.set(true);
+  }
+
+  collapseAllRows(): void {
+    this.treeExpanded.set(new Map());
+    this.treeExpandAll.set(false);
+  }
+
+  /** Tree list: the item's parent (null for root nodes). */
+  getParentItem(item: T): T | null {
+    return this.treeModel()?.nodes.get(this.keyOf(item))?.parent?.item ?? null;
+  }
+
+  /** Tree list: the item's children (loaded ones, unfiltered). */
+  getChildItems(item: T): T[] {
+    return this.treeModel()?.nodes.get(this.keyOf(item))?.children.map((c) => c.item) ?? [];
+  }
+
+  protected toggleTreeRow(row: GridRow<T>): void {
+    if (row.item) void this.setNodeExpanded(row.item, !row.treeExpanded);
+  }
+
+  private async setNodeExpanded(item: T, expanded: boolean): Promise<void> {
+    const tree = this.treeConfig();
+    if (!tree || item == null) return;
+    const key = this.keyOf(item);
+    this.treeExpanded.update((m) => new Map(m).set(key, expanded));
+    tree.expandedChange?.({ dataItem: item, expanded });
+    if (!expanded || !tree.loadChildren || this.treeLoaded().has(key) || this.treeLoading().has(key)) return;
+    const node = this.treeModel()?.nodes.get(key);
+    if (node && node.children.length > 0 && !node.mayHaveChildren) return;
+    this.treeLoading.update((s) => new Set(s).add(key));
+    try {
+      const children = await tree.loadChildren(item);
+      this.treeLoaded.update((m) => new Map(m).set(key, [...children]));
+    } finally {
+      this.treeLoading.update((s) => {
+        const next = new Set(s);
+        next.delete(key);
+        return next;
+      });
+    }
+  }
+
+  /** The cell of this column draws the indent and the expand button. */
+  protected isTreeColumn(column: PbGridColumn): boolean {
+    const tree = this.treeConfig();
+    if (!tree) return false;
+    const leaves = this.leaves();
+    const target = tree.treeColumn ? leaves.find((c) => c.key === tree.treeColumn || c.field() === tree.treeColumn) : leaves.find((c) => c.isData);
+    return column === target;
+  }
+
+  private isInBranch(item: T, root: T): boolean {
+    const nodes = this.treeModel()?.nodes;
+    const node = nodes?.get(this.keyOf(item));
+    const top = nodes?.get(this.keyOf(root));
+    return !!node && !!top && isAncestor(top, node);
+  }
+
+  private descendants(node: TreeNode<T>): TreeNode<T>[] {
+    return node.children.flatMap((c) => [c, ...this.descendants(c)]);
+  }
+
+  /** Recursive selection: true when the node and its subtree are selected, null when partly. */
+  protected treeCheckState(item: T): boolean | null {
+    const node = this.treeModel()?.nodes.get(this.keyOf(item));
+    if (!node || !node.children.length) return this.isSelected(item);
+    const all = this.descendants(node);
+    const map = this.selectedMap();
+    const count = all.filter((n) => map.has(n.key)).length;
+    if (count === all.length && map.has(node.key)) return true;
+    return count === 0 && !map.has(node.key) ? false : null;
+  }
+
+  protected toggleTreeSelection(item: T): void {
+    const select = this.treeCheckState(item) !== true;
+    const node = this.treeModel()?.nodes.get(this.keyOf(item));
+    const map = new Map(this.selectedMap());
+    if (!node) {
+      if (select) map.set(this.keyOf(item), item);
+      else map.delete(this.keyOf(item));
+    } else {
+      for (const target of [node, ...this.descendants(node)]) {
+        if (select) map.set(target.key, target.item);
+        else map.delete(target.key);
+      }
+      // A parent is selected exactly when all its children are.
+      for (let parent = node.parent; parent; parent = parent.parent) {
+        if (parent.children.every((c) => map.has(c.key))) map.set(parent.key, parent.item);
+        else map.delete(parent.key);
+      }
+    }
+    this.setSelection(map);
+  }
+
+  /** Tree list: opens the editor for a new row under parent (its parent key is set for flat data). */
+  async startNewChildRow(parent: T): Promise<void> {
+    this.newRowParent.set(parent);
+    await this.setNodeExpanded(parent, true);
+    await this.startNewRowCore();
+  }
+
+  private attachToParent(model: T): void {
+    const tree = this.treeConfig();
+    const parent = this.newRowParent();
+    if (!tree || !parent || model == null) return;
+    const parentKey = this.keyOf(parent);
+    if (tree.parentKeyField) setField(model, tree.parentKeyField, parentKey);
+    this.newRowParents.set(model, parentKey);
+  }
+
+  /** Nested data: adds a saved new row to its parent's children array. */
+  private addToParentChildren(model: T): boolean {
+    const tree = this.treeConfig();
+    const parentKey = this.newRowParents.get(model);
+    if (!tree?.childrenField || parentKey === undefined) return false;
+    const parent = this.treeModel()?.nodes.get(parentKey);
+    const children = parent ? getField(parent.item, tree.childrenField) : null;
+    if (!Array.isArray(children)) return false;
+    children.push(model);
+    return true;
+  }
+
+  /** The new row editor goes right under its parent row. */
+  protected readonly newRowUnderParent = computed(
+    () => this.isTree() && this.isEditingNewRow() && this.newRowParent() != null && this.editMode() !== 'popupEditForm' && this.editMode() !== 'batch',
+  );
+
+  protected isNewRowParent(item: T): boolean {
+    const parent = this.newRowParent();
+    return this.newRowUnderParent() && parent != null && this.keyOf(parent) === this.keyOf(item);
+  }
+
+  /** Drops on the upper or lower half; in a tree list the middle half makes the rows children. */
+  private rowDropPosition(row: HTMLElement, clientY: number): PbGridDropPosition {
+    const r = row.getBoundingClientRect();
+    const y = (clientY - r.top) / r.height;
+    if (this.isTree()) return y < 0.25 ? 'before' : y > 0.75 ? 'after' : 'inside';
+    return y < 0.5 ? 'before' : 'after';
   }
 
   // ================================================================== resize and drag and drop
@@ -2690,8 +3096,8 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
 
   private clearDropMarks(): void {
     this.host
-      .querySelectorAll('.pb-grid__drop-before, .pb-grid__drop-after, .pb-grid__row--drop-before, .pb-grid__row--drop-after')
-      .forEach((el) => el.classList.remove('pb-grid__drop-before', 'pb-grid__drop-after', 'pb-grid__row--drop-before', 'pb-grid__row--drop-after'));
+      .querySelectorAll('.pb-grid__drop-before, .pb-grid__drop-after, .pb-grid__row--drop-before, .pb-grid__row--drop-after, .pb-grid__row--drop-inside')
+      .forEach((el) => el.classList.remove('pb-grid__drop-before', 'pb-grid__drop-after', 'pb-grid__row--drop-before', 'pb-grid__row--drop-after', 'pb-grid__row--drop-inside'));
     this.host.querySelectorAll('.pb-grid__group-panel--drop').forEach((el) => el.classList.remove('pb-grid__group-panel--drop'));
     this.host.classList.remove('pb-grid--drop-target');
   }
@@ -2785,8 +3191,7 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
     event.dataTransfer!.dropEffect = 'move';
     const row = (event.target as HTMLElement).closest('tbody > tr[data-row]') as HTMLElement | null;
     if (row && row.closest('.pb-grid') === this.host) {
-      const r = row.getBoundingClientRect();
-      row.classList.add(event.clientY < r.top + r.height / 2 ? 'pb-grid__row--drop-before' : 'pb-grid__row--drop-after');
+      row.classList.add('pb-grid__row--drop-' + this.rowDropPosition(row, event.clientY));
     } else this.host.classList.add('pb-grid--drop-target');
   }
 
@@ -2826,9 +3231,8 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
     let targetIndex = -1;
     let position: PbGridDropPosition = 'after';
     if (row && row.closest('.pb-grid') === this.host) {
-      const r = row.getBoundingClientRect();
       targetIndex = Number(row.dataset['row']);
-      position = event.clientY < r.top + r.height / 2 ? 'before' : 'after';
+      position = this.rowDropPosition(row, event.clientY);
     }
     gridDrag = null;
     this.dropRows(drag.gridId, targetIndex, position);
@@ -2851,6 +3255,8 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
     const target = targetIndex >= 0 ? (this.itemAtRow(targetIndex) ?? null) : null;
     const external = source !== this;
     if (!external && target && items.some((i) => this.keyOf(i) === this.keyOf(target))) return;
+    // Tree list: a node cannot move into its own branch.
+    if (!external && target && this.isTree() && items.some((i) => this.isInBranch(target, i))) return;
     handler({ items, target, position, sourceGrid: source, external });
     source.reload();
     this.reload();

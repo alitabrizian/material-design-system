@@ -22,6 +22,7 @@ export * from './lib/chips/chip';
 export * from './lib/chips/chips';
 export * from './lib/chips/chips-templates';
 export * from './lib/data-grid/data-grid';
+export * from './lib/data-grid/tree-list';
 export * from './lib/data-grid/grid-column';
 export * from './lib/data-grid/grid-model';
 export * from './lib/datepicker/date-range-picker';

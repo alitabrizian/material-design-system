@@ -69,3 +69,8 @@
   flex: 1;
   min-width: 0;
 }
+
+/* Tree with dynamic data: a progress bar under the node while its children load. */
+.pb-tree-node__progress {
+  margin-left: calc(var(--pb-tree-level, 0) * 40px + 40px);
+}

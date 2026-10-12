@@ -59,7 +59,8 @@
   }
   <table
     class="pb-grid__table"
-    role="grid"
+    [class.pb-grid__table--tree]="isTree()"
+    [attr.role]="isTree() ? 'treegrid' : 'grid'"
     [style]="tableStyle()"
     [attr.aria-label]="label()"
     [attr.aria-rowcount]="virtualScrolling() ? view().rowCount : null"
@@ -113,7 +114,7 @@
       }
     </thead>
     <tbody (keydown)="onBodyKeyDown($event)">
-      @if (!newRowAtBottom()) {
+      @if (!newRowAtBottom() && !newRowUnderParent()) {
         <ng-container [ngTemplateOutlet]="newRow" />
       }
       @if (spacerTop()) {
@@ -133,13 +134,16 @@
             } @else {
               <ng-container [ngTemplateOutlet]="dataRow" [ngTemplateOutletContext]="{ $implicit: row }" />
             }
+            @if (row.item && isNewRowParent(row.item)) {
+              <ng-container [ngTemplateOutlet]="newRow" [ngTemplateOutletContext]="{ $implicit: (row.treeLevel ?? 0) + 1 }" />
+            }
           }
         }
       }
       @if (spacerBottom()) {
         <tr class="pb-grid__spacer" aria-hidden="true" [style.height.px]="spacerBottom()"></tr>
       }
-      @if (newRowAtBottom()) {
+      @if (newRowAtBottom() && !newRowUnderParent()) {
         <ng-container [ngTemplateOutlet]="newRow" />
       }
       @if (!renderedRows().length && !isEditingNewRow() && !loading()) {
@@ -498,6 +502,8 @@
       [attr.style]="rowStyle(row)"
       [attr.data-row]="row.index"
       [attr.tabindex]="tabIndexOf(row)"
+      [attr.aria-level]="isTree() ? (row.treeLevel ?? 0) + 1 : null"
+      [attr.aria-expanded]="isTree() && row.treeHasChildren ? !!row.treeExpanded : null"
       [attr.aria-selected]="selectionMode() === 'none' ? null : isSelected(item)"
       (click)="onRowClick(row, $event)"
       (dblclick)="onRowDoubleClick(row)"
@@ -588,7 +594,12 @@
     @case ('selection') {
       <td [class]="cellClass(row, column, position) + ' pb-grid__cell--center'" [attr.style]="fixedStyle(position, column)" (click)="$event.stopPropagation()">
         @if (selectionMode() !== 'none' && !row.inserted) {
-          <mat-checkbox [checked]="isSelected(item)" aria-label="Select row" (change)="toggleRow(item)" />
+          @if (treeRecursiveSelection()) {
+            @let state = treeCheckState(item);
+            <mat-checkbox [checked]="state === true" [indeterminate]="state === null" aria-label="Select row and its children" (change)="toggleRow(item)" />
+          } @else {
+            <mat-checkbox [checked]="isSelected(item)" aria-label="Select row" (change)="toggleRow(item)" />
+          }
         }
       </td>
     }
@@ -602,6 +613,9 @@
           <button mat-icon-button type="button" aria-label="Save" (click)="saveChanges()"><span class="material-icons">check</span></button>
           <button mat-icon-button type="button" aria-label="Cancel" (click)="cancelEdit()"><span class="material-icons">close</span></button>
         } @else {
+          @if (isTree() && column.newButton() && !row.inserted) {
+            <button mat-icon-button type="button" aria-label="Add child row" (click)="startNewChildRow(item)"><span class="material-icons">add</span></button>
+          }
           @if (column.editButton() && editMode() !== 'editCell' && editMode() !== 'batch') {
             <button mat-icon-button type="button" aria-label="Edit row" (click)="startEdit(item)"><span class="material-icons">edit</span></button>
           }
@@ -614,15 +628,57 @@
     @default {
       @if (isCellEditor(row, column)) {
         <td [class]="cellClass(row, column, position)" [attr.style]="fixedStyle(position, column)" (click)="$event.stopPropagation()" (focusout)="onCellEditorFocusOut($event)">
-          <ng-container
-            [ngTemplateOutlet]="editorTemplate"
-            [ngTemplateOutletContext]="{ column, model, autofocus: editMode() !== 'editRow' || column === firstEditable(), id: null }"
-          />
+          @if (isTreeColumn(column)) {
+            <div class="pb-grid__tree-cell" [style.--pb-tree-level]="row.treeLevel ?? 0">
+              <span class="pb-grid__tree-spacer" aria-hidden="true"></span>
+              <div class="pb-grid__tree-content">
+                <ng-container
+                  [ngTemplateOutlet]="editorTemplate"
+                  [ngTemplateOutletContext]="{ column, model, autofocus: editMode() !== 'editRow' || column === firstEditable(), id: null }"
+                />
+              </div>
+            </div>
+          } @else {
+            <ng-container
+              [ngTemplateOutlet]="editorTemplate"
+              [ngTemplateOutletContext]="{ column, model, autofocus: editMode() !== 'editRow' || column === firstEditable(), id: null }"
+            />
+          }
         </td>
       } @else {
         @let value = cellValue(model, column);
         @let message = batchMessage(row, column);
         <td [class]="cellClass(row, column, position)" [attr.style]="cellStyle(row, column, position)" [attr.title]="message" (click)="onCellClick(row, column)">
+          @if (isTreeColumn(column)) {
+            <div class="pb-grid__tree-cell" [style.--pb-tree-level]="row.treeLevel ?? 0">
+              @if (row.treeLoading) {
+                <span class="pb-grid__tree-toggle pb-grid__tree-toggle--loading" role="progressbar" aria-label="Loading children"><span class="pb-grid__tree-spinner"></span></span>
+              } @else if (row.treeHasChildren) {
+                <button
+                  type="button"
+                  class="pb-grid__tree-toggle"
+                  tabindex="-1"
+                  [attr.aria-expanded]="!!row.treeExpanded"
+                  [attr.aria-label]="row.treeExpanded ? 'Collapse' : 'Expand'"
+                  (click)="$event.stopPropagation(); toggleTreeRow(row)"
+                >
+                  <span class="material-icons" aria-hidden="true">{{ row.treeExpanded ? 'expand_more' : 'chevron_right' }}</span>
+                </button>
+              } @else {
+                <span class="pb-grid__tree-spacer" aria-hidden="true"></span>
+              }
+              <div class="pb-grid__tree-content"><ng-container [ngTemplateOutlet]="cellContent" [ngTemplateOutletContext]="{ row, column, value }" /></div>
+            </div>
+          } @else {
+            <ng-container [ngTemplateOutlet]="cellContent" [ngTemplateOutletContext]="{ row, column, value }" />
+          }
+        </td>
+      }
+    }
+  }
+</ng-template>
+
+<ng-template #cellContent let-row="row" let-column="column" let-value="value">
           @if (column.cellTemplate(); as template) {
             <ng-container [ngTemplateOutlet]="template.template" [ngTemplateOutletContext]="cellContext(row, column)" />
           } @else if (value === true || value === false) {
@@ -638,13 +694,9 @@
               }
             }
           }
-        </td>
-      }
-    }
-  }
 </ng-template>
 
-<ng-template #newRow>
+<ng-template #newRow let-treeLevel>
   @if (isEditingNewRow()) {
     @if (editMode() === 'editForm') {
       <ng-container [ngTemplateOutlet]="editFormRow" />
@@ -659,6 +711,13 @@
             @if (column.kind === 'command') {
               <button mat-icon-button type="button" aria-label="Save" (click)="saveChanges()"><span class="material-icons">check</span></button>
               <button mat-icon-button type="button" aria-label="Cancel" (click)="cancelEdit()"><span class="material-icons">close</span></button>
+            } @else if (column.canEdit && isTreeColumn(column)) {
+              <div class="pb-grid__tree-cell" [style.--pb-tree-level]="treeLevel ?? 0">
+                <span class="pb-grid__tree-spacer" aria-hidden="true"></span>
+                <div class="pb-grid__tree-content">
+                  <ng-container [ngTemplateOutlet]="editorTemplate" [ngTemplateOutletContext]="{ column, model, autofocus: column === firstEditable(), id: null }" />
+                </div>
+              </div>
             } @else if (column.canEdit) {
               <ng-container [ngTemplateOutlet]="editorTemplate" [ngTemplateOutletContext]="{ column, model, autofocus: column === firstEditable(), id: null }" />
             }

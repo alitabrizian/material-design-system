@@ -22,6 +22,10 @@
         }
         <span class="pb-tree-node__label">@Label@LabelContent</span>
     </div>
+    @if (Loading)
+    {
+        <PBProgressBar Indeterminate class="pb-tree-node__progress" aria-label="@($"Loading {Label}")" />
+    }
     @if (HasChildren && Expanded)
     {
         <ul role="group">

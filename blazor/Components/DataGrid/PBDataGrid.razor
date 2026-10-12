@@ -85,7 +85,7 @@
         {
             <PBProgressBar Indeterminate="true" class="pb-grid__progress" aria-label="Loading data" />
         }
-        <table class="pb-grid__table" style="@TableStyle" role="grid" aria-label="@Label" aria-rowcount="@(UsesItemsProvider ? totalCount : (int?)null)"
+        <table class="pb-grid__table @(IsTree ? "pb-grid__table--tree" : null)" style="@TableStyle" role="@(IsTree ? "treegrid" : "grid")" aria-label="@Label" aria-rowcount="@(UsesItemsProvider ? totalCount : (int?)null)"
                aria-multiselectable="@(SelectionMode == PBGridSelectionMode.Multiple ? "true" : null)">
             <colgroup>
                 @for (var i = 0; i < indentCount; i++)
@@ -151,7 +151,7 @@
                 }
             </thead>
             <tbody @onkeydown="OnBodyKeyDownAsync">
-                @if (IsEditingNewRow && !newRowAtBottom)
+                @if (IsEditingNewRow && !newRowAtBottom && !NewRowUnderParent)
                 {
                     RenderNewRowEditor(__builder);
                 }
@@ -179,7 +179,7 @@
                     }
                 }
 
-                @if (IsEditingNewRow && newRowAtBottom)
+                @if (IsEditingNewRow && newRowAtBottom && !NewRowUnderParent)
                 {
                     RenderNewRowEditor(__builder);
                 }
@@ -706,6 +706,10 @@
                 {
                     RenderDataRow(__builder, row);
                 }
+                if (IsNewRowParent(row.Item!))
+                {
+                    RenderNewRowEditor(__builder, row.TreeLevel + 1);
+                }
                 break;
         }
     }
@@ -787,6 +791,7 @@
             + (row.IsInserted ? " pb-grid__row--inserted" : "")
             + (custom.Class is null ? "" : " " + custom.Class);
         <tr class="@classes" style="@custom.Style" data-row="@row.Index" tabindex="@TabIndexOf(row)"
+            aria-level="@(IsTree ? row.TreeLevel + 1 : null)" aria-expanded="@(IsTree && row.TreeHasChildren ? (row.TreeExpanded ? "true" : "false") : null)"
             aria-selected="@(SelectionMode == PBGridSelectionMode.None ? null : isSelected ? "true" : "false")"
             @onclick="e => OnRowClickAsync(row, e)" @ondblclick="() => OnRowDoubleClickAsync(row)"
             @oncontextmenu="e => OnRowContextMenu(row, e)" @oncontextmenu:preventDefault="@ContextMenus.HasFlag(PBGridContextMenus.DataRow)">
@@ -868,7 +873,15 @@
             <td class="@cellClass pb-grid__cell--center" style="@FixedStyle(position, column)" @onclick:stopPropagation="true">
                 @if (SelectionMode != PBGridSelectionMode.None && !row.IsInserted)
                 {
-                    <PBCheckbox checked="@IsSelected(item)" aria-label="Select row" @onchange="() => ToggleRowSelectionAsync(item)" />
+                    if (IsTree && TreeConfig!.RecursiveSelection && SelectionMode == PBGridSelectionMode.Multiple)
+                    {
+                        var state = TreeCheckState(item);
+                        <PBCheckbox checked="@(state == true)" Indeterminate="@(state is null)" aria-label="Select row and its children" @onchange="() => ToggleTreeSelectionAsync(item)" />
+                    }
+                    else
+                    {
+                        <PBCheckbox checked="@IsSelected(item)" aria-label="Select row" @onchange="() => ToggleRowSelectionAsync(item)" />
+                    }
                 }
             </td>
         }
@@ -890,6 +903,10 @@
                 }
                 else
                 {
+                    @if (IsTree && command.NewButtonVisible && !row.IsInserted)
+                    {
+                        <PBButton Variant="PBButtonVariant.Icon" aria-label="Add child row" @onclick="() => StartEditNewChildRowAsync(item)"><span class="material-icons">add</span></PBButton>
+                    }
                     @if (command.EditButtonVisible && EditMode is not (PBGridEditMode.EditCell or PBGridEditMode.Batch))
                     {
                         <PBButton Variant="PBButtonVariant.Icon" aria-label="Edit row" @onclick="() => StartEditDataItemAsync(item)"><span class="material-icons">edit</span></PBButton>
@@ -905,7 +922,17 @@
         {
             <td class="@cellClass" style="@FixedStyle(position, column)" @onclick:stopPropagation="true"
                 @onfocusout="OnCellEditorFocusOutAsync">
-                @{ RenderEditor(__builder, column, model, autofocus: EditMode != PBGridEditMode.EditRow || column == leaves.FirstOrDefault(c => c.CanEdit(typeof(TItem)))); }
+                @if (IsTreeColumn(column))
+                {
+                    <div class="pb-grid__tree-cell" style="@TreeIndentStyle(row.TreeLevel)">
+                        <span class="pb-grid__tree-spacer" aria-hidden="true"></span>
+                        <div class="pb-grid__tree-content">@{ RenderEditor(__builder, column, model, autofocus: EditMode != PBGridEditMode.EditRow || column == leaves.FirstOrDefault(c => c.CanEdit(typeof(TItem)))); }</div>
+                    </div>
+                }
+                else
+                {
+                    RenderEditor(__builder, column, model, autofocus: EditMode != PBGridEditMode.EditRow || column == leaves.FirstOrDefault(c => c.CanEdit(typeof(TItem))));
+                }
             </td>
         }
         else
@@ -915,21 +942,52 @@
             <td class="@cellClass @(messages.Count > 0 ? "pb-grid__cell--invalid" : null)" style="@JoinStyle(FixedStyle(position, column), custom.Style)"
                 title="@(messages.Count > 0 ? string.Join(" ", messages) : null)"
                 @onclick="() => OnCellClickAsync(row, column)">
-                @if (column.CellDisplayTemplate is not null)
+                @if (IsTreeColumn(column))
                 {
-                    @column.CellDisplayTemplate(new PBGridCellContext(model!, column, value, text, row.Index) { SearchText = searchText })
-                }
-                else if (value is bool flag)
-                {
-                    <span class="material-icons pb-grid__bool @(flag ? "pb-grid__bool--true" : null)" role="img" aria-label="@(flag ? "Yes" : "No")">@(flag ? "check_box" : "check_box_outline_blank")</span>
+                    <div class="pb-grid__tree-cell" style="@TreeIndentStyle(row.TreeLevel)">
+                        @if (row.TreeLoading)
+                        {
+                            <span class="pb-grid__tree-toggle pb-grid__tree-toggle--loading" role="progressbar" aria-label="Loading children"><PBProgressSpinner Diameter="20" StrokeWidth="2" /></span>
+                        }
+                        else if (row.TreeHasChildren)
+                        {
+                            <button type="button" class="pb-grid__tree-toggle" tabindex="-1" aria-expanded="@(row.TreeExpanded ? "true" : "false")"
+                                    aria-label="@(row.TreeExpanded ? "Collapse" : "Expand")" @onclick="() => ToggleTreeRowAsync(row)" @onclick:stopPropagation="true">
+                                <span class="material-icons" aria-hidden="true">@(row.TreeExpanded ? "expand_more" : "chevron_right")</span>
+                            </button>
+                        }
+                        else
+                        {
+                            <span class="pb-grid__tree-spacer" aria-hidden="true"></span>
+                        }
+                        <div class="pb-grid__tree-content">@{ RenderCellContent(__builder, row, model, column, value, text); }</div>
+                    </div>
                 }
                 else
                 {
-                    RenderHighlighted(__builder, text);
+                    RenderCellContent(__builder, row, model, column, value, text);
                 }
             </td>
         }
     }
+
+    private void RenderCellContent(RenderTreeBuilder __builder, GridRow row, TItem model, PBDataGridColumn column, object? value, string text)
+    {
+        if (column.CellDisplayTemplate is not null)
+        {
+            @column.CellDisplayTemplate(new PBGridCellContext(model!, column, value, text, row.Index) { SearchText = searchText })
+        }
+        else if (value is bool flag)
+        {
+            <span class="material-icons pb-grid__bool @(flag ? "pb-grid__bool--true" : null)" role="img" aria-label="@(flag ? "Yes" : "No")">@(flag ? "check_box" : "check_box_outline_blank")</span>
+        }
+        else
+        {
+            RenderHighlighted(__builder, text);
+        }
+    }
+
+    private static string TreeIndentStyle(int level) => $"--pb-tree-level:{level}";
 
     private void RenderHighlighted(RenderTreeBuilder __builder, string text)
     {
@@ -979,7 +1037,7 @@
         </tr>
     }
 
-    private void RenderNewRowEditor(RenderTreeBuilder __builder)
+    private void RenderNewRowEditor(RenderTreeBuilder __builder, int treeLevel = 0)
     {
         if (EditMode is PBGridEditMode.PopupEditForm) return;
         if (EditMode is PBGridEditMode.EditForm)
@@ -1002,6 +1060,13 @@
                     {
                         <PBButton Variant="PBButtonVariant.Icon" aria-label="Save" @onclick="SaveChangesAsync"><span class="material-icons">check</span></PBButton>
                         <PBButton Variant="PBButtonVariant.Icon" aria-label="Cancel" @onclick="CancelEditAsync"><span class="material-icons">close</span></PBButton>
+                    }
+                    else if (c.CanEdit(typeof(TItem)) && IsTreeColumn(c))
+                    {
+                        <div class="pb-grid__tree-cell" style="@TreeIndentStyle(treeLevel)">
+                            <span class="pb-grid__tree-spacer" aria-hidden="true"></span>
+                            <div class="pb-grid__tree-content">@{ RenderEditor(__builder, c, model, autofocus: c == leaves.FirstOrDefault(x => x.CanEdit(typeof(TItem)))); }</div>
+                        </div>
                     }
                     else if (c.CanEdit(typeof(TItem)))
                     {

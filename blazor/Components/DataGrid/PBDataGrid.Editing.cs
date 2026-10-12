@@ -71,11 +71,19 @@ public partial class PBDataGrid<TItem>
     }
 
     /// <summary>Opens the editor for a new row (or adds a pending row in batch mode).</summary>
-    public async Task StartEditNewRowAsync()
+    public Task StartEditNewRowAsync()
     {
-        var args = new PBGridCustomizeEditModelEventArgs<TItem>(NewItem(), default, true);
+        newRowParent = default;
+        return StartNewRowAsync();
+    }
+
+    private async Task StartNewRowAsync()
+    {
+        var args = new PBGridCustomizeEditModelEventArgs<TItem>(NewItem(), default, true) { ParentDataItem = newRowParent };
+        AttachNewRowToParent(args.EditModel);
         await CustomizeEditModel.InvokeAsync(args);
         if (args.EditModel is null) throw new InvalidOperationException($"{typeof(TItem).Name} has no parameterless constructor: create the new item in CustomizeEditModel.");
+        AttachNewRowToParent(args.EditModel);
         if (EditMode == PBGridEditMode.Batch)
         {
             batchInserted.Insert(0, args.EditModel);
@@ -122,14 +130,14 @@ public partial class PBDataGrid<TItem>
             StateHasChanged();
             return false;
         }
-        var args = new PBGridEditModelSavingEventArgs<TItem>(editModel, editItem, editIsNew);
+        var args = new PBGridEditModelSavingEventArgs<TItem>(editModel, editItem, editIsNew) { ParentDataItem = editIsNew ? newRowParent : default };
         if (EditModelSaving.HasDelegate)
         {
             await EditModelSaving.InvokeAsync(args);
         }
         else if (editIsNew)
         {
-            if (Data is IList<TItem> { IsReadOnly: false } list) list.Add(editModel);
+            if (!AddToParentChildren(editModel) && Data is IList<TItem> { IsReadOnly: false } list) list.Add(editModel);
         }
         else if (editItem is not null)
         {
@@ -169,6 +177,7 @@ public partial class PBDataGrid<TItem>
 
     private void EndEdit()
     {
+        ClearNewRowParent(editModel);
         editModel = default;
         editItem = default;
         editContext = null;
@@ -233,6 +242,8 @@ public partial class PBDataGrid<TItem>
     {
         var item = row.Item!;
         if (EditMode == PBGridEditMode.Batch && batchUpdated.TryGetValue(KeyOf(item), out var pair)) return pair.Clone;
+        // The row being edited shows (and writes to) the edit copy: validated on save, dropped on cancel.
+        if (IsEditingRow(item)) return editModel!;
         return item;
     }
 
@@ -433,11 +444,12 @@ public partial class PBDataGrid<TItem>
             foreach (var update in changes.UpdatedItems) CopyInto(update.EditModel, update.DataItem);
             if (Data is IList<TItem> { IsReadOnly: false } list)
             {
-                foreach (var item in changes.InsertedItems) list.Add(item);
+                foreach (var item in changes.InsertedItems.Where(i => !AddToParentChildren(i))) list.Add(item);
                 foreach (var item in changes.DeletedItems) list.Remove(item);
             }
         }
         batchUpdated.Clear();
+        foreach (var item in batchInserted) newRowParents.Remove(item!);
         batchInserted.Clear();
         batchDeleted.Clear();
         batchCell = null;

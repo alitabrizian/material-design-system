@@ -10,3 +10,16 @@
 mat-icon.pb-tree__icon {
   margin-inline-end: 8px;
 }
+
+/* Tree with dynamic data: a progress bar along the bottom of the node while its children load. */
+mat-tree-node {
+  position: relative;
+}
+
+.pb-tree__progress {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 48px;
+  width: auto;
+}

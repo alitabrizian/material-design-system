@@ -58,6 +58,8 @@ public partial class PBDataGrid<TItem> : IGridDragSource
         }
 
         if (grouped) Walk(BuildGroups([.. items], 0, ""));
+        // Tree mode: the outline level is the node depth (Excel shows the hierarchy as outline groups).
+        else if (IsTree) rows.AddRange(items.Select(i => DataRow(i, TreeLevelOf(i))));
         else rows.AddRange(items.Select(i => DataRow(i, 0)));
 
         if (options.ExportTotalSummary)
@@ -287,7 +289,10 @@ public partial class PBDataGrid<TItem> : IGridDragSource
         var target = targetIndex >= 0 ? ItemAtRow(targetIndex) : default;
         var isExternal = !ReferenceEquals(source, this);
         if (!isExternal && target is not null && items.Any(i => Equals(KeyOf(i), KeyOf(target)))) return;
-        var args = new PBGridItemsDroppedEventArgs<TItem>(items, target, position == "before" ? PBGridDropPosition.Before : PBGridDropPosition.After, source, isExternal);
+        // Tree mode: a node cannot move into its own branch.
+        if (!isExternal && target is not null && IsTree && items.Any(i => IsInBranch(target, i))) return;
+        var dropPosition = position switch { "before" => PBGridDropPosition.Before, "inside" => PBGridDropPosition.Inside, _ => PBGridDropPosition.After };
+        var args = new PBGridItemsDroppedEventArgs<TItem>(items, target, dropPosition, source, isExternal);
         await ItemsDropped.InvokeAsync(args);
         if (isExternal) source.Invalidate();
         Invalidate();

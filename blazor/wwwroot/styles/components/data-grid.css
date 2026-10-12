@@ -605,6 +605,12 @@
   box-shadow: inset 0 -2px 0 var(--md-sys-color-primary);
 }
 
+/* Tree mode: dropping inside a row makes the rows its children. */
+.pb-grid__row--drop-inside > td {
+  background-color: color-mix(in srgb, var(--md-sys-color-primary) 12%, var(--md-sys-color-surface));
+  box-shadow: inset 0 2px 0 var(--md-sys-color-primary), inset 0 -2px 0 var(--md-sys-color-primary);
+}
+
 .pb-grid--drop-target .pb-grid__scroll {
   outline: 2px dashed var(--md-sys-color-primary);
   outline-offset: -2px;
@@ -1080,4 +1086,55 @@ textarea.pb-grid__editor {
   .pb-grid__toolbar .pb-grid__search {
     width: 100%;
   }
+}
+
+/* ---------------------------------------------------------------- tree list (PBTreeList) */
+/* The tree column: a 24px indent per level, then the expand button (32px, like mat-tree's toggle) or
+   a spacer of the same width, then the cell content. */
+
+.pb-grid__tree-cell {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  margin-left: -8px;
+  padding-left: calc(var(--pb-tree-level, 0) * 24px);
+}
+
+.pb-grid__tree-toggle {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin-right: 4px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: none;
+  color: var(--md-sys-color-on-surface-variant);
+  cursor: pointer;
+}
+
+.pb-grid__tree-toggle:hover {
+  background-color: color-mix(in srgb, var(--md-sys-color-on-surface) calc(var(--md-sys-state-hover-state-layer-opacity) * 100%), transparent);
+}
+
+.pb-grid__tree-toggle:focus-visible {
+  outline: 2px solid var(--md-sys-color-primary);
+  outline-offset: -2px;
+}
+
+.pb-grid__tree-toggle--loading {
+  cursor: default;
+}
+
+.pb-grid__tree-spacer {
+  flex: none;
+  width: 36px;
+}
+
+.pb-grid__tree-content {
+  flex: 1 1 auto;
+  min-width: 0;
 }

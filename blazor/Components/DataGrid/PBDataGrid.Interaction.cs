@@ -666,6 +666,19 @@ public partial class PBDataGrid<TItem>
         {
             items.Add(new(IsSelected(item) ? "Deselect Row" : "Select Row", () => ToggleRowSelectionAsync(item), "check_box") { BeginGroup = items.Count > 0 });
         }
+        if (IsTree)
+        {
+            var treeRow = allRows.FirstOrDefault(r => r.Kind == GridRowKind.Data && Equals(KeyOf(r.Item!), KeyOf(item)));
+            if (CanEditRows && !row.IsInserted) items.Insert(Math.Min(1, items.Count), new("New Child Row", () => StartEditNewChildRowAsync(item), "subdirectory_arrow_right"));
+            if (treeRow is { TreeHasChildren: true })
+            {
+                items.Add(treeRow.TreeExpanded
+                    ? new("Collapse", () => CollapseRowAsync(item), "expand_less") { BeginGroup = true }
+                    : new("Expand", () => ExpandRowAsync(item), "expand_more") { BeginGroup = true });
+            }
+            items.Add(new("Expand All", () => Run(ExpandAllRows), "unfold_more") { BeginGroup = treeRow is not { TreeHasChildren: true } });
+            items.Add(new("Collapse All", () => Run(CollapseAllRows), "unfold_less"));
+        }
         if (groupedColumns.Count > 0)
         {
             items.Add(new("Expand All Groups", () => Run(ExpandAllGroups), "unfold_more") { BeginGroup = true });
@@ -915,6 +928,19 @@ public partial class PBDataGrid<TItem>
             case "PageUp" when PagingActive && pageIndex > 0:
                 await GoToPageAsync(pageIndex - 1);
                 keyboardRow = -1;
+                break;
+            // Tree mode (treegrid): Right expands, Left collapses or moves to the parent row.
+            case "ArrowRight" when row.Kind == GridRowKind.Data && IsTree && row.TreeHasChildren && !row.TreeExpanded:
+            case "ArrowLeft" when row.Kind == GridRowKind.Data && IsTree && row.TreeExpanded:
+                await ToggleTreeRowAsync(row);
+                focusRowAfterRender = row.Index;
+                break;
+            case "ArrowRight" when row.Kind == GridRowKind.Data && IsTree && row.TreeExpanded:
+                if (currentPosition + 1 < rows.Count && rows[currentPosition + 1].TreeLevel > row.TreeLevel) await MoveTo(currentPosition + 1);
+                break;
+            case "ArrowLeft" when row.Kind == GridRowKind.Data && IsTree && row.TreeLevel > 0:
+                var parentPosition = rows.FindLastIndex(currentPosition, r => r.Kind == GridRowKind.Data && r.TreeLevel < row.TreeLevel);
+                if (parentPosition >= 0) await MoveTo(parentPosition);
                 break;
             case "ArrowRight" or "ArrowLeft" when row.Kind == GridRowKind.Group:
                 if (IsExpanded(row.Group!) != (e.Key == "ArrowRight")) ToggleGroup(row.Group!);

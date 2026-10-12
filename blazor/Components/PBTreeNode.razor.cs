@@ -25,6 +25,9 @@ public partial class PBTreeNode : WorkspaceComponentBase
     /// <summary>Set when the node has children but they are not declared yet (e.g. lazy loading).</summary>
     [Parameter] public bool Expandable { get; set; }
 
+    /// <summary>Shows an indeterminate progress bar under the node while its children load (Tree with dynamic data).</summary>
+    [Parameter] public bool Loading { get; set; }
+
     private ElementReference item;
 
     private int Level => Parent is null ? 0 : Parent.Level + 1;
