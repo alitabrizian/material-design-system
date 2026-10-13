@@ -1,0 +1,53 @@
+/**
+ * Hand-authored PartoBita space, stroke, radius and opacity scales, from the design team's Figma frame
+ * (shown on the docs' Fundamentals > Scales page). Angular Material's --md-sys-spacing-*,
+ * --md-sys-shape-corner-* and --md-sys-state-*-opacity tokens are unchanged; these are the product scales.
+ *
+ * Figma lists the values without units: space, stroke and radius are px, opacity is a percentage
+ * (so var(--opacity-500) works in both opacity and color-mix()).
+ */
+
+:root {
+  --space-0: 0px;
+  --space-50: 2px;
+  --space-100: 4px;
+  --space-150: 8px;
+  --space-200: 12px;
+  --space-250: 16px;
+  --space-300: 24px;
+  --space-350: 32px;
+  --space-400: 40px;
+  --space-450: 48px;
+  --space-500: 56px;
+  --space-550: 64px;
+  --space-600: 80px;
+  --space-650: 96px;
+
+  --stroke-0: 0px;
+  --stroke-100: 1px;
+  --stroke-200: 1.5px;
+  --stroke-300: 2px;
+  --stroke-400: 3px;
+  --stroke-500: 4px;
+  --stroke-600: 8px;
+
+  --radius-0: 0px;
+  --radius-100: 4px;
+  --radius-200: 8px;
+  --radius-300: 16px;
+  --radius-400: 24px;
+  --radius-500: 32px;
+  --radius-600: 999px;
+
+  --opacity-0: 0%;
+  --opacity-50: 10%;
+  --opacity-100: 20%;
+  --opacity-200: 30%;
+  --opacity-300: 40%;
+  --opacity-400: 50%;
+  --opacity-500: 60%;
+  --opacity-600: 70%;
+  --opacity-700: 80%;
+  --opacity-800: 90%;
+  --opacity-900: 100%;
+}
