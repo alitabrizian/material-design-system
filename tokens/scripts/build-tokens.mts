@@ -14,12 +14,15 @@
  *
  * Output (dist/, gitignored; the Blazor library copies it into wwwroot at build time):
  *   - css/tokens.css            color roles per theme + all system tokens + src/material-tokens.css
+ *                               + src/typography-tokens.css
  *   - css/material-tokens.css   copy of src/material-tokens.css (motion, spacing, font stack)
+ *   - css/typography-tokens.css copy of src/typography-tokens.css (PartoBita type scale)
  *   - css/angular-material.css  every --mat-sys-* Angular Material reads, bound to its --md-sys-* token,
  *                               so Angular Material components follow these tokens (and data-theme)
  *   - css/roboto.css            self-hosted Roboto @font-face rules (from @fontsource-variable/roboto)
  *   - css/icons.css             self-hosted Material Icons + Material Symbols Outlined + class rules
- *   - css/fonts.css             roboto.css + icons.css in one file
+ *   - css/yekan-bakh.css        @font-face rules for the five Yekan Bakh FaNum weights (fonts/yekan-bakh/)
+ *   - css/fonts.css             roboto.css + yekan-bakh.css + icons.css in one file
  *   - fonts/*.woff2, OFL.txt, Apache-2.0.txt
  *   - data/palettes.json        theme metadata (name, mode, key colors) for non-CSS consumers
  */
@@ -163,6 +166,9 @@ tokensCss.push("}", "");
 const handAuthored = fs.readFileSync(path.join(packageRoot, "src/material-tokens.css"), "utf8");
 tokensCss.push("/* ---- src/material-tokens.css (motion, spacing, font stack) ---- */", handAuthored.trim(), "");
 
+const typography = fs.readFileSync(path.join(packageRoot, "src/typography-tokens.css"), "utf8");
+tokensCss.push("/* ---- src/typography-tokens.css (PartoBita type scale) ---- */", typography.trim(), "");
+
 // ---------------------------------------------------------------- fonts (Roboto + icon fonts)
 
 function requirePackage(name: string): string {
@@ -197,6 +203,26 @@ const robotoCss = copyFonts(
 );
 if (robotoCss.includes("Roboto Variable")) fail("unexpected @fontsource-variable/roboto CSS layout");
 fs.copyFileSync(path.join(roboto, "LICENSE"), path.join(distRoot, "fonts/OFL.txt"));
+
+// Yekan Bakh FaNum (fontiran.com, commercial license), the product font --font-family-mainfont names:
+// one static file per weight of the --font-weight-* scale, from fonts/yekan-bakh/.
+const YEKAN_BAKH_WEIGHTS: [number, string][] = [[300, "Light"], [400, "Regular"], [600, "SemiBold"], [700, "Bold"], [800, "ExtraBold"]];
+const yekanBakhCss = YEKAN_BAKH_WEIGHTS.map(([weight, name]) => {
+  const file = `YekanBakhFaNum-${name}.woff2`;
+  const source = path.join(packageRoot, "fonts/yekan-bakh", file);
+  if (!fs.existsSync(source)) fail(`font file ${source} not found`);
+  fs.copyFileSync(source, path.join(distRoot, "fonts", file));
+  fontFiles.add(file);
+  return [
+    "@font-face {",
+    "  font-family: 'Yekan Bakh FaNum';",
+    "  font-style: normal;",
+    "  font-display: swap;",
+    `  font-weight: ${weight};`,
+    `  src: url(../fonts/${file}) format('woff2');`,
+    "}",
+  ].join("\n");
+}).join("\n\n");
 
 // Material Icons (the font mat-icon uses by default) and Material Symbols Outlined (variable weight).
 // Only the woff2 is kept for Material Icons; every supported browser reads woff2.
@@ -262,6 +288,7 @@ const write = (rel: string, content: string) => {
 
 write("css/tokens.css", tokensCss.join("\n"));
 write("css/material-tokens.css", handAuthored);
+write("css/typography-tokens.css", typography);
 write(
   "css/angular-material.css",
   [
@@ -283,9 +310,11 @@ write(
 );
 const robotoOut = header(["Self-hosted Roboto (variable 100-900, normal + italic), SIL OFL 1.1 (../fonts/OFL.txt)."]) + "\n" + robotoCss.trim();
 const iconsOut = header(["Self-hosted Material Icons + Material Symbols Outlined, Apache 2.0 (../fonts/Apache-2.0.txt)."]) + "\n" + iconsCss.trim();
+const yekanBakhOut = header(["Self-hosted Yekan Bakh FaNum (Light, Regular, SemiBold, Bold, ExtraBold), commercial license (fontiran.com)."]) + "\n" + yekanBakhCss;
 write("css/roboto.css", robotoOut);
+write("css/yekan-bakh.css", yekanBakhOut);
 write("css/icons.css", iconsOut);
-write("css/fonts.css", robotoOut + "\n\n" + iconsOut);
+write("css/fonts.css", robotoOut + "\n\n" + yekanBakhOut + "\n\n" + iconsOut);
 write(
   "data/palettes.json",
   JSON.stringify(

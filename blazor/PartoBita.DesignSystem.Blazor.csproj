@@ -72,7 +72,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <_DesignTokenSource Include="$(DesignTokensRoot)src\**\*.css;$(DesignTokensRoot)reference\**\*;$(DesignTokensRoot)scripts\build-tokens.mts" />
+    <_DesignTokenSource Include="$(DesignTokensRoot)src\**\*.css;$(DesignTokensRoot)reference\**\*;$(DesignTokensRoot)fonts\**\*;$(DesignTokensRoot)scripts\build-tokens.mts" />
   </ItemGroup>
 
   <!--

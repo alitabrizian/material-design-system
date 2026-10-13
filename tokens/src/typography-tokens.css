@@ -1,0 +1,170 @@
+/**
+ * Hand-authored PartoBita typography tokens, from the design team's Figma typography frame (shown on the
+ * docs' Fundamentals > Typography page). Angular Material's --md-sys-typescale-* tokens are unchanged;
+ * these are the product type scale.
+ *
+ * Primitives: one font family, a font-size scale (100-900), a line-height scale (50-900: 14px, then 16px to 80px in 4px steps) and a
+ * font-weight scale (100-500, named after the Yekan Bakh weights). Each text style combines one of each.
+ * Use the styles, not the primitives on their own (the Figma guideline), e.g.
+ *   font: var(--typography-body-1);
+ * The font files are in css/yekan-bakh.css (also part of css/fonts.css).
+ */
+
+:root {
+  --font-family-mainfont: "Yekan Bakh FaNum", Tahoma, Arial, sans-serif;
+
+  --font-size-100: 10px;
+  --font-size-200: 12px;
+  --font-size-300: 14px;
+  --font-size-400: 16px;
+  --font-size-500: 20px;
+  --font-size-600: 24px;
+  --font-size-700: 32px;
+  --font-size-800: 40px;
+  --font-size-900: 48px;
+
+  --line-height-50: 14px;
+  --line-height-100: 16px;
+  --line-height-150: 20px;
+  --line-height-200: 24px;
+  --line-height-250: 28px;
+  --line-height-300: 32px;
+  --line-height-350: 36px;
+  --line-height-400: 40px;
+  --line-height-450: 44px;
+  --line-height-500: 48px;
+  --line-height-550: 52px;
+  --line-height-600: 56px;
+  --line-height-650: 60px;
+  --line-height-700: 64px;
+  --line-height-750: 68px;
+  --line-height-800: 72px;
+  --line-height-850: 76px;
+  --line-height-900: 80px;
+
+  --font-weight-100: 300; /* Light */
+  --font-weight-200: 400; /* Regular */
+  --font-weight-300: 600; /* SemiBold */
+  --font-weight-400: 700; /* Bold */
+  --font-weight-500: 800; /* ExtraBold */
+
+  --typography-display-1-font-family: var(--font-family-mainfont);
+  --typography-display-1-font-size: var(--font-size-900);
+  --typography-display-1-font-weight: var(--font-weight-300);
+  --typography-display-1-line-height: var(--line-height-750);
+  --typography-display-1: var(--font-weight-300) var(--font-size-900) / var(--line-height-750) var(--font-family-mainfont);
+
+  --typography-display-2-font-family: var(--font-family-mainfont);
+  --typography-display-2-font-size: var(--font-size-800);
+  --typography-display-2-font-weight: var(--font-weight-300);
+  --typography-display-2-line-height: var(--line-height-600);
+  --typography-display-2: var(--font-weight-300) var(--font-size-800) / var(--line-height-600) var(--font-family-mainfont);
+
+  --typography-heading-1-font-family: var(--font-family-mainfont);
+  --typography-heading-1-font-size: var(--font-size-700);
+  --typography-heading-1-font-weight: var(--font-weight-400);
+  --typography-heading-1-line-height: var(--line-height-450);
+  --typography-heading-1: var(--font-weight-400) var(--font-size-700) / var(--line-height-450) var(--font-family-mainfont);
+
+  --typography-heading-2-font-family: var(--font-family-mainfont);
+  --typography-heading-2-font-size: var(--font-size-700);
+  --typography-heading-2-font-weight: var(--font-weight-300);
+  --typography-heading-2-line-height: var(--line-height-450);
+  --typography-heading-2: var(--font-weight-300) var(--font-size-700) / var(--line-height-450) var(--font-family-mainfont);
+
+  --typography-heading-3-font-family: var(--font-family-mainfont);
+  --typography-heading-3-font-size: var(--font-size-600);
+  --typography-heading-3-font-weight: var(--font-weight-400);
+  --typography-heading-3-line-height: var(--line-height-300);
+  --typography-heading-3: var(--font-weight-400) var(--font-size-600) / var(--line-height-300) var(--font-family-mainfont);
+
+  --typography-heading-4-font-family: var(--font-family-mainfont);
+  --typography-heading-4-font-size: var(--font-size-600);
+  --typography-heading-4-font-weight: var(--font-weight-300);
+  --typography-heading-4-line-height: var(--line-height-300);
+  --typography-heading-4: var(--font-weight-300) var(--font-size-600) / var(--line-height-300) var(--font-family-mainfont);
+
+  --typography-heading-5-font-family: var(--font-family-mainfont);
+  --typography-heading-5-font-size: var(--font-size-500);
+  --typography-heading-5-font-weight: var(--font-weight-400);
+  --typography-heading-5-line-height: var(--line-height-250);
+  --typography-heading-5: var(--font-weight-400) var(--font-size-500) / var(--line-height-250) var(--font-family-mainfont);
+
+  --typography-heading-6-font-family: var(--font-family-mainfont);
+  --typography-heading-6-font-size: var(--font-size-500);
+  --typography-heading-6-font-weight: var(--font-weight-300);
+  --typography-heading-6-line-height: var(--line-height-250);
+  --typography-heading-6: var(--font-weight-300) var(--font-size-500) / var(--line-height-250) var(--font-family-mainfont);
+
+  --typography-body-1-font-family: var(--font-family-mainfont);
+  --typography-body-1-font-size: var(--font-size-400);
+  --typography-body-1-font-weight: var(--font-weight-400);
+  --typography-body-1-line-height: var(--line-height-200);
+  --typography-body-1: var(--font-weight-400) var(--font-size-400) / var(--line-height-200) var(--font-family-mainfont);
+
+  --typography-body-2-font-family: var(--font-family-mainfont);
+  --typography-body-2-font-size: var(--font-size-400);
+  --typography-body-2-font-weight: var(--font-weight-300);
+  --typography-body-2-line-height: var(--line-height-200);
+  --typography-body-2: var(--font-weight-300) var(--font-size-400) / var(--line-height-200) var(--font-family-mainfont);
+
+  --typography-body-3-font-family: var(--font-family-mainfont);
+  --typography-body-3-font-size: var(--font-size-400);
+  --typography-body-3-font-weight: var(--font-weight-200);
+  --typography-body-3-line-height: var(--line-height-200);
+  --typography-body-3: var(--font-weight-200) var(--font-size-400) / var(--line-height-200) var(--font-family-mainfont);
+
+  --typography-body-4-font-family: var(--font-family-mainfont);
+  --typography-body-4-font-size: var(--font-size-300);
+  --typography-body-4-font-weight: var(--font-weight-400);
+  --typography-body-4-line-height: var(--line-height-150);
+  --typography-body-4: var(--font-weight-400) var(--font-size-300) / var(--line-height-150) var(--font-family-mainfont);
+
+  --typography-body-5-font-family: var(--font-family-mainfont);
+  --typography-body-5-font-size: var(--font-size-300);
+  --typography-body-5-font-weight: var(--font-weight-300);
+  --typography-body-5-line-height: var(--line-height-150);
+  --typography-body-5: var(--font-weight-300) var(--font-size-300) / var(--line-height-150) var(--font-family-mainfont);
+
+  --typography-body-6-font-family: var(--font-family-mainfont);
+  --typography-body-6-font-size: var(--font-size-300);
+  --typography-body-6-font-weight: var(--font-weight-200);
+  --typography-body-6-line-height: var(--line-height-150);
+  --typography-body-6: var(--font-weight-200) var(--font-size-300) / var(--line-height-150) var(--font-family-mainfont);
+
+  --typography-caption-1-font-family: var(--font-family-mainfont);
+  --typography-caption-1-font-size: var(--font-size-200);
+  --typography-caption-1-font-weight: var(--font-weight-400);
+  --typography-caption-1-line-height: var(--line-height-100);
+  --typography-caption-1: var(--font-weight-400) var(--font-size-200) / var(--line-height-100) var(--font-family-mainfont);
+
+  --typography-caption-2-font-family: var(--font-family-mainfont);
+  --typography-caption-2-font-size: var(--font-size-200);
+  --typography-caption-2-font-weight: var(--font-weight-300);
+  --typography-caption-2-line-height: var(--line-height-100);
+  --typography-caption-2: var(--font-weight-300) var(--font-size-200) / var(--line-height-100) var(--font-family-mainfont);
+
+  --typography-caption-3-font-family: var(--font-family-mainfont);
+  --typography-caption-3-font-size: var(--font-size-200);
+  --typography-caption-3-font-weight: var(--font-weight-200);
+  --typography-caption-3-line-height: var(--line-height-100);
+  --typography-caption-3: var(--font-weight-200) var(--font-size-200) / var(--line-height-100) var(--font-family-mainfont);
+
+  --typography-caption-4-font-family: var(--font-family-mainfont);
+  --typography-caption-4-font-size: var(--font-size-100);
+  --typography-caption-4-font-weight: var(--font-weight-400);
+  --typography-caption-4-line-height: var(--line-height-50);
+  --typography-caption-4: var(--font-weight-400) var(--font-size-100) / var(--line-height-50) var(--font-family-mainfont);
+
+  --typography-caption-5-font-family: var(--font-family-mainfont);
+  --typography-caption-5-font-size: var(--font-size-100);
+  --typography-caption-5-font-weight: var(--font-weight-300);
+  --typography-caption-5-line-height: var(--line-height-50);
+  --typography-caption-5: var(--font-weight-300) var(--font-size-100) / var(--line-height-50) var(--font-family-mainfont);
+
+  --typography-caption-6-font-family: var(--font-family-mainfont);
+  --typography-caption-6-font-size: var(--font-size-100);
+  --typography-caption-6-font-weight: var(--font-weight-200);
+  --typography-caption-6-line-height: var(--line-height-50);
+  --typography-caption-6: var(--font-weight-200) var(--font-size-100) / var(--line-height-50) var(--font-family-mainfont);
+}

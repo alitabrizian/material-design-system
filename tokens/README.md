@@ -17,8 +17,11 @@ libs/material-design-system/tokens  ──► libs/material-design-system/blazor
 | `reference/angular-material/*.css` | Angular Material's prebuilt M3 themes (rose-red, azure-blue, magenta-violet, cyan-orange), vendored with `VERSION` and `LICENSE`. Refresh with `node scripts/sync-angular-themes.mts [version]` | yes |
 | `scripts/build-tokens.mts` | Parses the vendored themes: 51 `--md-sys-color-*` roles per theme + typescale, shape, elevation and state tokens, and fails on missing or inconsistent values | yes |
 | `src/material-tokens.css` | Hand-authored tokens Angular Material doesn't ship: font stack, motion, spacing, legacy z2/z16 shadows, on-scrim, and per-theme `--md-ref-palette-neutral99` (neutral tone 99 from `_palettes.scss`, used by the theme picker previews) | yes |
+| `src/typography-tokens.css` | Hand-authored PartoBita type scale from the design team's Figma frame: `--font-family-mainfont`, `--font-size-100..900`, `--line-height-50..900`, `--font-weight-100..500` and 20 text styles (`--typography-display-1` ... `--typography-caption-6`, each also split into `-font-family`/`-font-size`/`-font-weight`/`-line-height`). Use a style (`font: var(--typography-body-1)`), not the primitives on their own | yes |
+| `fonts/yekan-bakh/*.woff2` | Yekan Bakh FaNum Light, Regular, SemiBold, Bold and ExtraBold (fontiran.com, commercial license) | yes |
 | `dist/css/tokens.css` | Everything above: color roles per `[data-theme]` (with `color-scheme`) and system tokens on `:root` | no |
-| `dist/css/icons.css`, `dist/css/fonts.css` | Self-hosted Material Icons + Material Symbols Outlined (and Roboto in `fonts.css`) | no |
+| `dist/css/icons.css`, `dist/css/fonts.css` | Self-hosted Material Icons + Material Symbols Outlined (and Roboto + Yekan Bakh in `fonts.css`) | no |
+| `dist/css/yekan-bakh.css`, `dist/css/typography-tokens.css` | `@font-face` rules for the five Yekan Bakh weights, and a copy of `src/typography-tokens.css` (also included in `tokens.css`) | no |
 | `dist/css/material-tokens.css` | Copy of `src/material-tokens.css` | no |
 | `dist/css/angular-material.css` | Every `--mat-sys-*` variable Angular Material reads, bound to its `--md-sys-*` token (the build's mapping, reversed). Loaded instead of a prebuilt Angular Material theme, so `mat-*` components follow these tokens and `data-theme` | no |
 | `dist/data/palettes.json` | Theme metadata (name, mode, seed colors) for non-CSS consumers | no |
