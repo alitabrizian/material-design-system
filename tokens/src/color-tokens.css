@@ -1,0 +1,443 @@
+/**
+ * Hand-authored PartoBita color tokens, from the design team's Figma "Color System" page (shown on the
+ * docs' Fundamentals > Colors page). Angular Material's --md-sys-color-* roles are unchanged; these are
+ * the product palettes. Names follow the Figma variables (Dev Mode's CSS names: "gray/50" is --gray-50).
+ *
+ * Base colors ("1. Base Colors"): gray, the brand palettes (partobita, satima, sajaak-primary,
+ * sajaak-accent, samasat, sarafeed, bt-bot), the semantic palettes (red, green, orange, blue), the accent
+ * palettes (brilliant-rose, spring-green, summer-sky, coral, slate-blue, paris-daisy) and white/black alpha.
+ *
+ * Alias colors ("2. Alias Colors"): what each base color is for, by property (background, text, icon,
+ * border) and state (default, hover, press, selected, disable). Use the alias tokens, e.g.
+ *   background: var(--background-brand-partobita-default);
+ *   color: var(--text-primary-primary);
+ * Two Figma names are normalized: background/subtle/sarafid-press is --background-subtle-sarafeed-press,
+ * and border/white/Default and border/light/Default are lowercase.
+ */
+
+:root {
+  /* ---- base colors ---- */
+  --gray-white: #ffffff;
+  --gray-50: #f7f7f7;
+  --gray-100: #f2f2f2;
+  --gray-200: #e6e6e6;
+  --gray-300: #cccccc;
+  --gray-400: #b3b3b3;
+  --gray-500: #999999;
+  --gray-600: #808080;
+  --gray-700: #666666;
+  --gray-800: #4d4d4d;
+  --gray-900: #333333;
+  --gray-black: #000000;
+
+  --brand-partobita-50: #f0f6f9;
+  --brand-partobita-100: #b9dbf0;
+  --brand-partobita-200: #85c2e5;
+  --brand-partobita-300: #56aadb;
+  --brand-partobita-400: #2a93d0;
+  --brand-partobita-500: #007dc6;
+  --brand-partobita-600: #0065a1;
+  --brand-partobita-700: #004d7a;
+  --brand-partobita-800: #003554;
+  --brand-partobita-900: #001d2e;
+
+  --brand-satima-50: #f9f6f0;
+  --brand-satima-100: #fae9cd;
+  --brand-satima-200: #f7d9a8;
+  --brand-satima-300: #f5c982;
+  --brand-satima-400: #f2ba5e;
+  --brand-satima-500: #f2ab39;
+  --brand-satima-600: #cc8c25;
+  --brand-satima-700: #a66e14;
+  --brand-satima-800: #805208;
+  --brand-satima-900: #593700;
+
+  --brand-sajaak-primary-50: #f0f9fa;
+  --brand-sajaak-primary-100: #bdecf2;
+  --brand-sajaak-primary-200: #91e2ed;
+  --brand-sajaak-primary-300: #63d6e5;
+  --brand-sajaak-primary-400: #77d4e0;
+  --brand-sajaak-primary-500: #12c1d9;
+  --brand-sajaak-primary-600: #0e9db0;
+  --brand-sajaak-primary-700: #0b7987;
+  --brand-sajaak-primary-800: #07525c;
+  --brand-sajaak-primary-900: #042e33;
+
+  --brand-sajaak-accent-50: #f0f3fa;
+  --brand-sajaak-accent-100: #abb8d4;
+  --brand-sajaak-accent-200: #7687b0;
+  --brand-sajaak-accent-300: #485b8a;
+  --brand-sajaak-accent-400: #263966;
+  --brand-sajaak-accent-500: #0e1d40;
+  --brand-sajaak-accent-600: #0c1a3d;
+  --brand-sajaak-accent-700: #09183b;
+  --brand-sajaak-accent-800: #071638;
+  --brand-sajaak-accent-900: #051333;
+
+  --brand-samasat-50: #f2f2f2;
+  --brand-samasat-100: #d9d9d9;
+  --brand-samasat-200: #bfbfbf;
+  --brand-samasat-300: #a6a6a6;
+  --brand-samasat-400: #8c8c8c;
+  --brand-samasat-500: #4d4d4d;
+  --brand-samasat-600: #262626;
+  --brand-samasat-700: #000000;
+
+  --brand-sarafeed-50: #f0f9f3;
+  --brand-sarafeed-100: #b7e8ca;
+  --brand-sarafeed-200: #86d9a6;
+  --brand-sarafeed-300: #5ac783;
+  --brand-sarafeed-400: #35b867;
+  --brand-sarafeed-500: #15a54c;
+  --brand-sarafeed-600: #0f8c3f;
+  --brand-sarafeed-700: #0b7333;
+  --brand-sarafeed-800: #085927;
+  --brand-sarafeed-900: #05401c;
+
+  --brand-bt-bot-500: #6120da;
+
+  --semantic-red-50: #faf0f0;
+  --semantic-red-100: #fae1e1;
+  --semantic-red-200: #f5c6c6;
+  --semantic-red-300: #f0a9a9;
+  --semantic-red-400: #eb8888;
+  --semantic-red-500: #e56363;
+  --semantic-red-600: #eb2222;
+  --semantic-red-700: #aa1717;
+  --semantic-red-800: #730d0d;
+  --semantic-red-900: #330505;
+
+  --semantic-green-50: #f0faf4;
+  --semantic-green-100: #e1faeb;
+  --semantic-green-200: #c5f6d8;
+  --semantic-green-300: #a8f1c5;
+  --semantic-green-400: #88ebb0;
+  --semantic-green-500: #63e597;
+  --semantic-green-600: #1cc860;
+  --semantic-green-700: #139848;
+  --semantic-green-800: #0c6930;
+  --semantic-green-900: #053317;
+
+  --semantic-orange-50: #fff9f0;
+  --semantic-orange-100: #fff6e6;
+  --semantic-orange-200: #ffebc7;
+  --semantic-orange-300: #ffdea3;
+  --semantic-orange-400: #fac972;
+  --semantic-orange-500: #fab43b;
+  --semantic-orange-600: #d48b0f;
+  --semantic-orange-700: #a46c0c;
+  --semantic-orange-800: #6f4a09;
+  --semantic-orange-900: #332205;
+
+  --semantic-blue-50: #ebf5fa;
+  --semantic-blue-100: #e1f2fa;
+  --semantic-blue-200: #c4e6f5;
+  --semantic-blue-300: #a6daf0;
+  --semantic-blue-400: #87cceb;
+  --semantic-blue-500: #63bee5;
+  --semantic-blue-600: #20a2db;
+  --semantic-blue-700: #167ba6;
+  --semantic-blue-800: #0d5372;
+  --semantic-blue-900: #052533;
+
+  --accent-brilliant-rose-50: #fff5f9;
+  --accent-brilliant-rose-100: #ffe5ee;
+  --accent-brilliant-rose-200: #ffccde;
+  --accent-brilliant-rose-300: #ffa6c5;
+  --accent-brilliant-rose-400: #f57ba7;
+  --accent-brilliant-rose-500: #ff669f;
+  --accent-brilliant-rose-600: #f80a62;
+  --accent-brilliant-rose-700: #ba094b;
+  --accent-brilliant-rose-800: #7c0933;
+  --accent-brilliant-rose-900: #330516;
+
+  --accent-spring-green-50: #f5fffb;
+  --accent-spring-green-100: #e5fff3;
+  --accent-spring-green-200: #ccffe8;
+  --accent-spring-green-300: #a6ffd6;
+  --accent-spring-green-400: #66ffba;
+  --accent-spring-green-500: #33ffa3;
+  --accent-spring-green-600: #07d477;
+  --accent-spring-green-700: #08a45e;
+  --accent-spring-green-800: #087041;
+  --accent-spring-green-900: #05331e;
+
+  --accent-summer-sky-50: #f5fdff;
+  --accent-summer-sky-100: #e6faff;
+  --accent-summer-sky-200: #ccf5ff;
+  --accent-summer-sky-300: #a6edff;
+  --accent-summer-sky-400: #66e0ff;
+  --accent-summer-sky-500: #33d6ff;
+  --accent-summer-sky-600: #06b4de;
+  --accent-summer-sky-700: #0889a8;
+  --accent-summer-sky-800: #085d71;
+  --accent-summer-sky-900: #052a33;
+
+  --accent-coral-50: #fff9f5;
+  --accent-coral-100: #ffede5;
+  --accent-coral-200: #ffdbcc;
+  --accent-coral-300: #ffc2a6;
+  --accent-coral-400: #ffa480;
+  --accent-coral-500: #ff7f4c;
+  --accent-coral-600: #ee4907;
+  --accent-coral-700: #b63a09;
+  --accent-coral-800: #792908;
+  --accent-coral-900: #331205;
+
+  --accent-slate-blue-50: #f5f5ff;
+  --accent-slate-blue-100: #e6e7ff;
+  --accent-slate-blue-200: #cccdff;
+  --accent-slate-blue-300: #a6a7ff;
+  --accent-slate-blue-400: #8083ff;
+  --accent-slate-blue-500: #666dff;
+  --accent-slate-blue-600: #424bfd;
+  --accent-slate-blue-700: #1721f9;
+  --accent-slate-blue-800: #0911a7;
+  --accent-slate-blue-900: #050733;
+
+  --accent-paris-daisy-50: #fffdf5;
+  --accent-paris-daisy-100: #fffbe5;
+  --accent-paris-daisy-200: #fff5cc;
+  --accent-paris-daisy-300: #fff0a6;
+  --accent-paris-daisy-400: #ffe780;
+  --accent-paris-daisy-500: #ffe54c;
+  --accent-paris-daisy-600: #daba08;
+  --accent-paris-daisy-700: #a89009;
+  --accent-paris-daisy-800: #716208;
+  --accent-paris-daisy-900: #332c05;
+
+  --alpha-white-100: #ffffff1a;
+  --alpha-white-200: #ffffff33;
+  --alpha-white-300: #ffffff4d;
+  --alpha-white-400: #ffffff66;
+  --alpha-white-500: #ffffff80;
+  --alpha-white-600: #ffffff99;
+  --alpha-white-700: #ffffffb2;
+  --alpha-white-800: #ffffffcc;
+  --alpha-white-900: #ffffffe5;
+
+  --alpha-black-100: #0000001a;
+  --alpha-black-200: #00000033;
+  --alpha-black-300: #0000004d;
+  --alpha-black-400: #00000066;
+  --alpha-black-500: #00000080;
+  --alpha-black-600: #00000099;
+  --alpha-black-700: #000000b2;
+  --alpha-black-800: #000000cc;
+  --alpha-black-900: #000000e5;
+
+  /* ---- alias colors ---- */
+  --background-white-default: var(--gray-white);
+  --background-white-hover: var(--gray-50);
+  --background-white-press: var(--gray-100);
+
+  --background-primary-default: var(--gray-50);
+  --background-primary-hover: var(--gray-100);
+  --background-primary-press: var(--gray-200);
+
+  --background-secondary-default: var(--gray-100);
+  --background-secondary-hover: var(--gray-200);
+  --background-secondary-press: var(--gray-300);
+
+  --background-disable-default: var(--gray-300);
+
+  --background-dark-overlay: var(--alpha-black-400);
+  --background-dark-gray: var(--gray-800);
+
+  --background-brand-partobita-default: var(--brand-partobita-500);
+  --background-brand-partobita-hover: var(--brand-partobita-600);
+  --background-brand-partobita-press: var(--brand-partobita-700);
+  --background-brand-satima-default: var(--brand-satima-500);
+  --background-brand-satima-hover: var(--brand-satima-600);
+  --background-brand-satima-press: var(--brand-satima-700);
+  --background-brand-sajaak-primary-default: var(--brand-sajaak-primary-500);
+  --background-brand-sajaak-primary-hover: var(--brand-sajaak-primary-600);
+  --background-brand-sajaak-primary-press: var(--brand-sajaak-primary-700);
+  --background-brand-sajaak-accent-default: var(--brand-sajaak-accent-500);
+  --background-brand-sajaak-accent-hover: var(--brand-sajaak-accent-600);
+  --background-brand-sajaak-accent-press: var(--brand-sajaak-accent-700);
+  --background-brand-samasat-default: var(--brand-samasat-500);
+  --background-brand-samasat-hover: var(--brand-samasat-600);
+  --background-brand-samasat-press: var(--brand-samasat-700);
+  --background-brand-sarafeed-default: var(--brand-sarafeed-500);
+  --background-brand-sarafeed-hover: var(--brand-sarafeed-600);
+  --background-brand-sarafeed-press: var(--brand-sarafeed-700);
+  --background-brand-btbot-default: var(--brand-bt-bot-500);
+
+  --background-subtle-partobita-default: var(--brand-partobita-50);
+  --background-subtle-partobita-hover: var(--brand-partobita-100);
+  --background-subtle-partobita-press: var(--brand-partobita-200);
+  --background-subtle-satima-default: var(--brand-satima-50);
+  --background-subtle-satima-hover: var(--brand-satima-100);
+  --background-subtle-satima-press: var(--brand-satima-200);
+  --background-subtle-sajaak-primary-default: var(--brand-sajaak-primary-50);
+  --background-subtle-sajaak-primary-hover: var(--brand-sajaak-primary-100);
+  --background-subtle-sajaak-primary-press: var(--brand-sajaak-primary-200);
+  --background-subtle-sajaak-accent-default: var(--brand-sajaak-accent-50);
+  --background-subtle-sajaak-accent-hover: var(--brand-sajaak-accent-100);
+  --background-subtle-sajaak-accent-press: var(--brand-sajaak-accent-200);
+  --background-subtle-samasat-default: var(--brand-samasat-50);
+  --background-subtle-samasat-hover: var(--brand-samasat-100);
+  --background-subtle-samasat-press: var(--brand-samasat-200);
+  --background-subtle-sarafeed-default: var(--brand-sarafeed-50);
+  --background-subtle-sarafeed-hover: var(--brand-sarafeed-100);
+  --background-subtle-sarafeed-press: var(--brand-sarafeed-200);
+  --background-subtle-red-default: var(--semantic-red-50);
+  --background-subtle-red-hover: var(--semantic-red-100);
+  --background-subtle-red-press: var(--semantic-red-200);
+  --background-subtle-green-default: var(--semantic-green-50);
+  --background-subtle-green-hover: var(--semantic-green-100);
+  --background-subtle-green-press: var(--semantic-green-200);
+  --background-subtle-blue-default: var(--semantic-blue-50);
+  --background-subtle-blue-hover: var(--semantic-blue-100);
+  --background-subtle-blue-press: var(--semantic-blue-200);
+  --background-subtle-orange-default: var(--semantic-orange-50);
+  --background-subtle-orange-hover: var(--semantic-orange-100);
+  --background-subtle-orange-press: var(--semantic-orange-200);
+
+  --background-semantic-info-default: var(--semantic-blue-500);
+  --background-semantic-info-hover: var(--semantic-blue-600);
+  --background-semantic-info-press: var(--semantic-blue-700);
+  --background-semantic-danger-default: var(--semantic-red-500);
+  --background-semantic-danger-hover: var(--semantic-red-600);
+  --background-semantic-danger-press: var(--semantic-red-700);
+  --background-semantic-success-default: var(--semantic-green-600);
+  --background-semantic-success-hover: var(--semantic-green-700);
+  --background-semantic-success-press: var(--semantic-green-800);
+  --background-semantic-warning-default: var(--semantic-orange-500);
+  --background-semantic-warning-hover: var(--semantic-orange-600);
+  --background-semantic-warning-press: var(--semantic-orange-700);
+
+  --background-accent-rose-subtle-default: var(--accent-brilliant-rose-100);
+  --background-accent-rose-subtle-hover: var(--accent-brilliant-rose-200);
+  --background-accent-rose-subtle-press: var(--accent-brilliant-rose-300);
+  --background-accent-rose-bold: var(--accent-brilliant-rose-500);
+  --background-accent-spring-subtle-default: var(--accent-spring-green-100);
+  --background-accent-spring-subtle-hover: var(--accent-spring-green-200);
+  --background-accent-spring-subtle-press: var(--accent-spring-green-300);
+  --background-accent-spring-bold: var(--accent-spring-green-500);
+  --background-accent-sky-subtle-default: var(--accent-summer-sky-100);
+  --background-accent-sky-subtle-hover: var(--accent-summer-sky-200);
+  --background-accent-sky-subtle-press: var(--accent-summer-sky-300);
+  --background-accent-sky-bold: var(--accent-summer-sky-500);
+  --background-accent-coral-subtle-default: var(--accent-coral-100);
+  --background-accent-coral-subtle-hover: var(--accent-coral-200);
+  --background-accent-coral-subtle-press: var(--accent-coral-300);
+  --background-accent-coral-bold: var(--accent-coral-600);
+  --background-accent-slate-subtle-default: var(--accent-slate-blue-100);
+  --background-accent-slate-subtle-hover: var(--accent-slate-blue-200);
+  --background-accent-slate-subtle-press: var(--accent-slate-blue-300);
+  --background-accent-slate-bold: var(--accent-slate-blue-500);
+  --background-accent-daisy-subtle-default: var(--accent-paris-daisy-100);
+  --background-accent-daisy-subtle-hover: var(--accent-paris-daisy-200);
+  --background-accent-daisy-subtle-press: var(--accent-paris-daisy-300);
+  --background-accent-daisy-bold: var(--accent-paris-daisy-500);
+
+  --text-primary-black: var(--gray-black);
+  --text-primary-primary: var(--gray-900);
+  --text-primary-secondary: var(--gray-700);
+  --text-primary-tertiary: var(--gray-500);
+
+  --text-disable-default: var(--gray-500);
+
+  --text-on-brand-default: var(--gray-white);
+
+  --text-brand-partobita: var(--brand-partobita-500);
+  --text-brand-satima: var(--brand-satima-500);
+  --text-brand-sajaak-primary: var(--brand-sajaak-primary-500);
+  --text-brand-sajaak-accent: var(--brand-sajaak-accent-500);
+  --text-brand-samasat: var(--brand-samasat-500);
+  --text-brand-sarafeed: var(--brand-sarafeed-500);
+
+  --text-semantic-info: var(--semantic-blue-600);
+  --text-semantic-danger: var(--semantic-red-600);
+  --text-semantic-success: var(--semantic-green-700);
+  --text-semantic-warning: var(--semantic-orange-600);
+
+  --text-accent-rose: var(--accent-brilliant-rose-600);
+  --text-accent-spring: var(--accent-spring-green-600);
+  --text-accent-sky: var(--accent-summer-sky-600);
+  --text-accent-coral: var(--accent-coral-600);
+  --text-accent-slate: var(--accent-slate-blue-600);
+  --text-accent-daisy: var(--accent-paris-daisy-600);
+
+  --icon-state-default: var(--gray-800);
+  --icon-state-hover: var(--gray-900);
+  --icon-state-press: var(--gray-black);
+  --icon-state-disable: var(--gray-500);
+  --icon-state-partobita-selected: var(--brand-partobita-500);
+  --icon-state-satima-selected: var(--brand-satima-500);
+  --icon-state-sajaak-selected: var(--brand-sajaak-primary-500);
+  --icon-state-samasat-selected: var(--brand-samasat-500);
+  --icon-state-sarafeed-selected: var(--brand-sarafeed-500);
+
+  --icon-on-brand-default: var(--gray-white);
+
+  --icon-brand-partobita: var(--brand-partobita-500);
+  --icon-brand-satima: var(--brand-satima-500);
+  --icon-brand-sajaak: var(--brand-sajaak-primary-500);
+  --icon-brand-samasat: var(--brand-samasat-500);
+  --icon-brand-sarafeed: var(--brand-sarafeed-500);
+
+  --icon-semantic-info: var(--semantic-blue-600);
+  --icon-semantic-danger: var(--semantic-red-600);
+  --icon-semantic-success: var(--semantic-green-700);
+  --icon-semantic-warning: var(--semantic-orange-600);
+
+  --icon-accent-rose: var(--accent-brilliant-rose-600);
+  --icon-accent-spring: var(--accent-spring-green-600);
+  --icon-accent-sky: var(--accent-summer-sky-600);
+  --icon-accent-coral: var(--accent-coral-600);
+  --icon-accent-slate: var(--accent-slate-blue-600);
+  --icon-accent-daisy: var(--accent-paris-daisy-600);
+
+  --border-state-default: var(--gray-700);
+  --border-state-hover: var(--gray-800);
+  --border-state-press: var(--gray-black);
+  --border-state-disable: var(--gray-500);
+  --border-state-partobita-selected: var(--brand-partobita-500);
+  --border-state-satima-selected: var(--brand-satima-500);
+  --border-state-sajaak-selected: var(--brand-sajaak-primary-500);
+  --border-state-samasat-selected: var(--brand-samasat-500);
+  --border-state-sarafeed-selected: var(--brand-sarafeed-500);
+
+  --border-white-default: var(--gray-white);
+
+  --border-light-default: var(--gray-200);
+
+  --border-brand-partobita-default: var(--brand-partobita-500);
+  --border-brand-partobita-hover: var(--brand-partobita-600);
+  --border-brand-partobita-press: var(--brand-partobita-700);
+  --border-brand-satima-default: var(--brand-satima-500);
+  --border-brand-satima-hover: var(--brand-satima-600);
+  --border-brand-satima-press: var(--brand-satima-700);
+  --border-brand-sajaak-default: var(--brand-sajaak-primary-500);
+  --border-brand-sajaak-hover: var(--brand-sajaak-primary-600);
+  --border-brand-sajaak-press: var(--brand-sajaak-primary-700);
+  --border-brand-samasat-default: var(--brand-samasat-500);
+  --border-brand-samasat-hover: var(--brand-samasat-600);
+  --border-brand-samasat-press: var(--brand-samasat-700);
+  --border-brand-sarafeed-default: var(--brand-sarafeed-500);
+  --border-brand-sarafeed-hover: var(--brand-sarafeed-600);
+  --border-brand-sarafeed-press: var(--brand-sarafeed-700);
+
+  --border-semantic-info-default: var(--semantic-blue-600);
+  --border-semantic-info-hover: var(--semantic-blue-700);
+  --border-semantic-info-press: var(--semantic-blue-800);
+  --border-semantic-danger-default: var(--semantic-red-600);
+  --border-semantic-danger-hover: var(--semantic-red-700);
+  --border-semantic-danger-press: var(--semantic-red-800);
+  --border-semantic-success-default: var(--semantic-green-700);
+  --border-semantic-success-hover: var(--semantic-green-800);
+  --border-semantic-success-press: var(--semantic-green-900);
+  --border-semantic-warning-default: var(--semantic-orange-600);
+  --border-semantic-warning-hover: var(--semantic-orange-700);
+  --border-semantic-warning-press: var(--semantic-orange-800);
+
+  --border-accent-rose: var(--accent-brilliant-rose-500);
+  --border-accent-spring: var(--accent-spring-green-500);
+  --border-accent-sky: var(--accent-summer-sky-500);
+  --border-accent-coral: var(--accent-coral-500);
+  --border-accent-slate: var(--accent-slate-blue-500);
+  --border-accent-daisy: var(--accent-paris-daisy-500);
+}
