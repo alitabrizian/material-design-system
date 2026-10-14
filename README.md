@@ -14,6 +14,7 @@ package and managed as an Nx workspace.
 | `apps/blazor-design-system-docs` | `blazor-design-system-docs` | Blazor docs site (`PartoBita.DesignSystem.Docs`) |
 | `apps/angular-design-system-docs` | `angular-design-system-docs` | Angular docs site, same layout and pages as the Blazor docs |
 | `apps/design-system-remotion-videos` | `design-system-remotion-videos` | demo videos |
+| `apps/design-system-landing` (not a submodule) | `design-system-landing` | landing page linking to each framework's docs |
 
 Both component libraries inherit everything visual from `@partobita/design-tokens`: Blazor copies its
 `dist/` into the NuGet package, and Angular imports it, binding Angular Material's `--mat-sys-*`

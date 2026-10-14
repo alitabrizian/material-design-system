@@ -1,0 +1,6 @@
+{
+  "angular": "http://localhost:4200",
+  "blazor": "http://127.0.0.1:5080",
+  "react": null,
+  "svelte": null
+}

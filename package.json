@@ -7,6 +7,7 @@
     "build": "nx run-many -t build",
     "docs": "nx run blazor-design-system-docs:serve",
     "docs:angular": "nx run angular-design-system-docs:serve",
+    "landing": "nx run design-system-landing:serve",
     "remotion:studio": "nx run design-system-remotion-videos:studio",
     "remotion:render": "nx run design-system-remotion-videos:render"
   },
