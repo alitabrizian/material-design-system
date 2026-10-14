@@ -4,7 +4,8 @@
 @using System.Linq.Expressions
 @* mat-date-range-input + mat-date-range-picker: start and end inputs in one M3 field, and a calendar
    that picks the start, previews the range under the pointer, and closes when the end is picked. *@
-<div class="pb-date-edit @(Block ? "pb-date-edit--block" : null)">
+@* The Persian calendar uses the Foundation font (--font-family-mainfont), in the dropdown too. *@
+<div class="pb-date-edit @(Block ? "pb-date-edit--block" : null) @(CalendarSystem == PBCalendarSystem.Persian ? "pb-font-mainfont" : null)">
     <FormFieldFrame Appearance="Appearance" Label="@Label" LabelFor="@ControlId" HasError="@(ErrorMessage is not null)" HintText="@Hint"
                     Disabled="@(IsDisabled || InputDisabled)" Required="IsRequired" Floating="Floating" Block="Block" Prefix="Prefix"
                     ExtraClass="@("pb-datepicker pb-date-range " + UserClass)">

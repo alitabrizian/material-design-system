@@ -42,7 +42,7 @@
   }
   <mat-datepicker
     #picker
-    panelClass="pb-datepicker-panel"
+    [panelClass]="persian() ? ['pb-datepicker-panel', 'pb-font-mainfont'] : 'pb-datepicker-panel'"
     [startView]="openView()"
     [startAt]="startAt()"
     [touchUi]="touchUi()"
@@ -112,7 +112,7 @@
   (overlayOutsideClick)="close()"
   (detach)="close()"
 >
-  <div class="pb-date-edit__panel" role="dialog" [attr.aria-label]="label() ?? 'Choose date'" (keydown.escape)="cancelScroll()">
+  <div class="pb-date-edit__panel" [class.pb-font-mainfont]="persian()" role="dialog" [attr.aria-label]="label() ?? 'Choose date'" (keydown.escape)="cancelScroll()">
     <ng-container [ngTemplateOutlet]="scrollTemplate" />
   </div>
 </ng-template>

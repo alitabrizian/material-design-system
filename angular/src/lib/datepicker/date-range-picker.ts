@@ -40,7 +40,7 @@ import { MatError, MatFormField, MatHint, MatLabel, MatSuffix } from '@angular/m
 import { PbFormFieldAppearance, providePbValueAccessor } from '../core/value-accessor';
 import { PB_DATE_FORMATS, PbDateAdapter } from './date-adapter';
 import { calendarLocale, PbCalendarViewMode, PbClearButtonDisplayMode } from './datepicker';
-import { PbCalendarSystem } from './jalali';
+import { calendarOfLocale, PbCalendarSystem } from './jalali';
 
 /** A date range: the value of pb-date-range-picker as a form control. */
 export interface PbDateRange {
@@ -110,7 +110,8 @@ export class PbRangeSelectionStrategyAdapter implements MatDateRangeSelectionStr
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   styleUrl: './datepicker.css',
-  host: { '[class.pb-field--block]': 'block()' },
+  // The Persian calendar uses the Foundation font (--font-family-mainfont), in its popup too.
+  host: { '[class.pb-field--block]': 'block()', '[class.pb-font-mainfont]': 'persian()' },
   template: `
     <mat-form-field [appearance]="appearance()">
       @if (label(); as text) {
@@ -157,6 +158,7 @@ export class PbRangeSelectionStrategyAdapter implements MatDateRangeSelectionStr
       </mat-datepicker-toggle>
       <mat-date-range-picker
         #picker
+        [panelClass]="persian() ? 'pb-font-mainfont' : ''"
         [dateClass]="cellClass()"
         [touchUi]="touchUi()"
         [startAt]="startAt()"
@@ -225,6 +227,7 @@ export class PbDateRangePicker implements ControlValueAccessor {
   protected onTouched: () => void = () => {};
 
   protected readonly isDisabled = computed(() => this.disabled() || this.formDisabled());
+  protected readonly persian = computed(() => calendarOfLocale(calendarLocale(this.locale() ?? this.defaultLocale, this.calendarSystem())) === 'persian');
   protected readonly filter = computed(() => {
     const custom = this.customDisabledDate();
     return (date: Date | null) => !date || !custom?.(date);
@@ -299,7 +302,7 @@ export class PbDateRangePicker implements ControlValueAccessor {
     { provide: MAT_DATE_FORMATS, useValue: PB_DATE_FORMATS },
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'pb-calendar-card' },
+  host: { class: 'pb-calendar-card', '[class.pb-font-mainfont]': 'persian()' },
   template: `
     <mat-calendar
       [selected]="selection()"
@@ -343,6 +346,7 @@ export class PbCalendar {
 
   private readonly adapter = inject(DateAdapter) as PbDateAdapter;
   private readonly defaultLocale = String(inject(MAT_DATE_LOCALE, { optional: true }) ?? 'en-US');
+  protected readonly persian = computed(() => calendarOfLocale(calendarLocale(this.locale() ?? this.defaultLocale, this.calendarSystem())) === 'persian');
 
   constructor() {
     effect(() => {

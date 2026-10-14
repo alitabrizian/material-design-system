@@ -1,6 +1,6 @@
 @namespace PartoBita.DesignSystem.Blazor.Components
 @inherits WorkspaceComponentBase
-<div id="@id" class="pb-calendar @UserClass" @attributes="Attrs">
+<div id="@id" class="pb-calendar @(CalendarSystem == PBCalendarSystem.Persian ? "pb-font-mainfont" : null) @UserClass" @attributes="Attrs">
     @if (HeaderTemplate is not null)
     {
         <div class="pb-calendar__header pb-calendar__header--custom">@HeaderTemplate(HeaderContext)</div>
