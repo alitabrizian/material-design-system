@@ -9,6 +9,13 @@
       "autoPort": true
     },
     {
+      "name": "design-system-landing",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["tools/scripts/dev-design-system-landing.mts"],
+      "port": 4300,
+      "autoPort": true
+    },
+    {
       "name": "remotion-studio",
       "runtimeExecutable": "node",
       "runtimeArgs": ["tools/scripts/dev-remotion-studio.mts"],
