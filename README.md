@@ -99,6 +99,11 @@ npx nx show projects
 npx nx graph
 ```
 
+`npm start` builds the tokens once and then runs `nx run-many -t serve`, which starts every project
+that has a `serve` target at once (the Angular docs on 4200, the Blazor docs on 5080, and any other docs
+or landing apps); see `tools/scripts/serve-all.mts`. `npx nx show projects --with-target serve` lists
+what it starts, and extra arguments pass through to run-many (`npm start -- --exclude=design-system-landing`).
+
 The .NET projects use the native .NET SDK commands (a fresh clone needs only `npm ci` first,
 because the library build generates the design tokens with Node):
 
