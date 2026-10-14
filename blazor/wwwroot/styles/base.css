@@ -165,3 +165,43 @@
     opacity: 1;
   }
 }
+
+/*
+ * The Foundation font (Typography: --font-family-mainfont, Yekan Bakh FaNum) for a subtree: every M3
+ * type role keeps its size, weight and line height but uses the main font. Persian text uses it, and
+ * the date editors add it in the Persian calendar (popups too).
+ */
+.pb-font-mainfont {
+  --md-sys-typescale-font-family: var(--font-family-mainfont);
+  --md-sys-typescale-display-large-font: var(--font-family-mainfont);
+  --md-sys-typescale-display-large: var(--md-sys-typescale-display-large-weight) var(--md-sys-typescale-display-large-size) / var(--md-sys-typescale-display-large-line-height) var(--font-family-mainfont);
+  --md-sys-typescale-display-medium-font: var(--font-family-mainfont);
+  --md-sys-typescale-display-medium: var(--md-sys-typescale-display-medium-weight) var(--md-sys-typescale-display-medium-size) / var(--md-sys-typescale-display-medium-line-height) var(--font-family-mainfont);
+  --md-sys-typescale-display-small-font: var(--font-family-mainfont);
+  --md-sys-typescale-display-small: var(--md-sys-typescale-display-small-weight) var(--md-sys-typescale-display-small-size) / var(--md-sys-typescale-display-small-line-height) var(--font-family-mainfont);
+  --md-sys-typescale-headline-large-font: var(--font-family-mainfont);
+  --md-sys-typescale-headline-large: var(--md-sys-typescale-headline-large-weight) var(--md-sys-typescale-headline-large-size) / var(--md-sys-typescale-headline-large-line-height) var(--font-family-mainfont);
+  --md-sys-typescale-headline-medium-font: var(--font-family-mainfont);
+  --md-sys-typescale-headline-medium: var(--md-sys-typescale-headline-medium-weight) var(--md-sys-typescale-headline-medium-size) / var(--md-sys-typescale-headline-medium-line-height) var(--font-family-mainfont);
+  --md-sys-typescale-headline-small-font: var(--font-family-mainfont);
+  --md-sys-typescale-headline-small: var(--md-sys-typescale-headline-small-weight) var(--md-sys-typescale-headline-small-size) / var(--md-sys-typescale-headline-small-line-height) var(--font-family-mainfont);
+  --md-sys-typescale-title-large-font: var(--font-family-mainfont);
+  --md-sys-typescale-title-large: var(--md-sys-typescale-title-large-weight) var(--md-sys-typescale-title-large-size) / var(--md-sys-typescale-title-large-line-height) var(--font-family-mainfont);
+  --md-sys-typescale-title-medium-font: var(--font-family-mainfont);
+  --md-sys-typescale-title-medium: var(--md-sys-typescale-title-medium-weight) var(--md-sys-typescale-title-medium-size) / var(--md-sys-typescale-title-medium-line-height) var(--font-family-mainfont);
+  --md-sys-typescale-title-small-font: var(--font-family-mainfont);
+  --md-sys-typescale-title-small: var(--md-sys-typescale-title-small-weight) var(--md-sys-typescale-title-small-size) / var(--md-sys-typescale-title-small-line-height) var(--font-family-mainfont);
+  --md-sys-typescale-body-large-font: var(--font-family-mainfont);
+  --md-sys-typescale-body-large: var(--md-sys-typescale-body-large-weight) var(--md-sys-typescale-body-large-size) / var(--md-sys-typescale-body-large-line-height) var(--font-family-mainfont);
+  --md-sys-typescale-body-medium-font: var(--font-family-mainfont);
+  --md-sys-typescale-body-medium: var(--md-sys-typescale-body-medium-weight) var(--md-sys-typescale-body-medium-size) / var(--md-sys-typescale-body-medium-line-height) var(--font-family-mainfont);
+  --md-sys-typescale-body-small-font: var(--font-family-mainfont);
+  --md-sys-typescale-body-small: var(--md-sys-typescale-body-small-weight) var(--md-sys-typescale-body-small-size) / var(--md-sys-typescale-body-small-line-height) var(--font-family-mainfont);
+  --md-sys-typescale-label-large-font: var(--font-family-mainfont);
+  --md-sys-typescale-label-large: var(--md-sys-typescale-label-large-weight) var(--md-sys-typescale-label-large-size) / var(--md-sys-typescale-label-large-line-height) var(--font-family-mainfont);
+  --md-sys-typescale-label-medium-font: var(--font-family-mainfont);
+  --md-sys-typescale-label-medium: var(--md-sys-typescale-label-medium-weight) var(--md-sys-typescale-label-medium-size) / var(--md-sys-typescale-label-medium-line-height) var(--font-family-mainfont);
+  --md-sys-typescale-label-small-font: var(--font-family-mainfont);
+  --md-sys-typescale-label-small: var(--md-sys-typescale-label-small-weight) var(--md-sys-typescale-label-small-size) / var(--md-sys-typescale-label-small-line-height) var(--font-family-mainfont);
+  font-family: var(--font-family-mainfont);
+}

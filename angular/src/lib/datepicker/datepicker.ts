@@ -39,7 +39,7 @@ import { PbFieldBase, providePbValueAccessor } from '../core/value-accessor';
 import { PB_DATE_FORMATS, PB_INPUT_FORMAT, PbDateAdapter } from './date-adapter';
 import { baseLocale, expandFormat, localeNames, parseSections } from './date-format';
 import { DateMask } from './date-mask';
-import { PbCalendarSystem } from './jalali';
+import { calendarOfLocale, PbCalendarSystem } from './jalali';
 import { PbScrollPicker } from './scroll-picker';
 
 /** The locale with the calendar system applied ("fa-IR" + 'persian' = "fa-IR-u-ca-persian"). */
@@ -96,6 +96,8 @@ const BELOW: ConnectedPosition[] = [
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  // The Persian calendar uses the Foundation font (--font-family-mainfont), in its popups too.
+  host: { '[class.pb-font-mainfont]': 'persian()' },
   templateUrl: './datepicker.html',
   styleUrl: './datepicker.css',
 })
@@ -173,6 +175,7 @@ export class PbDatepicker extends PbFieldBase<Date | null> {
   protected readonly positions = BELOW;
 
   protected readonly localeId = computed(() => calendarLocale(this.locale() ?? this.defaultLocale, this.calendarSystem()));
+  protected readonly persian = computed(() => calendarOfLocale(this.localeId()) === 'persian');
   protected readonly editFormat = computed(() => this.format() ?? this.mask() ?? (this.calendarViewMode() === 'year' ? 'Y' : this.calendarViewMode() === 'decade' ? 'yyyy' : this.timeSectionVisible() ? 'g' : 'd'));
   protected readonly openView = computed(() => {
     const view = this.startView() ?? this.calendarViewMode();
@@ -330,7 +333,10 @@ export class PbDatepicker extends PbFieldBase<Date | null> {
     if (mode === 'scrollPicker' || phone) {
       this.pending.set(this.value() ?? this.defaultDate());
       if (phone) {
-        this.dialogRef = this.dialog.open(this.scrollTemplate(), { panelClass: 'pb-date-edit__dialog', ariaLabel: this.label() ?? 'Choose date' });
+        this.dialogRef = this.dialog.open(this.scrollTemplate(), {
+          panelClass: this.persian() ? ['pb-date-edit__dialog', 'pb-font-mainfont'] : 'pb-date-edit__dialog',
+          ariaLabel: this.label() ?? 'Choose date',
+        });
         this.dialogRef.afterClosed().subscribe(() => {
           this.dialogRef = null;
           this.dropDownVisible.set(false);

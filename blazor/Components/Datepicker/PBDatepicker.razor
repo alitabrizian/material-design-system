@@ -2,7 +2,8 @@
 @typeparam TValue
 @inherits DateEditorBase<TValue>
 @using System.Globalization
-<div class="pb-date-edit @(Block ? "pb-date-edit--block" : null)">
+@* The Persian calendar uses the Foundation font (--font-family-mainfont), in the dropdown too. *@
+<div class="pb-date-edit @(Block ? "pb-date-edit--block" : null) @(CalendarSystem == PBCalendarSystem.Persian ? "pb-font-mainfont" : null)">
     <FormFieldFrame Appearance="Appearance" Label="@Label" LabelFor="@ControlId" HasError="@(ErrorMessage is not null)" HintText="@Hint"
                     Disabled="@(IsDisabled || InputDisabled)" Required="IsRequired" Floating="Floating" Block="Block" Prefix="Prefix"
                     ExtraClass="@("pb-datepicker " + UserClass)">
