@@ -28,9 +28,13 @@ const tokensRoot = path.join(repoRoot, "libs/material-design-system/tokens/dist"
 const outRoot = path.join(repoRoot, "dist/apps/design-system-landing");
 const FRAMEWORKS = ["angular", "blazor", "react", "svelte"];
 
-const tokens = spawnSync("node", ["libs/material-design-system/tokens/scripts/build-tokens.mts"], { cwd: repoRoot, stdio: "inherit" });
-if (tokens.status !== 0) {
-  process.exit(tokens.status ?? 1);
+// `npm start` (tools/scripts/serve-all.mts) builds the tokens once and sets DESIGN_TOKENS_PREBUILT, so
+// this server does not wipe tokens/dist while the other apps are compiling against it.
+if (!process.env.DESIGN_TOKENS_PREBUILT) {
+  const tokens = spawnSync("node", ["libs/material-design-system/tokens/scripts/build-tokens.mts"], { cwd: repoRoot, stdio: "inherit" });
+  if (tokens.status !== 0) {
+    process.exit(tokens.status ?? 1);
+  }
 }
 
 /** docs-links.json with the LANDING_<FRAMEWORK>_DOCS_URL overrides applied. */
