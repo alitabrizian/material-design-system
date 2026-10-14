@@ -39,7 +39,8 @@ import {
 import { MatError, MatFormField, MatHint, MatLabel, MatSuffix } from '@angular/material/form-field';
 import { PbFormFieldAppearance, providePbValueAccessor } from '../core/value-accessor';
 import { PB_DATE_FORMATS, PbDateAdapter } from './date-adapter';
-import { PbCalendarViewMode, PbClearButtonDisplayMode } from './datepicker';
+import { calendarLocale, PbCalendarViewMode, PbClearButtonDisplayMode } from './datepicker';
+import { PbCalendarSystem } from './jalali';
 
 /** A date range: the value of pb-date-range-picker as a form control. */
 export interface PbDateRange {
@@ -199,6 +200,8 @@ export class PbDateRangePicker implements ControlValueAccessor {
   readonly displayFormat = input<string>();
   readonly format = input<string>();
   readonly locale = input<string>();
+  /** 'persian' shows and edits Persian (Jalali, Shamsi) dates (see pb-datepicker). */
+  readonly calendarSystem = input<PbCalendarSystem>();
   readonly firstDayOfWeek = input<number | null>(null);
   /** A second range drawn for comparison (e.g. the previous period). */
   readonly comparisonStart = input<Date | null>(null);
@@ -234,7 +237,7 @@ export class PbDateRangePicker implements ControlValueAccessor {
       const edit = this.format() ?? 'd';
       const display = this.displayFormat() ?? edit;
       const firstDay = this.firstDayOfWeek();
-      const locale = this.locale() ?? this.defaultLocale;
+      const locale = calendarLocale(this.locale() ?? this.defaultLocale, this.calendarSystem());
       untracked(() => {
         this.adapter.editFormat = edit;
         this.adapter.displayFormat = display;
@@ -332,6 +335,25 @@ export class PbCalendar {
   readonly customDisabledDate = input<((date: Date) => boolean) | null>(null);
   readonly dayCellClass = input<MatCalendarCellClassFunction<Date> | null>(null);
   readonly viewMode = input<PbCalendarViewMode>('month');
+  readonly locale = input<string>();
+  /** 'persian' shows Persian (Jalali, Shamsi) months and days. */
+  readonly calendarSystem = input<PbCalendarSystem>();
+  /** 0 = Sunday … 6 = Saturday. */
+  readonly firstDayOfWeek = input<number | null>(null);
+
+  private readonly adapter = inject(DateAdapter) as PbDateAdapter;
+  private readonly defaultLocale = String(inject(MAT_DATE_LOCALE, { optional: true }) ?? 'en-US');
+
+  constructor() {
+    effect(() => {
+      const firstDay = this.firstDayOfWeek();
+      const locale = calendarLocale(this.locale() ?? this.defaultLocale, this.calendarSystem());
+      untracked(() => {
+        this.adapter.firstDay = firstDay;
+        this.adapter.setLocale(locale);
+      });
+    });
+  }
 
   protected readonly selection = computed<Date | DateRange<Date> | null>(() => (this.rangeSelection() ? new DateRange(this.start(), this.end()) : this.selected()));
   protected readonly filter = computed(() => {
@@ -355,10 +377,10 @@ export class PbCalendar {
   }
 
   protected onMonth(date: Date): void {
-    if (this.viewMode() === 'year') this.selected.set(new Date(date.getFullYear(), date.getMonth(), 1));
+    if (this.viewMode() === 'year') this.selected.set(this.adapter.createDate(this.adapter.getYear(date), this.adapter.getMonth(date), 1));
   }
 
   protected onYear(date: Date): void {
-    if (this.viewMode() === 'decade') this.selected.set(new Date(date.getFullYear(), 0, 1));
+    if (this.viewMode() === 'decade') this.selected.set(this.adapter.createDate(this.adapter.getYear(date), 0, 1));
   }
 }

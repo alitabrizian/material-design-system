@@ -40,6 +40,9 @@ public partial class PBCalendar : WorkspaceComponentBase
     [Parameter] public DayOfWeek? FirstDayOfWeek { get; set; }
     [Parameter] public CultureInfo? Culture { get; set; }
 
+    /// <summary>Persian shows Persian (Jalali, Shamsi) months, days and years (with the culture's Persian calendar, or fa-IR's).</summary>
+    [Parameter] public PBCalendarSystem CalendarSystem { get; set; }
+
     /// <summary>Custom day cell content (e.g. to highlight special dates).</summary>
     [Parameter] public RenderFragment<PBCalendarDayContext>? DayCellTemplate { get; set; }
 
@@ -70,8 +73,16 @@ public partial class PBCalendar : WorkspaceComponentBase
     private ElementReference content;
     private readonly string id = "pb-calendar-" + Guid.NewGuid().ToString("N")[..8];
 
-    private CultureInfo CurrentCulture => DateCulture.Gregorian(Culture ?? CultureInfo.CurrentCulture);
+    private CultureInfo CurrentCulture => DateCulture.For(Culture ?? CultureInfo.CurrentCulture, CalendarSystem);
     private DateTimeFormatInfo Info => CurrentCulture.DateTimeFormat;
+
+    // Year, month and day in the culture's calendar (Gregorian or Persian).
+    private System.Globalization.Calendar Cal => Info.Calendar;
+    private int Y(DateTime date) => Cal.GetYear(date);
+    private int M(DateTime date) => Cal.GetMonth(date);
+    private int D(DateTime date) => Cal.GetDayOfMonth(date);
+    private int DaysIn(int year, int month) => Cal.GetDaysInMonth(year, month);
+    private DateTime Make(int year, int month, int day) => Cal.ToDateTime(year, month, day, 0, 0, 0, 0);
     private DayOfWeek FirstDay => FirstDayOfWeek ?? Info.FirstDayOfWeek;
     private static DateTime Today => DateTime.Today;
 
@@ -137,8 +148,8 @@ public partial class PBCalendar : WorkspaceComponentBase
 
     private bool IsMonthDisabled(int year, int month)
     {
-        var first = new DateTime(year, month, 1);
-        var last = first.AddMonths(1).AddDays(-1);
+        var first = Make(year, month, 1);
+        var last = Make(year, month, DaysIn(year, month));
         if (MinDate is { } min && last < min.Date) return true;
         if (MaxDate is { } max && first > max.Date) return true;
         if (ViewMode == PBCalendarViewMode.Year && CustomDisabledDate is not null) return IsDateDisabled(first);
@@ -147,9 +158,9 @@ public partial class PBCalendar : WorkspaceComponentBase
 
     private bool IsYearDisabled(int year)
     {
-        if (MinDate is { } min && year < min.Year) return true;
-        if (MaxDate is { } max && year > max.Year) return true;
-        if (ViewMode == PBCalendarViewMode.Decade && CustomDisabledDate is not null) return IsDateDisabled(new DateTime(year, 1, 1));
+        if (MinDate is { } min && year < Y(min)) return true;
+        if (MaxDate is { } max && year > Y(max)) return true;
+        if (ViewMode == PBCalendarViewMode.Decade && CustomDisabledDate is not null) return IsDateDisabled(Make(year, 1, 1));
         return false;
     }
 
@@ -159,13 +170,13 @@ public partial class PBCalendar : WorkspaceComponentBase
     private bool IsSelectedMonth(int year, int month)
     {
         var value = RangeSelection ? StartDate : SelectedDate;
-        return value is { } v && v.Year == year && v.Month == month;
+        return value is { } v && Y(v) == year && M(v) == month;
     }
 
     private bool IsSelectedYear(int year)
     {
         var value = RangeSelection ? StartDate : SelectedDate;
-        return value?.Year == year;
+        return value is { } v && Y(v) == year;
     }
 
     /// <summary>The range to draw: the committed one, or start..hovered date while picking the end.</summary>
@@ -199,8 +210,8 @@ public partial class PBCalendar : WorkspaceComponentBase
         CanNext,
         () => Navigate(Previous),
         () => Navigate(Next),
-        () => Navigate(() => active = Clamp(active.AddYears(-1))),
-        () => Navigate(() => active = Clamp(active.AddYears(1))),
+        () => Navigate(() => active = Clamp(Cal.AddYears(active, -1))),
+        () => Navigate(() => active = Clamp(Cal.AddYears(active, 1))),
         () => Navigate(TogglePeriod));
 
     private void Navigate(Action action)
@@ -214,7 +225,7 @@ public partial class PBCalendar : WorkspaceComponentBase
     private string PeriodLabel => view switch
     {
         View.Month => active.ToString("MMM yyyy", CurrentCulture).ToUpper(CurrentCulture),
-        View.Year => active.Year.ToString(CurrentCulture),
+        View.Year => Y(active).ToString(CurrentCulture),
         _ => $"{YearPageStart} – {YearPageStart + YearsPerPage - 1}",
     };
 
@@ -228,9 +239,9 @@ public partial class PBCalendar : WorkspaceComponentBase
         get
         {
             // mat-multi-year-view: pages of 24 years counted from the max date's (or min date's, or year 0's) page.
-            var startingYear = MaxDate is { } max ? max.Year - YearsPerPage + 1 : MinDate?.Year ?? 0;
-            var offset = (((active.Year - startingYear) % YearsPerPage) + YearsPerPage) % YearsPerPage;
-            return active.Year - offset;
+            var startingYear = MaxDate is { } max ? Y(max) - YearsPerPage + 1 : MinDate is { } min ? Y(min) : 0;
+            var offset = (((Y(active) - startingYear) % YearsPerPage) + YearsPerPage) % YearsPerPage;
+            return Y(active) - offset;
         }
     }
 
@@ -252,30 +263,30 @@ public partial class PBCalendar : WorkspaceComponentBase
 
     private bool CanPrevious => view switch
     {
-        View.Month => MinDate is not { } min || new DateTime(active.Year, active.Month, 1) > new DateTime(min.Year, min.Month, 1),
-        View.Year => MinDate is not { } min || active.Year > min.Year,
-        _ => MinDate is not { } min || YearPageStart > min.Year,
+        View.Month => MinDate is not { } min || Make(Y(active), M(active), 1) > Make(Y(min), M(min), 1),
+        View.Year => MinDate is not { } min || Y(active) > Y(min),
+        _ => MinDate is not { } min || YearPageStart > Y(min),
     };
 
     private bool CanNext => view switch
     {
-        View.Month => MaxDate is not { } max || new DateTime(active.Year, active.Month, 1) < new DateTime(max.Year, max.Month, 1),
-        View.Year => MaxDate is not { } max || active.Year < max.Year,
-        _ => MaxDate is not { } max || YearPageStart + YearsPerPage - 1 < max.Year,
+        View.Month => MaxDate is not { } max || Make(Y(active), M(active), 1) < Make(Y(max), M(max), 1),
+        View.Year => MaxDate is not { } max || Y(active) < Y(max),
+        _ => MaxDate is not { } max || YearPageStart + YearsPerPage - 1 < Y(max),
     };
 
     private void Previous() => active = view switch
     {
-        View.Month => active.AddMonths(-1),
-        View.Year => active.AddYears(-1),
-        _ => active.AddYears(-YearsPerPage),
+        View.Month => Cal.AddMonths(active, -1),
+        View.Year => Cal.AddYears(active, -1),
+        _ => Cal.AddYears(active, -YearsPerPage),
     };
 
     private void Next() => active = view switch
     {
-        View.Month => active.AddMonths(1),
-        View.Year => active.AddYears(1),
-        _ => active.AddYears(YearsPerPage),
+        View.Month => Cal.AddMonths(active, 1),
+        View.Year => Cal.AddYears(active, 1),
+        _ => Cal.AddYears(active, YearsPerPage),
     };
 
     private void TogglePeriod()
@@ -323,11 +334,11 @@ public partial class PBCalendar : WorkspaceComponentBase
 
     private async Task PickMonth(int month)
     {
-        var day = Math.Min(active.Day, DateTime.DaysInMonth(active.Year, month));
-        active = Clamp(new DateTime(active.Year, month, day));
+        var day = Math.Min(D(active), DaysIn(Y(active), month));
+        active = Clamp(Make(Y(active), month, day));
         if (MinView == View.Year)
         {
-            await PickValue(new DateTime(active.Year, month, 1));
+            await PickValue(Make(Y(active), month, 1));
             return;
         }
         view = View.Month;
@@ -335,11 +346,11 @@ public partial class PBCalendar : WorkspaceComponentBase
 
     private async Task PickYear(int year)
     {
-        var day = Math.Min(active.Day, DateTime.DaysInMonth(year, active.Month));
-        active = Clamp(new DateTime(year, active.Month, day));
+        var day = Math.Min(D(active), DaysIn(year, M(active)));
+        active = Clamp(Make(year, M(active), day));
         if (MinView == View.MultiYear)
         {
-            await PickValue(new DateTime(year, 1, 1));
+            await PickValue(Make(year, 1, 1));
             return;
         }
         view = View.Year;
@@ -376,10 +387,10 @@ public partial class PBCalendar : WorkspaceComponentBase
                     "ArrowRight" => active.AddDays(1),
                     "ArrowUp" => active.AddDays(-7),
                     "ArrowDown" => active.AddDays(7),
-                    "Home" => active.AddDays(1 - active.Day),
-                    "End" => active.AddDays(DateTime.DaysInMonth(active.Year, active.Month) - active.Day),
-                    "PageUp" => e.AltKey ? active.AddYears(-1) : active.AddMonths(-1),
-                    "PageDown" => e.AltKey ? active.AddYears(1) : active.AddMonths(1),
+                    "Home" => active.AddDays(1 - D(active)),
+                    "End" => active.AddDays(DaysIn(Y(active), M(active)) - D(active)),
+                    "PageUp" => e.AltKey ? Cal.AddYears(active, -1) : Cal.AddMonths(active, -1),
+                    "PageDown" => e.AltKey ? Cal.AddYears(active, 1) : Cal.AddMonths(active, 1),
                     _ => active,
                 };
                 if (e.Key is "Enter" or " ") await PickDay(active);
@@ -387,32 +398,32 @@ public partial class PBCalendar : WorkspaceComponentBase
             case View.Year:
                 active = e.Key switch
                 {
-                    "ArrowLeft" => active.AddMonths(-1),
-                    "ArrowRight" => active.AddMonths(1),
-                    "ArrowUp" => active.AddMonths(-4),
-                    "ArrowDown" => active.AddMonths(4),
-                    "Home" => active.AddMonths(1 - active.Month),
-                    "End" => active.AddMonths(12 - active.Month),
-                    "PageUp" => active.AddYears(e.AltKey ? -10 : -1),
-                    "PageDown" => active.AddYears(e.AltKey ? 10 : 1),
+                    "ArrowLeft" => Cal.AddMonths(active, -1),
+                    "ArrowRight" => Cal.AddMonths(active, 1),
+                    "ArrowUp" => Cal.AddMonths(active, -4),
+                    "ArrowDown" => Cal.AddMonths(active, 4),
+                    "Home" => Cal.AddMonths(active, 1 - M(active)),
+                    "End" => Cal.AddMonths(active, 12 - M(active)),
+                    "PageUp" => Cal.AddYears(active, e.AltKey ? -10 : -1),
+                    "PageDown" => Cal.AddYears(active, e.AltKey ? 10 : 1),
                     _ => active,
                 };
-                if (e.Key is "Enter" or " ") await PickMonth(active.Month);
+                if (e.Key is "Enter" or " ") await PickMonth(M(active));
                 break;
             default:
                 active = e.Key switch
                 {
-                    "ArrowLeft" => active.AddYears(-1),
-                    "ArrowRight" => active.AddYears(1),
-                    "ArrowUp" => active.AddYears(-YearsPerRow),
-                    "ArrowDown" => active.AddYears(YearsPerRow),
-                    "Home" => active.AddYears(YearPageStart - active.Year),
-                    "End" => active.AddYears(YearPageStart + YearsPerPage - 1 - active.Year),
-                    "PageUp" => active.AddYears(e.AltKey ? -YearsPerPage * 10 : -YearsPerPage),
-                    "PageDown" => active.AddYears(e.AltKey ? YearsPerPage * 10 : YearsPerPage),
+                    "ArrowLeft" => Cal.AddYears(active, -1),
+                    "ArrowRight" => Cal.AddYears(active, 1),
+                    "ArrowUp" => Cal.AddYears(active, -YearsPerRow),
+                    "ArrowDown" => Cal.AddYears(active, YearsPerRow),
+                    "Home" => Cal.AddYears(active, YearPageStart - Y(active)),
+                    "End" => Cal.AddYears(active, YearPageStart + YearsPerPage - 1 - Y(active)),
+                    "PageUp" => Cal.AddYears(active, e.AltKey ? -YearsPerPage * 10 : -YearsPerPage),
+                    "PageDown" => Cal.AddYears(active, e.AltKey ? YearsPerPage * 10 : YearsPerPage),
                     _ => active,
                 };
-                if (e.Key is "Enter" or " ") await PickYear(active.Year);
+                if (e.Key is "Enter" or " ") await PickYear(Y(active));
                 break;
         }
         if (active != before)

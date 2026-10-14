@@ -37,9 +37,17 @@ import { MatError, MatFormField, MatHint, MatLabel, MatSuffix } from '@angular/m
 import { MatInput } from '@angular/material/input';
 import { PbFieldBase, providePbValueAccessor } from '../core/value-accessor';
 import { PB_DATE_FORMATS, PB_INPUT_FORMAT, PbDateAdapter } from './date-adapter';
-import { expandFormat, localeNames, parseSections } from './date-format';
+import { baseLocale, expandFormat, localeNames, parseSections } from './date-format';
 import { DateMask } from './date-mask';
+import { PbCalendarSystem } from './jalali';
 import { PbScrollPicker } from './scroll-picker';
+
+/** The locale with the calendar system applied ("fa-IR" + 'persian' = "fa-IR-u-ca-persian"). */
+export function calendarLocale(locale: string, calendarSystem: PbCalendarSystem | undefined): string {
+  if (calendarSystem === 'persian') return `${baseLocale(locale)}-u-ca-persian`;
+  if (calendarSystem === 'gregorian') return baseLocale(locale);
+  return locale;
+}
 
 /** Month picks days; year picks a month; decade picks a year. */
 export type PbCalendarViewMode = 'month' | 'year' | 'decade';
@@ -115,6 +123,8 @@ export class PbDatepicker extends PbFieldBase<Date | null> {
   readonly maskCascadingSectionUpdates = input(true, { transform: booleanAttribute });
   /** Locale for formats and names (defaults to MAT_DATE_LOCALE). */
   readonly locale = input<string>();
+  /** 'persian' shows and edits Persian (Jalali, Shamsi) dates; the value stays a Date. Defaults to the locale's ("-u-ca-persian"), else Gregorian. */
+  readonly calendarSystem = input<PbCalendarSystem>();
   /** 0 = Sunday … 6 = Saturday. */
   readonly firstDayOfWeek = input<number | null>(null);
   readonly pickerDisplayMode = input<PbDatePickerDisplayMode>('auto');
@@ -162,7 +172,7 @@ export class PbDatepicker extends PbFieldBase<Date | null> {
   protected readonly second = signal(0);
   protected readonly positions = BELOW;
 
-  protected readonly localeId = computed(() => this.locale() ?? this.defaultLocale);
+  protected readonly localeId = computed(() => calendarLocale(this.locale() ?? this.defaultLocale, this.calendarSystem()));
   protected readonly editFormat = computed(() => this.format() ?? this.mask() ?? (this.calendarViewMode() === 'year' ? 'Y' : this.calendarViewMode() === 'decade' ? 'yyyy' : this.timeSectionVisible() ? 'g' : 'd'));
   protected readonly openView = computed(() => {
     const view = this.startView() ?? this.calendarViewMode();
@@ -366,13 +376,13 @@ export class PbDatepicker extends PbFieldBase<Date | null> {
 
   protected onMonthSelected(date: Date): void {
     if (this.calendarViewMode() !== 'year') return;
-    this.commit(new Date(date.getFullYear(), date.getMonth(), 1));
+    this.commit(this.adapter.createDate(this.adapter.getYear(date), this.adapter.getMonth(date), 1));
     this.picker().close();
   }
 
   protected onYearSelected(date: Date): void {
     if (this.calendarViewMode() !== 'decade') return;
-    this.commit(new Date(date.getFullYear(), 0, 1));
+    this.commit(this.adapter.createDate(this.adapter.getYear(date), 0, 1));
     this.picker().close();
   }
 
@@ -422,7 +432,7 @@ export class PbDatepicker extends PbFieldBase<Date | null> {
 
   protected applyScroll(): void {
     const value = this.pending();
-    if (this.allowed(value)) this.commit(this.calendarViewMode() === 'month' ? value : new Date(value.getFullYear(), this.calendarViewMode() === 'year' ? value.getMonth() : 0, 1));
+    if (this.allowed(value)) this.commit(this.calendarViewMode() === 'month' ? value : this.adapter.createDate(this.adapter.getYear(value), this.calendarViewMode() === 'year' ? this.adapter.getMonth(value) : 0, 1));
     this.close();
     this.inputElement().nativeElement.focus();
   }

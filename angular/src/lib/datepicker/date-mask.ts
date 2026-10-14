@@ -1,4 +1,5 @@
 import { DateParts, DateSection, fromParts, LocaleNames, sectionText, toParts } from './date-format';
+import { daysInCalendarMonth, PbCalendarSystem } from './jalali';
 
 export interface DateMaskOptions {
   sections: DateSection[];
@@ -11,8 +12,6 @@ export interface DateMaskOptions {
 }
 
 const EDITABLE = new Set(['day', 'month', 'monthName', 'year', 'hour24', 'hour12', 'minute', 'second', 'ampm', 'offset']);
-
-const daysIn = (year: number, month: number) => new Date(year, month, 0).getDate();
 
 /**
  * The date-time mask engine (the same rules as the Blazor PBDatepicker's): the caret selects one section;
@@ -61,11 +60,20 @@ export class DateMask {
     return this.options.sections.some((s) => s.kind === 'offset');
   }
 
+  /** The year/month/day fields are this calendar's (the names' calendar). */
+  private get calendar(): PbCalendarSystem {
+    return this.options.names.calendar;
+  }
+
+  private daysIn(year: number, month: number): number {
+    return daysInCalendarMonth(year, month, this.calendar);
+  }
+
   /** Shows a value (null: empty) and the options it is edited with. */
   update(value: Date | null, options: DateMaskOptions): void {
     this.options = options;
     const offset = this.parts?.offset;
-    this.parts = value ? toParts(value, this.withOffset ? (offset ?? -value.getTimezoneOffset()) : undefined) : null;
+    this.parts = value ? toParts(value, this.withOffset ? (offset ?? -value.getTimezoneOffset()) : undefined, this.calendar) : null;
     this.sent = this.key();
     this.buffer = '';
     this.render(document.activeElement === this.input);
@@ -82,7 +90,7 @@ export class DateMask {
 
   private today(): DateParts {
     const now = new Date();
-    return { ...toParts(new Date(now.getFullYear(), now.getMonth(), now.getDate())), offset: -now.getTimezoneOffset() };
+    return { ...toParts(new Date(now.getFullYear(), now.getMonth(), now.getDate()), undefined, this.calendar), offset: -now.getTimezoneOffset() };
   }
 
   private layout(): string {
@@ -115,7 +123,7 @@ export class DateMask {
       const key = this.key();
       if (key === this.sent) return;
       this.sent = key;
-      this.changed(this.parts ? fromParts(this.parts, this.withOffset) : null);
+      this.changed(this.parts ? fromParts(this.parts, this.withOffset, this.calendar) : null);
     };
     if (immediate) send();
     else this.timer = setTimeout(send, 300);
@@ -142,7 +150,7 @@ export class DateMask {
     const p = this.parts!;
     switch (kind) {
       case 'day':
-        return [1, daysIn(p.year, p.month)];
+        return [1, this.daysIn(p.year, p.month)];
       case 'month':
       case 'monthName':
         return [1, 12];
@@ -219,16 +227,25 @@ export class DateMask {
         p.offset = value;
         break;
     }
-    p.day = Math.min(p.day, daysIn(p.year, p.month));
+    p.day = Math.min(p.day, this.daysIn(p.year, p.month));
     this.parts = p;
   }
 
   private step(kind: string, delta: number): void {
     const p = this.parts!;
+    const calendar = this.calendar;
     if (kind === 'offset') return this.set(kind, Math.max(-840, Math.min(840, p.offset + delta * 60)));
     if (kind === 'ampm') return this.set(kind, this.field(kind) ? 0 : 1);
+    if (this.options.cascade && calendar !== 'gregorian' && (kind === 'month' || kind === 'monthName' || kind === 'year')) {
+      // Month arithmetic in the calendar's own months; the day is clamped to the new month.
+      const index = p.year * 12 + p.month - 1 + (kind === 'year' ? delta * 12 : delta);
+      const year = Math.floor(index / 12);
+      const month = index - year * 12 + 1;
+      this.parts = { ...p, year, month, day: Math.min(p.day, this.daysIn(year, month)) };
+      return;
+    }
     if (this.options.cascade) {
-      const date = new Date(p.year, p.month - 1, p.day, p.hour, p.minute, p.second);
+      const date = calendar === 'gregorian' ? new Date(p.year, p.month - 1, p.day, p.hour, p.minute, p.second) : fromParts({ ...p }, false, calendar);
       switch (kind) {
         case 'day':
           date.setDate(date.getDate() + delta);
@@ -238,7 +255,7 @@ export class DateMask {
           const day = date.getDate();
           date.setDate(1);
           date.setMonth(date.getMonth() + delta);
-          date.setDate(Math.min(day, daysIn(date.getFullYear(), date.getMonth() + 1)));
+          date.setDate(Math.min(day, daysInCalendarMonth(date.getFullYear(), date.getMonth() + 1, 'gregorian')));
           break;
         }
         case 'year':
@@ -255,7 +272,7 @@ export class DateMask {
           date.setSeconds(date.getSeconds() + delta);
           break;
       }
-      this.parts = { ...toParts(date), offset: p.offset };
+      this.parts = { ...toParts(date, undefined, calendar), offset: p.offset };
       return;
     }
     const [min, max] = this.limits(kind);
@@ -274,7 +291,7 @@ export class DateMask {
     const maxDigits = kind === 'year' ? (entry.section.length <= 2 ? 2 : 4) : 2;
     let buffer = this.buffer + digit;
     let value = Number(buffer);
-    if (kind === 'year' && entry.section.length <= 2) value = 2000 + value;
+    if (kind === 'year' && entry.section.length <= 2) value = (this.calendar === 'persian' ? 1400 : 2000) + value;
     const [min, max] = this.limits(kind);
     if (kind !== 'year' && value > max) {
       buffer = digit;

@@ -933,19 +933,94 @@ export function scrollPickerDispose(root) {
 // The mask shows the value through the format's sections (day, month, month name, year, hours, minutes,
 // seconds, AM/PM, UTC offset). The caret always selects one section: digits/letters type into it,
 // Up/Down and the mouse wheel change it (carrying into the next section when cascading), Left/Right
-// and Tab move between sections. Changes go to .NET through OnMaskChanged.
+// and Tab move between sections. Changes go to .NET through OnMaskChanged. With options.calendar
+// "persian" the year, month and day are Persian (Jalali) fields, converted below.
 
 const masks = new WeakMap();
 
 const pad = (n, length) => String(Math.abs(n)).padStart(length, "0");
 
-function daysIn(year, month) {
+// Persian (Jalali) calendar: the 33-year-cycle algorithm with the official leap-year breaks (as .NET's PersianCalendar today).
+const JALALI_BREAKS = [-61, 9, 38, 199, 426, 686, 756, 818, 1111, 1181, 1210, 1635, 2060, 2097, 2192, 2262, 2324, 2394, 2456, 3178];
+const idiv = (a, b) => Math.trunc(a / b);
+const imod = (a, b) => a - Math.trunc(a / b) * b;
+
+function jalaliYear(jy) {
+  const gy = jy + 621;
+  let leapJ = -14, jp = JALALI_BREAKS[0], jump = 0;
+  for (let i = 1; i < JALALI_BREAKS.length; i++) {
+    const jm = JALALI_BREAKS[i];
+    jump = jm - jp;
+    if (jy < jm) break;
+    leapJ += idiv(jump, 33) * 8 + idiv(imod(jump, 33), 4);
+    jp = jm;
+  }
+  let n = jy - jp;
+  leapJ += idiv(n, 33) * 8 + idiv(imod(n, 33) + 3, 4);
+  if (imod(jump, 33) === 4 && jump - n === 4) leapJ += 1;
+  const march = 20 + leapJ - (idiv(gy, 4) - idiv((idiv(gy, 100) + 1) * 3, 4) - 150);
+  if (jump - n < 6) n = n - jump + idiv(jump + 4, 33) * 33;
+  let leap = imod(imod(n + 1, 33) - 1, 4);
+  if (leap === -1) leap = 4;
+  return { gy, march, leap };
+}
+
+function gregorianToDay(gy, gm, gd) {
+  const d = idiv((gy + idiv(gm - 8, 6) + 100100) * 1461, 4) + idiv(153 * imod(gm + 9, 12) + 2, 5) + gd - 34840408;
+  return d - idiv(idiv(gy + 100100 + idiv(gm - 8, 6), 100) * 3, 4) + 752;
+}
+
+function dayToGregorian(jdn) {
+  let j = 4 * jdn + 139361631;
+  j += idiv(idiv(4 * jdn + 183187720, 146097) * 3, 4) * 4 - 3908;
+  const i = idiv(imod(j, 1461), 4) * 5 + 308;
+  const month = imod(idiv(i, 153), 12) + 1;
+  return { year: idiv(j, 1461) - 100100 + idiv(8 - month, 6), month, day: idiv(imod(i, 153), 5) + 1 };
+}
+
+function gregorianToJalali(year, month, day) {
+  const jdn = gregorianToDay(year, month, day);
+  const gy = dayToGregorian(jdn).year;
+  let jy = gy - 621;
+  const { march, leap } = jalaliYear(jy);
+  let k = jdn - gregorianToDay(gy, 3, march);
+  if (k >= 0) {
+    if (k <= 185) return { year: jy, month: 1 + idiv(k, 31), day: imod(k, 31) + 1 };
+    k -= 186;
+  } else {
+    jy -= 1;
+    k += 179;
+    if (leap === 1) k += 1;
+  }
+  return { year: jy, month: 7 + idiv(k, 30), day: imod(k, 30) + 1 };
+}
+
+function jalaliToGregorian(year, month, day) {
+  const { gy, march } = jalaliYear(year);
+  return dayToGregorian(gregorianToDay(gy, 3, march) + (month - 1) * 31 - idiv(month, 7) * (month - 7) + day - 1);
+}
+
+function daysIn(year, month, calendar) {
+  if (calendar === "persian") return month <= 6 ? 31 : month <= 11 ? 30 : jalaliYear(year).leap === 0 ? 30 : 29;
   return new Date(year, month, 0).getDate();
 }
 
-function today(defaultOffset) {
-  const now = new Date();
-  return { year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate(), hour: 0, minute: 0, second: 0, offset: defaultOffset ?? 0 };
+/** A local Date from the calendar's fields. */
+function partsToDate(parts, calendar) {
+  const g = calendar === "persian" ? jalaliToGregorian(parts.year, parts.month, parts.day) : parts;
+  const date = new Date(g.year, g.month - 1, g.day, parts.hour, parts.minute, parts.second);
+  date.setFullYear(g.year);
+  return date;
+}
+
+/** The calendar's year, month and day of a local Date. */
+function dateFields(date, calendar) {
+  const g = { year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate() };
+  return calendar === "persian" ? gregorianToJalali(g.year, g.month, g.day) : g;
+}
+
+function today(defaultOffset, calendar) {
+  return { ...dateFields(new Date(), calendar), hour: 0, minute: 0, second: 0, offset: defaultOffset ?? 0 };
 }
 
 function sectionText(state, section, parts) {
@@ -964,7 +1039,7 @@ function sectionText(state, section, parts) {
     case "fraction": return "0".repeat(section.length);
     case "ampm": { const t = parts.hour < 12 ? o.am : o.pm; return section.length === 1 ? t.charAt(0) : t; }
     case "weekday": {
-      const day = new Date(parts.year, parts.month - 1, parts.day).getDay();
+      const day = partsToDate(parts, o.calendar).getDay();
       return (section.length === 3 ? o.dayAbbr : o.dayNames)[day];
     }
     case "offset": {
@@ -1031,9 +1106,9 @@ function notify(state, immediate) {
   else state.timer = setTimeout(send, 300);
 }
 
-function limits(kind, parts) {
+function limits(kind, parts, calendar) {
   switch (kind) {
-    case "day": return [1, daysIn(parts.year, parts.month)];
+    case "day": return [1, daysIn(parts.year, parts.month, calendar)];
     case "month": case "monthName": return [1, 12];
     case "year": return [1, 9999];
     case "hour24": return [0, 23];
@@ -1044,7 +1119,7 @@ function limits(kind, parts) {
   }
 }
 
-function setField(parts, kind, value) {
+function setField(parts, kind, value, calendar) {
   const next = { ...parts };
   switch (kind) {
     case "day": next.day = value; break;
@@ -1057,7 +1132,7 @@ function setField(parts, kind, value) {
     case "ampm": next.hour = (parts.hour % 12) + (value ? 12 : 0); break;
     case "offset": next.offset = value; break;
   }
-  next.day = Math.min(next.day, daysIn(next.year, next.month));
+  next.day = Math.min(next.day, daysIn(next.year, next.month, calendar));
   return next;
 }
 
@@ -1079,10 +1154,19 @@ function fieldValue(parts, kind) {
 /** Up/Down: with cascading, overflow carries into the neighbouring unit (Dec 31 + 1 day = Jan 1 next year). */
 function step(state, kind, delta) {
   const parts = state.parts;
-  if (kind === "offset") return setField(parts, kind, Math.max(-840, Math.min(840, parts.offset + delta * 60)));
-  if (kind === "ampm") return setField(parts, kind, fieldValue(parts, kind) ? 0 : 1);
+  const calendar = state.options.calendar;
+  if (kind === "offset") return setField(parts, kind, Math.max(-840, Math.min(840, parts.offset + delta * 60)), calendar);
+  if (kind === "ampm") return setField(parts, kind, fieldValue(parts, kind) ? 0 : 1, calendar);
+  if (state.options.cascade && calendar === "persian" && (kind === "month" || kind === "monthName" || kind === "year")) {
+    // Months of the Persian calendar: the day is clamped to the new month (31 Shahrivar + 1 month = 30 Mehr).
+    const index = parts.year * 12 + parts.month - 1 + (kind === "year" ? delta * 12 : delta);
+    const year = Math.floor(index / 12);
+    const month = index - year * 12 + 1;
+    if (year < 1 || year > 9377) return parts;
+    return { ...parts, year, month, day: Math.min(parts.day, daysIn(year, month, calendar)) };
+  }
   if (state.options.cascade) {
-    const date = new Date(parts.year, parts.month - 1, parts.day, parts.hour, parts.minute, parts.second);
+    const date = partsToDate(parts, calendar);
     switch (kind) {
       case "day": date.setDate(date.getDate() + delta); break;
       case "month": case "monthName": {
@@ -1098,13 +1182,13 @@ function step(state, kind, delta) {
       case "second": date.setSeconds(date.getSeconds() + delta); break;
     }
     if (date.getFullYear() < 1 || date.getFullYear() > 9999) return parts;
-    return { ...parts, year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate(), hour: date.getHours(), minute: date.getMinutes(), second: date.getSeconds() };
+    return { ...parts, ...dateFields(date, calendar), hour: date.getHours(), minute: date.getMinutes(), second: date.getSeconds() };
   }
-  const [min, max] = limits(kind, parts);
+  const [min, max] = limits(kind, parts, calendar);
   let value = fieldValue(parts, kind) + delta;
   if (value > max) value = min;
   if (value < min) value = max;
-  return setField(parts, kind, value);
+  return setField(parts, kind, value, calendar);
 }
 
 function moveSection(state, delta) {
@@ -1120,22 +1204,22 @@ function typeDigit(state, digit) {
   const entry = state.editable[state.active];
   if (!entry) return;
   const kind = entry.section.kind;
-  if (!state.parts) state.parts = today(state.options.defaultOffset);
+  if (!state.parts) state.parts = today(state.options.defaultOffset, state.options.calendar);
   if (kind === "ampm" || kind === "offset") return;
   const maxDigits = kind === "year" ? (entry.section.length <= 2 ? 2 : 4) : 2;
   let buffer = state.buffer + digit;
   let value = Number(buffer);
-  if (kind === "year" && entry.section.length <= 2) value = 2000 + value;
-  const [min, max] = limits(kind === "monthName" ? "month" : kind, state.parts);
+  if (kind === "year" && entry.section.length <= 2) value = (state.options.calendar === "persian" ? 1400 : 2000) + value;
+  const [min, max] = limits(kind === "monthName" ? "month" : kind, state.parts, state.options.calendar);
   if (kind !== "year" && value > max) {
     buffer = digit;
     value = Number(digit);
   }
   state.buffer = buffer;
   if (kind === "year") {
-    state.parts = setField(state.parts, kind, Math.max(1, value));
+    state.parts = setField(state.parts, kind, Math.max(1, value), state.options.calendar);
   } else if (value >= min || buffer.length < maxDigits) {
-    state.parts = setField(state.parts, kind, Math.max(min, Math.min(max, value)));
+    state.parts = setField(state.parts, kind, Math.max(min, Math.min(max, value)), state.options.calendar);
   }
   const complete = buffer.length >= maxDigits || (kind !== "year" && value * 10 > max);
   render(state);
@@ -1150,11 +1234,11 @@ function typeLetter(state, letter) {
   const entry = state.editable[state.active];
   if (!entry) return;
   const kind = entry.section.kind;
-  if (!state.parts) state.parts = today(state.options.defaultOffset);
+  if (!state.parts) state.parts = today(state.options.defaultOffset, state.options.calendar);
   if (kind === "ampm") {
     const l = letter.toLowerCase();
-    if (state.options.am.toLowerCase().startsWith(l)) state.parts = setField(state.parts, kind, 0);
-    else if (state.options.pm.toLowerCase().startsWith(l)) state.parts = setField(state.parts, kind, 1);
+    if (state.options.am.toLowerCase().startsWith(l)) state.parts = setField(state.parts, kind, 0, state.options.calendar);
+    else if (state.options.pm.toLowerCase().startsWith(l)) state.parts = setField(state.parts, kind, 1, state.options.calendar);
     else return;
   } else if (kind === "monthName") {
     state.buffer += letter.toLowerCase();
@@ -1165,7 +1249,7 @@ function typeLetter(state, letter) {
       index = names.findIndex((n) => n.toLowerCase().startsWith(state.buffer));
     }
     if (index < 0) return;
-    state.parts = setField(state.parts, kind, index + 1);
+    state.parts = setField(state.parts, kind, index + 1, state.options.calendar);
   } else return;
   render(state);
   notify(state);
@@ -1207,7 +1291,7 @@ export function dateMaskInit(input, dotNet, options) {
         case "ArrowDown":
           event.preventDefault();
           if (!entry) return;
-          if (!state.parts) state.parts = today(state.options.defaultOffset);
+          if (!state.parts) state.parts = today(state.options.defaultOffset, state.options.calendar);
           else state.parts = step(state, entry.section.kind, event.key === "ArrowUp" ? 1 : -1);
           state.buffer = "";
           render(state);
@@ -1240,8 +1324,8 @@ export function dateMaskInit(input, dotNet, options) {
             state.parts = null;
             state.active = 0;
           } else if (entry) {
-            const [min] = limits(entry.section.kind, state.parts);
-            if (entry.section.kind !== "ampm" && entry.section.kind !== "offset") state.parts = setField(state.parts, entry.section.kind, entry.section.kind === "year" ? state.parts.year : min);
+            const [min] = limits(entry.section.kind, state.parts, state.options.calendar);
+            if (entry.section.kind !== "ampm" && entry.section.kind !== "offset") state.parts = setField(state.parts, entry.section.kind, entry.section.kind === "year" ? state.parts.year : min, state.options.calendar);
           }
           state.buffer = "";
           render(state);
@@ -1260,7 +1344,7 @@ export function dateMaskInit(input, dotNet, options) {
         event.preventDefault();
         if (entry?.section.kind === "offset" && state.parts) {
           const magnitude = Math.abs(state.parts.offset);
-          state.parts = setField(state.parts, "offset", event.key === "-" ? -magnitude : magnitude);
+          state.parts = setField(state.parts, "offset", event.key === "-" ? -magnitude : magnitude, state.options.calendar);
           render(state);
           notify(state);
         }
@@ -1275,7 +1359,7 @@ export function dateMaskInit(input, dotNet, options) {
       event.preventDefault();
       const entry = state.editable[state.active];
       if (!entry) return;
-      if (!state.parts) state.parts = today(state.options.defaultOffset);
+      if (!state.parts) state.parts = today(state.options.defaultOffset, state.options.calendar);
       else state.parts = step(state, entry.section.kind, event.deltaY < 0 ? 1 : -1);
       render(state);
       notify(state);

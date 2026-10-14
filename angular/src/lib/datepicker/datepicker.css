@@ -216,3 +216,10 @@ pb-date-range-picker.pb-field--block mat-form-field {
 .pb-date-edit__dialog .mat-mdc-dialog-surface {
   padding: 8px 0 0;
 }
+
+/* Right to left: a date's digits and offset read left to right (1405/07/22 16:41 +03:30) while month
+   and day names stay right to left; the text keeps to the right edge. */
+[dir='rtl'] :is(pb-datepicker, pb-date-range-picker) input:not([type='number']) {
+  unicode-bidi: plaintext;
+  text-align: right;
+}

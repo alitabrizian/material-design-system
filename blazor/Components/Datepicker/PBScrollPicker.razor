@@ -46,6 +46,9 @@
     [Parameter] public DateTime? MaxDate { get; set; }
     [Parameter] public Func<DateTime, bool>? IsDateAllowed { get; set; }
     [Parameter] public CultureInfo? Culture { get; set; }
+
+    /// <summary>Persian shows Persian (Jalali, Shamsi) days, months and years.</summary>
+    [Parameter] public PBCalendarSystem CalendarSystem { get; set; }
     [Parameter] public string? Label { get; set; }
 
     private readonly string id = "pb-scroll-" + Guid.NewGuid().ToString("N")[..8];
@@ -54,7 +57,8 @@
     private DotNetObjectReference<PBScrollPicker>? selfReference;
     private bool initialized;
 
-    private CultureInfo CurrentCulture => Culture ?? CultureInfo.CurrentCulture;
+    private CultureInfo CurrentCulture => DateCulture.For(Culture ?? CultureInfo.CurrentCulture, CalendarSystem);
+    private System.Globalization.Calendar Cal => CurrentCulture.DateTimeFormat.Calendar;
 
     protected override void OnParametersSet() => Build();
 
@@ -63,6 +67,8 @@
         var info = CurrentCulture.DateTimeFormat;
         var result = new List<Column>();
         var value = Value;
+        var cal = Cal;
+        var (year, month, day) = (cal.GetYear(value), cal.GetMonth(value), cal.GetDayOfMonth(value));
         foreach (var token in Format.Split(' ', StringSplitOptions.RemoveEmptyEntries))
         {
             var c = token[0];
@@ -70,18 +76,18 @@
             switch (c)
             {
                 case 'd':
-                    var days = DateTime.DaysInMonth(value.Year, value.Month);
+                    var days = cal.GetDaysInMonth(year, month);
                     result.Add(new Column
                     {
                         Kind = "day",
                         Label = "Day",
                         Items = Enumerable.Range(1, days).Select(d =>
                         {
-                            var date = new DateTime(value.Year, value.Month, d);
+                            var date = cal.ToDateTime(year, month, d, 0, 0, 0, 0);
                             var text = length == 3 ? $"{d} {info.GetAbbreviatedDayName(date.DayOfWeek)}" : length >= 4 ? $"{d} {info.GetDayName(date.DayOfWeek)}" : d.ToString(CurrentCulture);
                             return new Item(d, text, !Allowed(date));
                         }).ToList(),
-                        Selected = value.Day - 1,
+                        Selected = day - 1,
                     });
                     break;
                 case 'M':
@@ -89,19 +95,19 @@
                     {
                         Kind = "month",
                         Label = "Month",
-                        Items = Enumerable.Range(1, 12).Select(m => new Item(m, length == 3 ? info.GetAbbreviatedMonthName(m) : info.GetMonthName(m), !MonthAllowed(value.Year, m))).ToList(),
-                        Selected = value.Month - 1,
+                        Items = Enumerable.Range(1, 12).Select(m => new Item(m, length == 3 ? info.GetAbbreviatedMonthName(m) : info.GetMonthName(m), !MonthAllowed(year, m))).ToList(),
+                        Selected = month - 1,
                     });
                     break;
                 case 'y':
-                    var from = MinDate?.Year ?? value.Year - 100;
-                    var to = MaxDate?.Year ?? value.Year + 100;
+                    var from = MinDate is { } min ? cal.GetYear(min) : year - 100;
+                    var to = MaxDate is { } max ? cal.GetYear(max) : year + 100;
                     result.Add(new Column
                     {
                         Kind = "year",
                         Label = "Year",
                         Items = Enumerable.Range(from, to - from + 1).Select(y => new Item(y, y.ToString(CurrentCulture), false)).ToList(),
-                        Selected = value.Year - from,
+                        Selected = year - from,
                     });
                     break;
                 case 'H' or 'h':
@@ -139,25 +145,27 @@
 
     private bool MonthAllowed(int year, int month)
     {
-        var first = new DateTime(year, month, 1);
-        var last = first.AddMonths(1).AddDays(-1);
+        var first = Cal.ToDateTime(year, month, 1, 0, 0, 0, 0);
+        var last = Cal.ToDateTime(year, month, Cal.GetDaysInMonth(year, month), 0, 0, 0, 0);
         return (MinDate is not { } min || last >= min.Date) && (MaxDate is not { } max || first <= max.Date);
     }
 
     private DateTime With(Column column, int value)
     {
         var v = Value;
+        var cal = Cal;
+        var (year, month, day) = (cal.GetYear(v), cal.GetMonth(v), cal.GetDayOfMonth(v));
         DateTime result;
         switch (column.Kind)
         {
             case "day":
-                result = new DateTime(v.Year, v.Month, value, v.Hour, v.Minute, v.Second);
+                result = cal.ToDateTime(year, month, value, v.Hour, v.Minute, v.Second, 0);
                 break;
             case "month":
-                result = new DateTime(v.Year, value, Math.Min(v.Day, DateTime.DaysInMonth(v.Year, value)), v.Hour, v.Minute, v.Second);
+                result = cal.ToDateTime(year, value, Math.Min(day, cal.GetDaysInMonth(year, value)), v.Hour, v.Minute, v.Second, 0);
                 break;
             case "year":
-                result = new DateTime(value, v.Month, Math.Min(v.Day, DateTime.DaysInMonth(value, v.Month)), v.Hour, v.Minute, v.Second);
+                result = cal.ToDateTime(value, month, Math.Min(day, cal.GetDaysInMonth(value, month)), v.Hour, v.Minute, v.Second, 0);
                 break;
             case "hour24":
                 result = v.Date.AddHours(value).AddMinutes(v.Minute).AddSeconds(v.Second);

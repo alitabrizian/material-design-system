@@ -580,3 +580,10 @@
   aspect-ratio: auto;
   height: 36px;
 }
+
+/* Right to left: a date's digits and offset read left to right (1405/07/22 16:41 +03:30) while month
+   and day names stay right to left; the text keeps to the right edge. */
+[dir="rtl"] .pb-date-edit .pb-form-field__control {
+  unicode-bidi: plaintext;
+  text-align: right;
+}

@@ -1,5 +1,6 @@
 import { afterEveryRender, ChangeDetectionStrategy, Component, computed, DestroyRef, ElementRef, inject, input, model, ViewEncapsulation } from '@angular/core';
 import { localeNames } from './date-format';
+import { calendarDateOf, calendarToDate, daysInCalendarMonth } from './jalali';
 
 interface ScrollItem {
   value: number;
@@ -19,7 +20,8 @@ let scrollPickerId = 0;
 /**
  * Wheel columns that snap to the item in the middle band (the datepicker's adaptive view). Columns and
  * their order come from the format: "ddd" = "15 Fri", "dddd" = "15 Friday", "MMM" = "Oct",
- * "MMMM" = "October", "yyyy" = 2026, and time parts "HH", "hh", "mm", "ss", "tt".
+ * "MMMM" = "October", "yyyy" = 2026, and time parts "HH", "hh", "mm", "ss", "tt". A locale with
+ * "-u-ca-persian" shows Persian (Jalali) days, months and years.
  */
 @Component({
   selector: 'pb-scroll-picker',
@@ -89,22 +91,24 @@ export class PbScrollPicker {
   protected readonly columns = computed<ScrollColumn[]>(() => {
     const value = this.value();
     const names = localeNames(this.locale());
+    const calendar = names.calendar;
+    const current = calendarDateOf(value, calendar);
     const columns: ScrollColumn[] = [];
     for (const token of this.format().split(' ').filter(Boolean)) {
       const c = token[0];
       const length = token.length;
       switch (c) {
         case 'd': {
-          const days = new Date(value.getFullYear(), value.getMonth() + 1, 0).getDate();
+          const days = daysInCalendarMonth(current.year, current.month, calendar);
           columns.push({
             kind: 'day',
             label: 'Day',
             items: Array.from({ length: days }, (_, i) => {
-              const date = new Date(value.getFullYear(), value.getMonth(), i + 1);
+              const date = calendarToDate(current.year, current.month, i + 1, calendar);
               const text = length === 3 ? `${i + 1} ${names.daysShort[date.getDay()]}` : length >= 4 ? `${i + 1} ${names.days[date.getDay()]}` : String(i + 1);
               return { value: i + 1, text, disabled: !this.allowed(date) };
             }),
-            selected: value.getDate() - 1,
+            selected: current.day - 1,
           });
           break;
         }
@@ -113,23 +117,25 @@ export class PbScrollPicker {
             kind: 'month',
             label: 'Month',
             items: Array.from({ length: 12 }, (_, m) => {
-              const first = new Date(value.getFullYear(), m, 1);
-              const last = new Date(value.getFullYear(), m + 1, 0);
+              const first = calendarToDate(current.year, m + 1, 1, calendar);
+              const last = calendarToDate(current.year, m + 1, daysInCalendarMonth(current.year, m + 1, calendar), calendar);
               const min = this.min();
               const max = this.max();
               return { value: m, text: (length === 3 ? names.monthsShort : names.months)[m], disabled: (!!min && last < min) || (!!max && first > max) };
             }),
-            selected: value.getMonth(),
+            selected: current.month - 1,
           });
           break;
         case 'y': {
-          const from = this.min()?.getFullYear() ?? value.getFullYear() - 100;
-          const to = this.max()?.getFullYear() ?? value.getFullYear() + 100;
+          const min = this.min();
+          const max = this.max();
+          const from = min ? calendarDateOf(min, calendar).year : current.year - 100;
+          const to = max ? calendarDateOf(max, calendar).year : current.year + 100;
           columns.push({
             kind: 'year',
             label: 'Year',
             items: Array.from({ length: to - from + 1 }, (_, i) => ({ value: from + i, text: String(from + i), disabled: false })),
-            selected: value.getFullYear() - from,
+            selected: current.year - from,
           });
           break;
         }
@@ -174,20 +180,19 @@ export class PbScrollPicker {
 
   private withValue(kind: string, n: number): Date {
     const v = this.value();
-    const d = new Date(v);
+    let d = new Date(v);
+    const calendar = localeNames(this.locale()).calendar;
+    const { year, month, day } = calendarDateOf(v, calendar);
+    const at = (y: number, m: number) => calendarToDate(y, m, Math.min(day, daysInCalendarMonth(y, m, calendar)), calendar, v.getHours(), v.getMinutes(), v.getSeconds());
     switch (kind) {
       case 'day':
-        d.setDate(n);
+        d = calendarToDate(year, month, n, calendar, v.getHours(), v.getMinutes(), v.getSeconds());
         break;
       case 'month':
-        d.setDate(1);
-        d.setMonth(n);
-        d.setDate(Math.min(v.getDate(), new Date(d.getFullYear(), n + 1, 0).getDate()));
+        d = at(year, n + 1);
         break;
       case 'year':
-        d.setDate(1);
-        d.setFullYear(n);
-        d.setDate(Math.min(v.getDate(), new Date(n, d.getMonth() + 1, 0).getDate()));
+        d = at(n, month);
         break;
       case 'hour24':
         d.setHours(n);

@@ -1,7 +1,10 @@
+import { calendarOfLocale, calendarToDate, daysInCalendarMonth, fromCalendarDate, PbCalendarSystem, toCalendarDate } from './jalali';
+
 /*
  * Date formats for pb-datepicker, matching the Blazor PBDatepicker: .NET-style patterns (d, dd, ddd, dddd,
  * M, MM, MMM, MMMM, y, yy, yyyy, H, HH, h, hh, m, mm, s, ss, t, tt, z, zz, zzz, 'literal') and the
  * standard one-letter formats (d, D, g, G, t, T, Y, M) expanded from the locale with Intl.
+ * A locale with "-u-ca-persian" (e.g. "fa-IR-u-ca-persian") formats, parses and names Jalali dates.
  */
 
 export type DateSectionKind =
@@ -32,10 +35,12 @@ export interface LocaleNames {
   daysShort: string[];
   am: string;
   pm: string;
+  /** The calendar the names and the year/month/day fields belong to. */
+  calendar: PbCalendarSystem;
 }
 
-/** Latin digits and the Gregorian calendar: patterns and names stay parseable in every locale. */
-const gregorian = (locale: string) => `${baseLocale(locale)}-u-ca-gregory-nu-latn`;
+/** Latin digits and the locale's calendar (Gregorian unless it asks for Persian): patterns and names stay parseable. */
+const intlLocale = (locale: string) => `${baseLocale(locale)}-u-ca-${calendarOfLocale(locale) === 'persian' ? 'persian' : 'gregory'}-nu-latn`;
 
 /** The locale without Unicode extensions ("fa-IR-u-ca-gregory" -> "fa-IR"). */
 export const baseLocale = (locale: string) => locale.split("-u-")[0];
@@ -45,13 +50,19 @@ const namesCache = new Map<string, LocaleNames>();
 export function localeNames(locale: string): LocaleNames {
   let names = namesCache.get(locale);
   if (names) return names;
-  const loc = gregorian(locale);
-  const month = (style: 'long' | 'short') => Array.from({ length: 12 }, (_, m) => new Intl.DateTimeFormat(loc, { month: style, timeZone: 'UTC' }).format(Date.UTC(2021, m, 1)));
+  const loc = intlLocale(locale);
+  const calendar = calendarOfLocale(locale);
+  // The 1st of each month of 2021 (Gregorian) or 1400 (Persian), at noon UTC.
+  const monthStart = (m: number) => {
+    const g = fromCalendarDate({ year: calendar === 'persian' ? 1400 : 2021, month: m + 1, day: 1 }, calendar);
+    return Date.UTC(g.year, g.month - 1, g.day, 12);
+  };
+  const month = (style: 'long' | 'short') => Array.from({ length: 12 }, (_, m) => new Intl.DateTimeFormat(loc, { month: style, timeZone: 'UTC' }).format(monthStart(m)));
   // 2021-01-03 was a Sunday.
   const day = (style: 'long' | 'short') => Array.from({ length: 7 }, (_, d) => new Intl.DateTimeFormat(loc, { weekday: style, timeZone: 'UTC' }).format(Date.UTC(2021, 0, 3 + d)));
   const period = (hour: number) =>
     new Intl.DateTimeFormat(loc, { hour: 'numeric', hour12: true, timeZone: 'UTC' }).formatToParts(Date.UTC(2021, 0, 1, hour)).find((p) => p.type === 'dayPeriod')?.value ?? (hour < 12 ? 'AM' : 'PM');
-  names = { months: month('long'), monthsShort: month('short'), days: day('long'), daysShort: day('short'), am: period(9), pm: period(15) };
+  names = { months: month('long'), monthsShort: month('short'), days: day('long'), daysShort: day('short'), am: period(9), pm: period(15), calendar };
   namesCache.set(locale, names);
   return names;
 }
@@ -80,11 +91,11 @@ export function expandFormat(format: string, locale: string): string {
   const key = `${locale}|${format}`;
   const cached = patternCache.get(key);
   if (cached) return cached;
-  // 2026-03-05 (Thursday) 13:07:09: single-digit month and day tell numeric from 2-digit.
-  const sample = new Date(2026, 2, 5, 13, 7, 9);
+  // 2026-03-05 (Persian: 1405-03-05) 13:07:09: single-digit month and day tell numeric from 2-digit.
   const names = localeNames(locale);
+  const sample = calendarToDate(names.calendar === 'persian' ? 1405 : 2026, 3, 5, names.calendar, 13, 7, 9);
   let pattern = '';
-  for (const part of new Intl.DateTimeFormat(gregorian(locale), options).formatToParts(sample)) {
+  for (const part of new Intl.DateTimeFormat(intlLocale(locale), options).formatToParts(sample)) {
     switch (part.type) {
       case 'year':
         pattern += part.value.length === 2 ? 'yy' : 'yyyy';
@@ -96,7 +107,7 @@ export function expandFormat(format: string, locale: string): string {
         pattern += part.value.length === 2 ? 'dd' : 'd';
         break;
       case 'weekday':
-        pattern += part.value === names.days[4] ? 'dddd' : 'ddd';
+        pattern += part.value === names.days[sample.getDay()] ? 'dddd' : 'ddd';
         break;
       case 'hour':
         pattern += part.value === '13' ? 'H' : part.value.length === 2 ? 'hh' : 'h';
@@ -186,15 +197,20 @@ export interface DateParts {
   offset: number;
 }
 
-export function toParts(date: Date, offset?: number): DateParts {
+/** The year, month and day are the calendar's (Jalali for 'persian'). */
+export function toParts(date: Date, offset?: number, calendar: PbCalendarSystem = 'gregorian'): DateParts {
+  let parts: DateParts;
   if (offset == null) {
-    return { year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate(), hour: date.getHours(), minute: date.getMinutes(), second: date.getSeconds(), offset: -date.getTimezoneOffset() };
+    parts = { year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate(), hour: date.getHours(), minute: date.getMinutes(), second: date.getSeconds(), offset: -date.getTimezoneOffset() };
+  } else {
+    const shifted = new Date(date.getTime() + offset * 60000);
+    parts = { year: shifted.getUTCFullYear(), month: shifted.getUTCMonth() + 1, day: shifted.getUTCDate(), hour: shifted.getUTCHours(), minute: shifted.getUTCMinutes(), second: shifted.getUTCSeconds(), offset };
   }
-  const shifted = new Date(date.getTime() + offset * 60000);
-  return { year: shifted.getUTCFullYear(), month: shifted.getUTCMonth() + 1, day: shifted.getUTCDate(), hour: shifted.getUTCHours(), minute: shifted.getUTCMinutes(), second: shifted.getUTCSeconds(), offset };
+  return calendar === 'gregorian' ? parts : { ...parts, ...toCalendarDate(parts, calendar) };
 }
 
-export function fromParts(parts: DateParts, withOffset: boolean): Date {
+export function fromParts(parts: DateParts, withOffset: boolean, calendar: PbCalendarSystem = 'gregorian'): Date {
+  if (calendar !== 'gregorian') parts = { ...parts, ...fromCalendarDate(parts, calendar) };
   if (!withOffset) {
     const date = new Date(parts.year, parts.month - 1, parts.day, parts.hour, parts.minute, parts.second);
     date.setFullYear(parts.year);
@@ -234,7 +250,8 @@ export function sectionText(section: DateSection, parts: DateParts, names: Local
       return section.length === 1 ? t.charAt(0) : t;
     }
     case 'weekday': {
-      const day = new Date(Date.UTC(parts.year, parts.month - 1, parts.day)).getUTCDay();
+      const g = fromCalendarDate(parts, names.calendar);
+      const day = new Date(Date.UTC(g.year, g.month - 1, g.day)).getUTCDay();
       return (section.length === 3 ? names.daysShort : names.days)[day];
     }
     case 'offset': {
@@ -249,8 +266,8 @@ export function sectionText(section: DateSection, parts: DateParts, names: Local
 export function formatDate(date: Date, format: string, locale: string, offset?: number): string {
   const sections = parseSections(format, locale);
   const withOffset = sections.some((s) => s.kind === 'offset');
-  const parts = toParts(date, withOffset ? (offset ?? -date.getTimezoneOffset()) : undefined);
   const names = localeNames(locale);
+  const parts = toParts(date, withOffset ? (offset ?? -date.getTimezoneOffset()) : undefined, names.calendar);
   return sections.map((s) => sectionText(s, parts, names)).join('');
 }
 
@@ -294,7 +311,7 @@ export function parseDate(text: string, format: string, locale: string): Date | 
   const match = new RegExp(regex + '\\s*$', 'i').exec(text);
   if (!match) return null;
   const now = new Date();
-  const parts: DateParts = { year: now.getFullYear(), month: 1, day: 1, hour: 0, minute: 0, second: 0, offset: -now.getTimezoneOffset() };
+  const parts: DateParts = { year: toParts(now, undefined, names.calendar).year, month: 1, day: 1, hour: 0, minute: 0, second: 0, offset: -now.getTimezoneOffset() };
   let pm: boolean | null = null;
   let withOffset = false;
   groups.forEach((section, i) => {
@@ -315,7 +332,7 @@ export function parseDate(text: string, format: string, locale: string): Date | 
         break;
       }
       case 'year':
-        parts.year = section.length <= 2 || value.length <= 2 ? 2000 + n : n;
+        parts.year = section.length <= 2 || value.length <= 2 ? (names.calendar === 'persian' ? 1400 : 2000) + n : n;
         break;
       case 'hour24':
       case 'hour12':
@@ -345,7 +362,7 @@ export function parseDate(text: string, format: string, locale: string): Date | 
     }
   });
   if (pm !== null) parts.hour = (parts.hour % 12) + (pm ? 12 : 0);
-  if (parts.month < 1 || parts.month > 12 || parts.day < 1 || parts.day > new Date(parts.year, parts.month, 0).getDate()) return null;
+  if (parts.month < 1 || parts.month > 12 || parts.day < 1 || parts.day > daysInCalendarMonth(parts.year, parts.month, names.calendar)) return null;
   if (parts.hour > 23 || parts.minute > 59 || parts.second > 59) return null;
-  return fromParts(parts, withOffset);
+  return fromParts(parts, withOffset, names.calendar);
 }
