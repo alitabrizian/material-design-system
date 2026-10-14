@@ -1,8 +1,8 @@
 # Workspace
 
 Framework-neutral design tokens and workspace-owned component contracts for
-Angular and Blazor consumers, built on the official Material 3 Web Components
-package and managed as an Nx workspace.
+Angular and Blazor consumers, managed as an Nx workspace. Every token and component value is traced
+to Angular Material 22.2 (Material 3); see `specs/001-m3-angular-parity`.
 
 ## Structure
 
@@ -125,35 +125,11 @@ verification mode and the quality gates (`tools/scripts/audit-colors.mts`,
 - **Spec Kit:** the constitution lives in `.specify/memory/constitution.md` and feature specs in
   `specs/`.
 
-## Material Web
+## Relationship to Material Web
 
-The workspace uses the latest published `@material/web` release at the time of
-setup:
-
-```text
-@material/web@2.5.0
-```
-
-Install dependencies from the workspace root:
-
-```bash
-npm install
-```
-
-Import only the Material Web components needed by an application or design
-system library:
-
-```ts
-import "@material/web/button/filled-button.js";
-```
-
-The same custom elements can then be used by Angular templates and Blazor
-Razor markup:
-
-```html
-<md-filled-button>Save changes</md-filled-button>
-```
-
-Angular consumers should enable `CUSTOM_ELEMENTS_SCHEMA` for components using
-Material Web custom elements. Blazor consumers should load the generated
-Material Web JavaScript entry point before rendering those elements.
+Material Web (`@material/web`) is not the reference for this system. Tokens and components follow
+Angular Material 22.2, as described in [Design system at a glance](#design-system-at-a-glance). The
+`--md-sys-*` token prefix is kept from the earlier Material Web setup so existing CSS stays compatible,
+while the values mirror Angular Material's `--mat-sys-*` variables. `@material/web` is still listed in
+the root `package.json`, but the components are workspace-owned and do not render Material Web custom
+elements.
