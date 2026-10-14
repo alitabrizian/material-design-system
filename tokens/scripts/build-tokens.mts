@@ -17,6 +17,7 @@
  *                               + src/typography-tokens.css
  *   - css/material-tokens.css   copy of src/material-tokens.css (motion, spacing, font stack)
  *   - css/typography-tokens.css copy of src/typography-tokens.css (PartoBita type scale)
+ *   - css/color-tokens.css      copy of src/color-tokens.css (PartoBita palettes, also in tokens.css)
  *   - css/angular-material.css  every --mat-sys-* Angular Material reads, bound to its --md-sys-* token,
  *                               so Angular Material components follow these tokens (and data-theme)
  *   - css/roboto.css            self-hosted Roboto @font-face rules (from @fontsource-variable/roboto)
@@ -172,6 +173,9 @@ tokensCss.push("/* ---- src/material-tokens.css (motion, spacing, font stack) --
 const typography = fs.readFileSync(path.join(packageRoot, "src/typography-tokens.css"), "utf8");
 tokensCss.push("/* ---- src/typography-tokens.css (PartoBita type scale) ---- */", typography.trim(), "");
 
+const colors = fs.readFileSync(path.join(packageRoot, "src/color-tokens.css"), "utf8");
+tokensCss.push("/* ---- src/color-tokens.css (PartoBita palettes) ---- */", colors.trim(), "");
+
 const iconTokens = fs.readFileSync(path.join(packageRoot, "src/icon-tokens.css"), "utf8");
 tokensCss.push("/* ---- src/icon-tokens.css (icon sizes, icon-button states) ---- */", iconTokens.trim(), "");
 
@@ -295,6 +299,7 @@ const write = (rel: string, content: string) => {
 write("css/tokens.css", tokensCss.join("\n"));
 write("css/material-tokens.css", handAuthored);
 write("css/typography-tokens.css", typography);
+write("css/color-tokens.css", colors);
 write("css/icon-tokens.css", iconTokens);
 console.log(`Wrote ${buildIcons(packageRoot, distRoot, fail)} icons to dist/icons and dist/data/icons.json`);
 write(
