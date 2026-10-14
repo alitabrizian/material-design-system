@@ -29,6 +29,9 @@ public abstract class DateEditorBase<TValue> : WorkspaceFieldComponentBase, IAsy
     /// <summary>Culture for formats, month and day names (defaults to the current culture).</summary>
     [Parameter] public CultureInfo? Culture { get; set; }
 
+    /// <summary>Persian shows and edits Persian (Jalali, Shamsi) dates with the culture's Persian calendar (fa-IR's if it has none); values stay DateTime.</summary>
+    [Parameter] public PBCalendarSystem CalendarSystem { get; set; }
+
     /// <summary>Format of the text while the editor is not focused (e.g. <c>D</c>, <c>dd MMM yyyy</c>).</summary>
     [Parameter] public string? DisplayFormat { get; set; }
 
@@ -93,7 +96,10 @@ public abstract class DateEditorBase<TValue> : WorkspaceFieldComponentBase, IAsy
     /// <summary>The browser's UTC offset (from JS; the server's until the first render).</summary>
     protected TimeSpan ClientOffset { get; private set; } = TimeZoneInfo.Local.GetUtcOffset(DateTime.Now);
 
-    protected CultureInfo CurrentCulture => DateCulture.Gregorian(Culture ?? CultureInfo.CurrentCulture);
+    protected CultureInfo CurrentCulture => DateCulture.For(Culture ?? CultureInfo.CurrentCulture, CalendarSystem);
+
+    /// <summary>The calendar of the shown year, month and day fields.</summary>
+    protected System.Globalization.Calendar Cal => CurrentCulture.DateTimeFormat.Calendar;
     protected bool IsDisabled => Disabled || IsDisabledAttribute;
     protected bool IsRequired => Required || IsRequiredAttribute;
     protected bool IsOpen { get; private set; }

@@ -4,7 +4,7 @@ using Microsoft.JSInterop;
 
 namespace PartoBita.DesignSystem.Blazor.Components;
 
-/// <summary>A date the mask engine (design-system.js) reports; Offset is in minutes.</summary>
+/// <summary>A date the mask engine (design-system.js) reports, in the editor's calendar (Persian or Gregorian); Offset is in minutes.</summary>
 public sealed record PBMaskDate(int Year, int Month, int Day, int Hour, int Minute, int Second, int Offset);
 
 /// <summary>
@@ -155,11 +155,11 @@ public partial class PBDatepicker<TValue> : DateEditorBase<TValue>
         }
     }
 
-    /// <summary>Month/Year picking stores the first day of the period.</summary>
+    /// <summary>Month/Year picking stores the first day of the period (of the editor's calendar).</summary>
     private DateTime Normalize(DateTime value) => CalendarViewMode switch
     {
-        PBCalendarViewMode.Year => new DateTime(value.Year, value.Month, 1),
-        PBCalendarViewMode.Decade => new DateTime(value.Year, 1, 1),
+        PBCalendarViewMode.Year => Cal.ToDateTime(Cal.GetYear(value), Cal.GetMonth(value), 1, 0, 0, 0, 0),
+        PBCalendarViewMode.Decade => Cal.ToDateTime(Cal.GetYear(value), 1, 1, 0, 0, 0, 0),
         _ => value,
     };
 
@@ -270,15 +270,18 @@ public partial class PBDatepicker<TValue> : DateEditorBase<TValue>
     private object MaskOptions()
     {
         var info = CurrentCulture.DateTimeFormat;
+        var cal = info.Calendar;
         var stored = Stored;
         return new
         {
             sections = DateFormat.Sections(Mask!, CurrentCulture).Select(s => new { kind = s.Kind, length = s.Length, text = s.Text }),
+            // The year, month and day of the editor's calendar: the mask edits Persian dates as Persian fields.
+            calendar = CalendarSystem == PBCalendarSystem.Persian ? "persian" : "gregorian",
             value = stored is { } v ? new
             {
-                year = v.Value.Year,
-                month = v.Value.Month,
-                day = v.Value.Day,
+                year = cal.GetYear(v.Value),
+                month = cal.GetMonth(v.Value),
+                day = cal.GetDayOfMonth(v.Value),
                 hour = v.Value.Hour,
                 minute = v.Value.Minute,
                 second = v.Value.Second,
@@ -308,7 +311,7 @@ public partial class PBDatepicker<TValue> : DateEditorBase<TValue>
         DateTime date;
         try
         {
-            date = new DateTime(value.Year, value.Month, value.Day, value.Hour, value.Minute, value.Second);
+            date = Cal.ToDateTime(value.Year, value.Month, value.Day, value.Hour, value.Minute, value.Second, 0);
         }
         catch (ArgumentOutOfRangeException)
         {
@@ -337,7 +340,7 @@ public partial class PBDatepicker<TValue> : DateEditorBase<TValue>
             }
             return;
         }
-        var signature = $"{Mask}|{CurrentCulture.Name}|{MaskCaretMode}|{MaskCascadingSectionUpdates}|{ReadOnly}|{IsDisabled}|{Stored}";
+        var signature = $"{Mask}|{CurrentCulture.Name}|{CalendarSystem}|{MaskCaretMode}|{MaskCascadingSectionUpdates}|{ReadOnly}|{IsDisabled}|{Stored}";
         if (!maskInitialized)
         {
             maskInitialized = true;

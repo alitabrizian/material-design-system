@@ -11,6 +11,9 @@ public enum PBDatePickerDisplayMode { Auto, Calendar, ScrollPicker }
 
 public enum PBClearButtonDisplayMode { Never, Auto }
 
+/// <summary>The calendar the date editors show and edit: Gregorian, or Persian (Jalali, Shamsi). Values stay DateTime.</summary>
+public enum PBCalendarSystem { Gregorian, Persian }
+
 /// <summary>Regular: the caret stays in a mask section until the user moves it; Advancing: it moves on once the section is complete.</summary>
 public enum PBMaskCaretMode { Regular, Advancing }
 
@@ -40,6 +43,21 @@ internal static class DateCulture
         if (gregorian is null) return CultureInfo.InvariantCulture;
         var clone = (CultureInfo)culture.Clone();
         clone.DateTimeFormat.Calendar = gregorian;
+        return clone;
+    }
+
+    /// <summary>
+    /// The culture the editors format, parse and name dates with: its Gregorian form, or for
+    /// <see cref="PBCalendarSystem.Persian"/> its Persian-calendar form (fa-IR's when the culture has no Persian calendar).
+    /// </summary>
+    public static CultureInfo For(CultureInfo culture, PBCalendarSystem system)
+    {
+        if (system != PBCalendarSystem.Persian) return Gregorian(culture);
+        if (culture.DateTimeFormat.Calendar is PersianCalendar) return culture;
+        if (!culture.OptionalCalendars.OfType<PersianCalendar>().Any()) culture = CultureInfo.GetCultureInfo("fa-IR");
+        if (culture.DateTimeFormat.Calendar is PersianCalendar) return culture;
+        var clone = (CultureInfo)culture.Clone();
+        clone.DateTimeFormat.Calendar = clone.OptionalCalendars.OfType<PersianCalendar>().FirstOrDefault() ?? new PersianCalendar();
         return clone;
     }
 }

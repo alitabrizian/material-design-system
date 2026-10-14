@@ -28,6 +28,7 @@ export * from './lib/data-grid/grid-model';
 export * from './lib/datepicker/date-range-picker';
 export * from './lib/datepicker/datepicker';
 export * from './lib/datepicker/scroll-picker';
+export * from './lib/datepicker/jalali';
 export * from './lib/dialog/dialog';
 export * from './lib/divider/divider';
 export * from './lib/expansion-panel/accordion';

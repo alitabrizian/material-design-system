@@ -78,7 +78,7 @@
     private RenderFragment ScrollContent => __builder =>
     {
         <PBScrollPicker Value="@(pending ?? DateTime.Today)" ValueChanged="OnScrollPickerChanged" Format="@ScrollFormat"
-                        MinDate="MinDate" MaxDate="MaxDate" IsDateAllowed="IsAllowed" Culture="Culture" Label="@(Label ?? "Date")" />
+                        MinDate="MinDate" MaxDate="MaxDate" IsDateAllowed="IsAllowed" Culture="Culture" CalendarSystem="CalendarSystem" Label="@(Label ?? "Date")" />
         <div class="pb-date-edit__actions">
             <PBButton @onclick="CancelAsync">Cancel</PBButton>
             <PBButton @onclick="ApplyAsync">OK</PBButton>
@@ -90,7 +90,7 @@
         <PBCalendar @ref="Calendar" SelectedDate="@(Staged ? pending : Current)" SelectedDateChanged="OnCalendarSelected"
                     VisibleDate="@(pending ?? Current ?? CalendarStartDate)" StartView="CalendarStartView" HeaderTemplate="CalendarHeaderTemplate"
                     MinDate="MinDate" MaxDate="MaxDate" CustomDisabledDate="CustomDisabledDate"
-                    ViewMode="CalendarViewMode" FirstDayOfWeek="FirstDayOfWeek" Culture="Culture" DayCellTemplate="DayCellTemplate"
+                    ViewMode="CalendarViewMode" FirstDayOfWeek="FirstDayOfWeek" Culture="Culture" CalendarSystem="CalendarSystem" DayCellTemplate="DayCellTemplate"
                     DatePicked="OnDatePickedAsync" />
         @if (TimeSectionVisible && pending is { } p)
         {
