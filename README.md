@@ -14,6 +14,7 @@ to Angular Material 22.2 (Material 3); see `specs/001-m3-angular-parity`.
 | `apps/blazor-design-system-docs` | `blazor-design-system-docs` | Blazor docs site (`PartoBita.DesignSystem.Docs`) |
 | `apps/angular-design-system-docs` | `angular-design-system-docs` | Angular docs site, same layout and pages as the Blazor docs |
 | `apps/design-system-remotion-videos` | `design-system-remotion-videos` | demo videos |
+| `apps/design-system-landing` (not a submodule) | `design-system-landing` | landing page linking to each framework's docs |
 
 Both component libraries inherit everything visual from `@partobita/design-tokens`: Blazor copies its
 `dist/` into the NuGet package, and Angular imports it, binding Angular Material's `--mat-sys-*`
@@ -98,6 +99,11 @@ npm install
 npx nx show projects
 npx nx graph
 ```
+
+`npm start` builds the tokens once and then runs `nx run-many -t serve`, which starts every project
+that has a `serve` target at once (the Angular docs on 4200, the Blazor docs on 5080, and any other docs
+or landing apps); see `tools/scripts/serve-all.mts`. `npx nx show projects --with-target serve` lists
+what it starts, and extra arguments pass through to run-many (`npm start -- --exclude=design-system-landing`).
 
 The .NET projects use the native .NET SDK commands (a fresh clone needs only `npm ci` first,
 because the library build generates the design tokens with Node):

@@ -16,9 +16,12 @@
 
 import { spawnSync } from "node:child_process";
 
-const tokens = spawnSync("node", ["libs/material-design-system/tokens/scripts/build-tokens.mts"], { stdio: "inherit" });
-if (tokens.status !== 0) {
-  process.exit(tokens.status ?? 1);
+// `npm start` (tools/scripts/serve-all.mts) builds the tokens once for every server it starts.
+if (!process.env.DESIGN_TOKENS_PREBUILT) {
+  const tokens = spawnSync("node", ["libs/material-design-system/tokens/scripts/build-tokens.mts"], { stdio: "inherit" });
+  if (tokens.status !== 0) {
+    process.exit(tokens.status ?? 1);
+  }
 }
 
 // The preview tool assigns a free port via PORT (other worktrees' demo servers may hold 5080).

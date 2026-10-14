@@ -29,6 +29,7 @@ const ROOTS = [
   "apps/blazor-design-system-docs/Layout",
   "apps/blazor-design-system-docs/wwwroot",
   "apps/blazor-design-system-docs/App.razor",
+  "apps/design-system-landing/src",
 ];
 
 // Generated/copied token files: the one sanctioned home of literal color values.
