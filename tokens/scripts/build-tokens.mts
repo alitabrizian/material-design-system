@@ -14,10 +14,11 @@
  *
  * Output (dist/, gitignored; the Blazor library copies it into wwwroot at build time):
  *   - css/tokens.css            color roles per theme + all system tokens + src/material-tokens.css
- *                               + src/typography-tokens.css
+ *                               + src/typography-tokens.css + src/scale-tokens.css
  *   - css/material-tokens.css   copy of src/material-tokens.css (motion, spacing, font stack)
  *   - css/typography-tokens.css copy of src/typography-tokens.css (PartoBita type scale)
  *   - css/color-tokens.css      copy of src/color-tokens.css (PartoBita palettes, also in tokens.css)
+ *   - css/scale-tokens.css      copy of src/scale-tokens.css (space, stroke, radius, opacity)
  *   - css/angular-material.css  every --mat-sys-* Angular Material reads, bound to its --md-sys-* token,
  *                               so Angular Material components follow these tokens (and data-theme)
  *   - css/roboto.css            self-hosted Roboto @font-face rules (from @fontsource-variable/roboto)
@@ -176,6 +177,9 @@ tokensCss.push("/* ---- src/typography-tokens.css (PartoBita type scale) ---- */
 const colors = fs.readFileSync(path.join(packageRoot, "src/color-tokens.css"), "utf8");
 tokensCss.push("/* ---- src/color-tokens.css (PartoBita palettes) ---- */", colors.trim(), "");
 
+const scales = fs.readFileSync(path.join(packageRoot, "src/scale-tokens.css"), "utf8");
+tokensCss.push("/* ---- src/scale-tokens.css (space, stroke, radius, opacity) ---- */", scales.trim(), "");
+
 const iconTokens = fs.readFileSync(path.join(packageRoot, "src/icon-tokens.css"), "utf8");
 tokensCss.push("/* ---- src/icon-tokens.css (icon sizes, icon-button states) ---- */", iconTokens.trim(), "");
 
@@ -300,6 +304,7 @@ write("css/tokens.css", tokensCss.join("\n"));
 write("css/material-tokens.css", handAuthored);
 write("css/typography-tokens.css", typography);
 write("css/color-tokens.css", colors);
+write("css/scale-tokens.css", scales);
 write("css/icon-tokens.css", iconTokens);
 console.log(`Wrote ${buildIcons(packageRoot, distRoot, fail)} icons to dist/icons and dist/data/icons.json`);
 write(
