@@ -25,11 +25,14 @@
  *   - css/fonts.css             roboto.css + yekan-bakh.css + icons.css in one file
  *   - fonts/*.woff2, OFL.txt, Apache-2.0.txt
  *   - data/palettes.json        theme metadata (name, mode, key colors) for non-CSS consumers
+ *   - css/icon-tokens.css       copy of src/icon-tokens.css (icon sizes, icon-button states; also in tokens.css)
+ *   - icons/*.svg, data/icons.json  the PartoBita icon set (see build-icons.mts)
  */
 
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { buildIcons } from "./build-icons.mts";
 
 const packageRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const repoRoot = path.resolve(packageRoot, "../../..");
@@ -169,6 +172,9 @@ tokensCss.push("/* ---- src/material-tokens.css (motion, spacing, font stack) --
 const typography = fs.readFileSync(path.join(packageRoot, "src/typography-tokens.css"), "utf8");
 tokensCss.push("/* ---- src/typography-tokens.css (PartoBita type scale) ---- */", typography.trim(), "");
 
+const iconTokens = fs.readFileSync(path.join(packageRoot, "src/icon-tokens.css"), "utf8");
+tokensCss.push("/* ---- src/icon-tokens.css (icon sizes, icon-button states) ---- */", iconTokens.trim(), "");
+
 // ---------------------------------------------------------------- fonts (Roboto + icon fonts)
 
 function requirePackage(name: string): string {
@@ -289,6 +295,8 @@ const write = (rel: string, content: string) => {
 write("css/tokens.css", tokensCss.join("\n"));
 write("css/material-tokens.css", handAuthored);
 write("css/typography-tokens.css", typography);
+write("css/icon-tokens.css", iconTokens);
+console.log(`Wrote ${buildIcons(packageRoot, distRoot, fail)} icons to dist/icons and dist/data/icons.json`);
 write(
   "css/angular-material.css",
   [

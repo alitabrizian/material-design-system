@@ -9,6 +9,8 @@
   "exports": {
     "./css/*": "./dist/css/*",
     "./fonts/*": "./dist/fonts/*",
+    "./icons/*": "./dist/icons/*",
+    "./data/icons.json": "./dist/data/icons.json",
     "./data/palettes.json": "./dist/data/palettes.json"
   }
 }

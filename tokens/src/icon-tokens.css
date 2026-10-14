@@ -1,0 +1,75 @@
+/**
+ * Hand-authored PartoBita icon tokens, from the design team's Figma Icons page (shown on the docs'
+ * Fundamentals > Icons page). The icon set itself (Untitled UI line icons + the team's own icons) is in
+ * icons/ and ships as dist/icons/*.svg and dist/data/icons.json.
+ *
+ * Icons are 24x24 line drawings with stroke="currentColor", so they take the text color; size them with
+ * --icon-size-*. The icon-button tokens are the product icon frames (Partobita, Satima, Sarafid, Sajaak,
+ * Samasat Icon): every state is the same in all five products except Selected, which takes the product's
+ * color. Pick a product with data-product="satima" (etc.) on any ancestor; Partobita is the default.
+ * In the Hover, Selected and Destructive states the glyph shrinks to --icon-button-glyph-scale of the
+ * box (20px in a 24px button) and sits on a rounded background.
+ */
+
+:root {
+  --icon-size-16: 16px;
+  --icon-size-20: 20px;
+  --icon-size-24: 24px;
+  --icon-size-32: 32px;
+
+  /* Untitled UI line icons are drawn with a 2px stroke on the 24px grid (it scales with the icon). */
+  --icon-stroke-width: 2px;
+
+  /* Product icon buttons: stroke width per size (Default, Press and Disable states), as drawn in Figma. */
+  --icon-button-stroke-width-16: 0.67px;
+  --icon-button-stroke-width-20: 0.83px;
+  --icon-button-stroke-width-24: 1.5px;
+  --icon-button-stroke-width-32: 2.67px;
+  /* Stroke width of the 24px glyph in the Hover, Selected and Destructive states. */
+  --icon-button-stroke-width-active: 1.25px;
+  --icon-button-glyph-scale: 0.8333;
+  --icon-button-radius: 4px;
+
+  --icon-button-color-default: #4d4d4d;
+  --icon-button-color-press: #000000;
+  --icon-button-color-hover: #333333;
+  --icon-button-background-hover: #e6e6e6;
+  --icon-button-color-destructive: #eb2222;
+  --icon-button-background-destructive: #faf0f0;
+  --icon-button-color-disabled: #999999;
+
+  /* Selected, per product. */
+  --icon-button-partobita-color-selected: #007dc6;
+  --icon-button-partobita-background-selected: #f0f6f9;
+  --icon-button-satima-color-selected: #f2ab39;
+  --icon-button-satima-background-selected: #f9f6f0;
+  --icon-button-sarafid-color-selected: #15a54c;
+  --icon-button-sarafid-background-selected: #f0f9f3;
+  --icon-button-sajaak-color-selected: #12c1d9;
+  --icon-button-sajaak-background-selected: #f0f9fa;
+  --icon-button-samasat-color-selected: #4d4d4d;
+  --icon-button-samasat-background-selected: #f2f2f2;
+
+  --icon-button-color-selected: var(--icon-button-partobita-color-selected);
+  --icon-button-background-selected: var(--icon-button-partobita-background-selected);
+}
+
+[data-product="satima"] {
+  --icon-button-color-selected: var(--icon-button-satima-color-selected);
+  --icon-button-background-selected: var(--icon-button-satima-background-selected);
+}
+
+[data-product="sarafid"] {
+  --icon-button-color-selected: var(--icon-button-sarafid-color-selected);
+  --icon-button-background-selected: var(--icon-button-sarafid-background-selected);
+}
+
+[data-product="sajaak"] {
+  --icon-button-color-selected: var(--icon-button-sajaak-color-selected);
+  --icon-button-background-selected: var(--icon-button-sajaak-background-selected);
+}
+
+[data-product="samasat"] {
+  --icon-button-color-selected: var(--icon-button-samasat-color-selected);
+  --icon-button-background-selected: var(--icon-button-samasat-background-selected);
+}
