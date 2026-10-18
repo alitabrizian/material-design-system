@@ -13,6 +13,7 @@
     "remotion:render": "nx run design-system-remotion-videos:render",
     "registry:up": "docker compose -f tools/registry/docker-compose.yml up -d",
     "registry:down": "docker compose -f tools/registry/docker-compose.yml down",
+    "set-version": "node tools/scripts/set-version.mts",
     "release:local": "node tools/scripts/release.mts",
     "release:dry-run": "node tools/scripts/release.mts --dry-run"
   },

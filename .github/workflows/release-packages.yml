@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Version to publish (e.g. 0.2.0 or 0.2.0-beta.1). Empty: <base>-local.<timestamp>"
+        description: "Override the version (e.g. 0.2.0-test.1). Empty: the version set with npm run set-version"
         required: false
         default: ""
       dry_run:

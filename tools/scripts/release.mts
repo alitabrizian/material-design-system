@@ -1,18 +1,17 @@
 /**
- * Versions, packs and publishes the design system packages (`npm run release:local`):
+ * Builds, packs and publishes the design system packages (`npm run release:local`):
  *
  *   npm  @partobita/design-tokens            (libs/material-design-system/tokens)
  *   npm  @partobita/design-system-angular    (ng-packagr output in dist/libs/material-design-system/angular)
  *   NuGet PartoBita.DesignSystem.Blazor      (dotnet pack, with -p:Version)
  *
- * The version is stamped onto staged copies under dist/release, never onto the source files: the
- * libraries live in a submodule whose package.json / csproj stay at their base version (0.1.0) for
- * local development. Without --version, a unique prerelease (<base>-local.<timestamp>) is used, so a
- * rehearsal can be repeated without colliding with an immutable, already-published version.
+ * Publishes the version in the workspace package.json, which `npm run set-version` writes into every
+ * project. A published version can never be published again, so set a new one before each release.
  *
  * Usage:
- *   node tools/scripts/release.mts [--version 0.2.0] [--dry-run] [--skip-build]
+ *   node tools/scripts/release.mts [--version 0.2.0-test.1] [--dry-run] [--skip-build]
  *
+ *   --version      publish this version instead (written to the packed copies only, not the sources)
  *   --dry-run      build and pack into dist/release/packages, publish nothing
  *   --skip-build   reuse the current tokens/angular build output
  *
@@ -68,9 +67,9 @@ const readJson = (file: string) => JSON.parse(fs.readFileSync(file, "utf8"));
 const writeJson = (file: string, value: unknown) => fs.writeFileSync(file, `${JSON.stringify(value, null, 2)}\n`);
 
 // --- 1. version -------------------------------------------------------------------------------
-const baseVersion: string = readJson(`${tokensRoot}/package.json`).version;
-const timestamp = new Date().toISOString().replace(/\D/g, "").slice(0, 14);
-const version = args.version ?? process.env.RELEASE_VERSION ?? `${baseVersion}-local.${timestamp}`;
+// The version set by `npm run set-version` (tools/scripts/set-version.mts). --version overrides it
+// for one run, e.g. a throwaway 0.2.0-test.1 while rehearsing.
+const version = args.version ?? process.env.RELEASE_VERSION ?? readJson("package.json").version;
 if (!/^\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$/.test(version)) {
   console.error(`"${version}" is not a valid semantic version (e.g. 0.2.0 or 0.2.0-beta.1).`);
   process.exit(1);
