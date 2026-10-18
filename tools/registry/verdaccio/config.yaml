@@ -1,0 +1,30 @@
+# Verdaccio config for the local npm registry (see ../docker-compose.yml).
+storage: /verdaccio/storage
+
+auth:
+  htpasswd:
+    # Users are created with `npm adduser --registry http://localhost:4873`.
+    file: /verdaccio/storage/htpasswd
+    max_users: 100
+
+uplinks:
+  npmjs:
+    url: https://registry.npmjs.org/
+
+packages:
+  # Our own packages live only here: never fetched from npmjs, publishing needs a login.
+  "@partobita/*":
+    access: $all
+    publish: $authenticated
+    unpublish: $authenticated
+
+  # Everything else is read through (and cached) from npmjs, so the registry can serve a full `npm ci`.
+  "**":
+    access: $all
+    publish: $authenticated
+    proxy: npmjs
+
+server:
+  keepAliveTimeout: 60
+
+log: { type: stdout, format: pretty, level: http }

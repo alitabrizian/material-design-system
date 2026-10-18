@@ -1,0 +1,67 @@
+# Sample release pipeline for the design system packages (docs/development/publishing.md).
+#
+# Manual only (Actions tab -> "Release packages" -> Run workflow), and on a self-hosted Windows runner:
+# the library submodules live on the GitLab server (86.106.142.146) and the registries from
+# tools/registry/docker-compose.yml run on localhost, and neither is reachable from GitHub's hosted runners.
+name: Release packages
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to publish (e.g. 0.2.0 or 0.2.0-beta.1). Empty: <base>-local.<timestamp>"
+        required: false
+        default: ""
+      dry_run:
+        description: "Pack only, publish nothing"
+        type: boolean
+        default: false
+
+# One release at a time: two runs publishing at once could race on the same version.
+concurrency:
+  group: release-packages
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: [self-hosted, windows]
+    env:
+      # Repository variables (Settings -> Secrets and variables -> Actions -> Variables) override these defaults.
+      NPM_REGISTRY: ${{ vars.NPM_REGISTRY || 'http://localhost:4873' }}
+      NUGET_SOURCE: ${{ vars.NUGET_SOURCE || 'http://localhost:5555/v3/index.json' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Needs the runner's git to be signed in to the GitLab server (it uses the machine's credential manager).
+          submodules: recursive
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          # Writes an .npmrc that authenticates against this registry with NODE_AUTH_TOKEN.
+          registry-url: ${{ env.NPM_REGISTRY }}
+          scope: "@partobita"
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Quality gates
+        run: npx nx run-many -t lint
+
+      - name: Build, pack and publish
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: node tools/scripts/release.mts ${{ inputs.dry_run && '--dry-run' || '' }}
+
+      - name: Keep the packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: packages
+          path: dist/release/packages

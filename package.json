@@ -10,7 +10,11 @@
     "docs:angular": "nx run angular-design-system-docs:serve",
     "landing": "nx run design-system-landing:serve",
     "remotion:studio": "nx run design-system-remotion-videos:studio",
-    "remotion:render": "nx run design-system-remotion-videos:render"
+    "remotion:render": "nx run design-system-remotion-videos:render",
+    "registry:up": "docker compose -f tools/registry/docker-compose.yml up -d",
+    "registry:down": "docker compose -f tools/registry/docker-compose.yml down",
+    "release:local": "node tools/scripts/release.mts",
+    "release:dry-run": "node tools/scripts/release.mts --dry-run"
   },
   "dependencies": {
     "@angular/cdk": "^22.2.0",

@@ -118,6 +118,9 @@ See [docs/development/blazor.md](docs/development/blazor.md) for the dev loop, t
 verification mode and the quality gates (`tools/scripts/audit-colors.mts`,
 `tools/scripts/verify-demo.mts`).
 
+See [docs/development/publishing.md](docs/development/publishing.md) for versioning and publishing the
+packages to npm and NuGet registries, with local registries to rehearse the release pipeline.
+
 ## Design system at a glance
 
 - **Reference:** Angular Material 22.2 (Material 3). Every component value is traced to Angular
