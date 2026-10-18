@@ -29,8 +29,9 @@ services:
       Database__Type: Sqlite
       Database__ConnectionString: Data Source=/data/db/bagetter.db
       Search__Type: Database
-      # Lets a version be pushed again after `dotnet nuget delete` while rehearsing.
-      AllowPackageOverwrites: "true"
+      # Like nuget.org: a published version is immutable, so pushing it again is rejected (the release
+      # script passes --skip-duplicate). HardDelete lets `dotnet nuget delete` really remove a test version.
+      AllowPackageOverwrites: "false"
       PackageDeletionBehavior: HardDelete
     volumes:
       - bagetter-data:/data

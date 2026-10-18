@@ -8,8 +8,8 @@ name: Release packages
 on:
   workflow_dispatch:
     inputs:
-      version:
-        description: "Override the version (e.g. 0.2.0-test.1). Empty: the version set with npm run set-version"
+      packages:
+        description: "Packages to release (space separated: tokens angular blazor). Empty: all; already-published versions are skipped"
         required: false
         default: ""
       dry_run:
@@ -55,7 +55,8 @@ jobs:
 
       - name: Build, pack and publish
         env:
-          RELEASE_VERSION: ${{ inputs.version }}
+          # Passed through the environment, not the command line, so the input is never parsed by the shell.
+          RELEASE_PACKAGES: ${{ inputs.packages }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
         run: node tools/scripts/release.mts ${{ inputs.dry_run && '--dry-run' || '' }}
@@ -64,4 +65,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: packages
-          path: dist/release/packages
+          path: dist/release

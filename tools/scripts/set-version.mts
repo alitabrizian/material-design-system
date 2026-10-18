@@ -1,23 +1,26 @@
 /**
- * Sets one version on the whole design system (`npm run set-version -- <version>`):
+ * Sets the version of one project (`npm run set-version -- <project> <version>`). Each project has
+ * its own version and moves only when it changes:
  *
- *   package.json                                             workspace
- *   libs/material-design-system/tokens/package.json          @partobita/design-tokens
- *   libs/material-design-system/angular/package.json         @partobita/design-system-angular (+ its tokens dependency)
- *   libs/material-design-system/blazor/*.csproj <Version>    PartoBita.DesignSystem.Blazor
- *   apps/blazor-design-system-docs/*.csproj                  the docs app's PackageReference to the Blazor package
- *   package-lock.json                                        workspace and tokens entries
+ *   tokens      @partobita/design-tokens          libs/material-design-system/tokens/package.json
+ *   angular     @partobita/design-system-angular  libs/material-design-system/angular/package.json
+ *   blazor      PartoBita.DesignSystem.Blazor     libs/material-design-system/blazor/*.csproj <Version>
+ *   workspace   the monorepo as a whole           package.json
  *
- * The packages are released together and Angular/Blazor are built on the tokens, so they share one
- * version: "0.3.0" means the same thing in every project.
+ * Side effects that keep the projects consistent:
+ *   tokens   -> Angular's dependency range on the tokens follows (^<version>), so the next Angular
+ *               release accepts the new tokens; package-lock.json's tokens entry is updated too
+ *   blazor   -> the docs app's PackageReference to the Blazor package follows
+ *   workspace-> package-lock.json's root entry follows
  *
  * Usage:
- *   npm run set-version -- 0.2.0            explicit version
- *   npm run set-version -- patch            0.1.0 -> 0.1.1   (bug fixes)
- *   npm run set-version -- minor            0.1.0 -> 0.2.0   (new components, new tokens)
- *   npm run set-version -- major            0.1.0 -> 1.0.0   (breaking changes)
- *   npm run set-version -- minor --commit   also commit the changed files and tag v<version>, in each
- *                                           submodule first, then the workspace (nothing is pushed)
+ *   npm run set-version                            show every project's current version
+ *   npm run set-version -- tokens minor            0.1.0 -> 0.2.0   (new tokens or components)
+ *   npm run set-version -- blazor patch            0.1.0 -> 0.1.1   (bug fixes)
+ *   npm run set-version -- angular major           0.1.0 -> 1.0.0   (breaking changes)
+ *   npm run set-version -- angular 0.3.0-beta.1    explicit version
+ *   npm run set-version -- tokens minor --commit   also commit the changed files and tag
+ *                                                  <project>-v<version> (nothing is pushed)
  */
 
 import { spawnSync } from "node:child_process";
@@ -32,14 +35,11 @@ const { values: args, positionals } = parseArgs({
 
 const libs = "libs/material-design-system";
 const docsApp = "apps/blazor-design-system-docs";
-const files = {
-  workspace: "package.json",
-  lock: "package-lock.json",
-  tokens: `${libs}/tokens/package.json`,
-  angular: `${libs}/angular/package.json`,
-  blazor: `${libs}/blazor/PartoBita.DesignSystem.Blazor.csproj`,
-  docs: `${docsApp}/PartoBita.DesignSystem.Docs.csproj`,
-};
+const lockFile = "package-lock.json";
+const tokensFile = `${libs}/tokens/package.json`;
+const angularFile = `${libs}/angular/package.json`;
+const blazorFile = `${libs}/blazor/PartoBita.DesignSystem.Blazor.csproj`;
+const docsFile = `${docsApp}/PartoBita.DesignSystem.Docs.csproj`;
 
 const readJson = (file: string) => JSON.parse(fs.readFileSync(file, "utf8"));
 // Keeps the file's line endings: Windows checkouts have CRLF, and rewriting them as LF would show
@@ -61,13 +61,89 @@ const replaceOnce = (file: string, pattern: RegExp, replacement: string) => {
   fs.writeFileSync(file, text.replace(pattern, replacement));
 };
 
-const current: string = readJson(files.workspace).version;
-const request = positionals[0];
-if (!request) {
-  console.error(`Current version: ${current}\nUsage: npm run set-version -- <version | patch | minor | major> [--commit]`);
+const csprojVersion = /<Version>([^<]*)<\/Version>/;
+const docsPackageReference = /(<PackageReference Include="PartoBita\.DesignSystem\.Blazor" Version=")[^"]*(")/;
+
+const updateLock = (entry: string, version: string) => {
+  const lock = readJson(lockFile);
+  if (entry === "") {
+    lock.version = version;
+  }
+  if (lock.packages[entry]) {
+    lock.packages[entry].version = version;
+  }
+  writeJson(lockFile, lock);
+};
+
+type Project = {
+  repo: string; // the git repository the project's files live in (a submodule, or the workspace)
+  read: () => string;
+  // Writes the version and returns every file it changed, by repository.
+  write: (version: string) => Record<string, string[]>;
+};
+
+const projects: Record<string, Project> = {
+  tokens: {
+    repo: libs,
+    read: () => readJson(tokensFile).version,
+    write: (version) => {
+      const tokens = readJson(tokensFile);
+      tokens.version = version;
+      writeJson(tokensFile, tokens);
+      const angular = readJson(angularFile);
+      angular.dependencies["@partobita/design-tokens"] = `^${version}`;
+      writeJson(angularFile, angular);
+      updateLock(`${libs}/tokens`, version);
+      return { [libs]: [tokensFile, angularFile], ".": [lockFile] };
+    },
+  },
+  angular: {
+    repo: libs,
+    read: () => readJson(angularFile).version,
+    write: (version) => {
+      const angular = readJson(angularFile);
+      angular.version = version;
+      writeJson(angularFile, angular);
+      return { [libs]: [angularFile] };
+    },
+  },
+  blazor: {
+    repo: libs,
+    read: () => fs.readFileSync(blazorFile, "utf8").match(csprojVersion)![1],
+    write: (version) => {
+      replaceOnce(blazorFile, csprojVersion, `<Version>${version}</Version>`);
+      replaceOnce(docsFile, docsPackageReference, `$1${version}$2`);
+      return { [libs]: [blazorFile], [docsApp]: [docsFile] };
+    },
+  },
+  workspace: {
+    repo: ".",
+    read: () => readJson("package.json").version,
+    write: (version) => {
+      const workspace = readJson("package.json");
+      workspace.version = version;
+      writeJson("package.json", workspace);
+      updateLock("", version);
+      return { ".": ["package.json", lockFile] };
+    },
+  },
+};
+
+const [name, request] = positionals;
+if (!name) {
+  for (const [key, project] of Object.entries(projects)) {
+    console.log(`${key.padEnd(10)} ${project.read()}`);
+  }
+  console.log(`\nUsage: npm run set-version -- <${Object.keys(projects).join(" | ")}> <version | patch | minor | major> [--commit]`);
+  process.exit(0);
+}
+const project = projects[name];
+if (!project || !request) {
+  console.error(`Usage: npm run set-version -- <${Object.keys(projects).join(" | ")}> <version | patch | minor | major> [--commit]`);
   process.exit(1);
 }
 
+const current = project.read();
 const bump = (kind: string) => {
   const [major, minor, patch] = current.split(/[.-]/).map(Number);
   if (kind === "major") return `${major + 1}.0.0`;
@@ -81,40 +157,13 @@ if (!/^\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$/.test(version)) {
   process.exit(1);
 }
 
-// --- write the version everywhere -------------------------------------------------------------
-const workspace = readJson(files.workspace);
-workspace.version = version;
-writeJson(files.workspace, workspace);
-
-const tokens = readJson(files.tokens);
-tokens.version = version;
-writeJson(files.tokens, tokens);
-
-const angular = readJson(files.angular);
-angular.version = version;
-angular.dependencies["@partobita/design-tokens"] = `^${version}`;
-writeJson(files.angular, angular);
-
-replaceOnce(files.blazor, /<Version>[^<]*<\/Version>/, `<Version>${version}</Version>`);
-replaceOnce(
-  files.docs,
-  /(<PackageReference Include="PartoBita\.DesignSystem\.Blazor" Version=")[^"]*(")/,
-  `$1${version}$2`,
-);
-
-// The lock file records the workspace's and the tokens workspace package's versions; npm ci fails
-// when they disagree with the package.json files.
-const lock = readJson(files.lock);
-lock.version = version;
-lock.packages[""].version = version;
-if (lock.packages[`${libs}/tokens`]) {
-  lock.packages[`${libs}/tokens`].version = version;
-}
-writeJson(files.lock, lock);
-
-console.log(`Version ${current} -> ${version}`);
-for (const file of Object.values(files)) {
+const changed = project.write(version);
+console.log(`${name}: ${current} -> ${version}`);
+for (const file of Object.values(changed).flat()) {
   console.log(`  ${file}`);
+}
+if (name === "tokens") {
+  console.log(`\nAngular now depends on tokens ^${version}: release a new Angular version for its users to get it.`);
 }
 
 if (!args.commit) {
@@ -131,22 +180,27 @@ const git = (cwd: string, gitArgs: string[]) => {
   }
 };
 
-const tag = `v${version}`;
-const message = `chore: release ${tag}`;
-// Submodules first: the workspace commit records their new commits. Only the files this script
-// changed are committed, so unrelated work in progress stays uncommitted.
-const repos: Array<[string, string[]]> = [
-  [libs, [files.tokens, files.angular, files.blazor].map((f) => path.relative(libs, f))],
-  [docsApp, [path.relative(docsApp, files.docs)]],
-];
-for (const [repo, changed] of repos) {
-  git(repo, ["commit", "-m", message, "--", ...changed]);
-  git(repo, ["tag", "-a", tag, "-m", message]);
+// The tag names the project: tokens, Angular and Blazor share one repository, so a bare v0.2.0
+// would not say which of them it is.
+const tag = `${name}-v${version}`;
+const message = `chore(${name}): release ${version}`;
+// Submodules first, so the workspace commit records their new commits. Only the files this script
+// changed are committed: unrelated work in progress stays uncommitted.
+const workspaceFiles = changed["."] ?? [];
+for (const [repo, files] of Object.entries(changed)) {
+  if (repo === ".") continue;
+  git(repo, ["commit", "-m", message, "--", ...files.map((f) => path.relative(repo, f))]);
+  if (repo === project.repo) {
+    git(repo, ["tag", "-a", tag, "-m", message]);
+  }
+  workspaceFiles.push(repo);
 }
-git(".", ["commit", "-m", message, "--", files.workspace, files.lock, libs, docsApp]);
-git(".", ["tag", "-a", tag, "-m", message]);
+git(".", ["commit", "-m", message, "--", ...workspaceFiles]);
+if (project.repo === ".") {
+  git(".", ["tag", "-a", tag, "-m", message]);
+}
 
-console.log(`\nCommitted and tagged ${tag}. Push each repository with its tag when ready:
-  git -C ${libs} push --follow-tags
-  git -C ${docsApp} push --follow-tags
-  git push --follow-tags`);
+const pushes = [...Object.keys(changed).filter((r) => r !== "."), "."];
+console.log(`\nCommitted and tagged ${tag}. Push when ready:\n${pushes
+  .map((r) => (r === "." ? "  git push --follow-tags" : `  git -C ${r} push --follow-tags`))
+  .join("\n")}`);
