@@ -128,3 +128,30 @@ reach neither.
 Moving to real registries later changes only those settings: e.g. GitLab's package registry
 (`https://<gitlab>/api/v4/projects/<id>/packages/npm/` and `.../packages/nuget/index.json`), or
 npmjs.com and nuget.org.
+
+## 6. Azure DevOps Server
+
+`azure-pipelines.yml` is the same release as an Azure Pipelines run, publishing to an Azure
+Artifacts feed instead of Verdaccio and BaGetter (one feed holds both the npm and the NuGet packages).
+It expects:
+
+1. A collection (`DefaultCollection`) and a project (e.g. `DesignSystem`) with this repository in
+   its Repos.
+2. A feed named `partobita` in that project (Artifacts, Create Feed). Give the project's
+   `Build Service` identity the Contributor role on the feed (Feed settings, Permissions) so the
+   pipeline can publish.
+3. A self-hosted agent in the `Default` pool (Project Settings, Agent pools, Default, New agent)
+   whose Windows account has Node, the .NET SDK and access to the GitLab submodules.
+4. A pipeline created from the existing `azure-pipelines.yml` (Pipelines, New pipeline, Azure Repos Git).
+
+Run it by hand (Run pipeline), optionally with a package list. Consumers point at the feed:
+
+```ini
+# .npmrc
+@partobita:registry=http://localhost:8080/tfs/DefaultCollection/DesignSystem/_packaging/partobita/npm/registry/
+```
+
+```xml
+<add key="partobita" value="http://localhost:8080/tfs/DefaultCollection/DesignSystem/_packaging/partobita/nuget/v3/index.json" allowInsecureConnections="true" />
+```
+
