@@ -1,0 +1,42 @@
+# Local package registries for learning and rehearsing the release pipeline (docs/development/publishing.md).
+#
+#   npm run registry:up     # start both (docker compose up -d)
+#   npm run registry:down   # stop them; packages persist in the named volumes
+#
+# Verdaccio: npm registry at http://localhost:4873. Publishes @partobita/*, proxies everything else to npmjs.
+# BaGetter:  NuGet server at http://localhost:5555 (feed: http://localhost:5555/v3/index.json).
+name: partobita-registries
+
+services:
+  verdaccio:
+    image: verdaccio/verdaccio:6.10.5
+    ports:
+      - "4873:4873"
+    volumes:
+      - ./verdaccio/config.yaml:/verdaccio/conf/config.yaml:ro
+      - verdaccio-storage:/verdaccio/storage
+    restart: unless-stopped
+
+  bagetter:
+    image: bagetter/bagetter:1.6.5
+    ports:
+      - "5555:8080"
+    environment:
+      # Local-only key; a real server reads it from a secret (CI: secrets.NUGET_API_KEY).
+      ApiKey: ${NUGET_API_KEY:-local-dev-key}
+      Storage__Type: FileSystem
+      Storage__Path: /data
+      Database__Type: Sqlite
+      Database__ConnectionString: Data Source=/data/db/bagetter.db
+      Search__Type: Database
+      # Like nuget.org: a published version is immutable, so pushing it again is rejected (the release
+      # script passes --skip-duplicate). HardDelete lets `dotnet nuget delete` really remove a test version.
+      AllowPackageOverwrites: "false"
+      PackageDeletionBehavior: HardDelete
+    volumes:
+      - bagetter-data:/data
+    restart: unless-stopped
+
+volumes:
+  verdaccio-storage:
+  bagetter-data:

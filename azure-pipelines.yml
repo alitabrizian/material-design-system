@@ -1,0 +1,64 @@
+# Release pipeline for Azure DevOps Server (docs/development/publishing.md, "Azure DevOps Server").
+#
+# Runs by hand (Pipelines -> Run pipeline) on a self-hosted agent in the Default pool, and publishes
+# to the Azure Artifacts feed `partobita` of the project the pipeline belongs to: npm packages and
+# the NuGet package go to the same feed. Versions come from the files (npm run set-version);
+# versions already in the feed are skipped.
+trigger: none
+
+parameters:
+  - name: packages
+    displayName: "Packages to release (space separated: tokens angular blazor). Empty: all"
+    type: string
+    default: " "
+  - name: dryRun
+    displayName: "Pack only, publish nothing"
+    type: boolean
+    default: false
+
+pool: Default
+
+variables:
+  feed: partobita
+  # System.CollectionUri ends with a slash, e.g. http://localhost:8080/tfs/DefaultCollection/
+  NPM_REGISTRY: $(System.CollectionUri)$(System.TeamProject)/_packaging/$(feed)/npm/registry/
+  NUGET_SOURCE: $(System.CollectionUri)$(System.TeamProject)/_packaging/$(feed)/nuget/v3/index.json
+
+steps:
+  - checkout: self
+    # The library submodules live on the GitLab server: the agent's Windows account must be able to
+    # clone them (signed in through Git Credential Manager).
+    submodules: recursive
+
+  - script: npm ci
+    displayName: Install
+
+  - script: npx nx run-many -t lint
+    displayName: Quality gates
+
+  # npm reads the feed's credentials from this .npmrc (npmAuthenticate fills them in).
+  - pwsh: |
+      Set-Content -Path "$(Agent.TempDirectory)/.npmrc" -Value @("registry=$(NPM_REGISTRY)", "always-auth=true")
+    displayName: Create .npmrc for the feed
+
+  - task: npmAuthenticate@0
+    inputs:
+      workingFile: $(Agent.TempDirectory)/.npmrc
+
+  # Lets `dotnet nuget push` authenticate to the feed with the pipeline's own identity.
+  - task: NuGetAuthenticate@1
+
+  - script: node tools/scripts/release.mts ${{ iif(parameters.dryRun, '--dry-run', '') }}
+    displayName: Build, pack and publish
+    env:
+      NPM_CONFIG_USERCONFIG: $(Agent.TempDirectory)/.npmrc
+      NPM_REGISTRY: $(NPM_REGISTRY)
+      NUGET_SOURCE: $(NUGET_SOURCE)
+      # Azure Artifacts ignores the key's value (auth comes from NuGetAuthenticate), but push requires one.
+      NUGET_API_KEY: AzureArtifacts
+      # Passed through the environment, not the command line, so the input is never parsed by the shell.
+      RELEASE_PACKAGES: ${{ parameters.packages }}
+
+  - publish: dist/release
+    artifact: packages
+    displayName: Keep the packages
