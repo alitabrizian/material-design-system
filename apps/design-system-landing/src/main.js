@@ -2,7 +2,8 @@
 //
 // docs-links.json maps a framework to its docs address (null = not published yet). Any element with
 // data-framework gets href = that address + its data-route; a framework without an address renders
-// as "coming soon" and its links stay inert.
+// as "coming soon" and its links stay inert. "{host}" in an address is replaced with the host name the
+// page was opened from, so the links work from other machines on the network, not only on localhost.
 
 const THEME_KEY = "pb-landing-theme";
 const READY_LABEL = "مشاهده‌ی مستندات";
@@ -14,7 +15,7 @@ let links = {};
 function docsUrl(framework, route) {
   const base = links[framework];
   if (!base) return null;
-  return base.replace(/\/+$/, "") + (route && route !== "/" ? route : "/");
+  return base.replaceAll("{host}", location.hostname || "localhost").replace(/\/+$/, "") + (route && route !== "/" ? route : "/");
 }
 
 function applyLinks() {
