@@ -41,17 +41,14 @@ function read(relative: string): string {
   return fs.readFileSync(path.join(repoRoot, relative), "utf8");
 }
 
-const blazorRoutes = () => [
-  "/",
-  "/fundamentals",
-  ...[...read("apps/blazor-design-system-docs/Navigation/ComponentCatalog.cs").matchAll(/new\("[^"]+", "(\/[^"]+)"/g)].map((m) => m[1]),
-];
+// A Set: the catalogs also list section landing routes (/fundamentals) next to the pages.
+const unique = (routes: string[]) => [...new Set(routes)];
 
-const angularRoutes = () => [
-  "/",
-  "/fundamentals",
-  ...[...read("apps/angular-design-system-docs/src/app/component-catalog.ts").matchAll(/\bpath: '([^']+)'/g)].map((m) => "/" + m[1]),
-];
+const blazorRoutes = () =>
+  unique(["/", "/fundamentals", ...[...read("apps/blazor-design-system-docs/Navigation/ComponentCatalog.cs").matchAll(/new\("[^"]+", "(\/[^"]+)"/g)].map((m) => m[1])]);
+
+const angularRoutes = () =>
+  unique(["/", "/fundamentals", ...[...read("apps/angular-design-system-docs/src/app/component-catalog.ts").matchAll(/\bpath: '([^']+)'/g)].map((m) => "/" + m[1])]);
 
 export const TARGETS: Target[] = [
   {
