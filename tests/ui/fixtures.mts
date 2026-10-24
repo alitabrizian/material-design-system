@@ -8,7 +8,11 @@ import { DEFAULT_THEME, targetOf, type Theme } from "./targets.mts";
  * The browser clock is frozen below, but the Blazor docs compute "today" on the server, so a picker
  * that opens on today belongs here.
  */
-export const MASKS: Record<string, string[]> = {};
+const DATE_PICKER_MASKS = [".pb-date-edit .pb-form-field__control", ".pb-calendar", ".status"];
+export const MASKS: Record<string, string[]> = {
+  "/datepicker": DATE_PICKER_MASKS,
+  "/shamsi-datepicker": DATE_PICKER_MASKS,
+};
 
 /** Opens a page in a theme and waits until it is fully painted: fonts, Blazor circuit, layout. */
 export async function openPage(page: Page, projectName: string, route: string, theme: Theme = DEFAULT_THEME) {
@@ -36,6 +40,15 @@ export async function openPage(page: Page, projectName: string, route: string, t
     if (document.documentElement.dataset.theme !== t) document.documentElement.dataset.theme = t;
   }, theme);
   await page.evaluate(() => document.fonts.ready);
+  // A full-page shot includes images below the fold, so load the lazy ones now and wait for all.
+  await page.evaluate(() =>
+    Promise.all(
+      [...document.images].map((img) => {
+        img.loading = "eager";
+        return img.decode().catch(() => undefined);
+      })
+    )
+  );
   // Two frames for theme and late layout (TOC, navigation rail) to settle.
   await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
   return { errors };

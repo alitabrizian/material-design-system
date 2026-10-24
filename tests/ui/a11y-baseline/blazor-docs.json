@@ -1,0 +1,60 @@
+{
+  "/": {
+    "link-in-text-block": 1
+  },
+  "/chips": {
+    "aria-required-children": 25,
+    "color-contrast": 1,
+    "nested-interactive": 8,
+    "scrollable-region-focusable": 1
+  },
+  "/chips [azure-blue]": {
+    "color-contrast": 1
+  },
+  "/chips [cyan-orange]": {
+    "color-contrast": 1
+  },
+  "/chips [magenta-violet]": {
+    "color-contrast": 1
+  },
+  "/core": {
+    "color-contrast": 1
+  },
+  "/core [azure-blue]": {
+    "color-contrast": 1
+  },
+  "/data-grid": {
+    "aria-conditional-attr": 19,
+    "nested-interactive": 3
+  },
+  "/datepicker": {
+    "aria-allowed-attr": 35,
+    "label-content-name-mismatch": 1
+  },
+  "/divider": {
+    "aria-required-children": 1
+  },
+  "/grid-list": {
+    "color-contrast": 1
+  },
+  "/grid-list [azure-blue]": {
+    "color-contrast": 1
+  },
+  "/list": {
+    "aria-required-children": 1
+  },
+  "/progress-bar": {
+    "aria-progressbar-name": 3,
+    "scrollable-region-focusable": 1
+  },
+  "/shamsi-datepicker": {
+    "aria-allowed-attr": 35,
+    "scrollable-region-focusable": 1
+  },
+  "/stepper": {
+    "aria-required-children": 1
+  },
+  "/tree": {
+    "scrollable-region-focusable": 1
+  }
+}
