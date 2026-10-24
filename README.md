@@ -118,6 +118,9 @@ See [docs/development/blazor.md](docs/development/blazor.md) for the dev loop, t
 verification mode and the quality gates (`tools/scripts/audit-colors.mts`,
 `tools/scripts/verify-demo.mts`).
 
+`npm run test:ui` runs the visual regression and accessibility (axe) tests against every page of both
+docs sites and the landing page; see [tests/ui/README.md](tests/ui/README.md).
+
 ## Design system at a glance
 
 - **Reference:** Angular Material 22.2 (Material 3). Every component value is traced to Angular
