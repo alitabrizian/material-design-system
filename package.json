@@ -7,7 +7,7 @@
     "build": "nx run-many -t build",
     "start": "node tools/scripts/serve-all.mts",
     "docs": "nx run blazor-design-system-docs:serve",
-    "docs:angular": "nx run angular-design-system-docs:serve",
+    "docs:angular": "nx run angular-design-system-docs:serve --host 0.0.0.0",
     "landing": "nx run design-system-landing:serve",
     "remotion:studio": "nx run design-system-remotion-videos:studio",
     "remotion:render": "nx run design-system-remotion-videos:render",

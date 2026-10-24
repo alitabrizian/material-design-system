@@ -23,6 +23,7 @@ variables to the tokens through `css/angular-material.css`.
 - `DesignSystem.sln`: solution for the Blazor library and docs app.
 - `tools`: scripts (dev loop, color audit, browser verification).
 - `docs`: architecture, development, and migration documentation.
+- `CONTRIBUTING.md`: class naming, docs page structure and the new-component checklist.
 
 ## Monorepo and submodules
 

@@ -13,12 +13,17 @@
  * Each framework card opens that framework's docs site. The addresses come from
  * apps/design-system-landing/src/docs-links.json; an environment variable overrides each one:
  *   LANDING_ANGULAR_DOCS_URL, LANDING_BLAZOR_DOCS_URL, LANDING_REACT_DOCS_URL, LANDING_SVELTE_DOCS_URL
- * A framework with no address shows as "coming soon".
+ * A framework with no address shows as "coming soon". "{host}" in an address stands for the host name the
+ * page was opened from (see src/main.js), so the cards work from other machines on the network too.
+ *
+ * The server listens on every network interface (HOST, default 0.0.0.0), so other machines on the
+ * network can open it at http://<this machine's IP>:4300. Set HOST=127.0.0.1 to keep it local.
  */
 
 import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import http from "node:http";
+import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -78,6 +83,19 @@ function resolveFile(urlPath: string): string | null {
 }
 
 const port = Number(process.env.PORT ?? 4300);
+const host = process.env.HOST ?? "0.0.0.0";
+
+/** The addresses the page can be opened at: localhost, plus this machine's IPv4 addresses when listening on all interfaces. */
+function pageAddresses(): string[] {
+  if (host !== "0.0.0.0" && host !== "::") {
+    return [`http://${host}:${port}`];
+  }
+  const lan = Object.values(os.networkInterfaces())
+    .flat()
+    .filter((info) => info && info.family === "IPv4" && !info.internal)
+    .map((info) => `http://${info!.address}:${port}`);
+  return [`http://localhost:${port}`, ...lan];
+}
 
 http
   .createServer((request, response) => {
@@ -96,6 +114,6 @@ http
     response.writeHead(200, { "Content-Type": TYPES[path.extname(file)] ?? "application/octet-stream", "Cache-Control": "no-cache" });
     fs.createReadStream(file).pipe(response);
   })
-  .listen(port, "127.0.0.1", () => {
-    console.log(`Design system landing page: http://127.0.0.1:${port}`);
+  .listen(port, host, () => {
+    console.log(`Design system landing page:\n${pageAddresses().map((address) => `  ${address}`).join("\n")}`);
   });
