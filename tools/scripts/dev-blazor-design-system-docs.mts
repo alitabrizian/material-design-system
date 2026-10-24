@@ -24,9 +24,11 @@ if (!process.env.DESIGN_TOKENS_PREBUILT) {
   }
 }
 
-// The preview tool assigns a free port via PORT (other worktrees' demo servers may hold 5080).
-// A --urls app argument overrides the launch profile's fixed applicationUrl.
-const urlArgs = process.env.PORT ? ["--", "--urls", `http://127.0.0.1:${process.env.PORT}`] : [];
+// Listen on every network interface (HOST, default 0.0.0.0) so the docs open from other machines on
+// the network, e.g. through the landing page's Blazor card. The preview tool assigns a free port via
+// PORT (other worktrees' demo servers may hold 5080). A --urls app argument overrides the launch
+// profile's fixed applicationUrl (http://127.0.0.1:5080).
+const urlArgs = ["--", "--urls", `http://${process.env.HOST ?? "0.0.0.0"}:${process.env.PORT ?? 5080}`];
 
 const watch = spawnSync(
   "dotnet",

@@ -10,19 +10,32 @@ and right-to-left. The theme picker switches between the four token themes. Unli
 lives in the workspace repository itself rather than in a submodule.
 
 ```bash
-npm run landing                               # = npx nx run design-system-landing:serve, http://127.0.0.1:4300
+npm run landing                               # = npx nx run design-system-landing:serve, http://localhost:4300
 npx nx run design-system-landing:build        # static site in dist/apps/design-system-landing
 ```
 
-Both build the tokens first. The dev server (`tools/scripts/dev-design-system-landing.mts`) serves
+Both build the tokens first.
+
+## Opening it from other machines
+
+The landing dev server, `npm run docs` (Blazor) and `npm run docs:angular` listen on every network
+interface (`0.0.0.0`), so other machines on the network can open `http://<this machine's IP>:4300`; the
+landing server prints the addresses when it starts. Because the docs links use `{host}`, the Angular and
+Blazor cards then point at the same machine. Set `HOST=127.0.0.1` to keep the landing page and the
+Blazor docs local. On Windows, allow Node.js and dotnet through the firewall (private networks) when
+asked, or open ports 4300, 4200 and 5080.
+
+`npm start` runs every `serve` target as defined in each project, and the Angular docs' target (in its
+submodule) still uses `--host 127.0.0.1`, so use `npm run docs:angular` for network access to it. The dev server (`tools/scripts/dev-design-system-landing.mts`) serves
 `src/` and the tokens package's `dist/` as `/tokens/`; the build copies both into one folder.
 
 ## Docs addresses
 
 `src/docs-links.json` maps each framework to its docs site; `null` shows the card as "coming soon"
-(React and Svelte, until their design systems exist). The defaults are the local dev servers:
-Angular docs `http://localhost:4200` (`npm run docs:angular`) and Blazor docs `http://127.0.0.1:5080`
-(`npm run docs`). Environment variables override them for the dev server and the build:
+(React and Svelte, until their design systems exist). The defaults are the dev servers on the machine
+the page was opened from: Angular docs `http://{host}:4200` (`npm run docs:angular`) and Blazor docs
+`http://{host}:5080` (`npm run docs`), where the page replaces `{host}` with its own host name
+(`location.hostname`). Environment variables override them for the dev server and the build:
 
 | Variable | Framework |
 | --- | --- |
