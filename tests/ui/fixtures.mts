@@ -35,7 +35,11 @@ export async function openPage(page: Page, projectName: string, route: string, t
   await page.clock.install({ time: new Date("2026-01-15T10:00:00+03:30") });
   await page.clock.resume();
 
-  await page.goto(route, { waitUntil: "networkidle" });
+  // A dev server busy with parallel first loads sometimes aborts one navigation; one retry covers it.
+  await page.goto(route, { waitUntil: "networkidle" }).catch(async (error: Error) => {
+    if (!error.message.includes("net::ERR_ABORTED")) throw error;
+    await page.goto(route, { waitUntil: "networkidle" });
+  });
   await page.evaluate((t) => {
     if (document.documentElement.dataset.theme !== t) document.documentElement.dataset.theme = t;
   }, theme);

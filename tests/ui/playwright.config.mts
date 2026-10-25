@@ -34,6 +34,8 @@ export default defineConfig({
   snapshotPathTemplate: "{testDir}/__screenshots__/{projectName}/{arg}-{platform}{ext}",
   globalTeardown: "./global-teardown.mts",
   fullyParallel: true,
+  // Two workers keep the dev servers and Chrome within memory on the dev machines; UI_WORKERS overrides.
+  workers: Number(process.env.UI_WORKERS) || 2,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
   timeout: 90_000,
