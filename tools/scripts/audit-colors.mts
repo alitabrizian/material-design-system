@@ -65,7 +65,8 @@ const RULES: { name: string; re: RegExp }[] = [
   { name: "color function", re: /\b(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch)\(\s*[\d.]/gi },
   {
     name: "named color",
-    re: new RegExp(`(?:^|[;{\\s"'])(?:${COLOR_PROPERTIES})\\s*:[^;{}"]*\\b(?:${NAMED_COLORS.join("|")})\\b`, "gi"),
+    // Not inside a hyphenated name: var(--alpha-black-600) is a token, not the named color black.
+    re: new RegExp(`(?:^|[;{\\s"'])(?:${COLOR_PROPERTIES})\\s*:[^;{}"]*(?<![\\w-])(?:${NAMED_COLORS.join("|")})(?![\\w-])`, "gi"),
   },
   {
     name: "SVG color attribute",

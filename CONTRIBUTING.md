@@ -47,7 +47,7 @@ The library uses BEM with double separators. Every class starts with `pb-`.
 | Modifier: variant | `pb-<block>--<variant>` | `pb-button--filled`, `pb-button--fab-mini`, `pb-card--elevated`, `pb-icon--primary` |
 | Modifier: state | `pb-<block>--<state>` | `pb-button--disabled`, `pb-select--open`, `pb-option--selected`, `pb-tab--active`, `pb-expansion-panel--expanded` |
 | Element modifier | `pb-<block>__<element>--<modifier>` | `pb-button__icon--start`, `pb-form-field__label--required`, `pb-grid__cell--editing` |
-| Shared utility | `pb-<purpose>`, in `blazor/wwwroot/styles/base.css` | `pb-state-layer`, `pb-interactive`, `pb-touch-target`, `pb-focus-visible`, `pb-visually-hidden`, `pb-icon-slot`, `pb-overlay`, `pb-backdrop`, `pb-font-mainfont` |
+| Shared utility | `pb-<purpose>`, in `blazor/wwwroot/styles/base.css` | `pb-state-layer`, `pb-interactive`, `pb-touch-target`, `pb-focus-visible`, `pb-visually-hidden`, `pb-icon-slot`, `pb-overlay`, `pb-backdrop`, `pb-font-mainfont`; the motion patterns `pb-motion-state`, `pb-motion-expand`, `pb-motion-move-in`, `pb-motion-instant` and `pb-scrim` live in `styles/motion.css` (same file in both libraries) |
 
 Rules:
 
