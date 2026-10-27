@@ -122,6 +122,9 @@ verification mode and the quality gates (`tools/scripts/audit-colors.mts`,
 See [docs/development/publishing.md](docs/development/publishing.md) for versioning and publishing the
 packages to npm and NuGet registries, with local registries to rehearse the release pipeline.
 
+`npm run test:ui` runs the visual regression and accessibility (axe) tests against every page of both
+docs sites and the landing page; see [tests/ui/README.md](tests/ui/README.md).
+
 ## Design system at a glance
 
 - **Reference:** Angular Material 22.2 (Material 3). Every component value is traced to Angular

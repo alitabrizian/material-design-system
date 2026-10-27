@@ -1,0 +1,11 @@
+{
+  "/": {
+    "label-content-name-mismatch": 1
+  },
+  "/ [cyan-orange]": {
+    "color-contrast": 3
+  },
+  "/ [magenta-violet]": {
+    "color-contrast": 3
+  }
+}

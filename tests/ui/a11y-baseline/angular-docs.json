@@ -1,0 +1,31 @@
+{
+  "/": {
+    "link-in-text-block": 1
+  },
+  "/chips": {
+    "aria-required-children": 21
+  },
+  "/data-grid": {
+    "aria-conditional-attr": 16,
+    "nested-interactive": 3
+  },
+  "/datepicker": {
+    "label-content-name-mismatch": 1,
+    "label": 12
+  },
+  "/progress-bar": {
+    "aria-progressbar-name": 3,
+    "label": 1
+  },
+  "/progress-spinner": {
+    "aria-progressbar-name": 4,
+    "label": 1
+  },
+  "/shamsi-datepicker": {
+    "label-content-name-mismatch": 1,
+    "label": 12
+  },
+  "/slider": {
+    "label": 2
+  }
+}
