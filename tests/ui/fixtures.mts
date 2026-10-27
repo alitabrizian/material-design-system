@@ -1,4 +1,4 @@
-/** Page helpers shared by the visual and accessibility specs. */
+/** Page helpers shared by the visual, token and accessibility specs. */
 
 import type { Page } from "@playwright/test";
 import { DEFAULT_THEME, targetOf, type Theme } from "./targets.mts";

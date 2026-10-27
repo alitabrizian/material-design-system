@@ -1,5 +1,5 @@
 /**
- * Visual regression and accessibility tests for the docs sites and the landing page.
+ * Figma foundation, visual regression and accessibility tests for the docs sites and the landing page.
  * See tests/ui/README.md.
  */
 

@@ -1,0 +1,43 @@
+{
+  "about": "Foundation values that are not Figma variables or styles: read from the annotations on the Motion page (node 7046:2) and from the icon-button component sets on the Icons page (node 6763:35, 'Partobita Icon' 6763:3746 and the four product sets). Update by hand when those pages change; the Layout page (7140:453) holds no tokens yet.",
+  "Motion": [
+    { "css": "--motion-state-duration", "figma": "State Transition: Duration 300ms", "kind": "duration", "value": "300ms" },
+    { "css": "--motion-easing-ease-in-out-back", "figma": "State Transition: Easing 'Ease in and out back' (Figma's preset, cubic-bezier(0.7, -0.4, 0.4, 1.4))", "kind": "easing", "value": "cubic-bezier(0.7, -0.4, 0.4, 1.4)" },
+    { "css": "--motion-expand-duration", "figma": "Accordion Expand/Collapse: Duration 700ms", "kind": "duration", "value": "700ms" },
+    { "css": "--motion-snackbar-duration", "figma": "Snackbar Open/Close: Move in, Down, Duration 500ms", "kind": "duration", "value": "500ms" },
+    { "css": "--motion-overlay-duration", "figma": "Dialog, Modal, Popover, Spotlight, Tooltip: Instant, no delay", "kind": "duration", "value": "0ms" },
+    { "css": "--motion-snackbar-inset", "figma": "Snackbar: positioned 40px from the top and right edges", "kind": "px", "value": "40px" },
+    { "css": "--motion-menu-offset", "figma": "Menu: positioned 12px from the top edges", "kind": "px", "value": "12px" },
+    { "css": "--motion-tooltip-gap", "figma": "Tooltip: 8px between the tooltip and its trigger", "kind": "px", "value": "8px" }
+  ],
+  "Icons": [
+    { "css": "--icon-size-16", "figma": "Icon button Size=16px", "kind": "px", "value": "16px" },
+    { "css": "--icon-size-20", "figma": "Icon button Size=20px", "kind": "px", "value": "20px" },
+    { "css": "--icon-size-24", "figma": "Icon button Size=24px", "kind": "px", "value": "24px" },
+    { "css": "--icon-size-32", "figma": "Icon button Size=32px", "kind": "px", "value": "32px" },
+    { "css": "--icon-button-stroke-width-16", "figma": "Size=16px, State=Default: stroke 0.6667", "kind": "px", "value": "0.6667px" },
+    { "css": "--icon-button-stroke-width-20", "figma": "Size=20px, State=Default: stroke 0.8333", "kind": "px", "value": "0.8333px" },
+    { "css": "--icon-button-stroke-width-24", "figma": "Size=24px, State=Default: stroke 1.5", "kind": "px", "value": "1.5px" },
+    { "css": "--icon-button-stroke-width-32", "figma": "Size=32px, State=Default: stroke 2.6667", "kind": "px", "value": "2.6667px" },
+    { "css": "--icon-button-stroke-width-active", "figma": "Size=24px, State=Hover/Selected/Destructive: stroke 1.25", "kind": "px", "value": "1.25px" },
+    { "css": "--icon-button-glyph-scale", "figma": "Size=24px: glyph 11.7px in Hover/Selected/Destructive vs 14px in Default (20px of 24px)", "kind": "number", "value": "0.8333" },
+    { "css": "--icon-button-radius", "figma": "Every variant: corner radius 4", "kind": "px", "value": "4px" },
+    { "css": "--icon-button-color-default", "figma": "State=Default: glyph stroke", "kind": "color", "value": "#4d4d4d" },
+    { "css": "--icon-button-color-press", "figma": "State=Press: glyph stroke", "kind": "color", "value": "#000000" },
+    { "css": "--icon-button-color-hover", "figma": "State=Hover: glyph stroke", "kind": "color", "value": "#333333" },
+    { "css": "--icon-button-background-hover", "figma": "State=Hover: fill", "kind": "color", "value": "#e6e6e6" },
+    { "css": "--icon-button-color-destructive", "figma": "State=Destructive: glyph stroke", "kind": "color", "value": "#eb2222" },
+    { "css": "--icon-button-background-destructive", "figma": "State=Destructive: fill", "kind": "color", "value": "#faf0f0" },
+    { "css": "--icon-button-color-disabled", "figma": "State=Disable: glyph stroke", "kind": "color", "value": "#999999" },
+    { "css": "--icon-button-partobita-color-selected", "figma": "Partobita Icon, State=Selected: glyph stroke", "kind": "color", "value": "#007dc6" },
+    { "css": "--icon-button-partobita-background-selected", "figma": "Partobita Icon, State=Selected: fill", "kind": "color", "value": "#f0f6f9" },
+    { "css": "--icon-button-satima-color-selected", "figma": "Satima Icon, State=Selected: glyph stroke", "kind": "color", "value": "#f2ab39" },
+    { "css": "--icon-button-satima-background-selected", "figma": "Satima Icon, State=Selected: fill", "kind": "color", "value": "#f9f6f0" },
+    { "css": "--icon-button-sarafid-color-selected", "figma": "Sarafid Icon, State=Selected: glyph stroke", "kind": "color", "value": "#15a54c" },
+    { "css": "--icon-button-sarafid-background-selected", "figma": "Sarafid Icon, State=Selected: fill", "kind": "color", "value": "#f0f9f3" },
+    { "css": "--icon-button-sajaak-color-selected", "figma": "Sajaak Icon, State=Selected: glyph stroke", "kind": "color", "value": "#12c1d9" },
+    { "css": "--icon-button-sajaak-background-selected", "figma": "Sajaak Icon, State=Selected: fill", "kind": "color", "value": "#f0f9fa" },
+    { "css": "--icon-button-samasat-color-selected", "figma": "Samasat Icon, State=Selected: glyph stroke", "kind": "color", "value": "#4d4d4d" },
+    { "css": "--icon-button-samasat-background-selected", "figma": "Samasat Icon, State=Selected: fill", "kind": "color", "value": "#f2f2f2" }
+  ]
+}
