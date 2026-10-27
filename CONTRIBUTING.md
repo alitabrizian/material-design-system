@@ -47,7 +47,7 @@ The library uses BEM with double separators. Every class starts with `pb-`.
 | Modifier: variant | `pb-<block>--<variant>` | `pb-button--filled`, `pb-button--fab-mini`, `pb-card--elevated`, `pb-icon--primary` |
 | Modifier: state | `pb-<block>--<state>` | `pb-button--disabled`, `pb-select--open`, `pb-option--selected`, `pb-tab--active`, `pb-expansion-panel--expanded` |
 | Element modifier | `pb-<block>__<element>--<modifier>` | `pb-button__icon--start`, `pb-form-field__label--required`, `pb-grid__cell--editing` |
-| Shared utility | `pb-<purpose>`, in `blazor/wwwroot/styles/base.css` | `pb-state-layer`, `pb-interactive`, `pb-touch-target`, `pb-focus-visible`, `pb-visually-hidden`, `pb-icon-slot`, `pb-overlay`, `pb-backdrop`, `pb-font-mainfont` |
+| Shared utility | `pb-<purpose>`, in `blazor/wwwroot/styles/base.css` | `pb-state-layer`, `pb-interactive`, `pb-touch-target`, `pb-focus-visible`, `pb-visually-hidden`, `pb-icon-slot`, `pb-overlay`, `pb-backdrop`, `pb-font-mainfont`; the motion patterns `pb-motion-state`, `pb-motion-expand`, `pb-motion-move-in`, `pb-motion-instant` and `pb-scrim` live in `styles/motion.css` (same file in both libraries) |
 
 Rules:
 
@@ -87,6 +87,15 @@ Every `color`, `background`, `border-color`, `outline-color`, `fill`, `stroke`, 
 (hex, `rgb()`, `hsl()`, named colors other than `transparent`, `currentColor`, `inherit`) are allowed
 only in generated token files. `tools/scripts/audit-colors.mts` enforces this and fails the build.
 
+### Motion
+
+Motion follows the design team's Figma Motion page, not Angular Material (decided 2026-10-27; it is the one
+foundation where Figma overrides constitution principle I). Durations and easing come from the `--motion-*`
+tokens (`tokens/src/motion-tokens.css`): state changes 300ms and accordions 700ms with ease in and out back,
+snackbars and menus move in (500ms / 300ms), and dialogs, modals, popovers, spotlights and tooltips are
+instant. Component CSS uses the pattern tokens, so `prefers-reduced-motion` makes everything instant. In
+Angular, `angular/src/styles/material-motion.css` retimes the Angular Material inside the `pb-` components.
+
 ### Known deviations
 
 These exist in the code today. Do not copy them; fix them when you touch the file.
@@ -99,6 +108,9 @@ These exist in the code today. Do not copy them; fix them when you touch the fil
 - The Typography page's section is titled "Tokens and text styles" and lists token names; under the
   class rule it should list the classes a developer applies.
 - The Angular button page has no Accessibility section, while the Blazor pages have one.
+- `angular/src/styles/material-motion.css` selects Angular Material internals (`.mat-*`) under the `pb-`
+  hosts, with `!important`, to apply the Figma motion; Material has no motion tokens for them. Keep it to
+  timing and placement offsets.
 - Blazor components are prefixed `PB` (`PBButton`) and Angular classes `Pb` (`PbButton`). Keep each
   library's own prefix; do not rename one to match the other in an unrelated change.
 
