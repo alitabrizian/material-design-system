@@ -3,7 +3,9 @@
  *   container surface, corner-extra-large (28px), no shadow, 280-560px wide (100vw - 32px on
  *   small screens); title headline-small on-surface, padding 6px 24px 13px with a 40px baseline
  *   strut; content body-medium on-surface-variant, padding 20px 24px (0 top after a title);
- *   actions padding 16px 24px, end-aligned, 8px apart; backdrop scrim 32%; enters scale(.8)+fade
+ *   actions padding 16px 24px, end-aligned, 8px apart.
+ *   Motion follows the Figma Motion page instead of MatDialog: opens and closes instantly, over a
+ *   backdrop of black at 60% (alpha/black/600).
  */
 
 .pb-dialog {
@@ -25,12 +27,10 @@
 .pb-dialog[open] {
   display: flex;
   flex-direction: column;
-  animation: pb-dialog-enter 150ms cubic-bezier(0, 0, 0.2, 1);
 }
 
 .pb-dialog::backdrop {
-  background-color: color-mix(in srgb, var(--md-sys-color-scrim) 32%, transparent);
-  animation: pb-fade-in 150ms linear;
+  background-color: var(--alpha-black-600);
 }
 
 .pb-dialog__title {
@@ -99,15 +99,4 @@
   min-height: 52px;
   margin: 0;
   padding: 16px 24px;
-}
-
-@keyframes pb-dialog-enter {
-  from {
-    opacity: 0;
-    transform: scale(0.8);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
 }

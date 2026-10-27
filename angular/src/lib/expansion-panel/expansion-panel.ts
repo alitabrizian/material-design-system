@@ -13,6 +13,7 @@ import {
  */
 @Component({
   selector: 'pb-expansion-panel',
+  host: { class: 'pb-expansion-panel' },
   imports: [
     MatExpansionPanel,
     MatExpansionPanelHeader,

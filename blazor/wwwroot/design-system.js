@@ -423,8 +423,6 @@ function placeTooltip(host, tip) {
 function showTooltip(host) {
   const tip = tooltipOf(host);
   if (!tip || !tip.textContent.trim()) return;
-  clearTimeout(tip._pbHideTimer);
-  tip.classList.remove("pb-tooltip--hiding");
   const trigger = host.querySelector("button, a[href], input, select, textarea, [tabindex]:not([tabindex='-1'])");
   if (trigger && trigger !== tip && !trigger.hasAttribute("aria-describedby")) {
     trigger.setAttribute("aria-describedby", tip.id);
@@ -435,14 +433,11 @@ function showTooltip(host) {
   placeTooltip(host, tip);
 }
 
+// Instant, as the Figma Motion page specifies (no hide animation to wait for).
 function hideTooltip(host) {
   const tip = tooltipOf(host);
   if (!tip || !tip.matches(":popover-open")) return;
-  tip.classList.add("pb-tooltip--hiding");
-  tip._pbHideTimer = setTimeout(() => {
-    try { tip.hidePopover(); } catch { /* removed */ }
-    tip.classList.remove("pb-tooltip--hiding");
-  }, 75);
+  try { tip.hidePopover(); } catch { /* removed */ }
 }
 
 // Content of an open overlay (e.g. a menu opened by the tooltip's trigger) never triggers the tooltip.

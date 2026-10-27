@@ -12,6 +12,8 @@
 @import "@partobita/design-tokens/css/fonts.css";
 @import "@partobita/design-tokens/css/tokens.css";
 @import "@partobita/design-tokens/css/angular-material.css";
+@import "./motion.css";
+@import "./material-motion.css";
 
 body {
   margin: 0;

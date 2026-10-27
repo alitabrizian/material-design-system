@@ -20,7 +20,7 @@ import {
   MatSnackBarRef,
 } from '@angular/material/snack-bar';
 
-/** Material 3 snackbar (PBSnackbar) shown through [(open)]; the content is the message. */
+/** Material 3 snackbar (PBSnackbar) shown through [(open)]; the content is the message. Placed and moved as the Figma Motion page specifies. */
 @Component({
   selector: 'pb-snackbar',
   imports: [MatSnackBarLabel, MatSnackBarActions, MatSnackBarAction, MatButton],
@@ -54,7 +54,13 @@ export class PbSnackbar {
   private show(): void {
     if (this.ref) return;
     const duration = this.duration();
-    this.ref = this.snackBar.openFromTemplate(this.message(), duration > 0 ? { duration } : {});
+    // Figma Motion: always 40px from the top and inline-end edges, moving in downwards (styles/material-motion.css).
+    this.ref = this.snackBar.openFromTemplate(this.message(), {
+      ...(duration > 0 ? { duration } : {}),
+      horizontalPosition: 'end',
+      verticalPosition: 'top',
+      panelClass: 'pb-snackbar-panel',
+    });
     this.ref.afterDismissed().subscribe(() => {
       this.ref = null;
       this.open.set(false);

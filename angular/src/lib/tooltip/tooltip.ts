@@ -1,4 +1,4 @@
-import { Directive } from '@angular/core';
+import { Directive, inject } from '@angular/core';
 import { MatTooltip } from '@angular/material/tooltip';
 
 export type PbTooltipPosition = 'below' | 'above' | 'before' | 'after';
@@ -23,4 +23,10 @@ export type PbTooltipPosition = 'below' | 'above' | 'before' | 'after';
     },
   ],
 })
-export class PbTooltip {}
+export class PbTooltip {
+  constructor() {
+    // Figma Motion: tooltips appear and disappear instantly. The class sets a 0s animation, which
+    // MatTooltip takes as animations disabled (styles/material-motion.css).
+    inject(MatTooltip).tooltipClass = 'pb-tooltip';
+  }
+}

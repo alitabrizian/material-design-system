@@ -1,0 +1,79 @@
+/*
+ * PartoBita motion patterns (Figma "Motion" page, docs Fundamentals > Motion) as classes. The values
+ * are the --motion-* tokens in tokens/src/motion-tokens.css; apps use these classes, not the tokens.
+ *
+ *   pb-motion-state      state transition (hover, press, any state change): 300ms, ease in and out back
+ *   pb-motion-expand     accordion expand and collapse: 700ms; __content is the clipped child,
+ *                        --expanded opens it
+ *   pb-motion-move-in    menu open and close: moves in down from the trigger, 300ms; --snackbar moves
+ *                        in down from above the viewport over 500ms; --open shows it
+ *   pb-motion-instant    dialog, modal, popover, spotlight and tooltip: no transition or animation
+ *   pb-scrim             the backdrop behind a dialog, modal or spotlight (alpha/black/600)
+ *
+ * Every duration is a pattern token that becomes instant under prefers-reduced-motion, so these classes
+ * need no media query of their own. Kept identical in blazor/wwwroot/styles/motion.css and
+ * angular/src/styles/motion.css. Blazor's design-system.css imports it after the component styles, so a
+ * pattern class wins over a component's own transition of the same specificity.
+ */
+
+.pb-motion-state,
+.pb-motion-state > .pb-state-layer::before {
+  transition-property: color, background-color, border-color, outline-color, box-shadow, opacity, transform;
+  transition-duration: var(--motion-state-duration);
+  transition-timing-function: var(--motion-easing-ease-in-out-back);
+}
+
+/* Collapses to 0fr and back; visibility follows at the end of a collapse, so collapsed content can't
+   take focus. */
+.pb-motion-expand {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  transition:
+    grid-template-rows var(--motion-expand-duration) var(--motion-easing-ease-in-out-back),
+    visibility 0s linear var(--motion-expand-duration);
+}
+
+.pb-motion-expand--expanded {
+  grid-template-rows: 1fr;
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.pb-motion-expand__content {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.pb-motion-move-in {
+  --pb-motion-move-in-duration: var(--motion-menu-duration);
+  --pb-motion-move-in-from: calc(-1 * var(--motion-menu-offset));
+  transform: translateY(var(--pb-motion-move-in-from));
+  visibility: hidden;
+  transition:
+    transform var(--pb-motion-move-in-duration) var(--motion-easing-ease-in-out-back),
+    visibility 0s linear var(--pb-motion-move-in-duration);
+}
+
+.pb-motion-move-in--snackbar {
+  --pb-motion-move-in-duration: var(--motion-snackbar-duration);
+  --pb-motion-move-in-from: calc(-100% - var(--motion-snackbar-inset));
+}
+
+.pb-motion-move-in--open {
+  transform: none;
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+/* !important so it also wins over a component's state modifiers (two classes), like pb-visually-hidden. */
+.pb-motion-instant {
+  transition: none !important;
+  animation: none !important;
+}
+
+.pb-scrim {
+  position: fixed;
+  inset: 0;
+  background-color: var(--alpha-black-600);
+}

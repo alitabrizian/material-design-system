@@ -15,11 +15,13 @@
  * Output (dist/, gitignored; the Blazor library copies it into wwwroot at build time):
  *   - css/tokens.css            color roles per theme + all system tokens + src/material-tokens.css
  *                               + src/typography-tokens.css + src/scale-tokens.css + src/shadow-tokens.css
+ *                               + src/motion-tokens.css
  *   - css/material-tokens.css   copy of src/material-tokens.css (motion, spacing, font stack)
  *   - css/typography-tokens.css copy of src/typography-tokens.css (PartoBita type scale)
  *   - css/color-tokens.css      copy of src/color-tokens.css (PartoBita palettes, also in tokens.css)
  *   - css/scale-tokens.css      copy of src/scale-tokens.css (space, stroke, radius, opacity)
  *   - css/shadow-tokens.css     copy of src/shadow-tokens.css (PartoBita basic shadows)
+ *   - css/motion-tokens.css     copy of src/motion-tokens.css (PartoBita motion patterns)
  *   - css/angular-material.css  every --mat-sys-* Angular Material reads, bound to its --md-sys-* token,
  *                               so Angular Material components follow these tokens (and data-theme)
  *   - css/roboto.css            self-hosted Roboto @font-face rules (from @fontsource-variable/roboto)
@@ -180,6 +182,9 @@ tokensCss.push("/* ---- src/color-tokens.css (PartoBita palettes) ---- */", colo
 const shadows = fs.readFileSync(path.join(packageRoot, "src/shadow-tokens.css"), "utf8");
 tokensCss.push("/* ---- src/shadow-tokens.css (PartoBita basic shadows) ---- */", shadows.trim(), "");
 
+const motion = fs.readFileSync(path.join(packageRoot, "src/motion-tokens.css"), "utf8");
+tokensCss.push("/* ---- src/motion-tokens.css (PartoBita motion patterns) ---- */", motion.trim(), "");
+
 const scales = fs.readFileSync(path.join(packageRoot, "src/scale-tokens.css"), "utf8");
 tokensCss.push("/* ---- src/scale-tokens.css (space, stroke, radius, opacity) ---- */", scales.trim(), "");
 
@@ -309,6 +314,7 @@ write("css/typography-tokens.css", typography);
 write("css/color-tokens.css", colors);
 write("css/scale-tokens.css", scales);
 write("css/shadow-tokens.css", shadows);
+write("css/motion-tokens.css", motion);
 write("css/icon-tokens.css", iconTokens);
 console.log(`Wrote ${buildIcons(packageRoot, distRoot, fail)} icons to dist/icons and dist/data/icons.json`);
 write(

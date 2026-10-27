@@ -1,0 +1,45 @@
+/**
+ * Hand-authored PartoBita motion tokens, from the design team's Figma "Motion" page (shown on the docs'
+ * Fundamentals > Motion page). Angular Material's --md-sys-motion-* durations and easings are unchanged;
+ * these are the product's motion patterns:
+ *   state transition     hover, press, any state change   smart animate, ease in and out back, 300ms
+ *   accordion            expand and collapse              smart animate, ease in and out back, 700ms
+ *   snackbar             open and close                   move in (down), ease in and out back, 500ms
+ *   menu                 open and close                   move in (down), ease in and out back, 300ms
+ *   dialog, modal, spotlight (alpha/black/600 backdrop), popover (no backdrop) and tooltip: instant
+ *
+ * "Ease in and out back" is Figma's cubic-bezier(0.7, -0.4, 0.4, 1.4): it pulls back slightly before it
+ * starts and overshoots slightly before it settles. "Instant" is 0ms with no delay.
+ *
+ * When the user prefers reduced motion every pattern duration becomes instant, so anything built on the
+ * pattern tokens (and the pb-motion-* classes) stops moving without its own media query.
+ */
+
+:root {
+  --motion-duration-instant: 0ms;
+  --motion-duration-300: 300ms;
+  --motion-duration-500: 500ms;
+  --motion-duration-700: 700ms;
+
+  --motion-easing-ease-in-out-back: cubic-bezier(0.7, -0.4, 0.4, 1.4);
+
+  --motion-state-duration: var(--motion-duration-300);
+  --motion-expand-duration: var(--motion-duration-700);
+  --motion-snackbar-duration: var(--motion-duration-500);
+  --motion-menu-duration: var(--motion-duration-300);
+  --motion-overlay-duration: var(--motion-duration-instant);
+
+  /* Where the patterns place their surfaces (Figma's positioning notes). */
+  --motion-snackbar-inset: var(--space-400); /* 40px from the top and inline-end edges */
+  --motion-menu-offset: var(--space-200); /* 12px from the trigger */
+  --motion-tooltip-gap: var(--space-150); /* 8px between tooltip and trigger */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-state-duration: var(--motion-duration-instant);
+    --motion-expand-duration: var(--motion-duration-instant);
+    --motion-snackbar-duration: var(--motion-duration-instant);
+    --motion-menu-duration: var(--motion-duration-instant);
+  }
+}

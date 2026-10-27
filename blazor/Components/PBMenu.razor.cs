@@ -80,6 +80,8 @@ public partial class PBMenu : WorkspaceComponentBase
             {
                 x = XPosition == PBMenuXPosition.Before ? "end" : "start",
                 y = YPosition == PBMenuYPosition.Above ? "above" : "below",
+                // Figma Motion: the menu sits 12px from its trigger (--motion-menu-offset).
+                offset = 12,
                 anchorClosest = ".pb-menu",
                 anchorSelector = ".pb-menu__trigger-host > .pb-button",
                 dotNet = selfReference,

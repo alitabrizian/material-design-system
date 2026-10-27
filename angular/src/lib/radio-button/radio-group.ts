@@ -7,6 +7,7 @@ import { PbRadioButton } from './radio-button';
 /** Material 3 radio group (PBRadioGroup) of pb-radio-button children. */
 @Component({
   selector: 'pb-radio-group',
+  host: { class: 'pb-radio-group' },
   imports: [MatRadioGroup, MatRadioButton, NgTemplateOutlet],
   providers: [providePbValueAccessor(() => PbRadioGroup)],
   changeDetection: ChangeDetectionStrategy.OnPush,

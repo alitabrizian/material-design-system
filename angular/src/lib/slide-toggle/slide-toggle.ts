@@ -5,6 +5,7 @@ import { providePbValueAccessor, PbValueAccessor } from '../core/value-accessor'
 /** Material 3 switch (PBSlideToggle). The content is the label. */
 @Component({
   selector: 'pb-slide-toggle',
+  host: { class: 'pb-slide-toggle' },
   imports: [MatSlideToggle],
   providers: [providePbValueAccessor(() => PbSlideToggle)],
   changeDetection: ChangeDetectionStrategy.OnPush,

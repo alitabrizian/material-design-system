@@ -7,7 +7,8 @@
  *
  * A component opts in by giving its host `pb-interactive` and a child `<span class="pb-state-layer">`,
  * then setting --pb-state-layer-color (defaults to currentColor). Opacities are the M3 system tokens:
- * hover 8%, focus 12%, pressed 12% (from Angular Material's prebuilt theme).
+ * hover 8%, focus 12%, pressed 12% (from Angular Material's prebuilt theme). The layer changes with the
+ * Figma Motion state transition (300ms, ease in and out back), like every state change in the library.
  */
 
 .pb-state-layer {
@@ -24,7 +25,7 @@
   inset: 0;
   background-color: var(--pb-state-layer-color, currentColor);
   opacity: 0;
-  transition: opacity 15ms linear, background-color 15ms linear;
+  transition: opacity var(--motion-state-duration) var(--motion-easing-ease-in-out-back), background-color var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
 
 .pb-interactive:hover > .pb-state-layer::before {
