@@ -10,7 +10,7 @@
     {{ triggerLabel() }}
   </button>
 }
-<mat-menu #menu="matMenu" [xPosition]="xPosition()" [yPosition]="yPosition()" [class]="panelClass()">
+<mat-menu #menu="matMenu" [xPosition]="xPosition()" [yPosition]="yPosition()" [class]="'pb-menu__panel ' + panelClass()">
   @for (item of items(); track item) {
     <button mat-menu-item [disabled]="item.disabled()" (click)="item.selected.emit()">
       @if (item.icon(); as name) { <mat-icon>{{ name }}</mat-icon> }

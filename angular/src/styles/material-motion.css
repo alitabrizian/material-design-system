@@ -1,0 +1,108 @@
+/*
+ * The Figma Motion page applied to the Angular Material inside the pb- components, so they move like
+ * the Blazor components (whose component CSS uses the same --motion-* tokens). Angular Material has no
+ * motion tokens for these, so this file retimes its transitions and animations under the pb- host or
+ * panel classes. Only timing, placement offsets and the dialog backdrop live here: no other visual
+ * values. !important because Material's component styles are added after this stylesheet.
+ *
+ *   state transition  button, checkbox, radio, switch, paginator, calendar day: 300ms, ease in and out back
+ *   accordion         expansion panel header, indicator and body: 700ms, ease in and out back
+ *   menu              12px from the trigger, moves in downwards over 300ms
+ *   snackbar          40px from the top and inline-end edges, moves in downwards over 500ms; closes instantly
+ *   dialog, tooltip   instant; the dialog backdrop is alpha/black/600
+ */
+
+/* State transitions on elements, ::before (the state layers) and ::after. Pseudo-elements can't go
+   inside :is(), so the selectors are spelled out. */
+.pb-button *:not(.mat-ripple-element),
+.pb-checkbox *:not(.mat-ripple-element),
+.pb-radio-group *:not(.mat-ripple-element),
+.pb-slide-toggle *:not(.mat-ripple-element),
+.pb-paginator .mat-mdc-icon-button *:not(.mat-ripple-element),
+.pb-datepicker-panel .mat-calendar-body-cell *:not(.mat-ripple-element),
+.pb-calendar-card .mat-calendar-body-cell *:not(.mat-ripple-element),
+.pb-button *::before,
+.pb-checkbox *::before,
+.pb-radio-group *::before,
+.pb-slide-toggle *::before,
+.pb-paginator .mat-mdc-icon-button *::before,
+.pb-datepicker-panel .mat-calendar-body-cell *::before,
+.pb-calendar-card .mat-calendar-body-cell *::before,
+.pb-button *::after,
+.pb-checkbox *::after,
+.pb-radio-group *::after,
+.pb-slide-toggle *::after,
+.pb-paginator .mat-mdc-icon-button *::after,
+.pb-datepicker-panel .mat-calendar-body-cell *::after,
+.pb-calendar-card .mat-calendar-body-cell *::after {
+  transition-duration: var(--motion-state-duration) !important;
+  transition-timing-function: var(--motion-easing-ease-in-out-back) !important;
+  transition-delay: 0s !important;
+}
+
+/* The checkbox draws its check and dash marks with keyframe animations rather than transitions. */
+.pb-checkbox *,
+.pb-checkbox *::before,
+.pb-checkbox *::after {
+  animation-duration: var(--motion-state-duration) !important;
+  animation-timing-function: var(--motion-easing-ease-in-out-back) !important;
+  animation-delay: 0s !important;
+}
+
+.pb-expansion-panel :is(.mat-expansion-panel-header, .mat-expansion-panel-content-wrapper,
+    .mat-expansion-panel-content, .mat-expansion-indicator) {
+  transition-duration: var(--motion-expand-duration) !important;
+  transition-timing-function: var(--motion-easing-ease-in-out-back) !important;
+}
+
+.pb-menu__panel {
+  margin-block: var(--motion-menu-offset);
+}
+
+.pb-menu__panel:not(.mat-menu-panel-exit-animation) {
+  animation: pb-material-menu-enter var(--motion-menu-duration) var(--motion-easing-ease-in-out-back) !important;
+}
+
+@keyframes pb-material-menu-enter {
+  from {
+    transform: translateY(calc(-1 * var(--motion-menu-offset)));
+  }
+  to {
+    transform: none;
+  }
+}
+
+.pb-snackbar-panel {
+  max-width: calc(100vw - 2 * var(--motion-snackbar-inset));
+  margin: var(--motion-snackbar-inset) !important;
+  opacity: 1 !important;
+}
+
+.pb-snackbar-panel.mat-snack-bar-container-enter {
+  animation: pb-material-snackbar-enter var(--motion-snackbar-duration) var(--motion-easing-ease-in-out-back) !important;
+}
+
+.pb-snackbar-panel.mat-snack-bar-container-exit {
+  animation: none !important;
+  opacity: 0 !important;
+}
+
+/* From just above the screen edge: its own height plus the 40px inset. */
+@keyframes pb-material-snackbar-enter {
+  from {
+    transform: translateY(calc(-100% - var(--motion-snackbar-inset)));
+  }
+  to {
+    transform: none;
+  }
+}
+
+.pb-dialog-backdrop {
+  background-color: var(--alpha-black-600);
+  transition: none !important;
+}
+
+/* A 0s animation makes MatTooltip treat animations as disabled: it shows and hides at once. */
+.pb-tooltip {
+  animation-duration: 0s !important;
+}

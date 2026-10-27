@@ -5,6 +5,7 @@ import { providePbValueAccessor, PbValueAccessor } from '../core/value-accessor'
 /** Material 3 checkbox (PBCheckbox). The content is the label. */
 @Component({
   selector: 'pb-checkbox',
+  host: { class: 'pb-checkbox' },
   imports: [MatCheckbox],
   providers: [providePbValueAccessor(() => PbCheckbox)],
   changeDetection: ChangeDetectionStrategy.OnPush,

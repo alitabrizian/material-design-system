@@ -201,7 +201,7 @@
   height: 5px;
   margin-inline-start: 5px;
   fill: currentColor;
-  transition: transform 150ms;
+  transition: transform var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
 
 .pb-calendar__arrow--up {
@@ -320,6 +320,10 @@
   color: var(--md-sys-color-on-surface);
   font-size: var(--md-sys-typescale-body-medium-size);
   line-height: 1;
+  transition:
+    background-color var(--motion-state-duration) var(--motion-easing-ease-in-out-back),
+    border-color var(--motion-state-duration) var(--motion-easing-ease-in-out-back),
+    color var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
 
 .pb-calendar__cell--wide .pb-calendar__cell-content {
@@ -355,6 +359,7 @@
   height: 36px;
   border-radius: 999px;
   transform: translate(-50%, -50%);
+  transition: background-color var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
 
 .pb-calendar__cell--wide .pb-calendar__focus-indicator {

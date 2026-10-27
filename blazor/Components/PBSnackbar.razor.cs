@@ -2,7 +2,7 @@ namespace PartoBita.DesignSystem.Blazor.Components;
 
 /// <summary>
 /// MatSnackBar's simple snack bar as a component: set <see cref="Open"/> (bind it) to show the message at the
-/// bottom of the screen. <see cref="Duration"/> auto-dismisses (0 = until dismissed, MatSnackBar's
+/// top of the screen, 40px from the top and inline-end edges (Figma Motion). <see cref="Duration"/> auto-dismisses (0 = until dismissed, MatSnackBar's
 /// default); <see cref="ActionLabel"/> adds an action button that dismisses it. <see cref="Inline"/>
 /// renders the surface in place (documentation/previews).
 /// </summary>

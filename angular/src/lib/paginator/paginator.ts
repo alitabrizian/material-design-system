@@ -7,6 +7,7 @@ export type PbPageEvent = PageEvent;
 /** Material 3 paginator (PBPaginator). The labels default to Angular Material's English ones. */
 @Component({
   selector: 'pb-paginator',
+  host: { class: 'pb-paginator' },
   imports: [MatPaginator],
   // One MatPaginatorIntl per paginator, so each instance's label inputs stay its own.
   providers: [{ provide: MatPaginatorIntl, useFactory: () => new MatPaginatorIntl() }],

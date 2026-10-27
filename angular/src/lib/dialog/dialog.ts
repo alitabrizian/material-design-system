@@ -50,7 +50,13 @@ export class PbDialog {
 
   private show(): void {
     if (this.ref) return;
-    this.ref = this.dialog.open(this.body(), { disableClose: this.disableClose() });
+    // Figma Motion: dialogs open and close instantly, over an alpha/black/600 backdrop (styles/material-motion.css).
+    this.ref = this.dialog.open(this.body(), {
+      disableClose: this.disableClose(),
+      enterAnimationDuration: 0,
+      exitAnimationDuration: 0,
+      backdropClass: 'pb-dialog-backdrop',
+    });
     this.ref.afterClosed().subscribe(() => {
       this.ref = null;
       this.open.set(false);

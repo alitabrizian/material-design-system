@@ -68,8 +68,8 @@
   border-radius: var(--md-sys-shape-corner-full);
   background-color: var(--md-sys-color-surface-variant);
   transition:
-    background-color 75ms var(--md-sys-motion-easing-legacy),
-    border-color 75ms var(--md-sys-motion-easing-legacy);
+    background-color var(--motion-state-duration) var(--motion-easing-ease-in-out-back),
+    border-color var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
 
 .pb-slide-toggle__handle {
@@ -88,10 +88,10 @@
   transform: translate(-50%, -50%);
   pointer-events: none;
   transition:
-    left 150ms var(--md-sys-motion-easing-legacy),
-    width 75ms var(--md-sys-motion-easing-legacy),
-    height 75ms var(--md-sys-motion-easing-legacy),
-    background-color 75ms var(--md-sys-motion-easing-legacy);
+    left var(--motion-state-duration) var(--motion-easing-ease-in-out-back),
+    width var(--motion-state-duration) var(--motion-easing-ease-in-out-back),
+    height var(--motion-state-duration) var(--motion-easing-ease-in-out-back),
+    background-color var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
 
 .pb-slide-toggle__state-layer {
@@ -112,7 +112,7 @@
   border-radius: 50%;
   background-color: var(--md-sys-color-on-surface);
   opacity: 0;
-  transition: opacity 75ms cubic-bezier(0, 0, 0.2, 1);
+  transition: opacity var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
 
 .pb-slide-toggle__icon {
@@ -123,8 +123,8 @@
   opacity: 0;
   transform: rotate(-45deg);
   transition:
-    opacity 30ms linear,
-    transform 150ms var(--md-sys-motion-easing-legacy);
+    opacity var(--motion-state-duration) var(--motion-easing-ease-in-out-back),
+    transform var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
 
 .pb-slide-toggle__icon--on {
@@ -136,7 +136,7 @@
 .pb-slide-toggle__input:checked ~ .pb-slide-toggle__handle .pb-slide-toggle__icon--on {
   opacity: 1;
   transform: none;
-  transition: opacity 45ms 30ms linear, transform 150ms var(--md-sys-motion-easing-legacy);
+  transition: opacity var(--motion-state-duration) var(--motion-easing-ease-in-out-back), transform var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
 
 /* Unselected interaction */
@@ -156,7 +156,7 @@
 
 .pb-slide-toggle__switch:active > .pb-slide-toggle__handle .pb-slide-toggle__state-layer::before {
   opacity: var(--md-sys-state-pressed-state-layer-opacity);
-  transition: opacity 75ms linear;
+  transition: opacity var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
 
 .pb-slide-toggle__switch:active {

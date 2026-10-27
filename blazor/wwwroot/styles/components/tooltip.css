@@ -1,8 +1,9 @@
 /*
  * PBTooltip: matTooltip. Reference: tooltip/_m3-tooltip.scss + structural styles.
  *   inverse-surface / inverse-on-surface, corner-extra-small, body-small, padding 4px 8px,
- *   min 40x24px, max-width 200px, 8px from the trigger; shows with scale(.8)->1 + fade (150ms),
- *   hides over 75ms. Shown on hover and keyboard focus by design-system.js (top layer).
+ *   min 40x24px, max-width 200px, 8px from the trigger. Shown on hover and keyboard focus by
+ *   design-system.js (top layer). Motion follows the Figma Motion page instead of matTooltip: it
+ *   appears and disappears instantly.
  */
 
 .pb-tooltip-host {
@@ -40,32 +41,4 @@
   text-align: center;
   word-break: normal;
   overflow-wrap: anywhere;
-  will-change: transform, opacity;
-  animation: pb-tooltip-show 150ms cubic-bezier(0, 0, 0.2, 1) forwards;
-}
-
-.pb-tooltip--hiding .pb-tooltip__surface {
-  animation: pb-tooltip-hide 75ms cubic-bezier(0.4, 0, 1, 1) forwards;
-}
-
-@keyframes pb-tooltip-show {
-  0% {
-    opacity: 0;
-    transform: scale(0.8);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes pb-tooltip-hide {
-  0% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(1);
-  }
 }
