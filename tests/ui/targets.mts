@@ -35,6 +35,8 @@ export interface Target {
   /** localStorage key the site reads its theme from before the first paint. */
   themeKey: string;
   routes: () => string[];
+  /** The example cards of each page (route -> example ids, in page order), from the docs app's own index. */
+  examples: () => Record<string, string[]>;
 }
 
 function read(relative: string): string {
@@ -50,6 +52,36 @@ const blazorRoutes = () =>
 const angularRoutes = () =>
   unique(["/", "/fundamentals", ...[...read("apps/angular-design-system-docs/src/app/component-catalog.ts").matchAll(/\bpath: '([^']+)'/g)].map((m) => "/" + m[1])]);
 
+/** Same rules as Navigation/ExampleIndex.cs: each <ExampleCard>'s Id, or its Title slugified. */
+function blazorExamples(): Record<string, string[]> {
+  const dir = path.join(repoRoot, "apps/blazor-design-system-docs/Pages");
+  const decode = (s: string) => s.replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
+  const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "example";
+  const index: Record<string, string[]> = {};
+  for (const file of fs.readdirSync(dir).filter((f) => f.endsWith(".razor"))) {
+    const markup = fs.readFileSync(path.join(dir, file), "utf8");
+    const route = markup.match(/@page "([^"]+)"/)?.[1];
+    if (!route) continue;
+    const ids: string[] = [];
+    for (const card of markup.matchAll(/<ExampleCard\b/g)) {
+      const end = markup.indexOf("RazorCode=", card.index);
+      const head = markup.slice(card.index, end < 0 ? card.index + 400 : end);
+      const title = head.match(/\bTitle="([^"]*)"/)?.[1];
+      if (title === undefined) continue;
+      ids.push(head.match(/\bId="([^"]*)"/)?.[1] ?? slug(decode(title)));
+    }
+    if (ids.length) index[route] = ids;
+  }
+  return index;
+}
+
+/** The Angular docs' generated example index (src/app/generated/page-examples.ts: page -> examples). */
+function angularExamples(): Record<string, string[]> {
+  const source = read("apps/angular-design-system-docs/src/app/generated/page-examples.ts");
+  const pages: Record<string, { id: string }[]> = JSON.parse(source.slice(source.indexOf("= {") + 2,source.lastIndexOf("}") + 1));
+  return Object.fromEntries(Object.entries(pages).map(([name, examples]) => ["/" + name, examples.map((e) => e.id)]));
+}
+
 export const TARGETS: Target[] = [
   {
     name: "blazor-docs",
@@ -58,6 +90,7 @@ export const TARGETS: Target[] = [
     serve: "node tools/scripts/dev-blazor-design-system-docs.mts",
     themeKey: "theme",
     routes: blazorRoutes,
+    examples: blazorExamples,
   },
   {
     name: "angular-docs",
@@ -66,6 +99,7 @@ export const TARGETS: Target[] = [
     serve: "node node_modules/nx/bin/nx.js run angular-design-system-docs:serve --exclude-task-dependencies",
     themeKey: "theme",
     routes: angularRoutes,
+    examples: angularExamples,
   },
   {
     name: "landing",
@@ -74,6 +108,7 @@ export const TARGETS: Target[] = [
     serve: "node tools/scripts/dev-design-system-landing.mts",
     themeKey: "pb-landing-theme",
     routes: () => ["/"],
+    examples: () => ({}),
   },
 ];
 

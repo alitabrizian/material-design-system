@@ -1,5 +1,5 @@
 /**
- * Visual regression and accessibility tests (tests/ui) for the docs sites and the landing page.
+ * Figma foundation, visual regression and accessibility tests (tests/ui) for the docs sites and the landing page.
  *
  *   node tools/scripts/test-ui.mts [--update] [playwright test args...]
  *

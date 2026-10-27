@@ -1,0 +1,19 @@
+{
+  "about": "Tokens that differ from Figma on purpose until the design team confirms which side is right. tokens.spec.mts expects each one to still differ, and fails once it matches so it is removed from here. Never add an entry to make a failure go away without a reason and an owner.",
+  "mismatches": [
+    {
+      "css": "--typography-display-2-line-height",
+      "figma": "text style display-2: line height bound to line-height/750 (68px)",
+      "tokens": "56px (--line-height-600)",
+      "reason": "display-1 also uses line-height/750 in Figma, so display-2 (40px) gets the same 68px. Likely a binding slip in Figma (56px would follow the scale); waiting for the designer to confirm before changing the token.",
+      "owner": "design (Amir)"
+    },
+    {
+      "css": "--typography-caption-6-font-weight",
+      "figma": "text style caption-6: weight bound to font-weight/300 (SemiBold, 600)",
+      "tokens": "400 (--font-weight-200, Regular)",
+      "reason": "caption-6 is identical to caption-5 in Figma; every other group goes Bold, SemiBold, Regular, so caption-6 is likely meant to be Regular. Waiting for the designer to confirm before changing the token.",
+      "owner": "design (Amir)"
+    }
+  ]
+}
