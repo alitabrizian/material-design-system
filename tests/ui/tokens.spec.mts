@@ -124,16 +124,23 @@ test.describe("foundation token sources", { tag: `@${selectedTargets()[0]?.name}
     }
   });
 
-  // Static: media queries can't read custom properties, so pb-layout repeats the Figma breakpoints as
-  // literals; each library's layout.css must switch at exactly those widths.
-  test("pb-layout media queries use the Figma breakpoints", () => {
-    const breakpoints = FIGMA.tokens
-      .filter((t) => t.css.startsWith("--layout-breakpoint-") && !["--layout-breakpoint-compact", "--layout-breakpoint-xlarge"].includes(t.css))
-      .map((t) => t.value);
+  // Static: media queries can't read custom properties, so layout.css repeats the Figma breakpoints as
+  // literals. pb-layout's margins switch at exactly medium, expanded and large, and every other query
+  // (the proposed grid and show/hide classes) uses a Figma breakpoint too: min-width at it, or max-width
+  // just below it (599.98px is below 600px).
+  test("layout.css media queries use the Figma breakpoints", () => {
+    const breakpoints = new Map(FIGMA.tokens.filter((t) => t.css.startsWith("--layout-breakpoint-")).map((t) => [parseFloat(t.value), t.css]));
+    const margins = ["--layout-breakpoint-medium", "--layout-breakpoint-expanded", "--layout-breakpoint-large"].map((css) => FIGMA.tokens.find((t) => t.css === css)?.value);
     for (const file of ["libs/material-design-system/blazor/wwwroot/styles/layout.css", "libs/material-design-system/angular/src/styles/layout.css"]) {
       const source = fs.readFileSync(path.join(repoRoot, file), "utf8");
-      const used = [...source.matchAll(/@media \(min-width: ([\d.]+px)\)/g)].map((m) => m[1]);
-      expect.soft(used, `${file} media queries (Figma Layout breakpoints medium, expanded, large)`).toEqual(breakpoints);
+      const shell = source.slice(0, source.indexOf("Proposed (not on the Figma Layout page yet)"));
+      const shellWidths = [...shell.matchAll(/@media \(min-width: ([\d.]+px)\)/g)].map((m) => m[1]);
+      expect.soft(shellWidths, `${file}: pb-layout media queries (Figma Layout breakpoints medium, expanded, large)`).toEqual(margins);
+      for (const [, kind, width] of source.matchAll(/@media \((min|max)-width: ([\d.]+)px\)/g)) {
+        const breakpoint = kind === "min" ? Number(width) : Math.round(Number(width) + 0.02);
+        const exact = kind === "min" || Math.abs(Number(width) - (breakpoint - 0.02)) < 1e-9;
+        expect.soft(breakpoints.has(breakpoint) && exact, `${file}: @media (${kind}-width: ${width}px) is not at a Figma Layout breakpoint`).toBe(true);
+      }
     }
   });
 });
@@ -216,6 +223,16 @@ for (const target of selectedTargets().filter((t) => t.name !== "landing")) {
         const row = rows.find((r) => r.css === t.css);
         expect.soft(row, `${t.css} (Figma ${t.figma}) is missing from /scales`).toBeTruthy();
         if (row) expect.soft(parseFloat(row.value), `${t.css} value on /scales (Figma ${t.figma} = ${t.value})`).toBe(parseFloat(t.value));
+      }
+    });
+
+    // The proposed pb-grid follows the Figma breakpoints: 4, 8 and 12 columns at the Figma design widths.
+    test("/layout pb-grid columns follow the Figma breakpoints", async ({ page }) => {
+      for (const [width, columns] of [[402, 4], [768, 8], [1024, 12], [1440, 12]] as const) {
+        await page.setViewportSize({ width, height: 900 });
+        await openPage(page, target.name, "/layout", DEFAULT_THEME);
+        const tracks = await page.locator(".layout-responsive.pb-grid").evaluate((grid) => getComputedStyle(grid).gridTemplateColumns.split(" ").length);
+        expect.soft(tracks, `pb-grid columns at ${width}px`).toBe(columns);
       }
     });
 

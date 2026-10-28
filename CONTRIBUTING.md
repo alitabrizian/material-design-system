@@ -108,6 +108,13 @@ Layout CSS uses logical properties only, so `dir="rtl"` mirrors it with no extra
 pure CSS, so the media queries repeat the breakpoints as literals; a UI test checks they match the tokens.
 `PBSidenav` / `pb-sidenav` in standard mode is the same sidebar (240px, 72px when collapsed).
 
+Proposed, not in Figma yet (marked Proposed on the docs pages until the design team adds them): the column
+grid `pb-grid` (4/8/12 columns at the Figma breakpoints, 16px gutter), `pb-col-{n}` and
+`pb-col-{size}-{n}`, `pb-gap-s/m/l`, `pb-hide-compact`, `pb-hide-medium-up`, `pb-show-expanded-up` in
+`styles/layout.css`, and the motion classes `pb-motion-fade`, `pb-motion-scale`, `pb-motion-slide-up` (each
+with an `--open` modifier) and the speeds `pb-motion-short/medium/long` (300/500/700ms) in
+`styles/motion.css`. Their values come from the Figma tokens; when Figma differs from a proposal, Figma wins.
+
 ### Known deviations
 
 These exist in the code today. Do not copy them; fix them when you touch the file.
