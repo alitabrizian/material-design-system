@@ -1,6 +1,6 @@
 /**
  * Foundation tokens against Figma: every value in figma/foundations.json (the design team's Foundation
- * pages: Color System, Numeric Tokens, Typography, Shadow, Motion, Icons) must be what the tokens
+ * pages: Color System, Numeric Tokens, Typography, Shadow, Motion, Layout, Icons) must be what the tokens
  * package gives the docs, in every theme, and what the docs' Fundamentals pages show.
  *
  * A failure names the token, the theme, the Figma variable or style and both values. When Figma
@@ -121,6 +121,19 @@ test.describe("foundation token sources", { tag: `@${selectedTargets()[0]?.name}
     const declared = new Map([...source.matchAll(/^\s*(--[\w-]+):\s*([^;]+);/gm)].map((m) => [m[1], m[2].trim()]));
     for (const t of FIGMA.tokens.filter((t) => t.alias)) {
       expect.soft(declared.get(t.css), `${t.css} (Figma ${t.figma}) should be var(${t.alias})`).toBe(`var(${t.alias})`);
+    }
+  });
+
+  // Static: media queries can't read custom properties, so pb-layout repeats the Figma breakpoints as
+  // literals; each library's layout.css must switch at exactly those widths.
+  test("pb-layout media queries use the Figma breakpoints", () => {
+    const breakpoints = FIGMA.tokens
+      .filter((t) => t.css.startsWith("--layout-breakpoint-") && !["--layout-breakpoint-compact", "--layout-breakpoint-xlarge"].includes(t.css))
+      .map((t) => t.value);
+    for (const file of ["libs/material-design-system/blazor/wwwroot/styles/layout.css", "libs/material-design-system/angular/src/styles/layout.css"]) {
+      const source = fs.readFileSync(path.join(repoRoot, file), "utf8");
+      const used = [...source.matchAll(/@media \(min-width: ([\d.]+px)\)/g)].map((m) => m[1]);
+      expect.soft(used, `${file} media queries (Figma Layout breakpoints medium, expanded, large)`).toEqual(breakpoints);
     }
   });
 });

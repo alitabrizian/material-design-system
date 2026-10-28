@@ -47,7 +47,7 @@ The library uses BEM with double separators. Every class starts with `pb-`.
 | Modifier: variant | `pb-<block>--<variant>` | `pb-button--filled`, `pb-button--fab-mini`, `pb-card--elevated`, `pb-icon--primary` |
 | Modifier: state | `pb-<block>--<state>` | `pb-button--disabled`, `pb-select--open`, `pb-option--selected`, `pb-tab--active`, `pb-expansion-panel--expanded` |
 | Element modifier | `pb-<block>__<element>--<modifier>` | `pb-button__icon--start`, `pb-form-field__label--required`, `pb-grid__cell--editing` |
-| Shared utility | `pb-<purpose>`, in `blazor/wwwroot/styles/base.css` | `pb-state-layer`, `pb-interactive`, `pb-touch-target`, `pb-focus-visible`, `pb-visually-hidden`, `pb-icon-slot`, `pb-overlay`, `pb-backdrop`, `pb-font-mainfont`; the motion patterns `pb-motion-state`, `pb-motion-expand`, `pb-motion-move-in`, `pb-motion-instant` and `pb-scrim` live in `styles/motion.css` (same file in both libraries) |
+| Shared utility | `pb-<purpose>`, in `blazor/wwwroot/styles/base.css` | `pb-state-layer`, `pb-interactive`, `pb-touch-target`, `pb-focus-visible`, `pb-visually-hidden`, `pb-icon-slot`, `pb-overlay`, `pb-backdrop`, `pb-font-mainfont`; the motion patterns `pb-motion-state`, `pb-motion-expand`, `pb-motion-move-in`, `pb-motion-instant` and `pb-scrim` live in `styles/motion.css` (same file in both libraries); the page shell `pb-layout` lives in `styles/layout.css` |
 
 Rules:
 
@@ -95,6 +95,18 @@ tokens (`tokens/src/motion-tokens.css`): state changes 300ms and accordions 700m
 snackbars and menus move in (500ms / 300ms), and dialogs, modals, popovers, spotlights and tooltips are
 instant. Component CSS uses the pattern tokens, so `prefers-reduced-motion` makes everything instant. In
 Angular, `angular/src/styles/material-motion.css` retimes the Angular Material inside the `pb-` components.
+
+### Layout
+
+Page layout follows the design team's Figma Layout page (drawn right to left, sidebar on the right). The
+values are the `--layout-*` tokens (`tokens/src/layout-tokens.css`): breakpoints at 600, 840, 1200 and
+1600px, page margins per size class (16/16, 24/16, 40/16, 80/24px inline/block) and, on desktop with a
+sidebar, 16px margins, a 16px gap and a 72px (collapsed) or 240px (expanded) sidebar. Apps use the
+`pb-layout` classes in `styles/layout.css` (same file in both libraries): `pb-layout`, `pb-layout__body`,
+`pb-layout__sidebar`, `pb-layout--sidebar-collapsed` / `--sidebar-expanded` and the size-class modifiers.
+Layout CSS uses logical properties only, so `dir="rtl"` mirrors it with no extra rules. The library is
+pure CSS, so the media queries repeat the breakpoints as literals; a UI test checks they match the tokens.
+`PBSidenav` / `pb-sidenav` in standard mode is the same sidebar (240px, 72px when collapsed).
 
 ### Known deviations
 
