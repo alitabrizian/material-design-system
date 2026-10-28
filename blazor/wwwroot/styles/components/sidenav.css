@@ -4,6 +4,10 @@
  *   drawer surface / on-surface-variant, width 360px (max 100vw - 56px), corner-large on the
  *   edge facing the content, no shadow; side mode has a transparent 1px divider
  *   over mode: fixed, slides in over 400ms, scrim = neutral-variant20 at 40%
+ *
+ *   side mode follows the Figma Layout page instead (as pb-layout__sidebar): 240px wide, 72px with
+ *   --collapsed (--layout-sidebar-expanded / -collapsed). The corners and divider are logical, so the
+ *   edge facing the content is the rounded one in RTL too.
  */
 
 .pb-sidenav {
@@ -14,8 +18,8 @@
   width: 360px;
   max-width: calc(100vw - 56px);
   overflow: hidden;
-  border-top-right-radius: var(--md-sys-shape-corner-large);
-  border-bottom-right-radius: var(--md-sys-shape-corner-large);
+  border-start-end-radius: var(--md-sys-shape-corner-large);
+  border-end-end-radius: var(--md-sys-shape-corner-large);
   outline: 0;
   background-color: var(--md-sys-color-surface);
   color: var(--md-sys-color-on-surface-variant);
@@ -26,11 +30,23 @@
 }
 
 .pb-sidenav--end {
-  border-radius: var(--md-sys-shape-corner-large) 0 0 var(--md-sys-shape-corner-large);
+  border-radius: 0;
+  border-start-start-radius: var(--md-sys-shape-corner-large);
+  border-end-start-radius: var(--md-sys-shape-corner-large);
 }
 
 .pb-sidenav--side {
-  border-right: 1px solid transparent;
+  width: var(--layout-sidebar-expanded);
+  border-inline-end: 1px solid transparent;
+}
+
+.pb-sidenav--side.pb-sidenav--end {
+  border-inline-end: 0;
+  border-inline-start: 1px solid transparent;
+}
+
+.pb-sidenav--collapsed {
+  width: var(--layout-sidebar-collapsed);
 }
 
 .pb-sidenav__inner {
