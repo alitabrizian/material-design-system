@@ -2,6 +2,16 @@
   display: block;
 }
 
+/* Standard mode is the Figma Layout page's sidebar (--layout-sidebar-expanded / -collapsed); over mode
+   keeps Angular Material's 360px drawer. */
+:host(.pb-sidenav--side) {
+  --mat-sidenav-container-width: var(--layout-sidebar-expanded);
+}
+
+:host(.pb-sidenav--collapsed) {
+  --mat-sidenav-container-width: var(--layout-sidebar-collapsed);
+}
+
 mat-sidenav-container {
   height: 100%;
 }

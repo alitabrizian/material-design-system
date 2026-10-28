@@ -18,10 +18,14 @@ public partial class PBSidenav : WorkspaceComponentBase
     [Parameter] public bool Opened { get; set; } = true;
     [Parameter] public EventCallback<bool> OpenedChanged { get; set; }
 
+    /// <summary>Standard mode only: the Figma Layout page's collapsed sidebar, 72px instead of 240px.</summary>
+    [Parameter] public bool Collapsed { get; set; }
+
     private string CssClass =>
         "pb-sidenav"
         + (Mode == PBSidenavMode.Over ? " pb-sidenav--over" : " pb-sidenav--side")
         + (Position == PBSidenavPosition.End ? " pb-sidenav--end" : "")
+        + (Mode == PBSidenavMode.Standard && Collapsed ? " pb-sidenav--collapsed" : "")
         + (Opened ? " pb-sidenav--opened" : "");
 
     private async Task CloseAsync()
