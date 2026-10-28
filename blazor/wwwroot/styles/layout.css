@@ -93,3 +93,160 @@
 .pb-layout--sidebar-collapsed > .pb-layout__sidebar {
   inline-size: var(--layout-sidebar-collapsed);
 }
+
+/*
+ * Proposed (not on the Figma Layout page yet): a column grid, responsive spans and show/hide classes.
+ * Breakpoints are the Figma ones; the gutter is the Figma gap (16px).
+ *
+ *   pb-grid                         4 columns below 600px, 8 from 600px, 12 from 840px; inside a
+ *                                   pb-layout with a size-class modifier, that size class's columns
+ *   pb-col-{n}                      spans n columns (1-12); never more than the grid has
+ *   pb-col-{size}-{n}               spans n columns from that window size up (medium, expanded, large,
+ *                                   xlarge)
+ *   pb-gap-s / -m / -l              8px / 16px / 24px between a flex or grid container's children
+ *   pb-hide-compact                 hidden below 600px
+ *   pb-hide-medium-up               hidden from 600px
+ *   pb-show-expanded-up             shown only from 840px
+ */
+
+.pb-grid {
+  --pb-grid-columns: 4;
+  display: grid;
+  grid-template-columns: repeat(var(--pb-grid-columns), minmax(0, 1fr));
+  gap: var(--layout-gap);
+}
+
+.pb-grid > * {
+  grid-column: span min(var(--pb-col-span, 1), var(--pb-grid-columns));
+}
+
+.pb-col-1 { --pb-col-span: 1; }
+.pb-col-2 { --pb-col-span: 2; }
+.pb-col-3 { --pb-col-span: 3; }
+.pb-col-4 { --pb-col-span: 4; }
+.pb-col-5 { --pb-col-span: 5; }
+.pb-col-6 { --pb-col-span: 6; }
+.pb-col-7 { --pb-col-span: 7; }
+.pb-col-8 { --pb-col-span: 8; }
+.pb-col-9 { --pb-col-span: 9; }
+.pb-col-10 { --pb-col-span: 10; }
+.pb-col-11 { --pb-col-span: 11; }
+.pb-col-12 { --pb-col-span: 12; }
+
+/* --layout-breakpoint-medium */
+@media (min-width: 600px) {
+  .pb-grid {
+    --pb-grid-columns: 8;
+  }
+
+  .pb-col-medium-1 { --pb-col-span: 1; }
+  .pb-col-medium-2 { --pb-col-span: 2; }
+  .pb-col-medium-3 { --pb-col-span: 3; }
+  .pb-col-medium-4 { --pb-col-span: 4; }
+  .pb-col-medium-5 { --pb-col-span: 5; }
+  .pb-col-medium-6 { --pb-col-span: 6; }
+  .pb-col-medium-7 { --pb-col-span: 7; }
+  .pb-col-medium-8 { --pb-col-span: 8; }
+  .pb-col-medium-9 { --pb-col-span: 9; }
+  .pb-col-medium-10 { --pb-col-span: 10; }
+  .pb-col-medium-11 { --pb-col-span: 11; }
+  .pb-col-medium-12 { --pb-col-span: 12; }
+}
+
+/* --layout-breakpoint-expanded */
+@media (min-width: 840px) {
+  .pb-grid {
+    --pb-grid-columns: 12;
+  }
+
+  .pb-col-expanded-1 { --pb-col-span: 1; }
+  .pb-col-expanded-2 { --pb-col-span: 2; }
+  .pb-col-expanded-3 { --pb-col-span: 3; }
+  .pb-col-expanded-4 { --pb-col-span: 4; }
+  .pb-col-expanded-5 { --pb-col-span: 5; }
+  .pb-col-expanded-6 { --pb-col-span: 6; }
+  .pb-col-expanded-7 { --pb-col-span: 7; }
+  .pb-col-expanded-8 { --pb-col-span: 8; }
+  .pb-col-expanded-9 { --pb-col-span: 9; }
+  .pb-col-expanded-10 { --pb-col-span: 10; }
+  .pb-col-expanded-11 { --pb-col-span: 11; }
+  .pb-col-expanded-12 { --pb-col-span: 12; }
+}
+
+/* --layout-breakpoint-large */
+@media (min-width: 1200px) {
+  .pb-col-large-1 { --pb-col-span: 1; }
+  .pb-col-large-2 { --pb-col-span: 2; }
+  .pb-col-large-3 { --pb-col-span: 3; }
+  .pb-col-large-4 { --pb-col-span: 4; }
+  .pb-col-large-5 { --pb-col-span: 5; }
+  .pb-col-large-6 { --pb-col-span: 6; }
+  .pb-col-large-7 { --pb-col-span: 7; }
+  .pb-col-large-8 { --pb-col-span: 8; }
+  .pb-col-large-9 { --pb-col-span: 9; }
+  .pb-col-large-10 { --pb-col-span: 10; }
+  .pb-col-large-11 { --pb-col-span: 11; }
+  .pb-col-large-12 { --pb-col-span: 12; }
+}
+
+/* --layout-breakpoint-xlarge */
+@media (min-width: 1600px) {
+  .pb-col-xlarge-1 { --pb-col-span: 1; }
+  .pb-col-xlarge-2 { --pb-col-span: 2; }
+  .pb-col-xlarge-3 { --pb-col-span: 3; }
+  .pb-col-xlarge-4 { --pb-col-span: 4; }
+  .pb-col-xlarge-5 { --pb-col-span: 5; }
+  .pb-col-xlarge-6 { --pb-col-span: 6; }
+  .pb-col-xlarge-7 { --pb-col-span: 7; }
+  .pb-col-xlarge-8 { --pb-col-span: 8; }
+  .pb-col-xlarge-9 { --pb-col-span: 9; }
+  .pb-col-xlarge-10 { --pb-col-span: 10; }
+  .pb-col-xlarge-11 { --pb-col-span: 11; }
+  .pb-col-xlarge-12 { --pb-col-span: 12; }
+}
+
+/* A size-class modifier on the page shell fixes the grid's columns too. */
+.pb-layout--compact .pb-grid {
+  --pb-grid-columns: 4;
+}
+
+.pb-layout--medium .pb-grid {
+  --pb-grid-columns: 8;
+}
+
+.pb-layout--expanded .pb-grid,
+.pb-layout--large .pb-grid {
+  --pb-grid-columns: 12;
+}
+
+.pb-gap-s {
+  gap: var(--space-150);
+}
+
+.pb-gap-m {
+  gap: var(--space-250);
+}
+
+.pb-gap-l {
+  gap: var(--space-300);
+}
+
+/* --layout-breakpoint-medium */
+@media (max-width: 599.98px) {
+  .pb-hide-compact {
+    display: none;
+  }
+}
+
+@media (min-width: 600px) {
+  .pb-hide-medium-up {
+    display: none;
+  }
+}
+
+/* --layout-breakpoint-expanded */
+@media (max-width: 839.98px) {
+  .pb-show-expanded-up {
+    display: none;
+  }
+}

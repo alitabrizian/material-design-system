@@ -30,8 +30,8 @@
   grid-template-rows: 0fr;
   visibility: hidden;
   transition:
-    grid-template-rows var(--motion-expand-duration) var(--motion-easing-ease-in-out-back),
-    visibility 0s linear var(--motion-expand-duration);
+    grid-template-rows var(--pb-motion-speed, var(--motion-expand-duration)) var(--motion-easing-ease-in-out-back),
+    visibility 0s linear var(--pb-motion-speed, var(--motion-expand-duration));
 }
 
 .pb-motion-expand--expanded {
@@ -46,7 +46,7 @@
 }
 
 .pb-motion-move-in {
-  --pb-motion-move-in-duration: var(--motion-menu-duration);
+  --pb-motion-move-in-duration: var(--pb-motion-speed, var(--motion-menu-duration));
   --pb-motion-move-in-from: calc(-1 * var(--motion-menu-offset));
   transform: translateY(var(--pb-motion-move-in-from));
   visibility: hidden;
@@ -56,7 +56,7 @@
 }
 
 .pb-motion-move-in--snackbar {
-  --pb-motion-move-in-duration: var(--motion-snackbar-duration);
+  --pb-motion-move-in-duration: var(--pb-motion-speed, var(--motion-snackbar-duration));
   --pb-motion-move-in-from: calc(-100% - var(--motion-snackbar-inset));
 }
 
@@ -64,6 +64,71 @@
   transform: none;
   visibility: visible;
   transition-delay: 0s;
+}
+
+/*
+ * Proposed (not on the Figma Motion page yet): enter and exit classes for an app's own elements, and speed
+ * classes. Hidden until the --open modifier is added; every value is a Figma motion token. Without a speed
+ * class each uses the Figma pattern it resembles: fade a state change (300ms), scale a menu (300ms),
+ * slide-up a snackbar (500ms). The speed classes set --pb-motion-speed, which these classes,
+ * pb-motion-expand and pb-motion-move-in read; under prefers-reduced-motion they are instant too.
+ *
+ *   pb-motion-fade                      fades in and out
+ *   pb-motion-scale                     grows from its top edge and fades, like a menu
+ *   pb-motion-slide-up                  rises from below and fades, like a sheet
+ *   pb-motion-short / -medium / -long   300ms / 500ms / 700ms
+ */
+
+.pb-motion-fade,
+.pb-motion-scale,
+.pb-motion-slide-up {
+  --pb-motion-enter-duration: var(--pb-motion-speed, var(--motion-state-duration));
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity var(--pb-motion-enter-duration) var(--motion-easing-ease-in-out-back),
+    transform var(--pb-motion-enter-duration) var(--motion-easing-ease-in-out-back),
+    visibility 0s linear var(--pb-motion-enter-duration);
+}
+
+.pb-motion-scale {
+  --pb-motion-enter-duration: var(--pb-motion-speed, var(--motion-menu-duration));
+  transform: scale(0.8);
+  transform-origin: top;
+}
+
+.pb-motion-slide-up {
+  --pb-motion-enter-duration: var(--pb-motion-speed, var(--motion-snackbar-duration));
+  transform: translateY(var(--space-400));
+}
+
+.pb-motion-fade--open,
+.pb-motion-scale--open,
+.pb-motion-slide-up--open {
+  opacity: 1;
+  transform: none;
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.pb-motion-short {
+  --pb-motion-speed: var(--motion-duration-300);
+}
+
+.pb-motion-medium {
+  --pb-motion-speed: var(--motion-duration-500);
+}
+
+.pb-motion-long {
+  --pb-motion-speed: var(--motion-duration-700);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pb-motion-short,
+  .pb-motion-medium,
+  .pb-motion-long {
+    --pb-motion-speed: var(--motion-duration-instant);
+  }
 }
 
 /* !important so it also wins over a component's state modifiers (two classes), like pb-visually-hidden. */
