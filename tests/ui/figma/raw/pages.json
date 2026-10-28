@@ -1,5 +1,5 @@
 {
-  "about": "Foundation values that are not Figma variables or styles: read from the annotations on the Motion page (node 7046:2) and from the icon-button component sets on the Icons page (node 6763:35, 'Partobita Icon' 6763:3746 and the four product sets). Update by hand when those pages change; the Layout page (7140:453) holds no tokens yet.",
+  "about": "Foundation values that are not Figma variables or styles: read from the annotations on the Motion page (node 7046:2), the frames and tables on the Layout page (node 7140:453) and the icon-button component sets on the Icons page (node 6763:35, 'Partobita Icon' 6763:3746 and the four product sets). Update by hand when those pages change.",
   "Motion": [
     { "css": "--motion-state-duration", "figma": "State Transition: Duration 300ms", "kind": "duration", "value": "300ms" },
     { "css": "--motion-easing-ease-in-out-back", "figma": "State Transition: Easing 'Ease in and out back' (Figma's preset, cubic-bezier(0.7, -0.4, 0.4, 1.4))", "kind": "easing", "value": "cubic-bezier(0.7, -0.4, 0.4, 1.4)" },
@@ -9,6 +9,29 @@
     { "css": "--motion-snackbar-inset", "figma": "Snackbar: positioned 40px from the top and right edges", "kind": "px", "value": "40px" },
     { "css": "--motion-menu-offset", "figma": "Menu: positioned 12px from the top edges", "kind": "px", "value": "12px" },
     { "css": "--motion-tooltip-gap", "figma": "Tooltip: 8px between the tooltip and its trigger", "kind": "px", "value": "8px" }
+  ],
+  "Layout": [
+    { "css": "--layout-breakpoint-compact", "figma": "Breakpoints: 1 Compact, Phone, 0-599px", "kind": "px", "value": "0px" },
+    { "css": "--layout-breakpoint-medium", "figma": "Breakpoints: 2 Medium, Portrait Tablet, 600-839px", "kind": "px", "value": "600px" },
+    { "css": "--layout-breakpoint-expanded", "figma": "Breakpoints: 3 Expanded, Landscape Tablet, 840-1199px", "kind": "px", "value": "840px" },
+    { "css": "--layout-breakpoint-large", "figma": "Breakpoints: 4 Large, Desktop, 1200-1599px", "kind": "px", "value": "1200px" },
+    { "css": "--layout-breakpoint-xlarge", "figma": "Breakpoints: 5 xLarge, Wide Desktop, 1600px+", "kind": "px", "value": "1600px" },
+    { "css": "--layout-width-phone", "figma": "Exact Breakpoints (design): Phone 402px", "kind": "px", "value": "402px" },
+    { "css": "--layout-width-portrait-tablet", "figma": "Exact Breakpoints (design): Portrait Tablet 768px", "kind": "px", "value": "768px" },
+    { "css": "--layout-width-landscape-tablet", "figma": "Exact Breakpoints (design): Landscape Tablet 1024px", "kind": "px", "value": "1024px" },
+    { "css": "--layout-width-desktop", "figma": "Exact Breakpoints (design): Desktop 1440px", "kind": "px", "value": "1440px" },
+    { "css": "--layout-margin-inline-compact", "figma": "Phone frame (402): Margin 16px, Body 370px", "kind": "px", "value": "16px" },
+    { "css": "--layout-margin-block-compact", "figma": "Phone frame (402): Margin 16px", "kind": "px", "value": "16px" },
+    { "css": "--layout-margin-inline-medium", "figma": "Portrait tablet frame (768): Horizontal Margin 24px, Body 720px", "kind": "px", "value": "24px" },
+    { "css": "--layout-margin-block-medium", "figma": "Portrait tablet frame (768): Vertical Margin 16px", "kind": "px", "value": "16px" },
+    { "css": "--layout-margin-inline-expanded", "figma": "Landscape tablet frame (1024): Horizontal Margin 40px, Body 944px", "kind": "px", "value": "40px" },
+    { "css": "--layout-margin-block-expanded", "figma": "Landscape tablet frame (1024): Vertical Margin 16px", "kind": "px", "value": "16px" },
+    { "css": "--layout-margin-inline-large", "figma": "Desktop frame (1440): Horizontal Margin 80px, Body 1280px", "kind": "px", "value": "80px" },
+    { "css": "--layout-margin-block-large", "figma": "Desktop frame (1440): Vertical Margin 24px", "kind": "px", "value": "24px" },
+    { "css": "--layout-margin-sidebar", "figma": "Desktop sidebar frames: Margin 16px", "kind": "px", "value": "16px" },
+    { "css": "--layout-gap", "figma": "Desktop sidebar frames: Gap 16px", "kind": "px", "value": "16px" },
+    { "css": "--layout-sidebar-collapsed", "figma": "Desktop collapsed sidebar frame: Sidebar 72px, Body 1320px", "kind": "px", "value": "72px" },
+    { "css": "--layout-sidebar-expanded", "figma": "Desktop expanded sidebar frame: Sidebar 240px, Body 1152px", "kind": "px", "value": "240px" }
   ],
   "Icons": [
     { "css": "--icon-size-16", "figma": "Icon button Size=16px", "kind": "px", "value": "16px" },

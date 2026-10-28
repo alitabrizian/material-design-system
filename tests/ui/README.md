@@ -52,13 +52,14 @@ deployed site, or a server on another port, give its address: `BLAZOR_DOCS_URL`,
    the Figma MCP `use_figma` tool (or a plugin console), once per `PART` (`base`, `alias`, `rest`; one
    call returns at most 20KB), and save each result as `figma/raw/<part>.json`. Figma's REST variables
    endpoint needs an Enterprise plan, which is why the export runs inside the file.
-2. Values that are only annotations or frames (the Motion page, the icon buttons on the Icons page)
-   are kept by hand in `figma/raw/pages.json`.
+2. Values that are only annotations or frames (the Motion page, the Layout page's breakpoint tables
+   and frames, the icon buttons on the Icons page) are kept by hand in `figma/raw/pages.json`.
 3. `node tools/scripts/sync-figma-foundations.mts` rebuilds `figma/foundations.json` (Figma names
    become the package's CSS names: `gray/50` is `--gray-50`).
 
-The Layout page holds no tokens yet, and the Motion page gives no duration for the menu, so
-`--motion-menu-duration` is not checked.
+The Motion page gives no duration for the menu, so `--motion-menu-duration` is not checked. The Layout
+breakpoints are also repeated as literals in the `pb-layout` media queries (media queries can't read
+custom properties); `tokens.spec.mts` checks both libraries' `styles/layout.css` against them.
 
 ## Component token contracts (when the Figma component specs arrive)
 

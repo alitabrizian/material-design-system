@@ -5,7 +5,8 @@
  *   base.json, alias.json, rest.json   the output of tools/figma/export-foundations.js (Figma variables,
  *                                      text styles and effect styles), one file per PART
  *   pages.json                         values that only exist as annotations or component frames
- *                                      (Motion page, icon buttons on the Icons page), kept by hand
+ *                                      (Motion page, Layout page, icon buttons on the Icons page), kept
+ *                                      by hand
  *
  *   node tools/scripts/sync-figma-foundations.mts
  *
@@ -87,7 +88,7 @@ for (const [name, effects] of byName<any[]>(rest.effectStyles)) {
 }
 
 const pages = read("pages.json");
-for (const foundation of ["Motion", "Icons"]) for (const t of pages[foundation]) tokens.push({ foundation, ...t });
+for (const foundation of ["Motion", "Layout", "Icons"]) for (const t of pages[foundation]) tokens.push({ foundation, ...t });
 
 const textStyles = byName<any>(rest.textStyles).map(([name, s]) => ({
   name,
@@ -106,5 +107,5 @@ const out = {
 fs.writeFileSync(path.join(dir, "foundations.json"), JSON.stringify(out, null, 1) + "\n");
 const count = (f: string) => tokens.filter((t) => t.foundation === f).length;
 console.log(
-  `foundations.json: ${tokens.length} tokens (${["Color System", "Numeric Tokens", "Typography", "Shadow", "Motion", "Icons"].map((f) => `${f} ${count(f)}`).join(", ")}), ${textStyles.length} text styles`
+  `foundations.json: ${tokens.length} tokens (${["Color System", "Numeric Tokens", "Typography", "Shadow", "Motion", "Layout", "Icons"].map((f) => `${f} ${count(f)}`).join(", ")}), ${textStyles.length} text styles`
 );

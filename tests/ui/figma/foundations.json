@@ -3971,6 +3971,153 @@
    "value": "8px"
   },
   {
+   "foundation": "Layout",
+   "css": "--layout-breakpoint-compact",
+   "figma": "Breakpoints: 1 Compact, Phone, 0-599px",
+   "kind": "px",
+   "value": "0px"
+  },
+  {
+   "foundation": "Layout",
+   "css": "--layout-breakpoint-medium",
+   "figma": "Breakpoints: 2 Medium, Portrait Tablet, 600-839px",
+   "kind": "px",
+   "value": "600px"
+  },
+  {
+   "foundation": "Layout",
+   "css": "--layout-breakpoint-expanded",
+   "figma": "Breakpoints: 3 Expanded, Landscape Tablet, 840-1199px",
+   "kind": "px",
+   "value": "840px"
+  },
+  {
+   "foundation": "Layout",
+   "css": "--layout-breakpoint-large",
+   "figma": "Breakpoints: 4 Large, Desktop, 1200-1599px",
+   "kind": "px",
+   "value": "1200px"
+  },
+  {
+   "foundation": "Layout",
+   "css": "--layout-breakpoint-xlarge",
+   "figma": "Breakpoints: 5 xLarge, Wide Desktop, 1600px+",
+   "kind": "px",
+   "value": "1600px"
+  },
+  {
+   "foundation": "Layout",
+   "css": "--layout-width-phone",
+   "figma": "Exact Breakpoints (design): Phone 402px",
+   "kind": "px",
+   "value": "402px"
+  },
+  {
+   "foundation": "Layout",
+   "css": "--layout-width-portrait-tablet",
+   "figma": "Exact Breakpoints (design): Portrait Tablet 768px",
+   "kind": "px",
+   "value": "768px"
+  },
+  {
+   "foundation": "Layout",
+   "css": "--layout-width-landscape-tablet",
+   "figma": "Exact Breakpoints (design): Landscape Tablet 1024px",
+   "kind": "px",
+   "value": "1024px"
+  },
+  {
+   "foundation": "Layout",
+   "css": "--layout-width-desktop",
+   "figma": "Exact Breakpoints (design): Desktop 1440px",
+   "kind": "px",
+   "value": "1440px"
+  },
+  {
+   "foundation": "Layout",
+   "css": "--layout-margin-inline-compact",
+   "figma": "Phone frame (402): Margin 16px, Body 370px",
+   "kind": "px",
+   "value": "16px"
+  },
+  {
+   "foundation": "Layout",
+   "css": "--layout-margin-block-compact",
+   "figma": "Phone frame (402): Margin 16px",
+   "kind": "px",
+   "value": "16px"
+  },
+  {
+   "foundation": "Layout",
+   "css": "--layout-margin-inline-medium",
+   "figma": "Portrait tablet frame (768): Horizontal Margin 24px, Body 720px",
+   "kind": "px",
+   "value": "24px"
+  },
+  {
+   "foundation": "Layout",
+   "css": "--layout-margin-block-medium",
+   "figma": "Portrait tablet frame (768): Vertical Margin 16px",
+   "kind": "px",
+   "value": "16px"
+  },
+  {
+   "foundation": "Layout",
+   "css": "--layout-margin-inline-expanded",
+   "figma": "Landscape tablet frame (1024): Horizontal Margin 40px, Body 944px",
+   "kind": "px",
+   "value": "40px"
+  },
+  {
+   "foundation": "Layout",
+   "css": "--layout-margin-block-expanded",
+   "figma": "Landscape tablet frame (1024): Vertical Margin 16px",
+   "kind": "px",
+   "value": "16px"
+  },
+  {
+   "foundation": "Layout",
+   "css": "--layout-margin-inline-large",
+   "figma": "Desktop frame (1440): Horizontal Margin 80px, Body 1280px",
+   "kind": "px",
+   "value": "80px"
+  },
+  {
+   "foundation": "Layout",
+   "css": "--layout-margin-block-large",
+   "figma": "Desktop frame (1440): Vertical Margin 24px",
+   "kind": "px",
+   "value": "24px"
+  },
+  {
+   "foundation": "Layout",
+   "css": "--layout-margin-sidebar",
+   "figma": "Desktop sidebar frames: Margin 16px",
+   "kind": "px",
+   "value": "16px"
+  },
+  {
+   "foundation": "Layout",
+   "css": "--layout-gap",
+   "figma": "Desktop sidebar frames: Gap 16px",
+   "kind": "px",
+   "value": "16px"
+  },
+  {
+   "foundation": "Layout",
+   "css": "--layout-sidebar-collapsed",
+   "figma": "Desktop collapsed sidebar frame: Sidebar 72px, Body 1320px",
+   "kind": "px",
+   "value": "72px"
+  },
+  {
+   "foundation": "Layout",
+   "css": "--layout-sidebar-expanded",
+   "figma": "Desktop expanded sidebar frame: Sidebar 240px, Body 1152px",
+   "kind": "px",
+   "value": "240px"
+  },
+  {
    "foundation": "Icons",
    "css": "--icon-size-16",
    "figma": "Icon button Size=16px",
