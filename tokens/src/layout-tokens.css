@@ -1,0 +1,48 @@
+/**
+ * Hand-authored PartoBita layout tokens, from the design team's Figma "Layout" page (node 7140:453, shown
+ * on the docs' Fundamentals > Layout page). The design is drawn right to left, sidebar on the right:
+ *
+ *   size class   width          device              design width   margin inline / block   body
+ *   compact      0-599px        phone               402px          16px / 16px             370px
+ *   medium       600-839px      portrait tablet     768px          24px / 16px             720px
+ *   expanded     840-1199px     landscape tablet    1024px         40px / 16px             944px
+ *   large        1200-1599px    desktop             1440px         80px / 24px             1280px
+ *   xlarge       1600px and up  wide desktop        (none)         as large
+ *
+ * With a sidebar (desktop frames), the margin is 16px on every side and a 16px gap separates the sidebar
+ * from the body: collapsed sidebar 72px (body 1320px at 1440px), expanded sidebar 240px (body 1152px).
+ * Figma draws no xlarge frame, so xlarge keeps the large margins.
+ *
+ * Media queries can't read custom properties, so the breakpoints are repeated as literals in the
+ * pb-layout classes (styles/layout.css); a UI test checks the two agree. Components and apps use the
+ * pb-layout classes, not these tokens.
+ */
+
+:root {
+  --layout-breakpoint-compact: 0px;
+  --layout-breakpoint-medium: 600px;
+  --layout-breakpoint-expanded: 840px;
+  --layout-breakpoint-large: 1200px;
+  --layout-breakpoint-xlarge: 1600px;
+
+  /* The exact widths the design frames are drawn at. */
+  --layout-width-phone: 402px;
+  --layout-width-portrait-tablet: 768px;
+  --layout-width-landscape-tablet: 1024px;
+  --layout-width-desktop: 1440px;
+
+  --layout-margin-inline-compact: var(--space-250); /* 16px */
+  --layout-margin-block-compact: var(--space-250); /* 16px */
+  --layout-margin-inline-medium: var(--space-300); /* 24px */
+  --layout-margin-block-medium: var(--space-250); /* 16px */
+  --layout-margin-inline-expanded: var(--space-400); /* 40px */
+  --layout-margin-block-expanded: var(--space-250); /* 16px */
+  --layout-margin-inline-large: var(--space-600); /* 80px */
+  --layout-margin-block-large: var(--space-300); /* 24px */
+
+  /* Desktop with a sidebar: one margin on every side, and the gap between sidebar and body. */
+  --layout-margin-sidebar: var(--space-250); /* 16px */
+  --layout-gap: var(--space-250); /* 16px */
+  --layout-sidebar-collapsed: 72px;
+  --layout-sidebar-expanded: 240px;
+}

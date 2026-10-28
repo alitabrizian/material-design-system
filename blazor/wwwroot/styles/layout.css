@@ -1,0 +1,95 @@
+/*
+ * PartoBita page layout (Figma "Layout" page, docs Fundamentals > Layout) as classes. The values are the
+ * --layout-* tokens in tokens/src/layout-tokens.css; apps use these classes, not the tokens.
+ *
+ *   pb-layout                     the page shell: page margins per size class (16/16, 24/16, 40/16,
+ *                                 80/24px inline/block from 0, 600, 840 and 1200px wide)
+ *   pb-layout__body               the content area; takes the remaining width
+ *   pb-layout__sidebar            the sidebar, 240px; put it before the body, so it sits at the inline
+ *                                 start (the right in RTL, as in Figma)
+ *   pb-layout--sidebar-collapsed  desktop with a 72px sidebar: 16px margin on every side, 16px gap
+ *   pb-layout--sidebar-expanded   desktop with a 240px sidebar: 16px margin on every side, 16px gap
+ *   pb-layout--compact, --medium, --expanded, --large
+ *                                 keep the margins of one size class whatever the viewport width
+ *
+ * Only logical properties, so a right-to-left page (dir="rtl") mirrors with no extra rules. Media queries
+ * can't read custom properties: the breakpoints below are --layout-breakpoint-medium, -expanded and
+ * -large, and a UI test checks they agree. Kept identical in blazor/wwwroot/styles/layout.css and
+ * angular/src/styles/layout.css.
+ */
+
+.pb-layout {
+  display: flex;
+  box-sizing: border-box;
+  gap: var(--layout-gap);
+  min-block-size: 100dvh;
+  padding-block: var(--layout-margin-block-compact);
+  padding-inline: var(--layout-margin-inline-compact);
+}
+
+.pb-layout__body {
+  flex: 1 1 0;
+  box-sizing: border-box;
+  min-inline-size: 0;
+}
+
+.pb-layout__sidebar {
+  flex: none;
+  box-sizing: border-box;
+  inline-size: var(--layout-sidebar-expanded);
+  overflow: hidden;
+}
+
+/* --layout-breakpoint-medium */
+@media (min-width: 600px) {
+  .pb-layout {
+    padding-block: var(--layout-margin-block-medium);
+    padding-inline: var(--layout-margin-inline-medium);
+  }
+}
+
+/* --layout-breakpoint-expanded */
+@media (min-width: 840px) {
+  .pb-layout {
+    padding-block: var(--layout-margin-block-expanded);
+    padding-inline: var(--layout-margin-inline-expanded);
+  }
+}
+
+/* --layout-breakpoint-large (and xlarge, which Figma gives no margins of its own) */
+@media (min-width: 1200px) {
+  .pb-layout {
+    padding-block: var(--layout-margin-block-large);
+    padding-inline: var(--layout-margin-inline-large);
+  }
+}
+
+/* After the media queries, so a fixed size class wins at any viewport width. */
+.pb-layout--compact {
+  padding-block: var(--layout-margin-block-compact);
+  padding-inline: var(--layout-margin-inline-compact);
+}
+
+.pb-layout--medium {
+  padding-block: var(--layout-margin-block-medium);
+  padding-inline: var(--layout-margin-inline-medium);
+}
+
+.pb-layout--expanded {
+  padding-block: var(--layout-margin-block-expanded);
+  padding-inline: var(--layout-margin-inline-expanded);
+}
+
+.pb-layout--large {
+  padding-block: var(--layout-margin-block-large);
+  padding-inline: var(--layout-margin-inline-large);
+}
+
+.pb-layout--sidebar-collapsed,
+.pb-layout--sidebar-expanded {
+  padding: var(--layout-margin-sidebar);
+}
+
+.pb-layout--sidebar-collapsed > .pb-layout__sidebar {
+  inline-size: var(--layout-sidebar-collapsed);
+}
