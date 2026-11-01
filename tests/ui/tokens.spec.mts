@@ -1,6 +1,6 @@
 /**
  * Foundation tokens against Figma: every value in figma/foundations.json (the design team's Foundation
- * pages: Color System, Numeric Tokens, Typography, Shadow, Motion, Layout, Icons) must be what the tokens
+ * pages: Color System, Numeric Tokens, Typography, Shadow, Motion, Layout, Layering, Icons) must be what the tokens
  * package gives the docs, in every theme, and what the docs' Fundamentals pages show.
  *
  * A failure names the token, the theme, the Figma variable or style and both values. When Figma
@@ -19,7 +19,7 @@ interface FigmaToken {
   foundation: string;
   figma: string;
   css: string;
-  kind: "color" | "px" | "percent" | "number" | "font-weight" | "font-family" | "duration" | "easing" | "shadow";
+  kind: "color" | "px" | "percent" | "number" | "z-index" | "font-weight" | "font-family" | "duration" | "easing" | "shadow";
   value: string;
   alias?: string;
 }
@@ -54,6 +54,7 @@ const PROBE_PROPERTY: Record<FigmaToken["kind"], string> = {
   px: "width",
   percent: "opacity",
   number: "opacity",
+  "z-index": "z-index",
   "font-weight": "font-weight",
   "font-family": "font-family",
   duration: "transition-duration",
@@ -87,6 +88,7 @@ function compareInPage(items: { css: string; figma: string; value: string; prop:
   };
   const resolve = (prop: string, value: string) => {
     const probe = document.createElement("div");
+    probe.style.position = "relative"; // so z-index applies
     probe.style.setProperty(prop, value);
     document.body.appendChild(probe);
     const computed = getComputedStyle(probe).getPropertyValue(prop).trim();
@@ -233,6 +235,56 @@ for (const target of selectedTargets().filter((t) => t.name !== "landing")) {
         await openPage(page, target.name, "/layout", DEFAULT_THEME);
         const tracks = await page.locator(".layout-responsive.pb-grid").evaluate((grid) => getComputedStyle(grid).gridTemplateColumns.split(" ").length);
         expect.soft(tracks, `pb-grid columns at ${width}px`).toBe(columns);
+      }
+    });
+
+    // The Layering page's table lists the Figma layers bottom to top, each with the pb-layer class a
+    // developer copies (the class, never the token): --layer-app-header is pb-layer--app-header.
+    test("/layering lists the Figma layers in order", async ({ page }) => {
+      await openPage(page, target.name, "/layering", DEFAULT_THEME);
+      const rows = await page.locator(".layering-table tbody tr").evaluateAll((trs) =>
+        trs.map((tr) => ({ order: tr.querySelectorAll("td")[0]?.textContent?.trim() ?? "", name: tr.querySelectorAll("td")[1]?.textContent?.trim() ?? "", className: tr.querySelector("code")?.textContent?.trim() ?? "" }))
+      );
+      const layers = FIGMA.tokens.filter((t) => t.foundation === "Layering");
+      expect.soft(rows.map((r) => r.className), "/layering table classes, bottom to top (Figma Layering order)").toEqual(layers.map((t) => t.css.replace(/^--layer-/, "pb-layer--")));
+      rows.forEach((row, i) => {
+        expect.soft(row.order, `/layering row ${i + 1} order`).toBe(String(i + 1));
+        expect.soft(layers[i]?.figma ?? "", `/layering row ${i + 1} (${row.className}) names its Figma layer`).toContain(row.name);
+      });
+    });
+
+    // The Stacking order example redraws the Figma illustration with the real pb-layer classes: its cards
+    // must be in the Figma order bottom to top, on the token's z-index, and each must really cover the one
+    // below where they overlap, in both directions.
+    test("/layering stacking order matches Figma", async ({ page }) => {
+      await openPage(page, target.name, "/layering", DEFAULT_THEME);
+      const layers = FIGMA.tokens.filter((t) => t.foundation === "Layering");
+      for (const dir of ["rtl", "ltr"]) {
+        await page.locator(".layering-diagram").evaluate((diagram, d) => diagram.setAttribute("dir", d), dir);
+        const cards = await page.locator(".layering-stack__card").evaluateAll((items) =>
+          items.map((item) => ({ className: [...item.classList].find((c) => c.startsWith("pb-layer--")) ?? "", zIndex: getComputedStyle(item).zIndex }))
+        );
+        expect.soft(cards.map((c) => c.className), `[${dir}] stacking order example, bottom to top`).toEqual(layers.map((t) => t.css.replace(/^--layer-/, "pb-layer--")));
+        cards.forEach((card, i) => expect.soft(card.zIndex, `[${dir}] ${card.className} z-index (Figma ${layers[i]?.figma})`).toBe(layers[i]?.value));
+        const covered = await page.locator(".layering-stack").evaluate((stack) => {
+          const items = [...stack.querySelectorAll<HTMLElement>(".layering-stack__card")];
+          const rtl = getComputedStyle(stack).direction === "rtl";
+          return items.slice(1).map((upper, i) => {
+            const lower = items[i];
+            upper.scrollIntoView({ behavior: "instant", block: "center", inline: "center" });
+            const u = upper.getBoundingClientRect();
+            const l = lower.getBoundingClientRect();
+            // A point inside both cards: the upper card's bottom band, near its start edge.
+            const x = rtl ? u.right - u.width * 0.2 : u.left + u.width * 0.2;
+            const y = u.bottom - u.height * 0.1;
+            const inLower = x > l.left && x < l.right && y > l.top && y < l.bottom;
+            return { upper: upper.textContent?.trim() ?? "", lower: lower.textContent?.trim() ?? "", inLower, onTop: document.elementFromPoint(x, y) === upper };
+          });
+        });
+        for (const pair of covered) {
+          expect.soft(pair.inLower, `[${dir}] ${pair.upper} overlaps ${pair.lower}`).toBe(true);
+          expect.soft(pair.onTop, `[${dir}] ${pair.upper} covers ${pair.lower}`).toBe(true);
+        }
       }
     });
 

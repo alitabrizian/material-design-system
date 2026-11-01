@@ -4118,6 +4118,76 @@
    "value": "240px"
   },
   {
+   "foundation": "Layering",
+   "css": "--layer-page-content",
+   "figma": "Layering: 1 Page Content (bottom)",
+   "kind": "z-index",
+   "value": "0"
+  },
+  {
+   "foundation": "Layering",
+   "css": "--layer-app-header",
+   "figma": "Layering: 2 App Header - Navigation Bar",
+   "kind": "z-index",
+   "value": "100"
+  },
+  {
+   "foundation": "Layering",
+   "css": "--layer-dragged",
+   "figma": "Layering: 3 Dragged card",
+   "kind": "z-index",
+   "value": "200"
+  },
+  {
+   "foundation": "Layering",
+   "css": "--layer-menu",
+   "figma": "Layering: 4 Menu (Date&Time Menu - Field Menu)",
+   "kind": "z-index",
+   "value": "300"
+  },
+  {
+   "foundation": "Layering",
+   "css": "--layer-modal",
+   "figma": "Layering: 5 Modal",
+   "kind": "z-index",
+   "value": "400"
+  },
+  {
+   "foundation": "Layering",
+   "css": "--layer-dialog",
+   "figma": "Layering: 6 Dialog",
+   "kind": "z-index",
+   "value": "500"
+  },
+  {
+   "foundation": "Layering",
+   "css": "--layer-popover",
+   "figma": "Layering: 7 Popover",
+   "kind": "z-index",
+   "value": "600"
+  },
+  {
+   "foundation": "Layering",
+   "css": "--layer-tooltip",
+   "figma": "Layering: 8 Tooltip",
+   "kind": "z-index",
+   "value": "700"
+  },
+  {
+   "foundation": "Layering",
+   "css": "--layer-snackbar",
+   "figma": "Layering: 9 Snackbar",
+   "kind": "z-index",
+   "value": "800"
+  },
+  {
+   "foundation": "Layering",
+   "css": "--layer-spotlight",
+   "figma": "Layering: 10 Spotlight (top)",
+   "kind": "z-index",
+   "value": "900"
+  },
+  {
    "foundation": "Icons",
    "css": "--icon-size-16",
    "figma": "Icon button Size=16px",

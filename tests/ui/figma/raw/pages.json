@@ -1,5 +1,5 @@
 {
-  "about": "Foundation values that are not Figma variables or styles: read from the annotations on the Motion page (node 7046:2), the frames and tables on the Layout page (node 7140:453) and the icon-button component sets on the Icons page (node 6763:35, 'Partobita Icon' 6763:3746 and the four product sets). Update by hand when those pages change.",
+  "about": "Foundation values that are not Figma variables or styles: read from the annotations on the Motion page (node 7046:2), the frames and tables on the Layout page (node 7140:453), the stacked cards on the Layering page (node 7187:646, frame 7187:1098; Figma gives the order, the 100-step z-index values are ours) and the icon-button component sets on the Icons page (node 6763:35, 'Partobita Icon' 6763:3746 and the four product sets). Update by hand when those pages change.",
   "Motion": [
     { "css": "--motion-state-duration", "figma": "State Transition: Duration 300ms", "kind": "duration", "value": "300ms" },
     { "css": "--motion-easing-ease-in-out-back", "figma": "State Transition: Easing 'Ease in and out back' (Figma's preset, cubic-bezier(0.7, -0.4, 0.4, 1.4))", "kind": "easing", "value": "cubic-bezier(0.7, -0.4, 0.4, 1.4)" },
@@ -32,6 +32,18 @@
     { "css": "--layout-gap", "figma": "Desktop sidebar frames: Gap 16px", "kind": "px", "value": "16px" },
     { "css": "--layout-sidebar-collapsed", "figma": "Desktop collapsed sidebar frame: Sidebar 72px, Body 1320px", "kind": "px", "value": "72px" },
     { "css": "--layout-sidebar-expanded", "figma": "Desktop expanded sidebar frame: Sidebar 240px, Body 1152px", "kind": "px", "value": "240px" }
+  ],
+  "Layering": [
+    { "css": "--layer-page-content", "figma": "Layering: 1 Page Content (bottom)", "kind": "z-index", "value": "0" },
+    { "css": "--layer-app-header", "figma": "Layering: 2 App Header - Navigation Bar", "kind": "z-index", "value": "100" },
+    { "css": "--layer-dragged", "figma": "Layering: 3 Dragged card", "kind": "z-index", "value": "200" },
+    { "css": "--layer-menu", "figma": "Layering: 4 Menu (Date&Time Menu - Field Menu)", "kind": "z-index", "value": "300" },
+    { "css": "--layer-modal", "figma": "Layering: 5 Modal", "kind": "z-index", "value": "400" },
+    { "css": "--layer-dialog", "figma": "Layering: 6 Dialog", "kind": "z-index", "value": "500" },
+    { "css": "--layer-popover", "figma": "Layering: 7 Popover", "kind": "z-index", "value": "600" },
+    { "css": "--layer-tooltip", "figma": "Layering: 8 Tooltip", "kind": "z-index", "value": "700" },
+    { "css": "--layer-snackbar", "figma": "Layering: 9 Snackbar", "kind": "z-index", "value": "800" },
+    { "css": "--layer-spotlight", "figma": "Layering: 10 Spotlight (top)", "kind": "z-index", "value": "900" }
   ],
   "Icons": [
     { "css": "--icon-size-16", "figma": "Icon button Size=16px", "kind": "px", "value": "16px" },
