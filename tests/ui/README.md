@@ -53,7 +53,9 @@ deployed site, or a server on another port, give its address: `BLAZOR_DOCS_URL`,
    call returns at most 20KB), and save each result as `figma/raw/<part>.json`. Figma's REST variables
    endpoint needs an Enterprise plan, which is why the export runs inside the file.
 2. Values that are only annotations or frames (the Motion page, the Layout page's breakpoint tables
-   and frames, the icon buttons on the Icons page) are kept by hand in `figma/raw/pages.json`.
+   and frames, the Layering page's stacked cards, the icon buttons on the Icons page) are kept by hand in
+   `figma/raw/pages.json`. The Layering page gives an order only; the 100-step `--layer-*` values are ours,
+   and `tokens.spec.mts` also checks that the docs' Stacking order example covers each card with the next.
 3. `node tools/scripts/sync-figma-foundations.mts` rebuilds `figma/foundations.json` (Figma names
    become the package's CSS names: `gray/50` is `--gray-50`).
 

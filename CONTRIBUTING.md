@@ -47,7 +47,7 @@ The library uses BEM with double separators. Every class starts with `pb-`.
 | Modifier: variant | `pb-<block>--<variant>` | `pb-button--filled`, `pb-button--fab-mini`, `pb-card--elevated`, `pb-icon--primary` |
 | Modifier: state | `pb-<block>--<state>` | `pb-button--disabled`, `pb-select--open`, `pb-option--selected`, `pb-tab--active`, `pb-expansion-panel--expanded` |
 | Element modifier | `pb-<block>__<element>--<modifier>` | `pb-button__icon--start`, `pb-form-field__label--required`, `pb-grid__cell--editing` |
-| Shared utility | `pb-<purpose>`, in `blazor/wwwroot/styles/base.css` | `pb-state-layer`, `pb-interactive`, `pb-touch-target`, `pb-focus-visible`, `pb-visually-hidden`, `pb-icon-slot`, `pb-overlay`, `pb-backdrop`, `pb-font-mainfont`; the motion patterns `pb-motion-state`, `pb-motion-expand`, `pb-motion-move-in`, `pb-motion-instant` and `pb-scrim` live in `styles/motion.css` (same file in both libraries); the page shell `pb-layout` lives in `styles/layout.css` |
+| Shared utility | `pb-<purpose>`, in `blazor/wwwroot/styles/base.css` | `pb-state-layer`, `pb-interactive`, `pb-touch-target`, `pb-focus-visible`, `pb-visually-hidden`, `pb-icon-slot`, `pb-overlay`, `pb-backdrop`, `pb-font-mainfont`; the motion patterns `pb-motion-state`, `pb-motion-expand`, `pb-motion-move-in`, `pb-motion-instant` and `pb-scrim` live in `styles/motion.css` (same file in both libraries); the page shell `pb-layout` lives in `styles/layout.css`; the layers `pb-layer`, `pb-layer--*` in `styles/layer.css` |
 
 Rules:
 
@@ -107,6 +107,29 @@ sidebar, 16px margins, a 16px gap and a 72px (collapsed) or 240px (expanded) sid
 Layout CSS uses logical properties only, so `dir="rtl"` mirrors it with no extra rules. The library is
 pure CSS, so the media queries repeat the breakpoints as literals; a UI test checks they match the tokens.
 `PBSidenav` / `pb-sidenav` in standard mode is the same sidebar (240px, 72px when collapsed).
+
+### Layering
+
+Which surface covers which follows the design team's Figma Layering page. Figma gives the order, bottom to
+top; the values are ours, in steps of 100 so a layer can be added between two others: the `--layer-*`
+tokens (`tokens/src/layer-tokens.css`) page content 0, app header 100, dragged 200, menu 300, modal 400,
+dialog 500, popover 600, tooltip 700, snackbar 800, spotlight 900. Library and app CSS never set a literal
+`z-index` for a surface: use the `pb-layer--<layer>` classes in `styles/layer.css` (same file in both
+libraries; `pb-layer` makes an element positioned), or `z-index: var(--layer-*)` inside library CSS. Small
+z-indexes inside one component (a ripple over its own label, a focused cell over its neighbours) are
+local stacking and stay as they are.
+
+Menus, selects, date pickers, tooltips and dialogs live in the browser's top layer (popovers and modal
+`<dialog>`s, and every Angular CDK overlay), where `z-index` is ignored and the one shown last is on top. Each
+such surface carries its layer as `--pb-layer` (set by its `pb-layer--*` class or its component CSS), and
+the Blazor `design-system.js` and Angular `PbLayerOrder` show any open popover of a higher layer again
+whenever a lower one opens, so a snackbar stays above a dialog opened after it. A surface opened from inside
+another one (a select in a dialog) still opens above it. The Blazor snackbar container is an always-open
+manual popover for that reason. In Angular, pass the layer class to the overlay (`panelClass`,
+`tooltipClass`, `cdkDragPreviewClass`) and inject `PbLayerOrder` in the component that opens it.
+
+Proposed, not in Figma yet: `pb-sticky`, a header that sticks to the top of its scroll container just under
+the app header.
 
 Proposed, not in Figma yet (marked Proposed on the docs pages until the design team adds them): the column
 grid `pb-grid` (4/8/12 columns at the Figma breakpoints, 16px gutter), `pb-col-{n}` and
