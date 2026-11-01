@@ -1,0 +1,90 @@
+/*
+ * PartoBita layers (Figma "Layering" page, docs Fundamentals > Layering) as classes. The values are the
+ * --layer-* tokens in tokens/src/layer-tokens.css; apps use these classes and never set a z-index.
+ * Bottom to top:
+ *
+ *   pb-layer--page-content   0     the page itself
+ *   pb-layer--app-header     100   app header, navigation bar
+ *   pb-layer--dragged        200   a card or item being dragged (chip drag preview)
+ *   pb-layer--menu           300   menus and field menus: menu, select, autocomplete, date and time pickers
+ *   pb-layer--modal          400   modal surfaces: bottom sheet, sidenav in over mode
+ *   pb-layer--dialog         500   dialogs
+ *   pb-layer--popover        600   popovers
+ *   pb-layer--tooltip        700   tooltips
+ *   pb-layer--snackbar       800   snackbars
+ *   pb-layer--spotlight      900   spotlight (a tour step over a scrim)
+ *
+ * z-index only applies to a positioned element (or a flex or grid item): add pb-layer to make an element
+ * position: relative. It has zero specificity, so an element's own fixed, sticky or absolute position wins.
+ *
+ * Each modifier also sets --pb-layer. Popovers and modal dialogs live in the browser's top layer, where
+ * z-index is ignored and the last one shown is on top; the libraries read --pb-layer of the outermost
+ * pb-layer element in each top-layer element to keep those in the same order (design-system.js in Blazor,
+ * PbLayerOrder in Angular). Kept identical in blazor/wwwroot/styles/layer.css and
+ * angular/src/styles/layer.css.
+ */
+
+:where(.pb-layer) {
+  position: relative;
+}
+
+.pb-layer--page-content {
+  --pb-layer: var(--layer-page-content);
+  z-index: var(--pb-layer);
+}
+
+.pb-layer--app-header {
+  --pb-layer: var(--layer-app-header);
+  z-index: var(--pb-layer);
+}
+
+.pb-layer--dragged {
+  --pb-layer: var(--layer-dragged);
+  z-index: var(--pb-layer);
+}
+
+.pb-layer--menu {
+  --pb-layer: var(--layer-menu);
+  z-index: var(--pb-layer);
+}
+
+.pb-layer--modal {
+  --pb-layer: var(--layer-modal);
+  z-index: var(--pb-layer);
+}
+
+.pb-layer--dialog {
+  --pb-layer: var(--layer-dialog);
+  z-index: var(--pb-layer);
+}
+
+.pb-layer--popover {
+  --pb-layer: var(--layer-popover);
+  z-index: var(--pb-layer);
+}
+
+.pb-layer--tooltip {
+  --pb-layer: var(--layer-tooltip);
+  z-index: var(--pb-layer);
+}
+
+.pb-layer--snackbar {
+  --pb-layer: var(--layer-snackbar);
+  z-index: var(--pb-layer);
+}
+
+.pb-layer--spotlight {
+  --pb-layer: var(--layer-spotlight);
+  z-index: var(--pb-layer);
+}
+
+/*
+ * Proposed (not on the Figma Layering page yet): a header or toolbar that sticks to the top of its scroll
+ * container while the page content scrolls under it. It stays just under the app header, so a sticky
+ * section header never covers the app's own header.
+ */
+.pb-sticky {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: calc(var(--layer-app-header) - 1);
+}

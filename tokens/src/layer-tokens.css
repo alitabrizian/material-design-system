@@ -1,0 +1,35 @@
+/**
+ * Hand-authored PartoBita layer tokens, from the design team's Figma "Layering" page (node 7187:646, shown
+ * on the docs' Fundamentals > Layering page). Figma gives the order only, bottom to top:
+ *
+ *    1  Page Content
+ *    2  App Header - Navigation Bar
+ *    3  Dragged card
+ *    4  Menu (Date&Time Menu - Field Menu)
+ *    5  Modal
+ *    6  Dialog
+ *    7  Popover
+ *    8  Tooltip
+ *    9  Snackbar
+ *   10  Spotlight
+ *
+ * The z-index values are ours: steps of 100, so a layer can be inserted between two others without
+ * renumbering. Components and apps use the pb-layer classes (styles/layer.css), never these tokens.
+ *
+ * Overlays shown in the browser's top layer (popovers and modal dialogs) ignore z-index; the libraries
+ * read the same values to keep those in this order too (design-system.js in Blazor, PbLayerOrder in
+ * Angular).
+ */
+
+:root {
+  --layer-page-content: 0;
+  --layer-app-header: 100;
+  --layer-dragged: 200;
+  --layer-menu: 300;
+  --layer-modal: 400;
+  --layer-dialog: 500;
+  --layer-popover: 600;
+  --layer-tooltip: 700;
+  --layer-snackbar: 800;
+  --layer-spotlight: 900;
+}
