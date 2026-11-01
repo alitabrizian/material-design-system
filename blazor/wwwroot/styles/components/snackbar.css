@@ -5,15 +5,29 @@
  *   action = text button in inverse-primary; full width below 600px.
  *   Placement and motion follow the Figma Motion page instead of MatSnackBar: always 40px from the top
  *   and inline-end edges, moving in downwards from above the screen over 500ms with ease in and out back.
+ *   Layer follows the Figma Layering page: the container is an always-open manual popover (top layer) on
+ *   the snackbar layer, so a snackbar shows above menus, modals, dialogs, popovers and tooltips; the
+ *   popover rules reset the UA defaults (centered, bordered, Canvas).
  */
 
 .pb-snackbar-container {
+  --pb-layer: var(--layer-snackbar);
   position: fixed;
+  inset: auto;
   top: var(--motion-snackbar-inset);
   inset-inline: var(--motion-snackbar-inset);
-  z-index: 1002;
+  z-index: var(--pb-layer);
   display: flex;
   justify-content: flex-end;
+  box-sizing: border-box;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: visible;
+  color: inherit;
+  background: none;
   pointer-events: none;
 }
 

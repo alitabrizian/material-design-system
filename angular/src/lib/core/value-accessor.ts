@@ -4,6 +4,7 @@ import {
   computed,
   Directive,
   forwardRef,
+  inject,
   input,
   Provider,
   signal,
@@ -14,6 +15,7 @@ import {
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { MatFormField } from '@angular/material/form-field';
+import { PbLayerOrder } from './layer-order';
 
 /** Registers a component as its own ControlValueAccessor (ngModel, formControl, formControlName). */
 export function providePbValueAccessor(component: () => Type<unknown>): Provider {
@@ -91,6 +93,8 @@ export abstract class PbFieldBase<T> extends PbValueAccessor<T> {
 
   constructor() {
     super();
+    // Keeps the field's menu (select, autocomplete, date and time pickers) in the Figma Layering order.
+    inject(PbLayerOrder);
     // MatInput/MatSelect only re-check their error state when they have an NgControl, which the inner
     // control never has (the PB component is the form control): re-check it whenever errorText changes.
     afterRenderEffect(() => {

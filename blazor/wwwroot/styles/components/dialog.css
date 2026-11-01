@@ -5,10 +5,12 @@
  *   strut; content body-medium on-surface-variant, padding 20px 24px (0 top after a title);
  *   actions padding 16px 24px, end-aligned, 8px apart.
  *   Motion follows the Figma Motion page instead of MatDialog: opens and closes instantly, over a
- *   backdrop of black at 60% (alpha/black/600).
+ *   backdrop of black at 60% (alpha/black/600). Layer: the dialog layer of the Figma Layering page; a
+ *   native modal <dialog> is in the top layer, where design-system.js keeps higher layers above it.
  */
 
 .pb-dialog {
+  --pb-layer: var(--layer-dialog);
   box-sizing: border-box;
   min-width: 280px;
   max-width: min(560px, calc(100vw - 32px));

@@ -12,6 +12,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { MatDialog, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
+import { PbLayerOrder } from '../core/layer-order';
 
 /**
  * Material 3 dialog (PBDialog) opened and closed through [(open)]. The content is the body;
@@ -41,6 +42,8 @@ export class PbDialog {
   private ref: MatDialogRef<unknown> | null = null;
 
   constructor() {
+    // Keeps this overlay in the Figma Layering order in the top layer.
+    inject(PbLayerOrder);
     effect(() => {
       const open = this.open();
       untracked(() => (open ? this.show() : this.ref?.close()));
@@ -56,6 +59,7 @@ export class PbDialog {
       enterAnimationDuration: 0,
       exitAnimationDuration: 0,
       backdropClass: 'pb-dialog-backdrop',
+      panelClass: 'pb-layer--dialog',
     });
     this.ref.afterClosed().subscribe(() => {
       this.ref = null;

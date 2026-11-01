@@ -3,12 +3,14 @@
  *   surface-container-low / on-surface, body-large, padding 8px 16px, max-height 80vh,
  *   z16 shadow; full width on phones, then 384px+ (>=600px), 512px+ (>=960px), 576px+ (>=1280px)
  *   with 28px top corners; slides up over 195ms; backdrop scrim 32%
+ *   Layer follows the Figma Layering page: backdrop and sheet are on the modal layer (the sheet after the
+ *   backdrop in the markup, so above it).
  */
 
 .pb-bottom-sheet-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 1000;
+  z-index: var(--layer-modal);
   background-color: color-mix(in srgb, var(--md-sys-color-scrim) 32%, transparent);
   animation: pb-fade-in 195ms cubic-bezier(0, 0, 0.2, 1);
 }
@@ -18,7 +20,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 1001;
+  z-index: var(--layer-modal);
   display: flex;
   justify-content: center;
   pointer-events: none;

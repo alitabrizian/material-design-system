@@ -41,6 +41,7 @@ import { PbFormFieldAppearance, providePbValueAccessor } from '../core/value-acc
 import { PB_DATE_FORMATS, PbDateAdapter } from './date-adapter';
 import { calendarLocale, PbCalendarViewMode, PbClearButtonDisplayMode } from './datepicker';
 import { calendarOfLocale, PbCalendarSystem } from './jalali';
+import { PbLayerOrder } from '../core/layer-order';
 
 /** A date range: the value of pb-date-range-picker as a form control. */
 export interface PbDateRange {
@@ -158,7 +159,7 @@ export class PbRangeSelectionStrategyAdapter implements MatDateRangeSelectionStr
       </mat-datepicker-toggle>
       <mat-date-range-picker
         #picker
-        [panelClass]="persian() ? 'pb-font-mainfont' : ''"
+        [panelClass]="persian() ? ['pb-layer--menu', 'pb-font-mainfont'] : 'pb-layer--menu'"
         [dateClass]="cellClass()"
         [touchUi]="touchUi()"
         [startAt]="startAt()"
@@ -236,6 +237,8 @@ export class PbDateRangePicker implements ControlValueAccessor {
   protected readonly errorStateMatcher: ErrorStateMatcher = { isErrorState: () => !!this.errorText() };
 
   constructor() {
+    // Keeps this overlay in the Figma Layering order in the top layer.
+    inject(PbLayerOrder);
     effect(() => {
       const edit = this.format() ?? 'd';
       const display = this.displayFormat() ?? edit;

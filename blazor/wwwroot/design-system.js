@@ -5,6 +5,7 @@
 //  - Overlay positioning: CDK FlexibleConnectedPositionStrategy-like placement of menu/select/
 //    autocomplete panels with position:fixed (never clipped by an ancestor's overflow).
 //  - Dialog + focus helpers used by PBDialog, PBMenu, PBSelect.
+//  - Layer order: keeps popovers and modal dialogs (the browser's top layer) in the Figma Layering order.
 //
 // The Blazor components import this module through IJSRuntime ("./_content/PartoBita.DesignSystem.Blazor/design-system.js").
 
@@ -249,6 +250,7 @@ export function showDialog(dialog, dotNet, closeOnBackdrop) {
   dialog.addEventListener("click", onClick);
   dialogCancelHandlers.set(dialog, { onCancel, onClick });
   dialog.showModal();
+  orderLayers(dialog);
 }
 
 export function closeDialog(dialog) {
@@ -261,6 +263,79 @@ export function closeDialog(dialog) {
   }
   if (dialog.open) dialog.close();
 }
+
+// ---------------------------------------------------------------------------------- layers
+
+// Figma Layering, bottom to top: page content, app header, dragged, menu, modal, dialog, popover,
+// tooltip, snackbar, spotlight (styles/layer.css). Popovers and modal dialogs live in the browser's top
+// layer, where z-index is ignored and the one shown last is on top. So whenever one opens, every open
+// popover of a higher layer is shown again, which brings it back above. A lower layer opened from inside
+// a higher one (a select in a dialog) still opens above it, because it belongs to that surface.
+// Angular's PbLayerOrder does the same for the CDK overlays.
+
+/** A top-layer element's layer: --pb-layer (not inherited) of itself or of an element just inside it. */
+function layerOf(element) {
+  for (const node of [element, ...element.querySelectorAll(":scope > *, :scope > * > *, :scope > * > * > *")]) {
+    const layer = parseInt(getComputedStyle(node).getPropertyValue("--pb-layer"), 10);
+    if (!Number.isNaN(layer)) return layer;
+  }
+  return null;
+}
+
+/**
+ * Shows an open popover again, which moves it to the top of the top layer. It keeps its focus and, unless
+ * `animate`, the enter animations that restart when it is shown again are finished at once, so it doesn't move.
+ */
+function bringToFront(popover, animate = false) {
+  const focused = popover.contains(document.activeElement) ? document.activeElement : null;
+  try {
+    popover.hidePopover();
+    popover.showPopover();
+  } catch {
+    return;
+  }
+  if (!animate) for (const animation of popover.getAnimations({ subtree: true })) animation.finish();
+  focused?.focus({ preventScroll: true });
+}
+
+let ordering = false;
+
+/** After `shown` entered the top layer: brings every open, non-empty popover of a higher layer back above it. */
+export function orderLayers(shown) {
+  if (ordering || !shown?.isConnected) return;
+  const layer = layerOf(shown);
+  if (layer === null) return;
+  const above = [...document.querySelectorAll(":popover-open")]
+    .filter((el) => el !== shown && !el.contains(shown) && !shown.contains(el) && el.childElementCount > 0)
+    .map((el) => ({ el, layer: layerOf(el) }))
+    .filter((entry) => entry.layer !== null && entry.layer > layer)
+    .sort((a, b) => a.layer - b.layer);
+  ordering = true;
+  try {
+    for (const { el } of above) bringToFront(el);
+  } finally {
+    ordering = false;
+  }
+}
+
+/**
+ * Shows a popover, or brings an open one to the top of the top layer with its new content animating in,
+ * then keeps any higher layer above it (PBSnackbar, when a message appears).
+ */
+export function raiseLayer(popover) {
+  if (!popover?.isConnected) return;
+  if (popover.hasAttribute("popover") && !popover.matches(":popover-open")) {
+    try { popover.showPopover(); } catch { return; }
+  } else {
+    bringToFront(popover, true);
+  }
+  orderLayers(popover);
+}
+
+// Every popover a component or the app opens (menus, selects, date pickers, tooltips) fires toggle.
+document.addEventListener("toggle", (event) => {
+  if (event.newState === "open" && event.target instanceof Element) orderLayers(event.target);
+}, true);
 
 // ---------------------------------------------------------------------------------- misc
 

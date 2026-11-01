@@ -1,12 +1,13 @@
 @inherits WorkspaceComponentBase
 @implements IDisposable
+@inject Microsoft.JSInterop.IJSRuntime JS
 @if (Inline)
 {
     <div class="pb-snackbar pb-snackbar--inline @UserClass" role="status" @attributes="Attrs">@Surface</div>
 }
 else
 {
-    <div class="pb-snackbar-container" aria-live="polite">
+    <div @ref="container" class="pb-snackbar-container" popover="manual" aria-live="polite">
         @if (Open)
         {
             <div class="pb-snackbar @UserClass" role="status" @attributes="Attrs">@Surface</div>

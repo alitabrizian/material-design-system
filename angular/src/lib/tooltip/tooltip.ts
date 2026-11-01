@@ -1,5 +1,6 @@
 import { Directive, inject } from '@angular/core';
 import { MatTooltip } from '@angular/material/tooltip';
+import { PbLayerOrder } from '../core/layer-order';
 
 export type PbTooltipPosition = 'below' | 'above' | 'before' | 'after';
 
@@ -25,8 +26,10 @@ export type PbTooltipPosition = 'below' | 'above' | 'before' | 'after';
 })
 export class PbTooltip {
   constructor() {
+    // Keeps this overlay in the Figma Layering order in the top layer.
+    inject(PbLayerOrder);
     // Figma Motion: tooltips appear and disappear instantly. The class sets a 0s animation, which
     // MatTooltip takes as animations disabled (styles/material-motion.css).
-    inject(MatTooltip).tooltipClass = 'pb-tooltip';
+    inject(MatTooltip).tooltipClass = ['pb-tooltip', 'pb-layer--tooltip'];
   }
 }

@@ -13,7 +13,7 @@
     (blur)="markTouched()"
   />
   <mat-timepicker-toggle matSuffix [for]="picker" />
-  <mat-timepicker #picker [interval]="interval()" />
+  <mat-timepicker #picker panelClass="pb-layer--menu" [interval]="interval()" />
   @if (errorText(); as text) {
     <mat-error>{{ text }}</mat-error>
   } @else if (supportingText(); as text) {

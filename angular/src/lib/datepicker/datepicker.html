@@ -42,7 +42,7 @@
   }
   <mat-datepicker
     #picker
-    [panelClass]="persian() ? ['pb-datepicker-panel', 'pb-font-mainfont'] : 'pb-datepicker-panel'"
+    [panelClass]="persian() ? ['pb-datepicker-panel', 'pb-layer--menu', 'pb-font-mainfont'] : ['pb-datepicker-panel', 'pb-layer--menu']"
     [startView]="openView()"
     [startAt]="startAt()"
     [touchUi]="touchUi()"
@@ -108,6 +108,7 @@
   cdkConnectedOverlay
   [cdkConnectedOverlayOrigin]="origin"
   [cdkConnectedOverlayOpen]="scrollOpen()"
+  cdkConnectedOverlayPanelClass="pb-layer--menu"
   [cdkConnectedOverlayPositions]="positions"
   (overlayOutsideClick)="close()"
   (detach)="close()"

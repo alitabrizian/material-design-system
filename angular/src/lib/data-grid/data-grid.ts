@@ -103,6 +103,7 @@ import {
   toDate,
   tryConvert,
 } from './grid-model';
+import { PbLayerOrder } from '../core/layer-order';
 
 interface SummaryDef {
   type: PbGridSummaryType;
@@ -405,6 +406,8 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
   }
 
   constructor() {
+    // Keeps this overlay in the Figma Layering order in the top layer.
+    inject(PbLayerOrder);
     gridRegistry.set(this.gridId, this);
     const observer = new ResizeObserver(() => {
       this.syncFixedColumns();

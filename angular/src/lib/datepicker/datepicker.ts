@@ -334,7 +334,7 @@ export class PbDatepicker extends PbFieldBase<Date | null> {
       this.pending.set(this.value() ?? this.defaultDate());
       if (phone) {
         this.dialogRef = this.dialog.open(this.scrollTemplate(), {
-          panelClass: this.persian() ? ['pb-date-edit__dialog', 'pb-font-mainfont'] : 'pb-date-edit__dialog',
+          panelClass: this.persian() ? ['pb-date-edit__dialog', 'pb-layer--menu', 'pb-font-mainfont'] : ['pb-date-edit__dialog', 'pb-layer--menu'],
           ariaLabel: this.label() ?? 'Choose date',
         });
         this.dialogRef.afterClosed().subscribe(() => {

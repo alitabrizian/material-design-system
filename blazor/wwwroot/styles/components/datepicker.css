@@ -555,6 +555,11 @@
   padding: 8px 8px 8px;
 }
 
+/* The date and time dialogs stay on the menu layer (Figma Layering: "Menu (Date&Time Menu - Field Menu)"). */
+.pb-dialog.pb-date-edit__dialog {
+  --pb-layer: var(--layer-menu);
+}
+
 /* Touch UI (mat-datepicker touchUi): the calendar in a modal dialog, sized to the viewport, with larger cells. */
 .pb-dialog.pb-date-edit__dialog--touch {
   width: min(80vw, 64vh, 750px);

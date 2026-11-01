@@ -3,6 +3,7 @@
  */
 
 export * from './lib/core/content-template';
+export * from './lib/core/layer-order';
 export * from './lib/core/theme';
 export * from './lib/core/value-accessor';
 

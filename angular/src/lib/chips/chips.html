@@ -13,7 +13,7 @@
         @switch (chip.variant()) {
           @case ('filter') {
             <mat-chip-option
-              cdkDrag
+              cdkDrag cdkDragPreviewClass="pb-layer--dragged"
               [cdkDragDisabled]="!reorderable()"
               [selected]="chip.selected()"
               [disabled]="chip.disabled()"
@@ -29,7 +29,7 @@
             </mat-chip-option>
           }
           @case ('input') {
-            <mat-chip cdkDrag [cdkDragDisabled]="!reorderable()" [disabled]="chip.disabled()" [highlighted]="chip.highlighted()" (removed)="chip.removed.emit()">
+            <mat-chip cdkDrag cdkDragPreviewClass="pb-layer--dragged" [cdkDragDisabled]="!reorderable()" [disabled]="chip.disabled()" [highlighted]="chip.highlighted()" (removed)="chip.removed.emit()">
               @if (chip.avatar(); as src) {
                 <img matChipAvatar [src]="src" [alt]="chip.avatarAlt()" />
               } @else if (chip.icon(); as name) {
@@ -41,7 +41,7 @@
           }
           @default {
             <mat-chip
-              cdkDrag
+              cdkDrag cdkDragPreviewClass="pb-layer--dragged"
               [cdkDragDisabled]="!reorderable()"
               [disabled]="chip.disabled()"
               [highlighted]="chip.highlighted()"
@@ -71,7 +71,7 @@
         @switch (chip.variant()) {
           @case ('filter') {
             <mat-chip-option
-              cdkDrag
+              cdkDrag cdkDragPreviewClass="pb-layer--dragged"
               [cdkDragDisabled]="!reorderable()"
               [selected]="chip.selected()"
               [disabled]="chip.disabled()"
@@ -87,7 +87,7 @@
             </mat-chip-option>
           }
           @case ('input') {
-            <mat-chip cdkDrag [cdkDragDisabled]="!reorderable()" [disabled]="chip.disabled()" [highlighted]="chip.highlighted()" (removed)="chip.removed.emit()">
+            <mat-chip cdkDrag cdkDragPreviewClass="pb-layer--dragged" [cdkDragDisabled]="!reorderable()" [disabled]="chip.disabled()" [highlighted]="chip.highlighted()" (removed)="chip.removed.emit()">
               @if (chip.avatar(); as src) {
                 <img matChipAvatar [src]="src" [alt]="chip.avatarAlt()" />
               } @else if (chip.icon(); as name) {
@@ -99,7 +99,7 @@
           }
           @default {
             <mat-chip
-              cdkDrag
+              cdkDrag cdkDragPreviewClass="pb-layer--dragged"
               [cdkDragDisabled]="!reorderable()"
               [disabled]="chip.disabled()"
               [highlighted]="chip.highlighted()"
@@ -137,7 +137,7 @@
         @if (tagTemplate(); as template) {
           <mat-chip-row
             class="pb-chips__tag-row"
-            cdkDrag
+            cdkDrag cdkDragPreviewClass="pb-layer--dragged"
             [cdkDragDisabled]="!reorderable() || !interactive()"
             [removable]="interactive()"
             [attr.aria-label]="tag.text"
@@ -147,7 +147,7 @@
           </mat-chip-row>
         } @else {
           <mat-chip-row
-            cdkDrag
+            cdkDrag cdkDragPreviewClass="pb-layer--dragged"
             [cdkDragDisabled]="!reorderable() || !interactive()"
             [editable]="canEdit(tag)"
             [removable]="interactive()"
@@ -219,6 +219,7 @@
       cdkConnectedOverlay
       [cdkConnectedOverlayOrigin]="origin"
       [cdkConnectedOverlayOpen]="panelVisible()"
+  cdkConnectedOverlayPanelClass="pb-layer--menu"
       [cdkConnectedOverlayPositions]="positions"
       [cdkConnectedOverlayWidth]="overlayWidth() ?? ''"
       [cdkConnectedOverlayMinWidth]="overlayMinWidth() ?? ''"

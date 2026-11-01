@@ -505,7 +505,7 @@ button.pb-chip__action {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 1000;
+  z-index: var(--layer-dragged); /* Figma Layering: Dragged card */
   margin: 0;
   background-color: var(--md-sys-color-surface-container-low);
   box-shadow: var(--md-sys-elevation-level-3);

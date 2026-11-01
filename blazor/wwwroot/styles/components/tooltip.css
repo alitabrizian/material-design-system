@@ -12,6 +12,7 @@
 }
 
 .pb-tooltip {
+  --pb-layer: var(--layer-tooltip); /* Figma Layering, over pb-overlay's menu layer */
   /* Size to the message (up to the surface's 200px), never to the space left at the viewport edge. */
   width: max-content;
   pointer-events: none;

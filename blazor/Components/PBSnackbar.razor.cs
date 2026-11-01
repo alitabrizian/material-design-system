@@ -4,7 +4,8 @@ namespace PartoBita.DesignSystem.Blazor.Components;
 /// MatSnackBar's simple snack bar as a component: set <see cref="Open"/> (bind it) to show the message at the
 /// top of the screen, 40px from the top and inline-end edges (Figma Motion). <see cref="Duration"/> auto-dismisses (0 = until dismissed, MatSnackBar's
 /// default); <see cref="ActionLabel"/> adds an action button that dismisses it. <see cref="Inline"/>
-/// renders the surface in place (documentation/previews).
+/// renders the surface in place (documentation/previews). The container is an always-open manual popover on
+/// the snackbar layer (Figma Layering), so the message shows above menus, dialogs and tooltips.
 /// </summary>
 public partial class PBSnackbar : WorkspaceComponentBase
 {
@@ -20,6 +21,8 @@ public partial class PBSnackbar : WorkspaceComponentBase
 
     private CancellationTokenSource? timer;
     private bool wasOpen;
+    private ElementReference container;
+    private bool raised;
 
     protected override void OnParametersSet()
     {
@@ -30,6 +33,22 @@ public partial class PBSnackbar : WorkspaceComponentBase
             _ = DismissAfterAsync(Duration, timer.Token);
         }
         wasOpen = Open;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (Inline) return;
+        // Shown (empty) from the first render, so it stays a live region; raised to the top of the top layer
+        // each time a message appears, above any menu or dialog opened since.
+        if (firstRender || (Open && !raised))
+        {
+            raised = Open;
+            await DesignSystemJs.InvokeVoidAsync(JS, "raiseLayer", container);
+        }
+        else if (!Open)
+        {
+            raised = false;
+        }
     }
 
     private async Task DismissAfterAsync(int ms, CancellationToken token)

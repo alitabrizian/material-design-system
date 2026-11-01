@@ -122,11 +122,14 @@
 
 /* Overlay panels (menu, select, autocomplete) live in the top layer (popover="manual") and are
    positioned by design-system.js against their trigger, so no ancestor's overflow or z-index can
-   clip or cover them. These rules reset the UA popover defaults (centered, bordered, Canvas). */
+   clip or cover them. These rules reset the UA popover defaults (centered, bordered, Canvas). They are
+   on the menu layer (Figma Layering; the tooltip overrides it), which design-system.js reads to keep the
+   top layer in that order. */
 .pb-overlay {
+  --pb-layer: var(--layer-menu);
   position: fixed;
   inset: auto;
-  z-index: 1000;
+  z-index: var(--pb-layer);
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -143,7 +146,7 @@
 .pb-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 999;
+  z-index: var(--layer-menu);
   background: transparent;
 }
 

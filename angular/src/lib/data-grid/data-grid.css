@@ -1087,9 +1087,10 @@ pb-data-grid.pb-grid {
 }
 
 .pb-grid__popup {
+  --pb-layer: var(--layer-menu); /* Figma Layering: menus */
   position: fixed;
   inset: auto;
-  z-index: 1000;
+  z-index: var(--pb-layer);
   box-sizing: border-box;
   min-width: 112px;
   max-width: 320px;

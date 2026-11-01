@@ -1,9 +1,10 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, contentChildren, input, model } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, contentChildren, inject, input, model } from '@angular/core';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { PbMenuItem } from './menu-item';
+import { PbLayerOrder } from '../core/layer-order';
 
 export type PbMenuXPosition = 'before' | 'after';
 export type PbMenuYPosition = 'above' | 'below';
@@ -40,4 +41,9 @@ export class PbMenu {
     const variant = this.triggerVariant();
     return variant === 'icon' ? 'text' : variant;
   });
+
+  constructor() {
+    // Keeps this overlay in the Figma Layering order in the top layer.
+    inject(PbLayerOrder);
+  }
 }

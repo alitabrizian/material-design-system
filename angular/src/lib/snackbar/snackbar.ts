@@ -19,6 +19,7 @@ import {
   MatSnackBarLabel,
   MatSnackBarRef,
 } from '@angular/material/snack-bar';
+import { PbLayerOrder } from '../core/layer-order';
 
 /** Material 3 snackbar (PBSnackbar) shown through [(open)]; the content is the message. Placed and moved as the Figma Motion page specifies. */
 @Component({
@@ -39,6 +40,8 @@ export class PbSnackbar {
   private ref: MatSnackBarRef<unknown> | null = null;
 
   constructor() {
+    // Keeps this overlay in the Figma Layering order in the top layer.
+    inject(PbLayerOrder);
     effect(() => {
       const open = this.open();
       untracked(() => (open ? this.show() : this.ref?.dismiss()));
@@ -59,7 +62,7 @@ export class PbSnackbar {
       ...(duration > 0 ? { duration } : {}),
       horizontalPosition: 'end',
       verticalPosition: 'top',
-      panelClass: 'pb-snackbar-panel',
+      panelClass: ['pb-snackbar-panel', 'pb-layer--snackbar'],
     });
     this.ref.afterDismissed().subscribe(() => {
       this.ref = null;
