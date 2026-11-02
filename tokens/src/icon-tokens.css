@@ -6,7 +6,8 @@
  * Icons are 24x24 line drawings with stroke="currentColor", so they take the text color; size them with
  * --icon-size-*. The icon-button tokens are the product icon frames (Partobita, Satima, Sarafid, Sajaak,
  * Samasat Icon): every state is the same in all five products except Selected, which takes the product's
- * color. Pick a product with data-product="satima" (etc.) on any ancestor; Partobita is the default.
+ * color. Pick a product with data-product="satima" (etc.) on any ancestor; Partobita is the default
+ * (the products are listed in src/products.json).
  * In the Hover, Selected and Destructive states the glyph shrinks to --icon-button-glyph-scale of the
  * box (20px in a 24px button) and sits on a rounded background.
  */
@@ -38,38 +39,18 @@
   --icon-button-background-destructive: #faf0f0;
   --icon-button-color-disabled: #999999;
 
-  /* Selected, per product. */
-  --icon-button-partobita-color-selected: #007dc6;
-  --icon-button-partobita-background-selected: #f0f6f9;
-  --icon-button-satima-color-selected: #f2ab39;
-  --icon-button-satima-background-selected: #f9f6f0;
-  --icon-button-sarafid-color-selected: #15a54c;
-  --icon-button-sarafid-background-selected: #f0f9f3;
-  --icon-button-sajaak-color-selected: #12c1d9;
-  --icon-button-sajaak-background-selected: #f0f9fa;
-  --icon-button-samasat-color-selected: #4d4d4d;
-  --icon-button-samasat-background-selected: #f2f2f2;
+  /* Selected, per product, as drawn in Figma: steps 500 and 50 of the product's palette. */
+  --icon-button-partobita-color-selected: var(--brand-partobita-500);
+  --icon-button-partobita-background-selected: var(--brand-partobita-50);
+  --icon-button-satima-color-selected: var(--brand-satima-500);
+  --icon-button-satima-background-selected: var(--brand-satima-50);
+  --icon-button-sarafid-color-selected: var(--brand-sarafeed-500);
+  --icon-button-sarafid-background-selected: var(--brand-sarafeed-50);
+  --icon-button-sajaak-color-selected: var(--brand-sajaak-primary-500);
+  --icon-button-sajaak-background-selected: var(--brand-sajaak-primary-50);
+  --icon-button-samasat-color-selected: var(--brand-samasat-500);
+  --icon-button-samasat-background-selected: var(--brand-samasat-50);
 
-  --icon-button-color-selected: var(--icon-button-partobita-color-selected);
-  --icon-button-background-selected: var(--icon-button-partobita-background-selected);
-}
-
-[data-product="satima"] {
-  --icon-button-color-selected: var(--icon-button-satima-color-selected);
-  --icon-button-background-selected: var(--icon-button-satima-background-selected);
-}
-
-[data-product="sarafid"] {
-  --icon-button-color-selected: var(--icon-button-sarafid-color-selected);
-  --icon-button-background-selected: var(--icon-button-sarafid-background-selected);
-}
-
-[data-product="sajaak"] {
-  --icon-button-color-selected: var(--icon-button-sajaak-color-selected);
-  --icon-button-background-selected: var(--icon-button-sajaak-background-selected);
-}
-
-[data-product="samasat"] {
-  --icon-button-color-selected: var(--icon-button-samasat-color-selected);
-  --icon-button-background-selected: var(--icon-button-samasat-background-selected);
+  /* The selected product's: --icon-button-color-selected and --icon-button-background-selected are
+     generated per data-product from src/products.json (scripts/build-products.mts), from the same steps. */
 }

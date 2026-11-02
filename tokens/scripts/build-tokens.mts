@@ -1,7 +1,9 @@
 /**
  * Builds the framework-neutral design tokens package (dist/) from Angular Material's own prebuilt
  * M3 themes, so every --md-sys-* value is exactly what Angular Material ships -- no seed colors, no
- * hand-picked tones (constitution principles I and III).
+ * hand-picked tones (constitution principles I and III). The one exception is the per-product brands
+ * (src/products.json, build-products.mts): their accent roles come from the product's Figma brand color, put
+ * through Angular Material's own theme generator rather than picked by hand.
  *
  * Source of truth: reference/angular-material/{rose-red,azure-blue,magenta-violet,cyan-orange}.css,
  * vendored from @angular/material/prebuilt-themes (refresh with scripts/sync-angular-themes.mts).
@@ -16,6 +18,9 @@
  *   - css/tokens.css            color roles per theme + all system tokens + src/material-tokens.css
  *                               + src/typography-tokens.css + src/scale-tokens.css + src/shadow-tokens.css
  *                               + src/motion-tokens.css + src/layout-tokens.css + src/layer-tokens.css
+ *                               + the per-product brand blocks generated from src/products.json (last, so a
+ *                               [data-product] overrides the theme's primary/secondary/tertiary roles)
+ *   - css/product-tokens.css    the generated [data-product] blocks on their own (see build-products.mts)
  *   - css/material-tokens.css   copy of src/material-tokens.css (motion, spacing, font stack)
  *   - css/typography-tokens.css copy of src/typography-tokens.css (PartoBita type scale)
  *   - css/color-tokens.css      copy of src/color-tokens.css (PartoBita palettes, also in tokens.css)
@@ -31,7 +36,7 @@
  *   - css/yekan-bakh.css        @font-face rules for the five Yekan Bakh FaNum weights (fonts/yekan-bakh/)
  *   - css/fonts.css             roboto.css + yekan-bakh.css + icons.css in one file
  *   - fonts/*.woff2, OFL.txt, Apache-2.0.txt
- *   - data/palettes.json        theme metadata (name, mode, key colors) for non-CSS consumers
+ *   - data/palettes.json        theme and product metadata (name, mode, key colors) for non-CSS consumers
  *   - css/icon-tokens.css       copy of src/icon-tokens.css (icon sizes, icon-button states; also in tokens.css)
  *   - icons/*.svg, data/icons.json  the PartoBita icon set (see build-icons.mts)
  */
@@ -40,6 +45,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildIcons } from "./build-icons.mts";
+import { buildProducts } from "./build-products.mts";
 
 const packageRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const repoRoot = path.resolve(packageRoot, "../../..");
@@ -158,6 +164,8 @@ const tokensCss: string[] = [
     "",
     "Theme color roles are scoped by [data-theme]; any element may carry data-theme to re-scope",
     "its subtree. :root gets the default theme. System tokens are theme-independent.",
+    "[data-product] blocks (src/products.json) at the end set a product's brand: its primary, secondary and",
+    "tertiary roles (light-dark() pairs from Angular Material's theme generator) and the PartoBita brand aliases.",
   ]),
 ];
 
@@ -198,6 +206,10 @@ tokensCss.push("/* ---- src/scale-tokens.css (space, stroke, radius, opacity) --
 
 const iconTokens = fs.readFileSync(path.join(packageRoot, "src/icon-tokens.css"), "utf8");
 tokensCss.push("/* ---- src/icon-tokens.css (icon sizes, icon-button states) ---- */", iconTokens.trim(), "");
+
+// Last, so a [data-product] block wins over the [data-theme] blocks and the :root aliases above.
+const products = buildProducts(packageRoot, repoRoot, colors, fail);
+tokensCss.push("/* ---- per-product brand colors (src/products.json, scripts/build-products.mts) ---- */", products.css.trim(), "");
 
 // ---------------------------------------------------------------- fonts (Roboto + icon fonts)
 
@@ -326,6 +338,14 @@ write("css/motion-tokens.css", motion);
 write("css/layout-tokens.css", layout);
 write("css/layer-tokens.css", layers);
 write("css/icon-tokens.css", iconTokens);
+write(
+  "css/product-tokens.css",
+  header([
+    "Per-product brand colors, generated from src/products.json by scripts/build-products.mts. Also included in",
+    "tokens.css. Select a product with data-product=\"<id>\" on <html> (or any element). The Material roles come",
+    `from Angular Material ${angularVersion}'s theme generator, as light-dark() pairs that follow the data-theme.`,
+  ]) + products.css
+);
 console.log(`Wrote ${buildIcons(packageRoot, distRoot, fail)} icons to dist/icons and dist/data/icons.json`);
 write(
   "css/angular-material.css",
@@ -334,10 +354,11 @@ write(
       `Angular Material ${angularVersion} system variables (--mat-sys-*) bound to this package's --md-sys-* tokens.`,
       "Load after tokens.css in an Angular Material app instead of a prebuilt theme: every mat-* component",
       "then reads these tokens. Colors are re-declared on [data-theme] so a nested data-theme re-themes its",
-      "subtree, exactly as it does for tokens.css.",
+      "subtree, exactly as it does for tokens.css; the same goes for [data-product].",
     ]),
     ":root,",
-    "[data-theme] {",
+    "[data-theme],",
+    "[data-product] {",
     ...matSysColors.map(([mat, md]) => `  ${mat}: var(${md});`),
     "}",
     "",
@@ -371,6 +392,7 @@ write(
           },
         ])
       ),
+      products: products.products,
     },
     null,
     2
@@ -379,5 +401,5 @@ write(
 
 console.log(
   `Generated ${Object.keys(THEMES).length} themes x ${COLOR_ROLES.length} color roles + ${system.length} system tokens ` +
-    `from Angular Material ${angularVersion}; ${fontFiles.size} font files.`
+    `from Angular Material ${angularVersion}, ${products.products.length} product brands; ${fontFiles.size} font files.`
 );
