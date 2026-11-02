@@ -288,6 +288,60 @@ for (const target of selectedTargets().filter((t) => t.name !== "landing")) {
       }
     });
 
+    // Per-project brands (src/products.json): the Theming page's Light and dark example has one cell per product
+    // and theme. In each, the primary role must be the product's generated tone for that theme's mode, and the
+    // PartoBita brand alias its palette color; a data-theme nested in a data-product must keep the brand.
+    test("/theming product brands follow data-product in light and dark themes", async ({ page }) => {
+      await openPage(page, target.name, "/theming", DEFAULT_THEME);
+      const palettes = JSON.parse(fs.readFileSync(path.join(repoRoot, "libs/material-design-system/tokens/dist/data/palettes.json"), "utf8"));
+      const products: { id: string; seeds: { primary: string }; primary: { light: string; dark: string } }[] = palettes.products;
+      expect(products.length, "palettes.json lists the products").toBeGreaterThan(0);
+      await page.locator(".theming-grid__cell").first().waitFor();
+      const cells = await page.locator(".theming-grid__cell").evaluateAll((els) =>
+        els.map((el) => {
+          const probe = (value: string, host: Element = el) => {
+            const div = document.createElement("div");
+            div.style.backgroundColor = value;
+            host.appendChild(div);
+            const color = getComputedStyle(div).backgroundColor;
+            div.remove();
+            return color;
+          };
+          // The same theme nested inside the product, and the theme alone (no product) next to the grid.
+          const nested = document.createElement("div");
+          nested.dataset.theme = el.getAttribute("data-theme")!;
+          el.appendChild(nested);
+          const bare = document.createElement("div");
+          bare.dataset.theme = el.getAttribute("data-theme")!;
+          el.closest(".theming-grid")!.parentElement!.appendChild(bare);
+          const result = {
+            product: el.getAttribute("data-product")!,
+            theme: el.getAttribute("data-theme")!,
+            primary: probe("var(--md-sys-color-primary)"),
+            nestedPrimary: probe("var(--md-sys-color-primary)", nested),
+            themePrimary: probe("var(--md-sys-color-primary)", bare),
+            brand: probe("var(--background-brand-default)"),
+          };
+          nested.remove();
+          bare.remove();
+          return result;
+        })
+      );
+      const rgb = (hex: string) => `rgb(${[1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16)).join(", ")})`;
+      const dark = new Set(["magenta-violet", "cyan-orange"]);
+      for (const product of products) {
+        const mine = cells.filter((c) => c.product === product.id);
+        expect.soft(mine.map((c) => c.theme).sort(), `${product.id}: one light and one dark cell`).toEqual(["magenta-violet", "rose-red"]);
+        for (const cell of mine) {
+          const expected = rgb(dark.has(cell.theme) ? product.primary.dark : product.primary.light);
+          expect.soft(cell.primary, `${product.id} [${cell.theme}] primary`).toBe(expected);
+          expect.soft(cell.nestedPrimary, `${product.id} [${cell.theme}] primary under a nested data-theme`).toBe(expected);
+          expect.soft(cell.themePrimary, `[${cell.theme}] without data-product keeps the theme's primary`).not.toBe(expected);
+          expect.soft(cell.brand, `${product.id} [${cell.theme}] brand background`).toBe(rgb(product.seeds.primary));
+        }
+      }
+    });
+
     test("/shadow shows the Figma shadows", async ({ page }) => {
       await openPage(page, target.name, "/shadow", DEFAULT_THEME);
       const levels = await page.locator(".shadow-frame__level").evaluateAll((els) =>
