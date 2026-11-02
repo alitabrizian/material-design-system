@@ -6,7 +6,7 @@ of being noticed by eye later.
 
 | Spec | What it checks |
 | --- | --- |
-| `tokens.spec.mts` | Every Foundation token in the design system Figma file (Color System, Numeric Tokens, Typography, Shadow, Motion, Icons) against the tokens package: each value on `:root` in all four themes, the docs' Fundamentals pages (`/typography`, `/colors`, `/scales`, `/shadow`), and that each alias color points at its Figma base color in `src/color-tokens.css`. |
+| `tokens.spec.mts` | Every Foundation token in the design system Figma file (Color System, Numeric Tokens, Typography, Shadow, Motion, Icons) against the tokens package: each value on `:root` in all four themes, the docs' Fundamentals pages (`/typography`, `/colors`, `/scales`, `/shadow`), that each alias color points at its Figma base color in `src/color-tokens.css`, and on `/theming` that each product brand (`src/products.json`) sets the primary role in a light and a dark theme, also under a nested `data-theme`. |
 | `visual.spec.mts` | One screenshot per docs example, preview area only (no code panel, no page chrome), named `<page>--<example-id>.png`. Each page's first example is shot again in the three other themes, and `/`, `/button` and `/data-grid` are shot whole at 360px wide. |
 | `a11y.spec.mts` | axe-core with the WCAG 2.2 A and AA rules on every page, and color contrast again in each other theme. |
 

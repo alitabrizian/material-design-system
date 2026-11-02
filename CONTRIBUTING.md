@@ -62,7 +62,7 @@ Rules:
    Add a `--state` modifier only for state that has no attribute (for example `pb-select--open` on the
    wrapper). Never use a class instead of the ARIA state assistive tech needs.
 5. **`data-*` attributes are for theming only:** `data-theme="rose-red|azure-blue|magenta-violet|cyan-orange"`
-   and `data-product="…"`. Do not add new `data-*` styling hooks for component state.
+   and `data-product="<project>"` (see [Theming](#theming)). Do not add new `data-*` styling hooks for component state.
 6. **Kebab case, lowercase, English.** No camelCase, no framework names (`pb-mat-…`) and no new
    selectors on `.mat-mdc-*` / `.mdc-*` internals; style the `pb-` class on the host instead.
 7. **Reuse the shared utilities.** Interactive surfaces use `pb-interactive` + a `pb-state-layer`
@@ -86,6 +86,36 @@ Every `color`, `background`, `border-color`, `outline-color`, `fill`, `stroke`, 
 `caret-color` comes from a token, directly or through `color-mix()` of tokens. Literal colors
 (hex, `rgb()`, `hsl()`, named colors other than `transparent`, `currentColor`, `inherit`) are allowed
 only in generated token files. `tools/scripts/audit-colors.mts` enforces this and fails the build.
+
+### Theming
+
+Every consuming project (product) has its own brand colors (design team decision, 2026-10-31). A project
+selects its brand with `data-product="<id>"` on `<html>` (any element may carry it to re-brand its subtree);
+`data-theme` still selects light or dark and the neutral surfaces, and works with every product. Without
+`data-product` the theme's own colors apply, so existing apps are unchanged.
+
+- **The brands live in the tokens project.** `tokens/src/products.json` lists each product: its `id` (the
+  `data-product` value), `name`, base `palette` in `src/color-tokens.css` and its seed colors (`primary`, and
+  optionally `secondary`, `tertiary` and `dark` seeds), given as base color names so the brand comes from the
+  Figma palette. `tokens/scripts/build-products.mts` turns each entry into a `[data-product]` block in
+  `tokens.css` (and `product-tokens.css`).
+- **The Material roles come from Angular Material.** The block sets every primary, secondary and tertiary role
+  (`on-*`, `*-container`, `*-fixed`, `inverse-primary`, `surface-tint`) with Angular Material's own theme
+  generator (the `ng generate @angular/material:theme-color` schematic), as `light-dark()` pairs, so the tones
+  and their contrast are Angular Material's in light and dark themes alike. This extends constitution principle
+  III (four fixed themes) the way the Figma motion decision extended principle I: the themes stay Angular
+  Material's prebuilt ones, and a product only replaces their accent roles with generated ones.
+- **The PartoBita brand aliases follow the product.** The same block points the product-neutral aliases
+  (`--background-brand-*`, `--background-subtle-brand-*`, `--text-brand`, `--icon-brand`,
+  `--icon-state-brand-selected`, `--border-brand-*`, `--border-state-brand-selected`, the icon-button Selected
+  state) at the product's palette. Library CSS uses these or the `--md-sys-color-*` roles, never a
+  per-brand token such as `--background-brand-partobita-default`, so a `data-product` switch recolors it.
+- **Adding a project:** add its palette (`--brand-<name>-50` … `-900`, from the Figma Color System page) to
+  `src/color-tokens.css`, add an entry to `src/products.json`, run `npx nx run design-tokens:build`. The build
+  fails on a missing palette step, an unknown seed or a duplicate id. The docs' Theming page lists the products
+  from the build's `data/palettes.json`, so it needs no change.
+- Angular Material components follow too: `css/angular-material.css` re-binds the `--mat-sys-*` variables on
+  `[data-product]` as well as `[data-theme]`.
 
 ### Motion
 
@@ -146,7 +176,8 @@ These exist in the code today. Do not copy them; fix them when you touch the fil
   element form.
 - `pb-field--block` next to `pb-form-field--block`: use the full block name.
 - A few Blazor styles still target `.mat-mdc-*`, `.mdc-list-item--activated` or `.mat-typography`.
-- `data-product="sarafid"` while the token family is `--brand-sarafeed-*`.
+- `data-product="sarafid"` still works as an alias of `sarafeed` (the token family's name); use `sarafeed`. The
+  Figma icon-button tokens keep the `--icon-button-sarafid-*` names.
 - The Typography page's section is titled "Tokens and text styles" and lists token names; under the
   class rule it should list the classes a developer applies.
 - The Angular button page has no Accessibility section, while the Blazor pages have one.
@@ -327,6 +358,8 @@ specs in `specs/NNN-name/`).
 - [ ] With the Blazor docs running (`npx nx run blazor-design-system-docs:serve`), run
       `npx nx run blazor-design-system-docs:verify`: every page in all four themes, no page errors,
       no horizontal overflow at 360px, icon fonts render.
+- [ ] Check the component under a few products too (the docs' Theming page, or `data-product` on an
+      ancestor): it must take the brand from the color roles, in a light and a dark theme.
 - [ ] Review the screenshots in all four themes, and exercise keyboard and pointer behavior in a real
       browser, in both docs apps.
 

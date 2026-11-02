@@ -12,7 +12,7 @@ each framework. Applications use the public library APIs and never reach into fr
                                        ▼
                      libs/material-design-system/tokens
                      Nx: design-tokens · npm @partobita/design-tokens
-                     src/, reference/ ──build──▶ dist/ (tokens.css, themes, fonts)
+                     src/, reference/ ──build──▶ dist/ (tokens.css, themes, products, fonts)
                         │                                     │
              copied into wwwroot/css                 imported; --mat-sys-* bound
                         ▼                             via css/angular-material.css
@@ -52,6 +52,23 @@ light; Magenta & Violet and Cyan & Orange, dark) are generated from Angular Mate
 CSS. A theme is selected with `<html data-theme="…">`. The build emits `dist/`, which carries the
 `--md-sys-*` custom properties plus Roboto, Material Icons and Material Symbols, so nothing loads from
 a CDN.
+
+### Themes and product brands
+
+Two attributes on `<html>` (or any element, for its subtree) select the colors:
+
+| Attribute | Selects | Comes from |
+| --- | --- | --- |
+| `data-theme` | Light or dark, the neutral, surface and error roles, and the default accent roles | Angular Material's four prebuilt themes (`reference/angular-material/`) |
+| `data-product` | The project's brand: the primary, secondary and tertiary roles and the PartoBita brand aliases (`--background-brand-*`, `--text-brand`, …) | `src/products.json` (one entry per project: id, palette, seed colors), turned into `[data-product]` blocks by `scripts/build-products.mts` with Angular Material's own theme generator |
+
+Each product's roles are `light-dark()` pairs, so they follow the `color-scheme` the theme sets: one product
+works with every theme. The `[data-product]` blocks come last in `tokens.css` and also cover a `data-theme` nested
+inside a product, so the brand wins over the theme's accents while the theme keeps the mode and neutrals. Without
+`data-product` the theme's own colors apply. Components read only the `--md-sys-color-*` roles (and the
+product-neutral aliases), never a per-brand token, so both libraries recolor with no code of their own; in Angular,
+`css/angular-material.css` re-binds the `--mat-sys-*` variables on `[data-product]` too. The docs' Theming page
+shows every product in a light and a dark theme, read from `dist/data/palettes.json`.
 
 Literal colors may exist only in the generated token output. Everywhere else a color is a
 `var(--md-sys-color-*)` role or a `color-mix()` of roles, and `tools/scripts/audit-colors.mts`
