@@ -13,6 +13,7 @@
  */
 
 @import url("styles/base.css");
+@import url("styles/touch-target.css");
 @import url("styles/components/button.css");
 @import url("styles/components/button-toggle.css");
 @import url("styles/components/checkbox.css");

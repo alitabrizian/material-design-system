@@ -1,0 +1,137 @@
+/*
+ * The PartoBita 48px touch target (design team decision 2026-10-31) applied to the Angular Material
+ * inside the pb- components. Angular Material already draws 48px touch targets at its default density,
+ * but its density scale hides them (and shrinks tabs, expansion headers and tree nodes below 48px) from
+ * density -2 on. The design system follows Figma, not the density scale, so these Material variables
+ * are pinned to --touch-target-min on :root and again on each pb- host, where they win over a density
+ * mixin applied to an ancestor. Only hit areas and rows that are 48px by default are set here: no
+ * visual size changes. Blazor draws the same targets with pb-touch-target (styles/touch-target.css).
+ *
+ * The second half covers the Material controls that have no touch target of their own (button toggles,
+ * chips, sort headers) or clip theirs (slider thumbs, form-field suffix buttons, the vertical stepper).
+ * Like material-motion.css, it selects Material internals under the pb- hosts, for hit areas only.
+ */
+
+:root,
+pb-button,
+pb-checkbox,
+pb-radio-button,
+pb-slide-toggle,
+pb-paginator,
+pb-tabs,
+pb-expansion-panel,
+pb-tree,
+pb-chips,
+pb-datepicker,
+pb-date-range-picker,
+pb-timepicker,
+pb-data-grid {
+  --mat-button-filled-touch-target-display: block;
+  --mat-button-filled-touch-target-size: var(--touch-target-min);
+  --mat-button-outlined-touch-target-display: block;
+  --mat-button-outlined-touch-target-size: var(--touch-target-min);
+  --mat-button-protected-touch-target-display: block;
+  --mat-button-protected-touch-target-size: var(--touch-target-min);
+  --mat-button-text-touch-target-display: block;
+  --mat-button-text-touch-target-size: var(--touch-target-min);
+  --mat-button-tonal-touch-target-display: block;
+  --mat-button-tonal-touch-target-size: var(--touch-target-min);
+  --mat-icon-button-touch-target-display: block;
+  --mat-icon-button-touch-target-size: var(--touch-target-min);
+  --mat-fab-touch-target-display: block;
+  --mat-fab-touch-target-size: var(--touch-target-min);
+  --mat-fab-small-touch-target-display: block;
+  --mat-fab-small-touch-target-size: var(--touch-target-min);
+  --mat-checkbox-touch-target-display: block;
+  --mat-checkbox-touch-target-size: var(--touch-target-min);
+  --mat-radio-touch-target-display: block;
+  --mat-radio-touch-target-size: var(--touch-target-min);
+  --mat-slide-toggle-touch-target-display: block;
+  --mat-slide-toggle-touch-target-size: var(--touch-target-min);
+  --mat-paginator-touch-target-display: block;
+  --mat-paginator-page-size-select-touch-target-height: var(--touch-target-min);
+  --mat-tab-container-height: var(--touch-target-min);
+  --mat-expansion-header-collapsed-state-height: var(--touch-target-min);
+  --mat-tree-node-min-height: var(--touch-target-min);
+}
+
+/* An invisible 48px target centered on Material controls drawn smaller, like pb-touch-target. */
+pb-button-toggle-group .mat-button-toggle-button::after,
+:is(pb-chips, pb-chip) .mdc-evolution-chip__action--primary::after,
+pb-table .mat-sort-header-container::after {
+  content: "";
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  inline-size: max(100%, var(--touch-target-min));
+  block-size: max(100%, var(--touch-target-min));
+  translate: -50% -50%;
+}
+
+:is(pb-button-toggle-group .mat-button-toggle-button, :is(pb-chips, pb-chip) .mdc-evolution-chip__action--primary, pb-table .mat-sort-header-container):dir(rtl)::after {
+  translate: 50% -50%;
+}
+
+pb-table .mat-sort-header-container {
+  position: relative;
+}
+
+/* The 40px button-toggle group doesn't clip its toggles' targets; its end toggles round their own corners
+   (the group's corner less its 1px border), which also clips their state layers and ripples. */
+pb-button-toggle-group .mat-button-toggle-group {
+  overflow: visible;
+}
+
+pb-button-toggle-group .mat-button-toggle:first-of-type {
+  border-start-start-radius: calc(var(--mat-button-toggle-shape, var(--mat-sys-corner-extra-large)) - 1px);
+  border-end-start-radius: calc(var(--mat-button-toggle-shape, var(--mat-sys-corner-extra-large)) - 1px);
+}
+
+pb-button-toggle-group .mat-button-toggle:last-of-type {
+  border-start-end-radius: calc(var(--mat-button-toggle-shape, var(--mat-sys-corner-extra-large)) - 1px);
+  border-end-end-radius: calc(var(--mat-button-toggle-shape, var(--mat-sys-corner-extra-large)) - 1px);
+}
+
+pb-button-toggle-group .mat-button-toggle-ripple {
+  border-radius: inherit;
+  overflow: hidden;
+}
+
+/* Chips clip their label sideways (ellipsis) only, so the primary action's target shows above and below.
+   Unlike hidden, clip doesn't let a flex item shrink below its content, hence the min-inline-size. */
+:is(pb-chips, pb-chip) :is(.mdc-evolution-chip__cell--primary, .mdc-evolution-chip__action--primary) {
+  overflow-x: clip;
+  min-inline-size: 0;
+}
+
+/* Slider: the thumb's native input fills the slider's 48px height instead of 44px. */
+pb-slider .mdc-slider__input {
+  inset-block-start: 0;
+  block-size: var(--touch-target-min);
+}
+
+/* A form field clips its content to its box, which cuts 4px off the target of a suffix or prefix icon
+   button that sits 4px from its edge: anchor the target to the button's outer edge instead. */
+:is(pb-input, pb-select, pb-autocomplete, pb-chips, pb-datepicker, pb-date-range-picker, pb-timepicker) .mat-mdc-form-field-icon-suffix .mat-mdc-button-touch-target {
+  left: auto;
+  right: auto;
+  inset-inline-end: 0;
+  transform: translateY(-50%);
+}
+
+:is(pb-input, pb-select, pb-autocomplete, pb-chips, pb-datepicker, pb-date-range-picker, pb-timepicker) .mat-mdc-form-field-icon-prefix .mat-mdc-button-touch-target {
+  left: auto;
+  right: auto;
+  inset-inline-start: 0;
+  transform: translateY(-50%);
+}
+
+/* The vertical stepper clips a step's content for its expand motion; let a button at the top or bottom
+   of the content keep its 48px target. The margin is (48px target - 40px button) / 2, as a literal:
+   browsers don't accept calc() or var() in overflow-clip-margin. */
+pb-stepper .mat-vertical-stepper-content {
+  overflow: clip;
+  overflow-clip-margin: 4px;
+  /* Unlike hidden, clip doesn't let a collapsed step's content shrink to 0 in its grid row. */
+  min-block-size: 0;
+}

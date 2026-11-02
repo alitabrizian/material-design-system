@@ -36,7 +36,7 @@
                 <mat-icon matChipAvatar>{{ name }}</mat-icon>
               }
               <ng-container [ngTemplateOutlet]="chip.template()" />
-              <button matChipRemove aria-label="Remove"><mat-icon>cancel</mat-icon></button>
+              <button matChipRemove aria-label="Remove"><mat-icon>cancel</mat-icon><span class="pb-touch-target" aria-hidden="true"></span></button>
             </mat-chip>
           }
           @default {
@@ -94,7 +94,7 @@
                 <mat-icon matChipAvatar>{{ name }}</mat-icon>
               }
               <ng-container [ngTemplateOutlet]="chip.template()" />
-              <button matChipRemove aria-label="Remove"><mat-icon>cancel</mat-icon></button>
+              <button matChipRemove aria-label="Remove"><mat-icon>cancel</mat-icon><span class="pb-touch-target" aria-hidden="true"></span></button>
             </mat-chip>
           }
           @default {
@@ -155,11 +155,11 @@
             (edited)="onEdited(i, $event.value)"
           >
             @if (canEdit(tag)) {
-              <button matChipEdit [attr.aria-label]="'Edit ' + tag.text"><mat-icon>edit</mat-icon></button>
+              <button matChipEdit [attr.aria-label]="'Edit ' + tag.text"><mat-icon>edit</mat-icon><span class="pb-touch-target" aria-hidden="true"></span></button>
             }
             {{ tag.text }}
             @if (interactive()) {
-              <button matChipRemove [attr.aria-label]="'Remove ' + tag.text"><mat-icon>cancel</mat-icon></button>
+              <button matChipRemove [attr.aria-label]="'Remove ' + tag.text"><mat-icon>cancel</mat-icon><span class="pb-touch-target" aria-hidden="true"></span></button>
             }
           </mat-chip-row>
         }

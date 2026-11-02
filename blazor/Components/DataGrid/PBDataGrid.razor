@@ -30,11 +30,12 @@
             @if (ShowSearchBox)
             {
                 <label class="pb-grid__search">
+                    <span class="pb-touch-target" aria-hidden="true"></span>
                     <span class="material-icons" aria-hidden="true">search</span>
                     <input type="search" value="@searchText" placeholder="@SearchBoxPlaceholder" aria-label="Search in the grid" @oninput="OnSearchInputAsync" />
                     @if (!string.IsNullOrEmpty(searchText))
                     {
-                        <button type="button" class="pb-grid__icon-button" aria-label="Clear search" @onclick="() => SetSearchTextAsync(null)"><span class="material-icons" aria-hidden="true">close</span></button>
+                        <button type="button" class="pb-grid__icon-button" aria-label="Clear search" @onclick="() => SetSearchTextAsync(null)"><span class="material-icons" aria-hidden="true">close</span><span class="pb-touch-target" aria-hidden="true"></span></button>
                     }
                 </label>
             }
@@ -74,7 +75,9 @@
                     <span class="material-icons pb-grid__sort-icon" aria-hidden="true">@(c.CurrentSortOrder == PBGridSortOrder.Descending ? "arrow_downward" : "arrow_upward")</span>
                     <button type="button" class="pb-grid__chip-remove" aria-label="@($"Ungroup {c.DisplayCaption}")" @onclick="() => Run(() => Ungroup(c.Key))" @onclick:stopPropagation="true">
                         <span class="material-icons" aria-hidden="true">close</span>
+                        <span class="pb-touch-target" aria-hidden="true"></span>
                     </button>
+                    <span class="pb-touch-target" aria-hidden="true"></span>
                 </span>
             }
         </div>
@@ -235,7 +238,8 @@
                 <span class="material-icons pb-grid__filter-panel-icon" aria-hidden="true">filter_alt</span>
             }
             <button type="button" class="pb-grid__filter-text @(filterEnabled ? null : "pb-grid__filter-text--disabled")" @onclick="ShowFilterBuilder">
-                @(activeUserFilter?.ToDisplayText(CaptionOf) ?? "Create Filter")
+                <span class="pb-grid__filter-label">@(activeUserFilter?.ToDisplayText(CaptionOf) ?? "Create Filter")</span>
+                <span class="pb-touch-target" aria-hidden="true"></span>
             </button>
             <span class="pb-grid__toolbar-spacer"></span>
             @if (activeUserFilter is not null)
@@ -280,6 +284,7 @@
                 var allState = FilterMenuAllState();
                 <div class="pb-grid__filter-menu" role="dialog" aria-label="@($"Filter {popupColumn.DisplayCaption}")">
                     <label class="pb-grid__search pb-grid__search--block">
+                        <span class="pb-touch-target" aria-hidden="true"></span>
                         <span class="material-icons" aria-hidden="true">search</span>
                         <input type="search" placeholder="Search values" aria-label="Search values" @bind="filterMenuSearch" @bind:event="oninput" />
                     </label>
@@ -315,8 +320,8 @@
                             <PBCheckbox Label="@(c.DisplayCaption.Length > 0 ? c.DisplayCaption : c is PBDataGridSelectionColumn ? "Selection" : c is PBDataGridCommandColumn ? "Commands" : c.Key)"
                                         checked="@c.CurrentVisible" @onchange="() => ToggleChooserColumnAsync(c)" />
                             <span class="pb-grid__toolbar-spacer"></span>
-                            <button type="button" class="pb-grid__icon-button" aria-label="@($"Move {c.DisplayCaption} up")" @onclick="() => MoveChooserColumnAsync(c, -1)"><span class="material-icons" aria-hidden="true">arrow_upward</span></button>
-                            <button type="button" class="pb-grid__icon-button" aria-label="@($"Move {c.DisplayCaption} down")" @onclick="() => MoveChooserColumnAsync(c, 1)"><span class="material-icons" aria-hidden="true">arrow_downward</span></button>
+                            <button type="button" class="pb-grid__icon-button" aria-label="@($"Move {c.DisplayCaption} up")" @onclick="() => MoveChooserColumnAsync(c, -1)"><span class="material-icons" aria-hidden="true">arrow_upward</span><span class="pb-touch-target" aria-hidden="true"></span></button>
+                            <button type="button" class="pb-grid__icon-button" aria-label="@($"Move {c.DisplayCaption} down")" @onclick="() => MoveChooserColumnAsync(c, 1)"><span class="material-icons" aria-hidden="true">arrow_downward</span><span class="pb-touch-target" aria-hidden="true"></span></button>
                         </li>
                     }
                 </ul>
@@ -560,7 +565,7 @@
                     @if (SelectionMode == PBGridSelectionMode.Multiple && selection.AllowSelectAll)
                     {
                         var state = SelectAllState();
-                        <span @onclick:stopPropagation="true">
+                        <span class="pb-grid__select" @onclick:stopPropagation="true">
                             <PBCheckbox checked="@(state == true)" Indeterminate="@(state is null)" aria-label="Select all rows" @onchange="ToggleSelectAllAsync" />
                         </span>
                     }
@@ -596,6 +601,7 @@
                                 aria-label="@($"Filter {column.DisplayCaption}")" aria-haspopup="dialog"
                                 @onclick="e => OpenFilterMenu(column, e)" @onclick:stopPropagation="true">
                             <span class="material-icons" aria-hidden="true">@(column.FilterValues is not null ? "filter_alt" : "filter_list")</span>
+                            <span class="pb-touch-target" aria-hidden="true"></span>
                         </button>
                     }
                 }
@@ -634,6 +640,7 @@
             <button type="button" class="pb-grid__icon-button pb-grid__operator-button" aria-label="@($"{label}: {PBGridFilter.OperatorText(op)}")"
                     title="@PBGridFilter.OperatorText(op)" aria-haspopup="menu" @onclick="e => OpenOperatorMenu(column, e)">
                 <span class="pb-grid__operator-symbol" aria-hidden="true">@OperatorGlyph(op)</span>
+                <span class="pb-touch-target" aria-hidden="true"></span>
             </button>
             @if (blankOp)
             {
@@ -641,28 +648,35 @@
             }
             else if (editor is PBGridEditorType.CheckBox or PBGridEditorType.ComboBox)
             {
-                <select class="pb-grid__editor pb-grid__filter-input" aria-label="@label" @onchange="e => OnFilterRowInputAsync(column, e.Value?.ToString(), true)">
-                    <option value="" selected="@string.IsNullOrEmpty(column.FilterRowText)">(All)</option>
-                    @if (editor == PBGridEditorType.CheckBox)
-                    {
-                        <option value="true" selected="@(column.FilterRowText == "true")">Yes</option>
-                        <option value="false" selected="@(column.FilterRowText == "false")">No</option>
-                    }
-                    else
-                    {
-                        @foreach (var item in column.ComboItems(typeof(TItem)))
+                <label class="pb-grid__filter-field">
+                    <span class="pb-touch-target" aria-hidden="true"></span>
+                    <select class="pb-grid__editor pb-grid__filter-input" aria-label="@label" @onchange="e => OnFilterRowInputAsync(column, e.Value?.ToString(), true)">
+                        <option value="" selected="@string.IsNullOrEmpty(column.FilterRowText)">(All)</option>
+                        @if (editor == PBGridEditorType.CheckBox)
                         {
-                            var text = EditorText(item, editor);
-                            <option value="@text" selected="@(column.FilterRowText == text)">@column.FormatValue(item)</option>
+                            <option value="true" selected="@(column.FilterRowText == "true")">Yes</option>
+                            <option value="false" selected="@(column.FilterRowText == "false")">No</option>
                         }
-                    }
-                </select>
+                        else
+                        {
+                            @foreach (var item in column.ComboItems(typeof(TItem)))
+                            {
+                                var text = EditorText(item, editor);
+                                <option value="@text" selected="@(column.FilterRowText == text)">@column.FormatValue(item)</option>
+                            }
+                        }
+                    </select>
+                </label>
             }
             else
             {
-                <input class="pb-grid__editor pb-grid__filter-input" type="@(editor == PBGridEditorType.Date ? "date" : editor == PBGridEditorType.Number ? "number" : "text")"
-                       step="@(editor == PBGridEditorType.Number ? "any" : null)" value="@column.FilterRowText" aria-label="@label"
-                       @oninput="e => OnFilterRowInputAsync(column, e.Value?.ToString(), editor == PBGridEditorType.Date)" />
+                @* The label makes the filter cell's full 48px height focus the editor (the touch target). *@
+                <label class="pb-grid__filter-field">
+                    <span class="pb-touch-target" aria-hidden="true"></span>
+                    <input class="pb-grid__editor pb-grid__filter-input" type="@(editor == PBGridEditorType.Date ? "date" : editor == PBGridEditorType.Number ? "number" : "text")"
+                           step="@(editor == PBGridEditorType.Number ? "any" : null)" value="@column.FilterRowText" aria-label="@label"
+                           @oninput="e => OnFilterRowInputAsync(column, e.Value?.ToString(), editor == PBGridEditorType.Date)" />
+                </label>
             }
         </div>
     }
@@ -805,11 +819,13 @@
                         case "detail":
                             <button type="button" class="pb-grid__icon-button" aria-expanded="@(detailOpen ? "true" : "false")" aria-label="@(detailOpen ? "Collapse detail row" : "Expand detail row")" @onclick="() => ToggleDetail(item)">
                                 <span class="material-icons" aria-hidden="true">@(detailOpen ? "expand_more" : "chevron_right")</span>
+                                <span class="pb-touch-target" aria-hidden="true"></span>
                             </button>
                             break;
                         case "adaptive":
                             <button type="button" class="pb-grid__icon-button" aria-expanded="@(adaptiveOpen ? "true" : "false")" aria-label="@(adaptiveOpen ? "Hide more columns" : "Show more columns")" @onclick="() => ToggleAdaptive(item)">
                                 <span class="material-icons" aria-hidden="true">@(adaptiveOpen ? "unfold_less" : "more_horiz")</span>
+                                <span class="pb-touch-target" aria-hidden="true"></span>
                             </button>
                             break;
                         default:
@@ -876,11 +892,11 @@
                     if (IsTree && TreeConfig!.RecursiveSelection && SelectionMode == PBGridSelectionMode.Multiple)
                     {
                         var state = TreeCheckState(item);
-                        <PBCheckbox checked="@(state == true)" Indeterminate="@(state is null)" aria-label="Select row and its children" @onchange="() => ToggleTreeSelectionAsync(item)" />
+                        <PBCheckbox class="pb-grid__select" checked="@(state == true)" Indeterminate="@(state is null)" aria-label="Select row and its children" @onchange="() => ToggleTreeSelectionAsync(item)" />
                     }
                     else
                     {
-                        <PBCheckbox checked="@IsSelected(item)" aria-label="Select row" @onchange="() => ToggleRowSelectionAsync(item)" />
+                        <PBCheckbox class="pb-grid__select" checked="@IsSelected(item)" aria-label="Select row" @onchange="() => ToggleRowSelectionAsync(item)" />
                     }
                 }
             </td>
@@ -954,6 +970,7 @@
                             <button type="button" class="pb-grid__tree-toggle" tabindex="-1" aria-expanded="@(row.TreeExpanded ? "true" : "false")"
                                     aria-label="@(row.TreeExpanded ? "Collapse" : "Expand")" @onclick="() => ToggleTreeRowAsync(row)" @onclick:stopPropagation="true">
                                 <span class="material-icons" aria-hidden="true">@(row.TreeExpanded ? "expand_more" : "chevron_right")</span>
+                                <span class="pb-touch-target" aria-hidden="true"></span>
                             </button>
                         }
                         else
@@ -1207,7 +1224,7 @@
                 </PBButton>
                 @if (parent is not null)
                 {
-                    <button type="button" class="pb-grid__icon-button" aria-label="Remove group" @onclick="() => RemoveNode(parent, group)"><span class="material-icons" aria-hidden="true">close</span></button>
+                    <button type="button" class="pb-grid__icon-button" aria-label="Remove group" @onclick="() => RemoveNode(parent, group)"><span class="material-icons" aria-hidden="true">close</span><span class="pb-touch-target" aria-hidden="true"></span></button>
                 }
             </div>
             <div class="pb-grid__fb-children">
@@ -1276,7 +1293,7 @@
                            step="@(editor == PBGridEditorType.Number ? "any" : null)" value="@node.Value" @onchange="e => node.Value = e.Value?.ToString()" />
                 }
             }
-            <button type="button" class="pb-grid__icon-button" aria-label="Remove condition" @onclick="() => RemoveNode(parent, node)"><span class="material-icons" aria-hidden="true">close</span></button>
+            <button type="button" class="pb-grid__icon-button" aria-label="Remove condition" @onclick="() => RemoveNode(parent, node)"><span class="material-icons" aria-hidden="true">close</span><span class="pb-touch-target" aria-hidden="true"></span></button>
         </div>
     }
 }

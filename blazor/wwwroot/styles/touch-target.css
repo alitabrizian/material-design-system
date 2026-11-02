@@ -1,0 +1,28 @@
+/*
+ * PartoBita touch targets (design team decision 2026-10-31, docs Fundamentals > Accessibility): every
+ * interactive control has a hit area of at least 48 x 48px, at every density. The value is the
+ * --touch-target-min token in tokens/src/touch-target-tokens.css; apps use these classes and never the
+ * token. Same file in both libraries.
+ *
+ *   pb-touch-target   an invisible child that makes a smaller control's hit area 48 x 48px (or the
+ *                     control's own size, if larger), centered on it. The control must be positioned
+ *                     (position: relative); the child takes the clicks and passes them to the control.
+ *
+ * Controls that are 48px or more on their own (list items, menu items, tabs, options, expansion
+ * headers) need no child: their component CSS sets a min-block-size from the token. Only hit areas
+ * change; the visual sizes stay as Figma draws them.
+ */
+
+.pb-touch-target {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  inline-size: max(100%, var(--touch-target-min));
+  block-size: max(100%, var(--touch-target-min));
+  translate: -50% -50%;
+}
+
+/* translate is physical: in right-to-left the start edge is the right one, so move the other way. */
+.pb-touch-target:dir(rtl) {
+  translate: 50% -50%;
+}

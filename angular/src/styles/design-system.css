@@ -16,6 +16,8 @@
 @import "./layout.css";
 @import "./layer.css";
 @import "./material-motion.css";
+@import "./touch-target.css";
+@import "./material-touch-target.css";
 
 body {
   margin: 0;

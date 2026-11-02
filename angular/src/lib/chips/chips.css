@@ -53,6 +53,11 @@
   padding: 0 !important;
 }
 
+/* The template draws the whole tag, so the label doesn't clip it, or the touch target of its buttons. */
+.pb-chips__tag-row :is(.mdc-evolution-chip__cell--primary, .mdc-evolution-chip__action--primary, .mat-mdc-chip-action-label) {
+  overflow: visible;
+}
+
 .pb-chips__tag-row .mdc-evolution-chip__action--primary::before,
 .pb-chips__tag-row .mat-mdc-chip-focus-overlay {
   display: none;

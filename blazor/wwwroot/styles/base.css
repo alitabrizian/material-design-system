@@ -3,7 +3,7 @@
  * each interactive element:
  *   .pb-state-layer   = .mat-mdc-button-persistent-ripple / .mdc-*__ripple (hover/focus/pressed tint)
  *   .pb-ripple        = .mat-ripple-element (pointer-positioned ink, see design-system.js)
- *   .pb-touch-target  = .mat-mdc-*-touch-target (48px minimum hit area)
+ *   .pb-touch-target  = .mat-mdc-*-touch-target (48px minimum hit area, in styles/touch-target.css)
  *
  * A component opts in by giving its host `pb-interactive` and a child `<span class="pb-state-layer">`,
  * then setting --pb-state-layer-color (defaults to currentColor). Opacities are the M3 system tokens:
@@ -71,16 +71,6 @@
   .pb-ripple {
     display: none;
   }
-}
-
-/* 48x48 minimum hit area, centered on controls that are visually smaller (40px buttons, icons). */
-.pb-touch-target {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: max(100%, 48px);
-  height: max(100%, 48px);
-  transform: translate(-50%, -50%);
 }
 
 .pb-visually-hidden {
