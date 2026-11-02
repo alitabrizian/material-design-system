@@ -34,7 +34,7 @@ submodule) still uses `--host 127.0.0.1`, so use `npm run docs:angular` for netw
 `src/docs-links.json` maps each framework to its docs site; `null` shows the card as "coming soon"
 (React and Svelte, until their design systems exist). The defaults are the dev servers on the machine
 the page was opened from: Angular docs `http://{host}:4200` (`npm run docs:angular`) and Blazor docs
-`http://{host}:5080` (`npm run docs`), where the page replaces `{host}` with its own host name
+`http://{host}:5080` (`npm run docs:blazor`), where the page replaces `{host}` with its own host name
 (`location.hostname`). Environment variables override them for the dev server and the build:
 
 | Variable | Framework |
