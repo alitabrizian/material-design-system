@@ -26,6 +26,9 @@ libs/material-design-system/tokens  ──► libs/material-design-system/blazor
 | `src/layer-tokens.css` | Hand-authored PartoBita layers from the design team's Figma Layering page, bottom to top: `--layer-page-content` (0), `--layer-app-header` (100), `--layer-dragged` (200), `--layer-menu` (300), `--layer-modal` (400), `--layer-dialog` (500), `--layer-popover` (600), `--layer-tooltip` (700), `--layer-snackbar` (800), `--layer-spotlight` (900). Figma gives the order; the 100 steps are ours. Components and apps use the `pb-layer--*` classes, not these tokens. Copied to `dist/css/layer-tokens.css` and included in `tokens.css` | yes |
 | `fonts/yekan-bakh/*.woff2` | Yekan Bakh FaNum Light, Regular, SemiBold, Bold and ExtraBold (fontiran.com, commercial license) | yes |
 | `src/icon-tokens.css` | Hand-authored icon tokens from the Figma Icons page: `--icon-size-16..32`, `--icon-stroke-width`, and the product icon-button states (`--icon-button-*`; Selected follows `data-product`) | yes |
+| `src/products.json` | The product (project) brands: per product its `id` (the `data-product` value), `name`, optional `aliases`, its base `palette` in `src/color-tokens.css` and the seed colors `primary` (and optional `secondary`, `tertiary`, `dark`), as base color names or hex. One product is the `default`. See [Product brands](#product-brands) | yes |
+| `scripts/build-products.mts` | Turns `src/products.json` into one `[data-product="<id>"]` block per product: the Material primary, secondary and tertiary roles from Angular Material's own theme generator (as `light-dark()` pairs) and the PartoBita brand aliases bound to the product's palette | yes |
+| `dist/css/product-tokens.css` | The generated `[data-product]` blocks (also at the end of `tokens.css`) | no |
 | `icons/icons.json`, `icons/svg/*.svg` | The icon set: categories and names from the Figma Icons page (Untitled UI line icons + the PartoBita icons), one `currentColor` 24x24 SVG per name (Untitled UI SVGs generated from `@untitled-ui/icons-react`, MIT; see `icons/README.md`). Built by `scripts/build-icons.mts`; listed icons without an SVG yet are left out with a warning | yes |
 | `dist/icons/*.svg`, `dist/data/icons.json`, `dist/css/icon-tokens.css` | Every icon, the icon set with inline SVG markup (for the docs' Icons page), and a copy of `src/icon-tokens.css` (also in `tokens.css`) | no |
 | `dist/css/tokens.css` | Everything above: color roles per `[data-theme]` (with `color-scheme`) and system tokens on `:root` | no |
@@ -48,6 +51,34 @@ Fontsource's family name `Roboto Variable` to plain `Roboto`, so the token resol
 A same-named `@font-face` also takes priority over any locally installed Roboto, so every machine
 renders the same file. Consumers load `css/roboto.css` next to the token stylesheets. `roboto.css` and
 `fonts/` must stay siblings under the same parent, because the CSS uses relative `../fonts/` URLs.
+
+## Product brands
+
+Every consuming project (product) has its own brand colors (design team decision, 2026-10-31). A project
+selects its brand with `data-product="<id>"` on `<html>`; any element may carry it to re-brand its subtree.
+The brand sets:
+
+- the Material 3 **primary, secondary and tertiary** roles, all of them (`on-*`, `*-container`,
+  `on-*-container`, `*-fixed`, `*-fixed-dim`, `on-*-fixed`, `on-*-fixed-variant`, `inverse-primary`,
+  `surface-tint`). They are generated with Angular Material's own theme generator (the
+  `ng generate @angular/material:theme-color` schematic, which bundles `@material/material-color-utilities`),
+  so the tones, and with them the contrast of `on-*` against its role, are Angular Material's. Each value is a
+  `light-dark()` pair, so the same product works with the light and the dark themes: `data-theme` still picks
+  the mode and the neutral, surface and error roles.
+- the product-neutral PartoBita aliases (`--background-brand-*`, `--background-subtle-brand-*`, `--text-brand`,
+  `--icon-brand`, `--icon-state-brand-selected`, `--border-brand-*`, `--border-state-brand-selected`) and the
+  icon-button Selected state, bound to steps 50, 100, 200, 500, 600 and 700 of the product's palette.
+
+Without `data-product`, the Material roles are the theme's and the aliases are the default product's (Partobita).
+A `data-theme` nested inside a `data-product` keeps the product's brand.
+
+To add a product: add its base palette (`--brand-<name>-50` ... `-900`, from the Figma Color System page) to
+`src/color-tokens.css`, add an entry to `src/products.json`, and run the build. The build fails on a missing
+palette step, an unknown seed, a duplicate id or a missing default.
+
+```json
+{ "id": "satima", "name": "Satima", "palette": "brand-satima", "primary": "brand-satima-500" }
+```
 
 ## Build
 

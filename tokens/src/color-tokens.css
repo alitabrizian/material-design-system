@@ -11,6 +11,10 @@
  * border) and state (default, hover, press, selected, disable). Use the alias tokens, e.g.
  *   background: var(--background-brand-partobita-default);
  *   color: var(--text-primary-primary);
+ * The product-neutral brand aliases (--background-brand-default/hover/press, --background-subtle-brand-*,
+ * --text-brand, --icon-brand, --icon-state-brand-selected, --border-brand-*, --border-state-brand-selected) are
+ * generated from src/products.json (scripts/build-products.mts): they point at the palette of the product
+ * selected with data-product, Partobita by default. Library CSS uses those, not a per-brand alias.
  * Two Figma names are normalized: background/subtle/sarafid-press is --background-subtle-sarafeed-press,
  * and border/white/Default and border/light/Default are lowercase.
  */

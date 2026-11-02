@@ -1,0 +1,26 @@
+{
+  "$comment": [
+    "Brand colors per product (project). Each entry becomes a [data-product=\"<id>\"] block in dist/css/tokens.css",
+    "(see scripts/build-products.mts). 'palette' is the product's base color family in src/color-tokens.css",
+    "(--<palette>-50 ... -900, from the Figma Color System page); the PartoBita brand aliases (--background-brand-*,",
+    "--text-brand, --border-brand-*, ...) point at it. 'primary', 'secondary' and 'tertiary' are the seed colors of",
+    "the Material 3 color roles: a base color token name (without the leading --) or a hex color. Secondary and",
+    "tertiary are optional; Angular Material derives them from the primary seed when they are missing. 'dark' holds",
+    "optional seeds for dark themes; without it the dark roles come from the same seeds. 'aliases' are extra",
+    "data-product values that select the same brand. 'default' marks the brand of the PartoBita aliases when no",
+    "data-product is set (the Material roles then stay those of the data-theme)."
+  ],
+  "products": [
+    { "id": "partobita", "name": "Partobita", "default": true, "palette": "brand-partobita", "primary": "brand-partobita-500" },
+    { "id": "satima", "name": "Satima", "palette": "brand-satima", "primary": "brand-satima-500" },
+    { "id": "sarafeed", "name": "Sarafeed", "aliases": ["sarafid"], "palette": "brand-sarafeed", "primary": "brand-sarafeed-500" },
+    {
+      "id": "sajaak",
+      "name": "Sajaak",
+      "palette": "brand-sajaak-primary",
+      "primary": "brand-sajaak-primary-500",
+      "secondary": "brand-sajaak-accent-500"
+    },
+    { "id": "samasat", "name": "Samasat", "palette": "brand-samasat", "primary": "brand-samasat-500" }
+  ]
+}
