@@ -47,7 +47,7 @@ The library uses BEM with double separators. Every class starts with `pb-`.
 | Modifier: variant | `pb-<block>--<variant>` | `pb-button--filled`, `pb-button--fab-mini`, `pb-card--elevated`, `pb-icon--primary` |
 | Modifier: state | `pb-<block>--<state>` | `pb-button--disabled`, `pb-select--open`, `pb-option--selected`, `pb-tab--active`, `pb-expansion-panel--expanded` |
 | Element modifier | `pb-<block>__<element>--<modifier>` | `pb-button__icon--start`, `pb-form-field__label--required`, `pb-grid__cell--editing` |
-| Shared utility | `pb-<purpose>`, in `blazor/wwwroot/styles/base.css` | `pb-state-layer`, `pb-interactive`, `pb-touch-target`, `pb-focus-visible`, `pb-visually-hidden`, `pb-icon-slot`, `pb-overlay`, `pb-backdrop`, `pb-font-mainfont`; the motion patterns `pb-motion-state`, `pb-motion-expand`, `pb-motion-move-in`, `pb-motion-instant` and `pb-scrim` live in `styles/motion.css` (same file in both libraries); the page shell `pb-layout` lives in `styles/layout.css`; the layers `pb-layer`, `pb-layer--*` in `styles/layer.css` |
+| Shared utility | `pb-<purpose>`, in `blazor/wwwroot/styles/base.css` | `pb-state-layer`, `pb-interactive`, `pb-touch-target`, `pb-focus-visible`, `pb-visually-hidden`, `pb-icon-slot`, `pb-overlay`, `pb-backdrop`, `pb-font-mainfont`; the motion patterns `pb-motion-state`, `pb-motion-expand`, `pb-motion-move-in`, `pb-motion-instant` and `pb-scrim` live in `styles/motion.css` (same file in both libraries); the page shell `pb-layout` lives in `styles/layout.css`; the layers `pb-layer`, `pb-layer--*` in `styles/layer.css`; `pb-touch-target` in `styles/touch-target.css` |
 
 Rules:
 
@@ -138,6 +138,25 @@ grid `pb-grid` (4/8/12 columns at the Figma breakpoints, 16px gutter), `pb-col-{
 with an `--open` modifier) and the speeds `pb-motion-short/medium/long` (300/500/700ms) in
 `styles/motion.css`. Their values come from the Figma tokens; when Figma differs from a proposal, Figma wins.
 
+### Touch targets
+
+Every interactive control has a hit area of at least 48 × 48px (design team decision 2026-10-31, docs
+Fundamentals > Accessibility). The value is the `--touch-target-min` token (`tokens/src/touch-target-tokens.css`).
+Only hit areas change, never the visual size Figma draws, and density never shrinks a target below 48px (Figma,
+not Angular Material's density scale).
+
+- A control 48px or larger on its own (list item, menu item, option, tab, expansion header) needs nothing: set
+  its `min-block-size` from the token if a density or variant could shrink it.
+- A smaller control gets a `<span class="pb-touch-target" aria-hidden="true"></span>` as its last child and
+  `position: relative` on itself (`styles/touch-target.css`, same file in both libraries). Don't clip it: a
+  container with `overflow: hidden` cuts the target off; round the end children instead, or clip one axis with
+  `overflow-x: clip`.
+- In Angular, `styles/material-touch-target.css` pins Angular Material's own touch targets to the token at every
+  density and adds the same invisible target to the Material controls that have none (button toggles, chips,
+  sort headers). Like `material-motion.css`, it selects Material internals under the `pb-` hosts.
+- `tests/ui/touch-target.spec.mts` measures every control in every docs example in both apps. The calendar's day,
+  month and year cells (40px grid) are exempt until the design team decides on them.
+
 ### Known deviations
 
 These exist in the code today. Do not copy them; fix them when you touch the file.
@@ -153,6 +172,7 @@ These exist in the code today. Do not copy them; fix them when you touch the fil
 - `angular/src/styles/material-motion.css` selects Angular Material internals (`.mat-*`) under the `pb-`
   hosts, with `!important`, to apply the Figma motion; Material has no motion tokens for them. Keep it to
   timing and placement offsets.
+- `angular/src/styles/material-touch-target.css` does the same for the 48px touch target. Keep it to hit areas.
 - Blazor components are prefixed `PB` (`PBButton`) and Angular classes `Pb` (`PbButton`). Keep each
   library's own prefix; do not rename one to match the other in an unrelated change.
 

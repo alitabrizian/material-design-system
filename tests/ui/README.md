@@ -9,6 +9,7 @@ of being noticed by eye later.
 | `tokens.spec.mts` | Every Foundation token in the design system Figma file (Color System, Numeric Tokens, Typography, Shadow, Motion, Icons) against the tokens package: each value on `:root` in all four themes, the docs' Fundamentals pages (`/typography`, `/colors`, `/scales`, `/shadow`), and that each alias color points at its Figma base color in `src/color-tokens.css`. |
 | `visual.spec.mts` | One screenshot per docs example, preview area only (no code panel, no page chrome), named `<page>--<example-id>.png`. Each page's first example is shot again in the three other themes, and `/`, `/button` and `/data-grid` are shot whole at 360px wide. |
 | `a11y.spec.mts` | axe-core with the WCAG 2.2 A and AA rules on every page, and color contrast again in each other theme. |
+| `touch-target.spec.mts` | Every control in every docs example has a hit area of at least 48 × 48px (Fundamentals > Accessibility): its own box grown by its touch target, its label or its form field, less what an `overflow: hidden` ancestor cuts off. A failure lists each control that is too small, with its size. |
 
 Pages come from each docs app's catalog (`Navigation/ComponentCatalog.cs`, `src/app/component-catalog.ts`)
 and examples from its example index (the `<ExampleCard>`s of `Pages/*.razor`, read the same way as
