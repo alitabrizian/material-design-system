@@ -63,9 +63,18 @@
   margin: 0 32px 0 24px;
 }
 
+/* Wraps only when the paginator is narrower than the label and buttons (a narrow grid), so the buttons
+   and their 48px touch targets stay inside it instead of overflowing its start edge. */
 .pb-paginator__range-actions {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
+  justify-content: flex-end;
+}
+
+/* Each line of buttons is the 48px touch target tall (the 56px row is unchanged). */
+.pb-paginator__range-actions > .pb-button {
+  margin-block: calc((var(--touch-target-min) - 40px) / 2);
 }
 
 .pb-paginator__icon {

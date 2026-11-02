@@ -1,0 +1,14 @@
+/**
+ * Hand-authored PartoBita touch target token, from the design team's decision of 2026-10-31: every
+ * interactive control has a hit area of at least 48 x 48px, whatever its visual size or density. This
+ * follows Figma, not Angular Material's density scale, which lets some targets shrink below 48px.
+ *
+ * Controls that are 48px or larger get a minimum block and inline size from the token; smaller visuals
+ * (checkbox, radio, switch, icon button, chip remove, slider thumb, ...) keep their size and carry an
+ * invisible pb-touch-target child that is 48px and centered on them. Components and apps use the
+ * pb-touch-target class (styles/touch-target.css), never this token.
+ */
+
+:root {
+  --touch-target-min: 48px;
+}

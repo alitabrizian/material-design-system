@@ -9,6 +9,7 @@
                 @onclick="OnPrimaryClickAsync">
             @Graphic
             <span class="pb-chip__label">@Label@ChildContent</span>
+            <span class="pb-touch-target" aria-hidden="true"></span>
         </button>
     }
     else
@@ -22,6 +23,7 @@
     {
         <button type="button" class="pb-chip__remove" disabled="@Disabled" aria-label="@($"Remove {Label}")" @onclick="OnRemove">
             <span class="material-icons" aria-hidden="true">cancel</span>
+            <span class="pb-touch-target" aria-hidden="true"></span>
         </button>
     }
 </span>

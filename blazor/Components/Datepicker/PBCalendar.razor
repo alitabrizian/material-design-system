@@ -14,6 +14,7 @@
                 <span class="pb-state-layer"></span>
                 <span id="@(id + "-period")" aria-live="polite">@PeriodLabel</span>
                 <svg class="pb-calendar__arrow @(view != View.Month ? "pb-calendar__arrow--up" : null)" viewBox="0 0 10 5" focusable="false" aria-hidden="true"><polygon points="0,0 5,5 10,0" /></svg>
+                <span class="pb-touch-target" aria-hidden="true"></span>
             </button>
             <span class="pb-calendar__spacer"></span>
             <PBButton Variant="PBButtonVariant.Icon" class="pb-calendar__nav" Disabled="!CanPrevious" aria-label="@PreviousLabel" @onclick="Previous">

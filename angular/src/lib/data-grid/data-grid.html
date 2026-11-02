@@ -4,10 +4,11 @@
     <span class="pb-grid__toolbar-spacer"></span>
     @if (showSearchBox()) {
       <label class="pb-grid__search">
+        <span class="pb-touch-target" aria-hidden="true"></span>
         <span class="material-icons" aria-hidden="true">search</span>
         <input type="search" [value]="searchText()" [placeholder]="searchPlaceholder()" aria-label="Search in the grid" (input)="onSearchInput($any($event.target).value)" />
         @if (searchText()) {
-          <button type="button" class="pb-grid__icon-button" aria-label="Clear search" (click)="setSearchText('')"><span class="material-icons" aria-hidden="true">close</span></button>
+          <button type="button" class="pb-grid__icon-button" aria-label="Clear search" (click)="setSearchText('')"><span class="material-icons" aria-hidden="true">close</span><span class="pb-touch-target" aria-hidden="true"></span></button>
         }
       </label>
     }
@@ -47,7 +48,9 @@
         <span class="material-icons pb-grid__sort-icon" aria-hidden="true">{{ column.currentSort() === 'desc' ? 'arrow_downward' : 'arrow_upward' }}</span>
         <button type="button" class="pb-grid__chip-remove" [attr.aria-label]="'Ungroup ' + column.displayCaption" (click)="removeGroup(column, $event)">
           <span class="material-icons" aria-hidden="true">close</span>
+          <span class="pb-touch-target" aria-hidden="true"></span>
         </button>
+        <span class="pb-touch-target" aria-hidden="true"></span>
       </span>
     }
   </div>
@@ -189,7 +192,7 @@
     } @else {
       <span class="material-icons pb-grid__filter-panel-icon" aria-hidden="true">filter_alt</span>
     }
-    <button type="button" class="pb-grid__filter-text" [class.pb-grid__filter-text--disabled]="!filterEnabled()" (click)="showFilterBuilder()">{{ filterPanelText() }}</button>
+    <button type="button" class="pb-grid__filter-text" [class.pb-grid__filter-text--disabled]="!filterEnabled()" (click)="showFilterBuilder()"><span class="pb-grid__filter-label">{{ filterPanelText() }}</span><span class="pb-touch-target" aria-hidden="true"></span></button>
     <span class="pb-grid__toolbar-spacer"></span>
     @if (userFilter()) {
       <button mat-button type="button" (click)="clearFilter()">Clear</button>
@@ -222,6 +225,7 @@
     } @else if (p.column; as column) {
       <div class="pb-grid__filter-menu" role="dialog" [attr.aria-label]="'Filter ' + column.displayCaption">
         <label class="pb-grid__search pb-grid__search--block">
+          <span class="pb-touch-target" aria-hidden="true"></span>
           <span class="material-icons" aria-hidden="true">search</span>
           <input type="search" placeholder="Search values" aria-label="Search values" [value]="filterMenuSearch()" (input)="filterMenuSearch.set($any($event.target).value)" />
         </label>
@@ -256,9 +260,11 @@
         <span class="pb-grid__toolbar-spacer"></span>
         <button type="button" class="pb-grid__icon-button" [attr.aria-label]="'Move ' + chooserCaption(entry.column) + ' up'" (click)="moveChooserColumn(entry.column, -1)">
           <span class="material-icons" aria-hidden="true">arrow_upward</span>
+          <span class="pb-touch-target" aria-hidden="true"></span>
         </button>
         <button type="button" class="pb-grid__icon-button" [attr.aria-label]="'Move ' + chooserCaption(entry.column) + ' down'" (click)="moveChooserColumn(entry.column, 1)">
           <span class="material-icons" aria-hidden="true">arrow_downward</span>
+          <span class="pb-touch-target" aria-hidden="true"></span>
         </button>
       </li>
     }
@@ -345,6 +351,7 @@
         @case ('selection') {
           @if (selectionMode() === 'multiple' && column.allowSelectAll()) {
             <mat-checkbox
+              class="pb-grid__select"
               [checked]="selectAllState() === true"
               [indeterminate]="selectAllState() === null"
               aria-label="Select all rows"
@@ -386,6 +393,7 @@
               (click)="openFilterMenu(column, $event)"
             >
               <span class="material-icons" aria-hidden="true">{{ column.filterValues() ? 'filter_alt' : 'filter_list' }}</span>
+              <span class="pb-touch-target" aria-hidden="true"></span>
             </button>
           }
         }
@@ -411,30 +419,38 @@
       (click)="openOperatorMenu(column, $event)"
     >
       <span class="pb-grid__operator-symbol" aria-hidden="true">{{ operatorSymbol(op) }}</span>
+      <span class="pb-touch-target" aria-hidden="true"></span>
     </button>
     @if (op === 'blank' || op === 'notBlank') {
       <span class="pb-grid__filter-blank">{{ operatorLabel(op) }}</span>
     } @else if (editor === 'checkbox' || editor === 'select') {
-      <select class="pb-grid__editor pb-grid__filter-input" [attr.aria-label]="label" (change)="onFilterRowInput(column, $any($event.target).value, true)">
-        <option value="" [selected]="!column.filterRowText()">(All)</option>
-        @if (editor === 'checkbox') {
-          <option value="true" [selected]="column.filterRowText() === 'true'">Yes</option>
-          <option value="false" [selected]="column.filterRowText() === 'false'">No</option>
-        } @else {
-          @for (item of comboItems(column); track $index) {
-            <option [value]="optionValue(item)" [selected]="column.filterRowText() === optionValue(item)">{{ formatCell(column, item) }}</option>
+      <label class="pb-grid__filter-field">
+        <span class="pb-touch-target" aria-hidden="true"></span>
+        <select class="pb-grid__editor pb-grid__filter-input" [attr.aria-label]="label" (change)="onFilterRowInput(column, $any($event.target).value, true)">
+          <option value="" [selected]="!column.filterRowText()">(All)</option>
+          @if (editor === 'checkbox') {
+            <option value="true" [selected]="column.filterRowText() === 'true'">Yes</option>
+            <option value="false" [selected]="column.filterRowText() === 'false'">No</option>
+          } @else {
+            @for (item of comboItems(column); track $index) {
+              <option [value]="optionValue(item)" [selected]="column.filterRowText() === optionValue(item)">{{ formatCell(column, item) }}</option>
+            }
           }
-        }
-      </select>
+        </select>
+      </label>
     } @else {
-      <input
-        class="pb-grid__editor pb-grid__filter-input"
-        [type]="filterRowInputType(column)"
-        [attr.step]="editor === 'number' ? 'any' : null"
-        [value]="column.filterRowText() ?? ''"
-        [attr.aria-label]="label"
-        (input)="onFilterRowInput(column, $any($event.target).value, editor === 'date')"
-      />
+      <!-- The label makes the filter cell's full 48px height focus the editor (the touch target). -->
+      <label class="pb-grid__filter-field">
+        <span class="pb-touch-target" aria-hidden="true"></span>
+        <input
+          class="pb-grid__editor pb-grid__filter-input"
+          [type]="filterRowInputType(column)"
+          [attr.step]="editor === 'number' ? 'any' : null"
+          [value]="column.filterRowText() ?? ''"
+          [attr.aria-label]="label"
+          (input)="onFilterRowInput(column, $any($event.target).value, editor === 'date')"
+        />
+      </label>
     }
   </div>
 </ng-template>
@@ -524,6 +540,7 @@
                 (click)="$event.stopPropagation(); toggleDetail(item)"
               >
                 <span class="material-icons" aria-hidden="true">{{ detailOpen ? 'expand_more' : 'chevron_right' }}</span>
+                <span class="pb-touch-target" aria-hidden="true"></span>
               </button>
             }
             @case ('adaptive') {
@@ -535,6 +552,7 @@
                 (click)="$event.stopPropagation(); toggleAdaptive(item)"
               >
                 <span class="material-icons" aria-hidden="true">{{ adaptiveOpen ? 'unfold_less' : 'more_horiz' }}</span>
+                <span class="pb-touch-target" aria-hidden="true"></span>
               </button>
             }
             @default {
@@ -596,9 +614,9 @@
         @if (selectionMode() !== 'none' && !row.inserted) {
           @if (treeRecursiveSelection()) {
             @let state = treeCheckState(item);
-            <mat-checkbox [checked]="state === true" [indeterminate]="state === null" aria-label="Select row and its children" (change)="toggleRow(item)" />
+            <mat-checkbox class="pb-grid__select" [checked]="state === true" [indeterminate]="state === null" aria-label="Select row and its children" (change)="toggleRow(item)" />
           } @else {
-            <mat-checkbox [checked]="isSelected(item)" aria-label="Select row" (change)="toggleRow(item)" />
+            <mat-checkbox class="pb-grid__select" [checked]="isSelected(item)" aria-label="Select row" (change)="toggleRow(item)" />
           }
         }
       </td>
@@ -663,6 +681,7 @@
                   (click)="$event.stopPropagation(); toggleTreeRow(row)"
                 >
                   <span class="material-icons" aria-hidden="true">{{ row.treeExpanded ? 'expand_more' : 'chevron_right' }}</span>
+                  <span class="pb-touch-target" aria-hidden="true"></span>
                 </button>
               } @else {
                 <span class="pb-grid__tree-spacer" aria-hidden="true"></span>
@@ -864,7 +883,7 @@
       <button mat-button type="button" (click)="addCondition(group)"><span class="material-icons" aria-hidden="true">add</span>Condition</button>
       <button mat-button type="button" (click)="addGroup(group)"><span class="material-icons" aria-hidden="true">add_box</span>Group</button>
       @if (parent) {
-        <button type="button" class="pb-grid__icon-button" aria-label="Remove group" (click)="removeNode(parent, group)"><span class="material-icons" aria-hidden="true">close</span></button>
+        <button type="button" class="pb-grid__icon-button" aria-label="Remove group" (click)="removeNode(parent, group)"><span class="material-icons" aria-hidden="true">close</span><span class="pb-touch-target" aria-hidden="true"></span></button>
       }
     </div>
     <div class="pb-grid__fb-children">
@@ -912,7 +931,7 @@
                 />
               }
             }
-            <button type="button" class="pb-grid__icon-button" aria-label="Remove condition" (click)="removeNode(group, node)"><span class="material-icons" aria-hidden="true">close</span></button>
+            <button type="button" class="pb-grid__icon-button" aria-label="Remove condition" (click)="removeNode(group, node)"><span class="material-icons" aria-hidden="true">close</span><span class="pb-touch-target" aria-hidden="true"></span></button>
           </div>
         }
       }

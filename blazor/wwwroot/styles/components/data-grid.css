@@ -81,19 +81,25 @@
 }
 
 .pb-grid__filter-text {
+  position: relative;
   flex: 0 1 auto;
   min-width: 0;
   padding: 4px 8px;
-  overflow: hidden;
   border: none;
   border-radius: var(--md-sys-shape-corner-extra-small);
   background: none;
   color: var(--md-sys-color-primary);
   font: inherit;
   text-align: start;
-  text-overflow: ellipsis;
   white-space: nowrap;
   cursor: pointer;
+}
+
+/* The ellipsis lives on the label, so the button itself can show its touch target. */
+.pb-grid__filter-label {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .pb-grid__filter-text:hover {
@@ -154,6 +160,7 @@
 }
 
 .pb-grid__group-chip {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -186,6 +193,7 @@
 }
 
 .pb-grid__chip-remove {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -210,6 +218,7 @@
 /* ------------------------------------------------------------------ search box and small icon buttons */
 
 .pb-grid__search {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -233,7 +242,9 @@
   border-radius: var(--md-sys-shape-corner-extra-small);
 }
 
+/* Above the search box's touch target, so a click on the text still places the caret. */
 .pb-grid__search input {
+  position: relative;
   flex: 1 1 auto;
   min-width: 0;
   height: 100%;
@@ -250,6 +261,7 @@
 }
 
 .pb-grid__icon-button {
+  position: relative;
   display: inline-flex;
   flex-shrink: 0;
   align-items: center;
@@ -633,6 +645,12 @@
   text-align: center !important;
 }
 
+/* A selection cell doesn't clip its checkbox: the 40px checkbox overflows the cell's content box, and its
+   48px touch target reaches past the cell's edge. */
+:is(.pb-grid__cell, .pb-grid__header-cell):has(.pb-grid__select) {
+  overflow: visible;
+}
+
 .pb-grid__cell--editable {
   cursor: text;
 }
@@ -920,7 +938,17 @@ textarea.pb-grid__editor {
 }
 
 .pb-grid__filter-input {
+  position: relative;
   height: 32px;
+}
+
+/* The filter row's editor in a label, whose touch target covers the 48px row (under the editor). */
+.pb-grid__filter-field {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  min-width: 0;
 }
 
 .pb-grid__edit-row > td {
@@ -1101,6 +1129,7 @@ textarea.pb-grid__editor {
 }
 
 .pb-grid__tree-toggle {
+  position: relative;
   display: inline-flex;
   flex: none;
   align-items: center;

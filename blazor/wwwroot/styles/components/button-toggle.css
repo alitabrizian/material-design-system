@@ -15,11 +15,25 @@
   box-sizing: border-box;
   border: 1px solid var(--md-sys-color-outline);
   border-radius: var(--md-sys-shape-corner-extra-large);
-  overflow: hidden;
   white-space: nowrap;
   vertical-align: middle;
   -webkit-tap-highlight-color: transparent;
   transform: translateZ(0);
+}
+
+/*
+ * The group doesn't clip its toggles, so their 48px touch targets (pb-touch-target) reach past its 40px
+ * height. The first and last toggles round their own outer corners instead (the group's corner less its
+ * 1px border), which also clips their state layers and ripples.
+ */
+.pb-button-toggle-group > .pb-button-toggle:first-child {
+  border-start-start-radius: calc(var(--md-sys-shape-corner-extra-large) - 1px);
+  border-end-start-radius: calc(var(--md-sys-shape-corner-extra-large) - 1px);
+}
+
+.pb-button-toggle-group > .pb-button-toggle:last-child {
+  border-start-end-radius: calc(var(--md-sys-shape-corner-extra-large) - 1px);
+  border-end-end-radius: calc(var(--md-sys-shape-corner-extra-large) - 1px);
 }
 
 .pb-button-toggle {

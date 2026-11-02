@@ -18,6 +18,7 @@
  *   - css/tokens.css            color roles per theme + all system tokens + src/material-tokens.css
  *                               + src/typography-tokens.css + src/scale-tokens.css + src/shadow-tokens.css
  *                               + src/motion-tokens.css + src/layout-tokens.css + src/layer-tokens.css
+ *                               + src/touch-target-tokens.css
  *                               + the per-product brand blocks generated from src/products.json (last, so a
  *                               [data-product] overrides the theme's primary/secondary/tertiary roles)
  *   - css/product-tokens.css    the generated [data-product] blocks on their own (see build-products.mts)
@@ -29,6 +30,7 @@
  *   - css/motion-tokens.css     copy of src/motion-tokens.css (PartoBita motion patterns)
  *   - css/layout-tokens.css     copy of src/layout-tokens.css (PartoBita breakpoints, margins, sidebar)
  *   - css/layer-tokens.css      copy of src/layer-tokens.css (PartoBita layers, the Figma stacking order)
+ *   - css/touch-target-tokens.css copy of src/touch-target-tokens.css (PartoBita 48px minimum hit area)
  *   - css/angular-material.css  every --mat-sys-* Angular Material reads, bound to its --md-sys-* token,
  *                               so Angular Material components follow these tokens (and data-theme)
  *   - css/roboto.css            self-hosted Roboto @font-face rules (from @fontsource-variable/roboto)
@@ -201,6 +203,9 @@ tokensCss.push("/* ---- src/layout-tokens.css (PartoBita breakpoints, margins, s
 const layers = fs.readFileSync(path.join(packageRoot, "src/layer-tokens.css"), "utf8");
 tokensCss.push("/* ---- src/layer-tokens.css (PartoBita layers, the Figma stacking order) ---- */", layers.trim(), "");
 
+const touchTarget = fs.readFileSync(path.join(packageRoot, "src/touch-target-tokens.css"), "utf8");
+tokensCss.push("/* ---- src/touch-target-tokens.css (PartoBita 48px minimum hit area) ---- */", touchTarget.trim(), "");
+
 const scales = fs.readFileSync(path.join(packageRoot, "src/scale-tokens.css"), "utf8");
 tokensCss.push("/* ---- src/scale-tokens.css (space, stroke, radius, opacity) ---- */", scales.trim(), "");
 
@@ -337,6 +342,7 @@ write("css/shadow-tokens.css", shadows);
 write("css/motion-tokens.css", motion);
 write("css/layout-tokens.css", layout);
 write("css/layer-tokens.css", layers);
+write("css/touch-target-tokens.css", touchTarget);
 write("css/icon-tokens.css", iconTokens);
 write(
   "css/product-tokens.css",
