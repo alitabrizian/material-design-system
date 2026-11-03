@@ -9,7 +9,8 @@
       "executor": "nx:run-commands",
       "options": {
         "command": "node tools/scripts/dev-design-system-landing.mts --build",
-        "cwd": "{workspaceRoot}"
+        "cwd": "{workspaceRoot}",
+        "env": { "DESIGN_TOKENS_PREBUILT": "1" }
       },
       "outputs": ["{workspaceRoot}/dist/apps/design-system-landing"]
     },
