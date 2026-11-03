@@ -34,7 +34,8 @@ const outRoot = path.join(repoRoot, "dist/apps/design-system-landing");
 const FRAMEWORKS = ["angular", "blazor", "react", "svelte"];
 
 // `npm start` (tools/scripts/serve-all.mts) builds the tokens once and sets DESIGN_TOKENS_PREBUILT, so
-// this server does not wipe tokens/dist while the other apps are compiling against it.
+// this server does not wipe tokens/dist while the other apps are compiling against it. The Nx build
+// target sets it too: it runs after design-tokens:build, alongside other tasks that read dist.
 if (!process.env.DESIGN_TOKENS_PREBUILT) {
   const tokens = spawnSync("node", ["libs/material-design-system/tokens/scripts/build-tokens.mts"], { cwd: repoRoot, stdio: "inherit" });
   if (tokens.status !== 0) {
