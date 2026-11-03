@@ -46,7 +46,7 @@ The library uses BEM with double separators. Every class starts with `pb-`.
 | Element | `pb-<block>__<element>` | `pb-button__label`, `pb-card__header-text`, `pb-form-field__infix`, `pb-chip__remove` |
 | Modifier: variant | `pb-<block>--<variant>` | `pb-button--filled`, `pb-button--fab-mini`, `pb-card--elevated`, `pb-icon--primary` |
 | Modifier: state | `pb-<block>--<state>` | `pb-button--disabled`, `pb-select--open`, `pb-option--selected`, `pb-tab--active`, `pb-expansion-panel--expanded` |
-| Element modifier | `pb-<block>__<element>--<modifier>` | `pb-button__icon--start`, `pb-form-field__label--required`, `pb-grid__cell--editing` |
+| Element modifier | `pb-<block>__<element>--<modifier>` | `pb-button__icon--start`, `pb-form-field__label--required`, `pb-data-grid__cell--editing` |
 | Shared utility | `pb-<purpose>`, in `blazor/wwwroot/styles/base.css` | `pb-state-layer`, `pb-interactive`, `pb-touch-target`, `pb-focus-visible`, `pb-visually-hidden`, `pb-icon-slot`, `pb-overlay`, `pb-backdrop`, `pb-font-mainfont`; the motion patterns `pb-motion-state`, `pb-motion-expand`, `pb-motion-move-in`, `pb-motion-instant` and `pb-scrim` live in `styles/motion.css` (same file in both libraries); the page shell `pb-layout` lives in `styles/layout.css`; the layers `pb-layer`, `pb-layer--*` in `styles/layer.css`; `pb-touch-target` in `styles/touch-target.css` |
 
 Rules:
@@ -167,6 +167,10 @@ grid `pb-grid` (4/8/12 columns at the Figma breakpoints, 16px gutter), `pb-col-{
 `styles/layout.css`, and the motion classes `pb-motion-fade`, `pb-motion-scale`, `pb-motion-slide-up` (each
 with an `--open` modifier) and the speeds `pb-motion-short/medium/long` (300/500/700ms) in
 `styles/motion.css`. Their values come from the Figma tokens; when Figma differs from a proposal, Figma wins.
+
+`pb-grid` is the layout's column grid only. The data grid's block is `pb-data-grid` (`pb-data-grid__row`,
+`pb-data-grid--measuring`, `--pb-data-grid-divider`, …); it was `pb-grid` until 2026-11-03, when the two
+clashed and the layout's `display: grid` broke every data grid (rule 1: block name = component name).
 
 ### Touch targets
 
