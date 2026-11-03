@@ -79,8 +79,10 @@
     (Re)generates libs/material-design-system/tokens/dist whenever its sources changed (incremental: skipped
     when dist/css/tokens.css is newer than every source), so a fresh clone or an edited token file
     never needs a manual `nx run design-tokens:build`. Requires `npm ci` at the workspace root.
+    Nx builds set SkipDesignTokensBuild=true: they depend on design-tokens:build, and a second build here
+    would wipe dist while other tasks of the same run (the Angular docs' prepare, ng build) read it.
   -->
-  <Target Name="BuildDesignTokens" BeforeTargets="SyncDesignTokens"
+  <Target Name="BuildDesignTokens" BeforeTargets="SyncDesignTokens" Condition="'$(SkipDesignTokensBuild)' != 'true'"
           Inputs="@(_DesignTokenSource)" Outputs="$(DesignTokensDist)css\tokens.css">
     <Exec Command="node &quot;$(DesignTokensRoot)scripts/build-tokens.mts&quot;" WorkingDirectory="$(MSBuildThisFileDirectory)../../.." />
   </Target>

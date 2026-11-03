@@ -9,7 +9,8 @@
       "dependsOn": ["^build"],
       "options": {
         "command": "dotnet build PartoBita.DesignSystem.Blazor.csproj",
-        "cwd": "libs/material-design-system/blazor"
+        "cwd": "libs/material-design-system/blazor",
+        "env": { "SkipDesignTokensBuild": "true" }
       }
     },
     "lint": {
@@ -24,7 +25,8 @@
       "dependsOn": ["^build"],
       "options": {
         "command": "node libs/material-design-system/blazor/scripts/pack.mts",
-        "cwd": "{workspaceRoot}"
+        "cwd": "{workspaceRoot}",
+        "env": { "SkipDesignTokensBuild": "true" }
       },
       "outputs": ["{workspaceRoot}/local-nuget-feed"]
     }
