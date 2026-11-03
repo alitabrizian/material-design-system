@@ -191,8 +191,8 @@ public class PBDataGridColumn : ComponentBase, IDisposable
         }
         return align switch
         {
-            PBGridTextAlignment.End => "pb-grid__cell--end",
-            PBGridTextAlignment.Center => "pb-grid__cell--center",
+            PBGridTextAlignment.End => "pb-data-grid__cell--end",
+            PBGridTextAlignment.Center => "pb-data-grid__cell--center",
             _ => "",
         };
     }

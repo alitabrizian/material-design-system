@@ -404,7 +404,7 @@ public partial class PBDataGrid<TItem> : WorkspaceComponentBase, IPBDataGridHost
         if (focusEditorAfterRender)
         {
             focusEditorAfterRender = false;
-            await DesignSystemJs.InvokeVoidAsync(JS, "focusFirst", root, ".pb-grid__editor--autofocus, .pb-grid__edit-row .pb-grid__editor:not([disabled])");
+            await DesignSystemJs.InvokeVoidAsync(JS, "focusFirst", root, ".pb-data-grid__editor--autofocus, .pb-data-grid__edit-row .pb-data-grid__editor:not([disabled])");
         }
     }
 

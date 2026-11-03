@@ -24,18 +24,18 @@
 
     @if (ToolbarTemplate is not null || ShowSearchBox)
     {
-        <div class="pb-grid__toolbar" role="toolbar" aria-label="@(Label is null ? "Grid toolbar" : Label + " toolbar")">
+        <div class="pb-data-grid__toolbar" role="toolbar" aria-label="@(Label is null ? "Grid toolbar" : Label + " toolbar")">
             @ToolbarTemplate
-            <span class="pb-grid__toolbar-spacer"></span>
+            <span class="pb-data-grid__toolbar-spacer"></span>
             @if (ShowSearchBox)
             {
-                <label class="pb-grid__search">
+                <label class="pb-data-grid__search">
                     <span class="pb-touch-target" aria-hidden="true"></span>
                     <span class="material-icons" aria-hidden="true">search</span>
                     <input type="search" value="@searchText" placeholder="@SearchBoxPlaceholder" aria-label="Search in the grid" @oninput="OnSearchInputAsync" />
                     @if (!string.IsNullOrEmpty(searchText))
                     {
-                        <button type="button" class="pb-grid__icon-button" aria-label="Clear search" @onclick="() => SetSearchTextAsync(null)"><span class="material-icons" aria-hidden="true">close</span><span class="pb-touch-target" aria-hidden="true"></span></button>
+                        <button type="button" class="pb-data-grid__icon-button" aria-label="Clear search" @onclick="() => SetSearchTextAsync(null)"><span class="material-icons" aria-hidden="true">close</span><span class="pb-touch-target" aria-hidden="true"></span></button>
                     }
                 </label>
             }
@@ -44,9 +44,9 @@
 
     @if (EditMode == PBGridEditMode.Batch && HasBatchChanges)
     {
-        <div class="pb-grid__batch-bar" role="status">
+        <div class="pb-data-grid__batch-bar" role="status">
             <span class="material-icons" aria-hidden="true">edit_note</span>
-            <span class="pb-grid__batch-text">Unsaved changes: @BatchSummaryText</span>
+            <span class="pb-data-grid__batch-text">Unsaved changes: @BatchSummaryText</span>
             <PBButton @onclick="CancelEditAsync">Cancel</PBButton>
             <PBButton Variant="PBButtonVariant.Filled" @onclick="SaveChangesAsync">Save</PBButton>
         </div>
@@ -59,21 +59,21 @@
 
     @if (groupPanelVisible && AllowGroup)
     {
-        <div class="pb-grid__group-panel" data-pb-group-panel aria-label="Group panel"
+        <div class="pb-data-grid__group-panel" data-pb-group-panel aria-label="Group panel"
              @oncontextmenu="OnGroupPanelContextMenu" @oncontextmenu:preventDefault="@ContextMenus.HasFlag(PBGridContextMenus.GroupPanel)">
             @if (groupedColumns.Count == 0)
             {
-                <span class="pb-grid__group-panel-hint">Drag a column header here to group by that column</span>
+                <span class="pb-data-grid__group-panel-hint">Drag a column header here to group by that column</span>
             }
             @foreach (var column in groupedColumns)
             {
                 var c = column;
-                <span class="pb-grid__group-chip" draggable="true" data-col-key="@c.Key" role="button" tabindex="0"
+                <span class="pb-data-grid__group-chip" draggable="true" data-col-key="@c.Key" role="button" tabindex="0"
                       aria-label="@($"Grouped by {c.DisplayCaption}, {(c.CurrentSortOrder == PBGridSortOrder.Descending ? "descending" : "ascending")}")"
                       @onclick="() => SortAndSaveAsync(c, c.CurrentSortOrder == PBGridSortOrder.Descending ? PBGridSortOrder.Ascending : PBGridSortOrder.Descending)">
                     <span>@c.DisplayCaption</span>
-                    <span class="material-icons pb-grid__sort-icon" aria-hidden="true">@(c.CurrentSortOrder == PBGridSortOrder.Descending ? "arrow_downward" : "arrow_upward")</span>
-                    <button type="button" class="pb-grid__chip-remove" aria-label="@($"Ungroup {c.DisplayCaption}")" @onclick="() => Run(() => Ungroup(c.Key))" @onclick:stopPropagation="true">
+                    <span class="material-icons pb-data-grid__sort-icon" aria-hidden="true">@(c.CurrentSortOrder == PBGridSortOrder.Descending ? "arrow_downward" : "arrow_upward")</span>
+                    <button type="button" class="pb-data-grid__chip-remove" aria-label="@($"Ungroup {c.DisplayCaption}")" @onclick="() => Run(() => Ungroup(c.Key))" @onclick:stopPropagation="true">
                         <span class="material-icons" aria-hidden="true">close</span>
                         <span class="pb-touch-target" aria-hidden="true"></span>
                     </button>
@@ -83,17 +83,17 @@
         </div>
     }
 
-    <div class="pb-grid__scroll" style="@(Height is null ? null : $"height:{Height}")">
+    <div class="pb-data-grid__scroll" style="@(Height is null ? null : $"height:{Height}")">
         @if (loading)
         {
-            <PBProgressBar Indeterminate="true" class="pb-grid__progress" aria-label="Loading data" />
+            <PBProgressBar Indeterminate="true" class="pb-data-grid__progress" aria-label="Loading data" />
         }
-        <table class="pb-grid__table @(IsTree ? "pb-grid__table--tree" : null)" style="@TableStyle" role="@(IsTree ? "treegrid" : "grid")" aria-label="@Label" aria-rowcount="@(UsesItemsProvider ? totalCount : (int?)null)"
+        <table class="pb-data-grid__table @(IsTree ? "pb-data-grid__table--tree" : null)" style="@TableStyle" role="@(IsTree ? "treegrid" : "grid")" aria-label="@Label" aria-rowcount="@(UsesItemsProvider ? totalCount : (int?)null)"
                aria-multiselectable="@(SelectionMode == PBGridSelectionMode.Multiple ? "true" : null)">
             <colgroup>
                 @for (var i = 0; i < indentCount; i++)
                 {
-                    <col class="pb-grid__col--indent" style="width:32px" />
+                    <col class="pb-data-grid__col--indent" style="width:32px" />
                 }
                 @foreach (var service in serviceColumns)
                 {
@@ -105,7 +105,7 @@
                 }
             </colgroup>
             <thead>
-                <tr class="pb-grid__measure" aria-hidden="true">
+                <tr class="pb-data-grid__measure" aria-hidden="true">
                     @for (var i = 0; i < indentCount + serviceColumns.Count; i++)
                     {
                         <th data-fixed="@(hasLeftFixed ? "left" : null)"></th>
@@ -118,12 +118,12 @@
                 @for (var level = 0; level < headerDepth; level++)
                 {
                     var row = level;
-                    <tr class="pb-grid__header-row">
+                    <tr class="pb-data-grid__header-row">
                         @if (row == 0)
                         {
                             @for (var i = 0; i < indentCount + serviceColumns.Count; i++)
                             {
-                                <th class="pb-grid__header-cell pb-grid__service-cell @FixedClass(i, true)" style="@FixedStyle(i, true)" rowspan="@headerDepth" aria-hidden="true"></th>
+                                <th class="pb-data-grid__header-cell pb-data-grid__service-cell @FixedClass(i, true)" style="@FixedStyle(i, true)" rowspan="@headerDepth" aria-hidden="true"></th>
                             }
                         }
                         @foreach (var cell in HeaderCells(row))
@@ -134,16 +134,16 @@
                 }
                 @if (filterRowVisible)
                 {
-                    <tr class="pb-grid__filter-row">
+                    <tr class="pb-data-grid__filter-row">
                         @for (var i = 0; i < indentCount + serviceColumns.Count; i++)
                         {
-                            <td class="pb-grid__service-cell @FixedClass(i, true)" style="@FixedStyle(i, true)"></td>
+                            <td class="pb-data-grid__service-cell @FixedClass(i, true)" style="@FixedStyle(i, true)"></td>
                         }
                         @for (var i = 0; i < leaves.Count; i++)
                         {
                             var column = leaves[i];
                             var position = indentCount + serviceColumns.Count + i;
-                            <td class="pb-grid__filter-cell @FixedClass(position, column)" style="@FixedStyle(position, column)">
+                            <td class="pb-data-grid__filter-cell @FixedClass(position, column)" style="@FixedStyle(position, column)">
                                 @if (column.CanFilter)
                                 {
                                     RenderFilterRowEditor(__builder, column);
@@ -167,7 +167,7 @@
                 {
                     <Virtualize @ref="virtualizer" ItemsProvider="ProvideRowsAsync" ItemSize="RowHeight" OverscanCount="10" SpacerElement="tr" Context="row">
                         <ItemContent>@RowFragment(row)</ItemContent>
-                        <Placeholder><tr class="pb-grid__row pb-grid__row--placeholder" style="height:@(RowHeight.ToString(CultureInfo.InvariantCulture))px"><td colspan="@totalColumns"></td></tr></Placeholder>
+                        <Placeholder><tr class="pb-data-grid__row pb-data-grid__row--placeholder" style="height:@(RowHeight.ToString(CultureInfo.InvariantCulture))px"><td colspan="@totalColumns"></td></tr></Placeholder>
                     </Virtualize>
                 }
                 else if (VirtualScrollingEnabled)
@@ -193,7 +193,7 @@
 
                 @if (!UsesItemsProvider && pageRows.Count == 0 && !IsEditingNewRow && !loading)
                 {
-                    <tr class="pb-grid__empty-row">
+                    <tr class="pb-data-grid__empty-row">
                         <td colspan="@totalColumns">@if (EmptyDataTemplate is not null) { @EmptyDataTemplate } else { @EmptyDataText }</td>
                     </tr>
                 }
@@ -202,21 +202,21 @@
             {
                 var defs = TotalSummaryDefs().ToList();
                 <tfoot>
-                    <tr class="pb-grid__footer-row">
+                    <tr class="pb-data-grid__footer-row">
                         @for (var i = 0; i < indentCount + serviceColumns.Count; i++)
                         {
-                            <td class="pb-grid__service-cell @FixedClass(i, true)" style="@FixedStyle(i, true)"></td>
+                            <td class="pb-data-grid__service-cell @FixedClass(i, true)" style="@FixedStyle(i, true)"></td>
                         }
                         @for (var i = 0; i < leaves.Count; i++)
                         {
                             var column = leaves[i];
                             var position = indentCount + serviceColumns.Count + i;
                             var custom = Customize(PBGridElementType.FooterCell, null, column, null, -1);
-                            <td class="pb-grid__footer-cell @column.AlignClass(typeof(TItem)) @FixedClass(position, column) @custom.Class" style="@JoinStyle(FixedStyle(position, column), custom.Style)"
+                            <td class="pb-data-grid__footer-cell @column.AlignClass(typeof(TItem)) @FixedClass(position, column) @custom.Class" style="@JoinStyle(FixedStyle(position, column), custom.Style)"
                                 @oncontextmenu="e => OnFooterContextMenu(column, e)" @oncontextmenu:preventDefault="@ContextMenus.HasFlag(PBGridContextMenus.Footer)">
                                 @foreach (var summary in FooterSummariesFor(totalSummaryValues, column, defs))
                                 {
-                                    <div class="pb-grid__summary">@summary.DisplayText</div>
+                                    <div class="pb-data-grid__summary">@summary.DisplayText</div>
                                 }
                             </td>
                         }
@@ -228,20 +228,20 @@
 
     @if (ShowFilterPanelNow)
     {
-        <div class="pb-grid__filter-panel">
+        <div class="pb-data-grid__filter-panel">
             @if (activeUserFilter is not null)
             {
                 <PBCheckbox checked="@filterEnabled" aria-label="Apply the filter" @onchange="ToggleFilterEnabled" />
             }
             else
             {
-                <span class="material-icons pb-grid__filter-panel-icon" aria-hidden="true">filter_alt</span>
+                <span class="material-icons pb-data-grid__filter-panel-icon" aria-hidden="true">filter_alt</span>
             }
-            <button type="button" class="pb-grid__filter-text @(filterEnabled ? null : "pb-grid__filter-text--disabled")" @onclick="ShowFilterBuilder">
-                <span class="pb-grid__filter-label">@(activeUserFilter?.ToDisplayText(CaptionOf) ?? "Create Filter")</span>
+            <button type="button" class="pb-data-grid__filter-text @(filterEnabled ? null : "pb-data-grid__filter-text--disabled")" @onclick="ShowFilterBuilder">
+                <span class="pb-data-grid__filter-label">@(activeUserFilter?.ToDisplayText(CaptionOf) ?? "Create Filter")</span>
                 <span class="pb-touch-target" aria-hidden="true"></span>
             </button>
-            <span class="pb-grid__toolbar-spacer"></span>
+            <span class="pb-data-grid__toolbar-spacer"></span>
             @if (activeUserFilter is not null)
             {
                 <PBButton @onclick="ClearFilterAsync">Clear</PBButton>
@@ -255,12 +255,12 @@
     }
     else if (VirtualScrollingEnabled)
     {
-        <div class="pb-grid__status" aria-live="polite">@((UsesItemsProvider ? totalCount : allRows.Count(r => r.Kind == GridRowKind.Data)).ToString("N0", CultureInfo.CurrentCulture)) rows</div>
+        <div class="pb-data-grid__status" aria-live="polite">@((UsesItemsProvider ? totalCount : allRows.Count(r => r.Kind == GridRowKind.Data)).ToString("N0", CultureInfo.CurrentCulture)) rows</div>
     }
 
     @if (popupKind != PopupKind.None)
     {
-        <div @ref="popup" class="pb-menu__panel pb-overlay pb-overlay--pending pb-grid__popup @(popupKind == PopupKind.FilterMenu ? "pb-grid__popup--filter" : null)"
+        <div @ref="popup" class="pb-menu__panel pb-overlay pb-overlay--pending pb-data-grid__popup @(popupKind == PopupKind.FilterMenu ? "pb-data-grid__popup--filter" : null)"
              popover="manual" @onkeydown="OnMenuKeyDownAsync">
             @if (popupKind == PopupKind.Menu)
             {
@@ -270,7 +270,7 @@
                         var menuItem = item;
                         @if (menuItem.BeginGroup)
                         {
-                            <div class="pb-grid__menu-divider" role="separator"></div>
+                            <div class="pb-data-grid__menu-divider" role="separator"></div>
                         }
                         <button type="button" class="pb-menu-item pb-ripple-host" role="menuitem" tabindex="-1" disabled="@menuItem.Disabled" @onclick="() => RunMenuItemAsync(menuItem)">
                             <span class="pb-menu-item__icon material-icons" aria-hidden="true">@menuItem.Icon</span>
@@ -282,13 +282,13 @@
             else if (popupColumn is not null)
             {
                 var allState = FilterMenuAllState();
-                <div class="pb-grid__filter-menu" role="dialog" aria-label="@($"Filter {popupColumn.DisplayCaption}")">
-                    <label class="pb-grid__search pb-grid__search--block">
+                <div class="pb-data-grid__filter-menu" role="dialog" aria-label="@($"Filter {popupColumn.DisplayCaption}")">
+                    <label class="pb-data-grid__search pb-data-grid__search--block">
                         <span class="pb-touch-target" aria-hidden="true"></span>
                         <span class="material-icons" aria-hidden="true">search</span>
                         <input type="search" placeholder="Search values" aria-label="Search values" @bind="filterMenuSearch" @bind:event="oninput" />
                     </label>
-                    <div class="pb-grid__filter-values" role="group" aria-label="Values">
+                    <div class="pb-data-grid__filter-values" role="group" aria-label="Values">
                         <PBCheckbox Label="(Select All)" checked="@(allState == true)" Indeterminate="@(allState is null)" @onchange="ToggleFilterMenuAll" />
                         @foreach (var value in VisibleFilterMenuValues)
                         {
@@ -296,7 +296,7 @@
                             <PBCheckbox Label="@v.Text" checked="@v.Checked" @onchange="() => v.Checked = !v.Checked" />
                         }
                     </div>
-                    <div class="pb-grid__popup-actions">
+                    <div class="pb-data-grid__popup-actions">
                         <PBButton @onclick="ClosePopupCoreAsync">Cancel</PBButton>
                         <PBButton Variant="PBButtonVariant.Filled" Disabled="@(filterMenuValues.All(v => !v.Checked))" @onclick="ApplyFilterMenuAsync">OK</PBButton>
                     </div>
@@ -307,21 +307,21 @@
 
     @if (columnChooserOpen)
     {
-        <PBDialog Label="Column chooser" @bind-Open="columnChooserOpen" class="pb-grid__dialog">
+        <PBDialog Label="Column chooser" @bind-Open="columnChooserOpen" class="pb-data-grid__dialog">
             <ChildContent>
-                <ul class="pb-grid__chooser" aria-label="Columns">
+                <ul class="pb-data-grid__chooser" aria-label="Columns">
                     @foreach (var (column, depth) in ChooserColumns())
                     {
                         var c = column;
-                        <li class="pb-grid__chooser-item @(chooserDragged == c ? "pb-grid__chooser-item--dragging" : null)" style="padding-inline-start:@(8 + depth * 24)px"
+                        <li class="pb-data-grid__chooser-item @(chooserDragged == c ? "pb-data-grid__chooser-item--dragging" : null)" style="padding-inline-start:@(8 + depth * 24)px"
                             draggable="true" @ondragstart="() => chooserDragged = c" @ondragend="() => chooserDragged = null"
                             @ondragover:preventDefault="true" @ondrop="() => DropChooserColumnAsync(c)">
-                            <span class="material-icons pb-grid__drag-icon" aria-hidden="true">drag_indicator</span>
+                            <span class="material-icons pb-data-grid__drag-icon" aria-hidden="true">drag_indicator</span>
                             <PBCheckbox Label="@(c.DisplayCaption.Length > 0 ? c.DisplayCaption : c is PBDataGridSelectionColumn ? "Selection" : c is PBDataGridCommandColumn ? "Commands" : c.Key)"
                                         checked="@c.CurrentVisible" @onchange="() => ToggleChooserColumnAsync(c)" />
-                            <span class="pb-grid__toolbar-spacer"></span>
-                            <button type="button" class="pb-grid__icon-button" aria-label="@($"Move {c.DisplayCaption} up")" @onclick="() => MoveChooserColumnAsync(c, -1)"><span class="material-icons" aria-hidden="true">arrow_upward</span><span class="pb-touch-target" aria-hidden="true"></span></button>
-                            <button type="button" class="pb-grid__icon-button" aria-label="@($"Move {c.DisplayCaption} down")" @onclick="() => MoveChooserColumnAsync(c, 1)"><span class="material-icons" aria-hidden="true">arrow_downward</span><span class="pb-touch-target" aria-hidden="true"></span></button>
+                            <span class="pb-data-grid__toolbar-spacer"></span>
+                            <button type="button" class="pb-data-grid__icon-button" aria-label="@($"Move {c.DisplayCaption} up")" @onclick="() => MoveChooserColumnAsync(c, -1)"><span class="material-icons" aria-hidden="true">arrow_upward</span><span class="pb-touch-target" aria-hidden="true"></span></button>
+                            <button type="button" class="pb-data-grid__icon-button" aria-label="@($"Move {c.DisplayCaption} down")" @onclick="() => MoveChooserColumnAsync(c, 1)"><span class="material-icons" aria-hidden="true">arrow_downward</span><span class="pb-touch-target" aria-hidden="true"></span></button>
                         </li>
                     }
                 </ul>
@@ -334,9 +334,9 @@
 
     @if (filterBuilderOpen)
     {
-        <PBDialog Label="Filter builder" @bind-Open="filterBuilderOpen" class="pb-grid__dialog pb-grid__dialog--wide">
+        <PBDialog Label="Filter builder" @bind-Open="filterBuilderOpen" class="pb-data-grid__dialog pb-data-grid__dialog--wide">
             <ChildContent>
-                <div class="pb-grid__filter-builder">
+                <div class="pb-data-grid__filter-builder">
                     @FilterBuilderContent
                 </div>
             </ChildContent>
@@ -349,7 +349,7 @@
 
     @if (popupEditOpen && editModel is not null && editContext is not null)
     {
-        <PBDialog Label="@(editIsNew ? "New row" : PopupEditFormTitle)" Open="true" OpenChanged="OnPopupEditOpenChangedAsync" class="pb-grid__dialog pb-grid__dialog--wide">
+        <PBDialog Label="@(editIsNew ? "New row" : PopupEditFormTitle)" Open="true" OpenChanged="OnPopupEditOpenChangedAsync" class="pb-data-grid__dialog pb-data-grid__dialog--wide">
             <ChildContent>@PopupEditFormContent</ChildContent>
             <Actions>
                 <PBButton @onclick="CancelEditAsync">Cancel</PBButton>
@@ -402,19 +402,19 @@
     {
         get
         {
-            var classes = new List<string> { "pb-grid" };
+            var classes = new List<string> { "pb-data-grid" };
             classes.Add(GridLines switch
             {
-                PBGridLines.Vertical => "pb-grid--lines-vertical",
-                PBGridLines.Both => "pb-grid--lines-both",
-                PBGridLines.None => "pb-grid--lines-none",
-                _ => "pb-grid--lines-horizontal",
+                PBGridLines.Vertical => "pb-data-grid--lines-vertical",
+                PBGridLines.Both => "pb-data-grid--lines-both",
+                PBGridLines.None => "pb-data-grid--lines-none",
+                _ => "pb-data-grid--lines-horizontal",
             });
-            if (AlternatingRows) classes.Add("pb-grid--alternating");
-            if (Dense) classes.Add("pb-grid--dense");
-            if (FocusedRowEnabled) classes.Add("pb-grid--focus-row");
-            if (AllowSelectRowByClick) classes.Add("pb-grid--click-select");
-            if (Height is not null) classes.Add("pb-grid--fixed-height");
+            if (AlternatingRows) classes.Add("pb-data-grid--alternating");
+            if (Dense) classes.Add("pb-data-grid--dense");
+            if (FocusedRowEnabled) classes.Add("pb-data-grid--focus-row");
+            if (AllowSelectRowByClick) classes.Add("pb-data-grid--click-select");
+            if (Height is not null) classes.Add("pb-data-grid--fixed-height");
             if (UserClass is not null) classes.Add(UserClass);
             return string.Join(' ', classes);
         }
@@ -444,7 +444,7 @@
 
     private RenderFragment Pager => __builder =>
     {
-        <PBPaginator class="pb-grid__pager" Length="@rowCount" PageIndex="@pageIndex" PageSize="@pageSize" PageSizeOptions="@PagerSizeOptions"
+        <PBPaginator class="pb-data-grid__pager" Length="@rowCount" PageIndex="@pageIndex" PageSize="@pageSize" PageSizeOptions="@PagerSizeOptions"
                      ShowFirstLastButtons="true" Page="OnPageAsync" Label="@(Label is null ? "Grid pages" : Label + " pages")" />
     };
 
@@ -475,16 +475,16 @@
         _ => null,
     };
 
-    private string? FixedClass(int position, bool service) => service && hasLeftFixed ? "pb-grid__cell--fixed-left" : null;
+    private string? FixedClass(int position, bool service) => service && hasLeftFixed ? "pb-data-grid__cell--fixed-left" : null;
 
     private string? FixedStyle(int position, bool service) => service && hasLeftFixed ? $"inset-inline-start:var(--pbg-fl-{position},0px)" : null;
 
     private string? FixedClass(int position, PBDataGridColumn column) => column.CurrentFixedPosition switch
     {
         PBGridFixedPosition.Left => leaves.LastOrDefault(c => c.CurrentFixedPosition == PBGridFixedPosition.Left) == column
-            ? "pb-grid__cell--fixed-left pb-grid__cell--fixed-edge" : "pb-grid__cell--fixed-left",
+            ? "pb-data-grid__cell--fixed-left pb-data-grid__cell--fixed-edge" : "pb-data-grid__cell--fixed-left",
         PBGridFixedPosition.Right => leaves.FirstOrDefault(c => c.CurrentFixedPosition == PBGridFixedPosition.Right) == column
-            ? "pb-grid__cell--fixed-right pb-grid__cell--fixed-edge" : "pb-grid__cell--fixed-right",
+            ? "pb-data-grid__cell--fixed-right pb-data-grid__cell--fixed-edge" : "pb-data-grid__cell--fixed-right",
         _ => null,
     };
 
@@ -550,7 +550,7 @@
         var draggable = cell.IsLeaf && (AllowColumnReorder || (groupPanelVisible && AllowGroup && column.CanGroup));
         var custom = Customize(PBGridElementType.HeaderCell, null, column, null, -1);
         var sortedCount = SortedColumns().Count;
-        <th class="pb-grid__header-cell @(cell.IsLeaf ? column.AlignClass(typeof(TItem)) : "pb-grid__band-cell") @(sortable ? "pb-grid__header-cell--sortable" : null) @(cell.IsLeaf ? FixedClass(cell.Position, column) : null) @custom.Class"
+        <th class="pb-data-grid__header-cell @(cell.IsLeaf ? column.AlignClass(typeof(TItem)) : "pb-data-grid__band-cell") @(sortable ? "pb-data-grid__header-cell--sortable" : null) @(cell.IsLeaf ? FixedClass(cell.Position, column) : null) @custom.Class"
             style="@JoinStyle(cell.IsLeaf ? FixedStyle(cell.Position, column) : null, custom.Style)"
             colspan="@(cell.Colspan > 1 ? cell.Colspan : (int?)null)" rowspan="@(cell.Rowspan > 1 ? cell.Rowspan : (int?)null)"
             scope="@(cell.IsLeaf ? "col" : "colgroup")" data-col-key="@column.Key" data-leaf="@(cell.IsLeaf ? "true" : null)"
@@ -559,13 +559,13 @@
             @onclick="e => OnHeaderClickAsync(column, e)"
             @onkeydown="e => OnHeaderKeyDownAsync(column, e)"
             @oncontextmenu="e => OnHeaderContextMenu(column, e)" @oncontextmenu:preventDefault="@ContextMenus.HasFlag(PBGridContextMenus.Header)">
-            <div class="pb-grid__header-content">
+            <div class="pb-data-grid__header-content">
                 @if (column is PBDataGridSelectionColumn selection)
                 {
                     @if (SelectionMode == PBGridSelectionMode.Multiple && selection.AllowSelectAll)
                     {
                         var state = SelectAllState();
-                        <span class="pb-grid__select" @onclick:stopPropagation="true">
+                        <span class="pb-data-grid__select" @onclick:stopPropagation="true">
                             <PBCheckbox checked="@(state == true)" Indeterminate="@(state is null)" aria-label="Select all rows" @onchange="ToggleSelectAllAsync" />
                         </span>
                     }
@@ -584,20 +584,20 @@
                 }
                 else
                 {
-                    <span class="pb-grid__header-text">@if (column.HeaderCaptionTemplate is not null) { @column.HeaderCaptionTemplate(column) } else { @column.DisplayCaption }</span>
+                    <span class="pb-data-grid__header-text">@if (column.HeaderCaptionTemplate is not null) { @column.HeaderCaptionTemplate(column) } else { @column.DisplayCaption }</span>
                     @if (sortable && column.CurrentSortOrder != PBGridSortOrder.None)
                     {
-                        <span class="pb-grid__sort-indicator" aria-hidden="true">
-                            <span class="material-icons pb-grid__sort-icon">@(column.CurrentSortOrder == PBGridSortOrder.Descending ? "arrow_downward" : "arrow_upward")</span>
+                        <span class="pb-data-grid__sort-indicator" aria-hidden="true">
+                            <span class="material-icons pb-data-grid__sort-icon">@(column.CurrentSortOrder == PBGridSortOrder.Descending ? "arrow_downward" : "arrow_upward")</span>
                             @if (sortedCount > 1 && column.CurrentGroupIndex < 0)
                             {
-                                <span class="pb-grid__sort-index">@(column.CurrentSortIndex + 1)</span>
+                                <span class="pb-data-grid__sort-index">@(column.CurrentSortIndex + 1)</span>
                             }
                         </span>
                     }
                     @if (cell.IsLeaf && ShowFilterMenuButtons && column.CanFilter)
                     {
-                        <button type="button" class="pb-grid__icon-button pb-grid__filter-button @(column.FilterValues is not null ? "pb-grid__filter-button--active" : null)"
+                        <button type="button" class="pb-data-grid__icon-button pb-data-grid__filter-button @(column.FilterValues is not null ? "pb-data-grid__filter-button--active" : null)"
                                 aria-label="@($"Filter {column.DisplayCaption}")" aria-haspopup="dialog"
                                 @onclick="e => OpenFilterMenu(column, e)" @onclick:stopPropagation="true">
                             <span class="material-icons" aria-hidden="true">@(column.FilterValues is not null ? "filter_alt" : "filter_list")</span>
@@ -608,7 +608,7 @@
             </div>
             @if (cell.IsLeaf && ColumnResizeMode != PBGridColumnResizeMode.Disabled)
             {
-                <span class="pb-grid__resizer" data-col-key="@column.Key" aria-hidden="true" @onclick:stopPropagation="true"></span>
+                <span class="pb-data-grid__resizer" data-col-key="@column.Key" aria-hidden="true" @onclick:stopPropagation="true"></span>
             }
         </th>
     }
@@ -636,21 +636,21 @@
         var op = column.FilterRowOp ?? column.DefaultFilterOperator(typeof(TItem));
         var blankOp = op is PBGridFilterOperator.IsBlank or PBGridFilterOperator.IsNotBlank;
         var label = $"Filter {column.DisplayCaption}";
-        <div class="pb-grid__filter-editor">
-            <button type="button" class="pb-grid__icon-button pb-grid__operator-button" aria-label="@($"{label}: {PBGridFilter.OperatorText(op)}")"
+        <div class="pb-data-grid__filter-editor">
+            <button type="button" class="pb-data-grid__icon-button pb-data-grid__operator-button" aria-label="@($"{label}: {PBGridFilter.OperatorText(op)}")"
                     title="@PBGridFilter.OperatorText(op)" aria-haspopup="menu" @onclick="e => OpenOperatorMenu(column, e)">
-                <span class="pb-grid__operator-symbol" aria-hidden="true">@OperatorGlyph(op)</span>
+                <span class="pb-data-grid__operator-symbol" aria-hidden="true">@OperatorGlyph(op)</span>
                 <span class="pb-touch-target" aria-hidden="true"></span>
             </button>
             @if (blankOp)
             {
-                <span class="pb-grid__filter-blank">@PBGridFilter.OperatorText(op)</span>
+                <span class="pb-data-grid__filter-blank">@PBGridFilter.OperatorText(op)</span>
             }
             else if (editor is PBGridEditorType.CheckBox or PBGridEditorType.ComboBox)
             {
-                <label class="pb-grid__filter-field">
+                <label class="pb-data-grid__filter-field">
                     <span class="pb-touch-target" aria-hidden="true"></span>
-                    <select class="pb-grid__editor pb-grid__filter-input" aria-label="@label" @onchange="e => OnFilterRowInputAsync(column, e.Value?.ToString(), true)">
+                    <select class="pb-data-grid__editor pb-data-grid__filter-input" aria-label="@label" @onchange="e => OnFilterRowInputAsync(column, e.Value?.ToString(), true)">
                         <option value="" selected="@string.IsNullOrEmpty(column.FilterRowText)">(All)</option>
                         @if (editor == PBGridEditorType.CheckBox)
                         {
@@ -671,9 +671,9 @@
             else
             {
                 @* The label makes the filter cell's full 48px height focus the editor (the touch target). *@
-                <label class="pb-grid__filter-field">
+                <label class="pb-data-grid__filter-field">
                     <span class="pb-touch-target" aria-hidden="true"></span>
-                    <input class="pb-grid__editor pb-grid__filter-input" type="@(editor == PBGridEditorType.Date ? "date" : editor == PBGridEditorType.Number ? "number" : "text")"
+                    <input class="pb-data-grid__editor pb-data-grid__filter-input" type="@(editor == PBGridEditorType.Date ? "date" : editor == PBGridEditorType.Number ? "number" : "text")"
                            step="@(editor == PBGridEditorType.Number ? "any" : null)" value="@column.FilterRowText" aria-label="@label"
                            @oninput="e => OnFilterRowInputAsync(column, e.Value?.ToString(), editor == PBGridEditorType.Date)" />
                 </label>
@@ -732,7 +732,7 @@
     {
         for (var i = 0; i < count; i++)
         {
-            <td class="pb-grid__indent-cell @FixedClass(i, true)" style="@FixedStyle(i, true)"></td>
+            <td class="pb-data-grid__indent-cell @FixedClass(i, true)" style="@FixedStyle(i, true)"></td>
         }
     }
 
@@ -741,21 +741,21 @@
         var group = row.Group!;
         var expanded = IsExpanded(group);
         var custom = Customize(PBGridElementType.GroupRow, null, group.Column, group.Key, row.Index);
-        <tr class="pb-grid__group-row @custom.Class" style="@custom.Style" data-row="@row.Index" tabindex="@TabIndexOf(row)"
+        <tr class="pb-data-grid__group-row @custom.Class" style="@custom.Style" data-row="@row.Index" tabindex="@TabIndexOf(row)"
             aria-expanded="@(expanded ? "true" : "false")" aria-level="@(group.Level + 1)" @onclick="() => { keyboardRow = row.Index; ToggleGroup(group); }">
             @{ RenderIndents(__builder, group.Level); }
-            <td class="pb-grid__group-cell" colspan="@(totalColumns - group.Level)">
-                <div class="pb-grid__group-content">
-                    <span class="material-icons pb-grid__expand-icon" aria-hidden="true">@(expanded ? "expand_more" : "chevron_right")</span>
+            <td class="pb-data-grid__group-cell" colspan="@(totalColumns - group.Level)">
+                <div class="pb-data-grid__group-content">
+                    <span class="material-icons pb-data-grid__expand-icon" aria-hidden="true">@(expanded ? "expand_more" : "chevron_right")</span>
                     @if (GroupRowTemplate is not null)
                     {
                         @GroupRowTemplate(new PBGridGroupRowContext(group.Column, group.Key, group.Text, group.Items.Count, group.RowSummaries.Select(s => s.DisplayText).ToList(), group.Level, expanded))
                     }
                     else
                     {
-                        <span class="pb-grid__group-caption">@group.Column.DisplayCaption:</span>
-                        <span class="pb-grid__group-value">@group.Text</span>
-                        <span class="pb-grid__group-summary">(@(group.RowSummaries.Count > 0 ? string.Join(", ", group.RowSummaries.Select(s => s.DisplayText)) : $"Count: {group.Items.Count.ToString("N0", CultureInfo.CurrentCulture)}"))</span>
+                        <span class="pb-data-grid__group-caption">@group.Column.DisplayCaption:</span>
+                        <span class="pb-data-grid__group-value">@group.Text</span>
+                        <span class="pb-data-grid__group-summary">(@(group.RowSummaries.Count > 0 ? string.Join(", ", group.RowSummaries.Select(s => s.DisplayText)) : $"Count: {group.Items.Count.ToString("N0", CultureInfo.CurrentCulture)}"))</span>
                     }
                 </div>
             </td>
@@ -766,19 +766,19 @@
     {
         var group = row.Group!;
         var defs = GroupFooterSummaryDefs();
-        <tr class="pb-grid__group-footer-row">
+        <tr class="pb-data-grid__group-footer-row">
             @{ RenderIndents(__builder, indentCount); }
             @for (var i = 0; i < serviceColumns.Count; i++)
             {
-                <td class="pb-grid__service-cell"></td>
+                <td class="pb-data-grid__service-cell"></td>
             }
             @foreach (var column in leaves)
             {
                 var custom = Customize(PBGridElementType.GroupFooterCell, null, column, group.Key, row.Index);
-                <td class="pb-grid__group-footer-cell @column.AlignClass(typeof(TItem)) @custom.Class" style="@custom.Style">
+                <td class="pb-data-grid__group-footer-cell @column.AlignClass(typeof(TItem)) @custom.Class" style="@custom.Style">
                     @foreach (var summary in FooterSummariesFor(group.FooterSummaries, column, defs))
                     {
-                        <div class="pb-grid__summary">@summary.DisplayText</div>
+                        <div class="pb-data-grid__summary">@summary.DisplayText</div>
                     }
                 </td>
             }
@@ -796,13 +796,13 @@
         var detailOpen = IsDetailExpanded(item);
         var adaptiveOpen = adaptiveColumns.Count > 0 && expandedAdaptive.Contains(KeyOf(item));
         var custom = Customize(PBGridElementType.DataRow, item, null, null, row.Index);
-        var classes = "pb-grid__row"
-            + (isSelected ? " pb-grid__row--selected" : "")
-            + (isFocused ? " pb-grid__row--focused" : "")
-            + (row.DataIndex % 2 == 1 ? " pb-grid__row--alt" : "")
-            + (editingRow ? " pb-grid__edit-row" : "")
-            + (deleted ? " pb-grid__row--deleted" : "")
-            + (row.IsInserted ? " pb-grid__row--inserted" : "")
+        var classes = "pb-data-grid__row"
+            + (isSelected ? " pb-data-grid__row--selected" : "")
+            + (isFocused ? " pb-data-grid__row--focused" : "")
+            + (row.DataIndex % 2 == 1 ? " pb-data-grid__row--alt" : "")
+            + (editingRow ? " pb-data-grid__edit-row" : "")
+            + (deleted ? " pb-data-grid__row--deleted" : "")
+            + (row.IsInserted ? " pb-data-grid__row--inserted" : "")
             + (custom.Class is null ? "" : " " + custom.Class);
         <tr class="@classes" style="@custom.Style" data-row="@row.Index" tabindex="@TabIndexOf(row)"
             aria-level="@(IsTree ? row.TreeLevel + 1 : null)" aria-expanded="@(IsTree && row.TreeHasChildren ? (row.TreeExpanded ? "true" : "false") : null)"
@@ -813,23 +813,23 @@
             @foreach (var service in serviceColumns)
             {
                 var position = indentCount + serviceColumns.IndexOf(service);
-                <td class="pb-grid__service-cell @FixedClass(position, true)" style="@FixedStyle(position, true)" @onclick:stopPropagation="@(service != "drag")">
+                <td class="pb-data-grid__service-cell @FixedClass(position, true)" style="@FixedStyle(position, true)" @onclick:stopPropagation="@(service != "drag")">
                     @switch (service)
                     {
                         case "detail":
-                            <button type="button" class="pb-grid__icon-button" aria-expanded="@(detailOpen ? "true" : "false")" aria-label="@(detailOpen ? "Collapse detail row" : "Expand detail row")" @onclick="() => ToggleDetail(item)">
+                            <button type="button" class="pb-data-grid__icon-button" aria-expanded="@(detailOpen ? "true" : "false")" aria-label="@(detailOpen ? "Collapse detail row" : "Expand detail row")" @onclick="() => ToggleDetail(item)">
                                 <span class="material-icons" aria-hidden="true">@(detailOpen ? "expand_more" : "chevron_right")</span>
                                 <span class="pb-touch-target" aria-hidden="true"></span>
                             </button>
                             break;
                         case "adaptive":
-                            <button type="button" class="pb-grid__icon-button" aria-expanded="@(adaptiveOpen ? "true" : "false")" aria-label="@(adaptiveOpen ? "Hide more columns" : "Show more columns")" @onclick="() => ToggleAdaptive(item)">
+                            <button type="button" class="pb-data-grid__icon-button" aria-expanded="@(adaptiveOpen ? "true" : "false")" aria-label="@(adaptiveOpen ? "Hide more columns" : "Show more columns")" @onclick="() => ToggleAdaptive(item)">
                                 <span class="material-icons" aria-hidden="true">@(adaptiveOpen ? "unfold_less" : "more_horiz")</span>
                                 <span class="pb-touch-target" aria-hidden="true"></span>
                             </button>
                             break;
                         default:
-                            <span class="pb-grid__drag-handle" draggable="true" aria-label="Drag row. Ctrl+Arrow keys move the focused row." title="Drag to move">
+                            <span class="pb-data-grid__drag-handle" draggable="true" aria-label="Drag row. Ctrl+Arrow keys move the focused row." title="Drag to move">
                                 <span class="material-icons" aria-hidden="true">drag_indicator</span>
                             </span>
                             break;
@@ -845,9 +845,9 @@
         </tr>
         @if (adaptiveOpen)
         {
-            <tr class="pb-grid__adaptive-row">
+            <tr class="pb-data-grid__adaptive-row">
                 <td colspan="@totalColumns">
-                    <dl class="pb-grid__adaptive-list">
+                    <dl class="pb-data-grid__adaptive-list">
                         @foreach (var column in adaptiveColumns)
                         {
                             var value = column.GetValue(model!);
@@ -860,16 +860,16 @@
         }
         @if (RowPreviewTemplate is not null)
         {
-            <tr class="pb-grid__preview-row @(isSelected ? "pb-grid__row--selected" : null)">
+            <tr class="pb-data-grid__preview-row @(isSelected ? "pb-data-grid__row--selected" : null)">
                 @{ RenderIndents(__builder, indentCount); }
                 <td colspan="@(totalColumns - indentCount)">@RowPreviewTemplate(item)</td>
             </tr>
         }
         @if (detailOpen)
         {
-            <tr class="pb-grid__detail-row">
+            <tr class="pb-data-grid__detail-row">
                 @{ RenderIndents(__builder, indentCount); }
-                <td colspan="@(totalColumns - indentCount)"><div class="pb-grid__detail-content">@DetailRowTemplate!(item)</div></td>
+                <td colspan="@(totalColumns - indentCount)"><div class="pb-data-grid__detail-content">@DetailRowTemplate!(item)</div></td>
             </tr>
         }
     }
@@ -881,29 +881,29 @@
         var custom = Customize(PBGridElementType.DataCell, item, column, value, row.Index);
         var editing = !deleted && IsCellEditor(row, column);
         var modified = IsCellModified(row, column);
-        var cellClass = $"pb-grid__cell {column.AlignClass(typeof(TItem))} {FixedClass(position, column)} {column.CssClass} {custom.Class}"
-            + (modified ? " pb-grid__cell--modified" : "") + (editing ? " pb-grid__cell--editing" : "")
-            + (EditMode is PBGridEditMode.EditCell or PBGridEditMode.Batch && column.CanEdit(typeof(TItem)) && !deleted ? " pb-grid__cell--editable" : "");
+        var cellClass = $"pb-data-grid__cell {column.AlignClass(typeof(TItem))} {FixedClass(position, column)} {column.CssClass} {custom.Class}"
+            + (modified ? " pb-data-grid__cell--modified" : "") + (editing ? " pb-data-grid__cell--editing" : "")
+            + (EditMode is PBGridEditMode.EditCell or PBGridEditMode.Batch && column.CanEdit(typeof(TItem)) && !deleted ? " pb-data-grid__cell--editable" : "");
         if (column is PBDataGridSelectionColumn)
         {
-            <td class="@cellClass pb-grid__cell--center" style="@FixedStyle(position, column)" @onclick:stopPropagation="true">
+            <td class="@cellClass pb-data-grid__cell--center" style="@FixedStyle(position, column)" @onclick:stopPropagation="true">
                 @if (SelectionMode != PBGridSelectionMode.None && !row.IsInserted)
                 {
                     if (IsTree && TreeConfig!.RecursiveSelection && SelectionMode == PBGridSelectionMode.Multiple)
                     {
                         var state = TreeCheckState(item);
-                        <PBCheckbox class="pb-grid__select" checked="@(state == true)" Indeterminate="@(state is null)" aria-label="Select row and its children" @onchange="() => ToggleTreeSelectionAsync(item)" />
+                        <PBCheckbox class="pb-data-grid__select" checked="@(state == true)" Indeterminate="@(state is null)" aria-label="Select row and its children" @onchange="() => ToggleTreeSelectionAsync(item)" />
                     }
                     else
                     {
-                        <PBCheckbox class="pb-grid__select" checked="@IsSelected(item)" aria-label="Select row" @onchange="() => ToggleRowSelectionAsync(item)" />
+                        <PBCheckbox class="pb-data-grid__select" checked="@IsSelected(item)" aria-label="Select row" @onchange="() => ToggleRowSelectionAsync(item)" />
                     }
                 }
             </td>
         }
         else if (column is PBDataGridCommandColumn command)
         {
-            <td class="@cellClass pb-grid__command-cell" style="@FixedStyle(position, column)" @onclick:stopPropagation="true">
+            <td class="@cellClass pb-data-grid__command-cell" style="@FixedStyle(position, column)" @onclick:stopPropagation="true">
                 @if (command.CellTemplate is not null)
                 {
                     @command.CellTemplate(new PBGridCellContext(item!, column, null, "", row.Index))
@@ -940,9 +940,9 @@
                 @onfocusout="OnCellEditorFocusOutAsync">
                 @if (IsTreeColumn(column))
                 {
-                    <div class="pb-grid__tree-cell" style="@TreeIndentStyle(row.TreeLevel)">
-                        <span class="pb-grid__tree-spacer" aria-hidden="true"></span>
-                        <div class="pb-grid__tree-content">@{ RenderEditor(__builder, column, model, autofocus: EditMode != PBGridEditMode.EditRow || column == leaves.FirstOrDefault(c => c.CanEdit(typeof(TItem)))); }</div>
+                    <div class="pb-data-grid__tree-cell" style="@TreeIndentStyle(row.TreeLevel)">
+                        <span class="pb-data-grid__tree-spacer" aria-hidden="true"></span>
+                        <div class="pb-data-grid__tree-content">@{ RenderEditor(__builder, column, model, autofocus: EditMode != PBGridEditMode.EditRow || column == leaves.FirstOrDefault(c => c.CanEdit(typeof(TItem)))); }</div>
                     </div>
                 }
                 else
@@ -955,19 +955,19 @@
         {
             var text = column.FormatValue(value);
             var messages = EditMode == PBGridEditMode.Batch ? EditMessages(model, column).ToList() : [];
-            <td class="@cellClass @(messages.Count > 0 ? "pb-grid__cell--invalid" : null)" style="@JoinStyle(FixedStyle(position, column), custom.Style)"
+            <td class="@cellClass @(messages.Count > 0 ? "pb-data-grid__cell--invalid" : null)" style="@JoinStyle(FixedStyle(position, column), custom.Style)"
                 title="@(messages.Count > 0 ? string.Join(" ", messages) : null)"
                 @onclick="() => OnCellClickAsync(row, column)">
                 @if (IsTreeColumn(column))
                 {
-                    <div class="pb-grid__tree-cell" style="@TreeIndentStyle(row.TreeLevel)">
+                    <div class="pb-data-grid__tree-cell" style="@TreeIndentStyle(row.TreeLevel)">
                         @if (row.TreeLoading)
                         {
-                            <span class="pb-grid__tree-toggle pb-grid__tree-toggle--loading" role="progressbar" aria-label="Loading children"><PBProgressSpinner Diameter="20" StrokeWidth="2" /></span>
+                            <span class="pb-data-grid__tree-toggle pb-data-grid__tree-toggle--loading" role="progressbar" aria-label="Loading children"><PBProgressSpinner Diameter="20" StrokeWidth="2" /></span>
                         }
                         else if (row.TreeHasChildren)
                         {
-                            <button type="button" class="pb-grid__tree-toggle" tabindex="-1" aria-expanded="@(row.TreeExpanded ? "true" : "false")"
+                            <button type="button" class="pb-data-grid__tree-toggle" tabindex="-1" aria-expanded="@(row.TreeExpanded ? "true" : "false")"
                                     aria-label="@(row.TreeExpanded ? "Collapse" : "Expand")" @onclick="() => ToggleTreeRowAsync(row)" @onclick:stopPropagation="true">
                                 <span class="material-icons" aria-hidden="true">@(row.TreeExpanded ? "expand_more" : "chevron_right")</span>
                                 <span class="pb-touch-target" aria-hidden="true"></span>
@@ -975,9 +975,9 @@
                         }
                         else
                         {
-                            <span class="pb-grid__tree-spacer" aria-hidden="true"></span>
+                            <span class="pb-data-grid__tree-spacer" aria-hidden="true"></span>
                         }
-                        <div class="pb-grid__tree-content">@{ RenderCellContent(__builder, row, model, column, value, text); }</div>
+                        <div class="pb-data-grid__tree-content">@{ RenderCellContent(__builder, row, model, column, value, text); }</div>
                     </div>
                 }
                 else
@@ -996,7 +996,7 @@
         }
         else if (value is bool flag)
         {
-            <span class="material-icons pb-grid__bool @(flag ? "pb-grid__bool--true" : null)" role="img" aria-label="@(flag ? "Yes" : "No")">@(flag ? "check_box" : "check_box_outline_blank")</span>
+            <span class="material-icons pb-data-grid__bool @(flag ? "pb-data-grid__bool--true" : null)" role="img" aria-label="@(flag ? "Yes" : "No")">@(flag ? "check_box" : "check_box_outline_blank")</span>
         }
         else
         {
@@ -1032,7 +1032,7 @@
             var part = text[i..j];
             if (marks[i])
             {
-                <mark class="pb-grid__highlight">@part</mark>
+                <mark class="pb-data-grid__highlight">@part</mark>
             }
             else
             {
@@ -1046,7 +1046,7 @@
 
     private void RenderNewItemRow(RenderTreeBuilder __builder)
     {
-        <tr class="pb-grid__new-item-row" tabindex="0" @onclick="StartEditNewRowAsync" @onkeydown="OnNewItemRowKeyDownAsync">
+        <tr class="pb-data-grid__new-item-row" tabindex="0" @onclick="StartEditNewRowAsync" @onkeydown="OnNewItemRowKeyDownAsync">
             <td colspan="@totalColumns">
                 <span class="material-icons" aria-hidden="true">add</span>
                 <span>Click here to add a new row</span>
@@ -1063,16 +1063,16 @@
             return;
         }
         var model = editModel!;
-        <tr class="pb-grid__row pb-grid__edit-row pb-grid__row--inserted">
+        <tr class="pb-data-grid__row pb-data-grid__edit-row pb-data-grid__row--inserted">
             @{ RenderIndents(__builder, indentCount); }
             @for (var i = 0; i < serviceColumns.Count; i++)
             {
-                <td class="pb-grid__service-cell"></td>
+                <td class="pb-data-grid__service-cell"></td>
             }
             @foreach (var column in leaves)
             {
                 var c = column;
-                <td class="pb-grid__cell pb-grid__cell--editing @c.AlignClass(typeof(TItem)) @(c is PBDataGridCommandColumn ? "pb-grid__command-cell" : null)">
+                <td class="pb-data-grid__cell pb-data-grid__cell--editing @c.AlignClass(typeof(TItem)) @(c is PBDataGridCommandColumn ? "pb-data-grid__command-cell" : null)">
                     @if (c is PBDataGridCommandColumn)
                     {
                         <PBButton Variant="PBButtonVariant.Icon" aria-label="Save" @onclick="SaveChangesAsync"><span class="material-icons">check</span></PBButton>
@@ -1080,9 +1080,9 @@
                     }
                     else if (c.CanEdit(typeof(TItem)) && IsTreeColumn(c))
                     {
-                        <div class="pb-grid__tree-cell" style="@TreeIndentStyle(treeLevel)">
-                            <span class="pb-grid__tree-spacer" aria-hidden="true"></span>
-                            <div class="pb-grid__tree-content">@{ RenderEditor(__builder, c, model, autofocus: c == leaves.FirstOrDefault(x => x.CanEdit(typeof(TItem)))); }</div>
+                        <div class="pb-data-grid__tree-cell" style="@TreeIndentStyle(treeLevel)">
+                            <span class="pb-data-grid__tree-spacer" aria-hidden="true"></span>
+                            <div class="pb-data-grid__tree-content">@{ RenderEditor(__builder, c, model, autofocus: c == leaves.FirstOrDefault(x => x.CanEdit(typeof(TItem)))); }</div>
                         </div>
                     }
                     else if (c.CanEdit(typeof(TItem)))
@@ -1094,9 +1094,9 @@
         </tr>
         @if (!leaves.Any(c => c is PBDataGridCommandColumn))
         {
-            <tr class="pb-grid__edit-actions-row">
+            <tr class="pb-data-grid__edit-actions-row">
                 <td colspan="@totalColumns">
-                    <div class="pb-grid__popup-actions">
+                    <div class="pb-data-grid__popup-actions">
                         <PBButton @onclick="CancelEditAsync">Cancel</PBButton>
                         <PBButton Variant="PBButtonVariant.Filled" @onclick="SaveChangesAsync">Save</PBButton>
                     </div>
@@ -1107,7 +1107,7 @@
 
     private void RenderEditFormRow(RenderTreeBuilder __builder)
     {
-        <tr class="pb-grid__edit-form-row">
+        <tr class="pb-data-grid__edit-form-row">
             <td colspan="@totalColumns">
                 @{ RenderEditForm(__builder, true); }
             </td>
@@ -1117,19 +1117,19 @@
     private void RenderEditForm(RenderTreeBuilder __builder, bool withActions)
     {
         var model = editModel!;
-        <div class="pb-grid__edit-form">
+        <div class="pb-data-grid__edit-form">
             @if (EditFormTemplate is not null)
             {
                 @EditFormTemplate(new PBGridEditFormContext<TItem>(model, editContext!, editIsNew, key => b => RenderEditorFor(b, key, model)))
             }
             else
             {
-                <div class="pb-grid__edit-form-fields">
+                <div class="pb-data-grid__edit-form-fields">
                     @foreach (var column in OrderedLeaves().Where(c => c.IsDataColumn && c.CurrentVisible))
                     {
                         var editorId = $"{gridId}-edit-{column.Key}";
-                        <div class="pb-grid__edit-field">
-                            <label class="pb-grid__edit-label" for="@editorId">@column.DisplayCaption</label>
+                        <div class="pb-data-grid__edit-field">
+                            <label class="pb-data-grid__edit-label" for="@editorId">@column.DisplayCaption</label>
                             @{ RenderEditor(__builder, column, model, autofocus: column == OrderedLeaves().FirstOrDefault(c => c.CanEdit(typeof(TItem)) && c.CurrentVisible), id: editorId); }
                         </div>
                     }
@@ -1137,7 +1137,7 @@
             }
             @if (withActions)
             {
-                <div class="pb-grid__popup-actions">
+                <div class="pb-data-grid__popup-actions">
                     <PBButton @onclick="CancelEditAsync">Cancel</PBButton>
                     <PBButton Variant="PBButtonVariant.Filled" @onclick="SaveChangesAsync">Save</PBButton>
                 </div>
@@ -1158,9 +1158,9 @@
         var messages = EditMessages(model, column).ToList();
         var invalid = messages.Count > 0;
         var readOnly = !column.CanEdit(typeof(TItem));
-        var cssClass = "pb-grid__editor" + (autofocus ? " pb-grid__editor--autofocus" : "") + (invalid ? " pb-grid__editor--invalid" : "");
+        var cssClass = "pb-data-grid__editor" + (autofocus ? " pb-data-grid__editor--autofocus" : "") + (invalid ? " pb-data-grid__editor--invalid" : "");
         var errorId = $"{gridId}-error-{column.Key}";
-        <div class="pb-grid__editor-host">
+        <div class="pb-data-grid__editor-host">
             @if (column.CellEditTemplate is not null)
             {
                 @column.CellEditTemplate(new PBGridEditContext(model!, column, editContext ?? new EditContext(model!), v => _ = InvokeAsync(() => SetEditValueAsync(model, column, v)), editIsNew))
@@ -1187,7 +1187,7 @@
                                   @onchange="e => OnEditorChangedAsync(model, column, e, editor)" @onkeydown:stopPropagation="true">@EditorText(value, editor)</textarea>
                         break;
                     case PBGridEditorType.None:
-                        <span class="pb-grid__editor-readonly">@column.FormatValue(value)</span>
+                        <span class="pb-data-grid__editor-readonly">@column.FormatValue(value)</span>
                         break;
                     default:
                         <input id="@id" class="@cssClass" type="@(editor == PBGridEditorType.Date ? "date" : editor == PBGridEditorType.Number ? "number" : "text")"
@@ -1199,7 +1199,7 @@
             }
             @if (invalid)
             {
-                <div class="pb-grid__editor-error" id="@errorId" role="alert">@string.Join(" ", messages)</div>
+                <div class="pb-data-grid__editor-error" id="@errorId" role="alert">@string.Join(" ", messages)</div>
             }
         </div>
     }
@@ -1208,9 +1208,9 @@
 
     private void RenderFilterGroup(RenderTreeBuilder __builder, FilterNode group, FilterNode? parent)
     {
-        <div class="pb-grid__fb-group" role="group" aria-label="@(group.IsOr ? "Any of the following" : "All of the following")">
-            <div class="pb-grid__fb-group-header">
-                <select class="pb-grid__editor pb-grid__fb-logic" aria-label="Group operator" @onchange="e => SetGroupLogic(group, e)">
+        <div class="pb-data-grid__fb-group" role="group" aria-label="@(group.IsOr ? "Any of the following" : "All of the following")">
+            <div class="pb-data-grid__fb-group-header">
+                <select class="pb-data-grid__editor pb-data-grid__fb-logic" aria-label="Group operator" @onchange="e => SetGroupLogic(group, e)">
                     <option value="and" selected="@(!group.IsOr)">And</option>
                     <option value="or" selected="@group.IsOr">Or</option>
                 </select>
@@ -1224,13 +1224,13 @@
                 </PBButton>
                 @if (parent is not null)
                 {
-                    <button type="button" class="pb-grid__icon-button" aria-label="Remove group" @onclick="() => RemoveNode(parent, group)"><span class="material-icons" aria-hidden="true">close</span><span class="pb-touch-target" aria-hidden="true"></span></button>
+                    <button type="button" class="pb-data-grid__icon-button" aria-label="Remove group" @onclick="() => RemoveNode(parent, group)"><span class="material-icons" aria-hidden="true">close</span><span class="pb-touch-target" aria-hidden="true"></span></button>
                 }
             </div>
-            <div class="pb-grid__fb-children">
+            <div class="pb-data-grid__fb-children">
                 @if (group.Children.Count == 0)
                 {
-                    <div class="pb-grid__fb-empty">No conditions: every row is shown.</div>
+                    <div class="pb-data-grid__fb-empty">No conditions: every row is shown.</div>
                 }
                 @foreach (var child in group.Children.ToList())
                 {
@@ -1253,14 +1253,14 @@
         var type = node.Field is null ? null : ((IGridFieldSource)this).FieldType(node.Field);
         var editor = node.Field is null ? PBGridEditorType.Text : BuilderEditor(node.Field);
         var column = node.Field is null ? null : FieldColumn(node.Field);
-        <div class="pb-grid__fb-condition">
-            <select class="pb-grid__editor" aria-label="Field" @onchange="e => SetConditionField(node, e.Value?.ToString())">
+        <div class="pb-data-grid__fb-condition">
+            <select class="pb-data-grid__editor" aria-label="Field" @onchange="e => SetConditionField(node, e.Value?.ToString())">
                 @foreach (var c in FilterableColumns)
                 {
                     <option value="@FilterField(c)" selected="@(FilterField(c) == node.Field)">@c.DisplayCaption</option>
                 }
             </select>
-            <select class="pb-grid__editor" aria-label="Operator" @onchange="e => SetConditionOperator(node, e)">
+            <select class="pb-data-grid__editor" aria-label="Operator" @onchange="e => SetConditionOperator(node, e)">
                 @foreach (var op in PBGridFilter.OperatorsFor(type))
                 {
                     <option value="@op" selected="@(op == node.Operator)">@PBGridFilter.OperatorText(op)</option>
@@ -1270,7 +1270,7 @@
             {
                 if (editor is PBGridEditorType.CheckBox or PBGridEditorType.ComboBox && column is not null)
                 {
-                    <select class="pb-grid__editor" aria-label="Value" @onchange="e => node.Value = e.Value?.ToString()">
+                    <select class="pb-data-grid__editor" aria-label="Value" @onchange="e => node.Value = e.Value?.ToString()">
                         <option value="" selected="@string.IsNullOrEmpty(node.Value)"></option>
                         @if (editor == PBGridEditorType.CheckBox)
                         {
@@ -1289,11 +1289,11 @@
                 }
                 else
                 {
-                    <input class="pb-grid__editor" aria-label="Value" type="@(editor == PBGridEditorType.Date ? "date" : editor == PBGridEditorType.Number ? "number" : "text")"
+                    <input class="pb-data-grid__editor" aria-label="Value" type="@(editor == PBGridEditorType.Date ? "date" : editor == PBGridEditorType.Number ? "number" : "text")"
                            step="@(editor == PBGridEditorType.Number ? "any" : null)" value="@node.Value" @onchange="e => node.Value = e.Value?.ToString()" />
                 }
             }
-            <button type="button" class="pb-grid__icon-button" aria-label="Remove condition" @onclick="() => RemoveNode(parent, node)"><span class="material-icons" aria-hidden="true">close</span><span class="pb-touch-target" aria-hidden="true"></span></button>
+            <button type="button" class="pb-data-grid__icon-button" aria-label="Remove condition" @onclick="() => RemoveNode(parent, node)"><span class="material-icons" aria-hidden="true">close</span><span class="pb-touch-target" aria-hidden="true"></span></button>
         </div>
     }
 }

@@ -1,14 +1,14 @@
 @if (toolbar() || showSearchBox()) {
-  <div class="pb-grid__toolbar" role="toolbar" [attr.aria-label]="(label() ?? 'Grid') + ' toolbar'">
+  <div class="pb-data-grid__toolbar" role="toolbar" [attr.aria-label]="(label() ?? 'Grid') + ' toolbar'">
     <ng-content select="[pbGridToolbar]" />
-    <span class="pb-grid__toolbar-spacer"></span>
+    <span class="pb-data-grid__toolbar-spacer"></span>
     @if (showSearchBox()) {
-      <label class="pb-grid__search">
+      <label class="pb-data-grid__search">
         <span class="pb-touch-target" aria-hidden="true"></span>
         <span class="material-icons" aria-hidden="true">search</span>
         <input type="search" [value]="searchText()" [placeholder]="searchPlaceholder()" aria-label="Search in the grid" (input)="onSearchInput($any($event.target).value)" />
         @if (searchText()) {
-          <button type="button" class="pb-grid__icon-button" aria-label="Clear search" (click)="setSearchText('')"><span class="material-icons" aria-hidden="true">close</span><span class="pb-touch-target" aria-hidden="true"></span></button>
+          <button type="button" class="pb-data-grid__icon-button" aria-label="Clear search" (click)="setSearchText('')"><span class="material-icons" aria-hidden="true">close</span><span class="pb-touch-target" aria-hidden="true"></span></button>
         }
       </label>
     }
@@ -16,9 +16,9 @@
 }
 
 @if (editMode() === 'batch' && batchSummary()) {
-  <div class="pb-grid__batch-bar" role="status">
+  <div class="pb-data-grid__batch-bar" role="status">
     <span class="material-icons" aria-hidden="true">edit_note</span>
-    <span class="pb-grid__batch-text">Unsaved changes: {{ batchSummary() }}</span>
+    <span class="pb-data-grid__batch-text">Unsaved changes: {{ batchSummary() }}</span>
     <button mat-button type="button" (click)="cancelEdit()">Cancel</button>
     <button mat-flat-button type="button" (click)="saveChanges()">Save</button>
   </div>
@@ -29,13 +29,13 @@
 }
 
 @if (groupPanelVisible() && allowGroup()) {
-  <div class="pb-grid__group-panel" data-pb-group-panel aria-label="Group panel" (contextmenu)="onGroupPanelContextMenu($event)">
+  <div class="pb-data-grid__group-panel" data-pb-group-panel aria-label="Group panel" (contextmenu)="onGroupPanelContextMenu($event)">
     @if (!groupedColumns().length) {
-      <span class="pb-grid__group-panel-hint">Drag a column header here to group by that column</span>
+      <span class="pb-data-grid__group-panel-hint">Drag a column header here to group by that column</span>
     }
     @for (column of groupedColumns(); track column.key) {
       <span
-        class="pb-grid__group-chip"
+        class="pb-data-grid__group-chip"
         draggable="true"
         role="button"
         tabindex="0"
@@ -45,8 +45,8 @@
         (keydown.enter)="toggleGroupSort(column)"
       >
         <span>{{ column.displayCaption }}</span>
-        <span class="material-icons pb-grid__sort-icon" aria-hidden="true">{{ column.currentSort() === 'desc' ? 'arrow_downward' : 'arrow_upward' }}</span>
-        <button type="button" class="pb-grid__chip-remove" [attr.aria-label]="'Ungroup ' + column.displayCaption" (click)="removeGroup(column, $event)">
+        <span class="material-icons pb-data-grid__sort-icon" aria-hidden="true">{{ column.currentSort() === 'desc' ? 'arrow_downward' : 'arrow_upward' }}</span>
+        <button type="button" class="pb-data-grid__chip-remove" [attr.aria-label]="'Ungroup ' + column.displayCaption" (click)="removeGroup(column, $event)">
           <span class="material-icons" aria-hidden="true">close</span>
           <span class="pb-touch-target" aria-hidden="true"></span>
         </button>
@@ -56,13 +56,13 @@
   </div>
 }
 
-<div #scroll class="pb-grid__scroll" [style.height]="height()" (scroll)="onScroll($event)">
+<div #scroll class="pb-data-grid__scroll" [style.height]="height()" (scroll)="onScroll($event)">
   @if (loading()) {
-    <mat-progress-bar class="pb-grid__progress" mode="indeterminate" aria-label="Loading data" />
+    <mat-progress-bar class="pb-data-grid__progress" mode="indeterminate" aria-label="Loading data" />
   }
   <table
-    class="pb-grid__table"
-    [class.pb-grid__table--tree]="isTree()"
+    class="pb-data-grid__table"
+    [class.pb-data-grid__table--tree]="isTree()"
     [attr.role]="isTree() ? 'treegrid' : 'grid'"
     [style]="tableStyle()"
     [attr.aria-label]="label()"
@@ -71,7 +71,7 @@
   >
     <colgroup>
       @for (i of indexes(indentCount()); track i) {
-        <col class="pb-grid__col--indent" style="width: 32px" />
+        <col class="pb-data-grid__col--indent" style="width: 32px" />
       }
       @for (service of serviceColumns(); track service) {
         <col [style.width.px]="service === 'drag' ? 40 : 48" />
@@ -81,7 +81,7 @@
       }
     </colgroup>
     <thead>
-      <tr class="pb-grid__measure" aria-hidden="true">
+      <tr class="pb-data-grid__measure" aria-hidden="true">
         @for (i of indexes(prefixCount()); track i) {
           <th [attr.data-fixed]="hasLeftFixed() ? 'left' : null"></th>
         }
@@ -90,10 +90,10 @@
         }
       </tr>
       @for (cells of headerRows(); track $index; let level = $index) {
-        <tr class="pb-grid__header-row">
+        <tr class="pb-data-grid__header-row">
           @if (level === 0) {
             @for (i of indexes(prefixCount()); track i) {
-              <th class="pb-grid__header-cell pb-grid__service-cell" [class]="fixedClass(i, null)" [attr.style]="fixedStyle(i, null)" [attr.rowspan]="headerDepth()" aria-hidden="true"></th>
+              <th class="pb-data-grid__header-cell pb-data-grid__service-cell" [class]="fixedClass(i, null)" [attr.style]="fixedStyle(i, null)" [attr.rowspan]="headerDepth()" aria-hidden="true"></th>
             }
           }
           @for (cell of cells; track cell.column.key) {
@@ -102,12 +102,12 @@
         </tr>
       }
       @if (filterRowVisible()) {
-        <tr class="pb-grid__filter-row">
+        <tr class="pb-data-grid__filter-row">
           @for (i of indexes(prefixCount()); track i) {
-            <td class="pb-grid__service-cell" [class]="fixedClass(i, null)" [attr.style]="fixedStyle(i, null)"></td>
+            <td class="pb-data-grid__service-cell" [class]="fixedClass(i, null)" [attr.style]="fixedStyle(i, null)"></td>
           }
           @for (column of leaves(); track column.key; let i = $index) {
-            <td class="pb-grid__filter-cell" [class]="fixedClass(prefixCount() + i, column)" [attr.style]="fixedStyle(prefixCount() + i, column)">
+            <td class="pb-data-grid__filter-cell" [class]="fixedClass(prefixCount() + i, column)" [attr.style]="fixedStyle(prefixCount() + i, column)">
               @if (column.canFilter) {
                 <ng-container [ngTemplateOutlet]="filterEditor" [ngTemplateOutletContext]="{ $implicit: column }" />
               }
@@ -121,7 +121,7 @@
         <ng-container [ngTemplateOutlet]="newRow" />
       }
       @if (spacerTop()) {
-        <tr class="pb-grid__spacer" aria-hidden="true" [style.height.px]="spacerTop()"></tr>
+        <tr class="pb-data-grid__spacer" aria-hidden="true" [style.height.px]="spacerTop()"></tr>
       }
       @for (row of renderedRows(); track row.index + ':' + row.kind) {
         @switch (row.kind) {
@@ -144,13 +144,13 @@
         }
       }
       @if (spacerBottom()) {
-        <tr class="pb-grid__spacer" aria-hidden="true" [style.height.px]="spacerBottom()"></tr>
+        <tr class="pb-data-grid__spacer" aria-hidden="true" [style.height.px]="spacerBottom()"></tr>
       }
       @if (newRowAtBottom() && !newRowUnderParent()) {
         <ng-container [ngTemplateOutlet]="newRow" />
       }
       @if (!renderedRows().length && !isEditingNewRow() && !loading()) {
-        <tr class="pb-grid__empty-row">
+        <tr class="pb-data-grid__empty-row">
           <td [attr.colspan]="totalColumns()">
             @if (emptyTemplate(); as empty) {
               <ng-container [ngTemplateOutlet]="empty.template" />
@@ -163,19 +163,19 @@
     </tbody>
     @if (view().totals.length) {
       <tfoot>
-        <tr class="pb-grid__footer-row">
+        <tr class="pb-data-grid__footer-row">
           @for (i of indexes(prefixCount()); track i) {
-            <td class="pb-grid__service-cell" [class]="fixedClass(i, null)" [attr.style]="fixedStyle(i, null)"></td>
+            <td class="pb-data-grid__service-cell" [class]="fixedClass(i, null)" [attr.style]="fixedStyle(i, null)"></td>
           }
           @for (column of leaves(); track column.key; let i = $index) {
             @let custom = customize('footerCell', undefined, column, undefined, -1);
             <td
-              [class]="'pb-grid__footer-cell ' + alignClass(column) + ' ' + fixedClass(prefixCount() + i, column) + ' ' + custom.cssClass"
+              [class]="'pb-data-grid__footer-cell ' + alignClass(column) + ' ' + fixedClass(prefixCount() + i, column) + ' ' + custom.cssClass"
               [attr.style]="(fixedStyle(prefixCount() + i, column) ?? '') + ';' + custom.style"
               (contextmenu)="onFooterContextMenu(column, $event)"
             >
               @for (summary of footerSummaries(view().totals, column, totalDefs()); track $index) {
-                <div class="pb-grid__summary">{{ summary.text }}</div>
+                <div class="pb-data-grid__summary">{{ summary.text }}</div>
               }
             </td>
           }
@@ -186,14 +186,14 @@
 </div>
 
 @if (showFilterPanel()) {
-  <div class="pb-grid__filter-panel">
+  <div class="pb-data-grid__filter-panel">
     @if (userFilter()) {
       <mat-checkbox [checked]="filterEnabled()" aria-label="Apply the filter" (change)="toggleFilterEnabled()" />
     } @else {
-      <span class="material-icons pb-grid__filter-panel-icon" aria-hidden="true">filter_alt</span>
+      <span class="material-icons pb-data-grid__filter-panel-icon" aria-hidden="true">filter_alt</span>
     }
-    <button type="button" class="pb-grid__filter-text" [class.pb-grid__filter-text--disabled]="!filterEnabled()" (click)="showFilterBuilder()"><span class="pb-grid__filter-label">{{ filterPanelText() }}</span><span class="pb-touch-target" aria-hidden="true"></span></button>
-    <span class="pb-grid__toolbar-spacer"></span>
+    <button type="button" class="pb-data-grid__filter-text" [class.pb-data-grid__filter-text--disabled]="!filterEnabled()" (click)="showFilterBuilder()"><span class="pb-data-grid__filter-label">{{ filterPanelText() }}</span><span class="pb-touch-target" aria-hidden="true"></span></button>
+    <span class="pb-data-grid__toolbar-spacer"></span>
     @if (userFilter()) {
       <button mat-button type="button" (click)="clearFilter()">Clear</button>
     }
@@ -203,39 +203,39 @@
 @if (pagingActive() && pagerPosition() !== 'top') {
   <ng-container [ngTemplateOutlet]="pager" />
 } @else if (virtualScrolling()) {
-  <div class="pb-grid__status" aria-live="polite">{{ view().rowCount.toLocaleString(locale()) }} rows</div>
+  <div class="pb-data-grid__status" aria-live="polite">{{ view().rowCount.toLocaleString(locale()) }} rows</div>
 }
 
 <!-- ======================================================================== popups and dialogs -->
 
 @if (popup(); as p) {
-  <div #popup class="pb-grid__popup pb-grid__popup--pending" [class.pb-grid__popup--filter]="p.kind === 'filter'" popover="manual" (keydown)="onPopupKeyDown($event)">
+  <div #popup class="pb-data-grid__popup pb-data-grid__popup--pending" [class.pb-data-grid__popup--filter]="p.kind === 'filter'" popover="manual" (keydown)="onPopupKeyDown($event)">
     @if (p.kind === 'menu') {
-      <div class="pb-grid__menu" role="menu">
+      <div class="pb-data-grid__menu" role="menu">
         @for (item of p.items; track $index) {
           @if (item.beginGroup) {
-            <div class="pb-grid__menu-divider" role="separator"></div>
+            <div class="pb-data-grid__menu-divider" role="separator"></div>
           }
-          <button type="button" class="pb-grid__menu-item" role="menuitem" tabindex="-1" [disabled]="item.disabled" (click)="runMenuItem(item)">
-            <span class="pb-grid__menu-icon material-icons" aria-hidden="true">{{ item.icon }}</span>
-            <span class="pb-grid__menu-text">{{ item.text }}</span>
+          <button type="button" class="pb-data-grid__menu-item" role="menuitem" tabindex="-1" [disabled]="item.disabled" (click)="runMenuItem(item)">
+            <span class="pb-data-grid__menu-icon material-icons" aria-hidden="true">{{ item.icon }}</span>
+            <span class="pb-data-grid__menu-text">{{ item.text }}</span>
           </button>
         }
       </div>
     } @else if (p.column; as column) {
-      <div class="pb-grid__filter-menu" role="dialog" [attr.aria-label]="'Filter ' + column.displayCaption">
-        <label class="pb-grid__search pb-grid__search--block">
+      <div class="pb-data-grid__filter-menu" role="dialog" [attr.aria-label]="'Filter ' + column.displayCaption">
+        <label class="pb-data-grid__search pb-data-grid__search--block">
           <span class="pb-touch-target" aria-hidden="true"></span>
           <span class="material-icons" aria-hidden="true">search</span>
           <input type="search" placeholder="Search values" aria-label="Search values" [value]="filterMenuSearch()" (input)="filterMenuSearch.set($any($event.target).value)" />
         </label>
-        <div class="pb-grid__filter-values" role="group" aria-label="Values">
+        <div class="pb-data-grid__filter-values" role="group" aria-label="Values">
           <mat-checkbox [checked]="filterMenuAllState() === true" [indeterminate]="filterMenuAllState() === null" (change)="toggleFilterMenuAll()">(Select All)</mat-checkbox>
           @for (value of visibleFilterValues(); track $index) {
             <mat-checkbox [checked]="value.checked" (change)="toggleFilterMenuValue(value)">{{ value.text }}</mat-checkbox>
           }
         </div>
-        <div class="pb-grid__popup-actions">
+        <div class="pb-data-grid__popup-actions">
           <button mat-button type="button" (click)="closePopup()">Cancel</button>
           <button mat-flat-button type="button" [disabled]="filterMenuNoneChecked()" (click)="applyFilterMenu()">OK</button>
         </div>
@@ -245,24 +245,24 @@
 }
 
 <pb-dialog [(open)]="columnChooserOpen" title="Column chooser">
-  <ul class="pb-grid__chooser pb-grid__dialog-body" aria-label="Columns">
+  <ul class="pb-data-grid__chooser pb-data-grid__dialog-body" aria-label="Columns">
     @for (entry of chooserColumns(); track entry.column.key) {
       <li
-        class="pb-grid__chooser-item"
+        class="pb-data-grid__chooser-item"
         draggable="true"
         [style.padding-inline-start.px]="8 + entry.depth * 24"
         (dragstart)="onChooserDragStart(entry.column, $event)"
         (dragover)="$event.preventDefault()"
         (drop)="onChooserDrop(entry.column, $event)"
       >
-        <span class="material-icons pb-grid__drag-icon" aria-hidden="true">drag_indicator</span>
+        <span class="material-icons pb-data-grid__drag-icon" aria-hidden="true">drag_indicator</span>
         <mat-checkbox [checked]="entry.column.currentVisible()" (change)="toggleChooserColumn(entry.column)">{{ chooserCaption(entry.column) }}</mat-checkbox>
-        <span class="pb-grid__toolbar-spacer"></span>
-        <button type="button" class="pb-grid__icon-button" [attr.aria-label]="'Move ' + chooserCaption(entry.column) + ' up'" (click)="moveChooserColumn(entry.column, -1)">
+        <span class="pb-data-grid__toolbar-spacer"></span>
+        <button type="button" class="pb-data-grid__icon-button" [attr.aria-label]="'Move ' + chooserCaption(entry.column) + ' up'" (click)="moveChooserColumn(entry.column, -1)">
           <span class="material-icons" aria-hidden="true">arrow_upward</span>
           <span class="pb-touch-target" aria-hidden="true"></span>
         </button>
-        <button type="button" class="pb-grid__icon-button" [attr.aria-label]="'Move ' + chooserCaption(entry.column) + ' down'" (click)="moveChooserColumn(entry.column, 1)">
+        <button type="button" class="pb-data-grid__icon-button" [attr.aria-label]="'Move ' + chooserCaption(entry.column) + ' down'" (click)="moveChooserColumn(entry.column, 1)">
           <span class="material-icons" aria-hidden="true">arrow_downward</span>
           <span class="pb-touch-target" aria-hidden="true"></span>
         </button>
@@ -275,7 +275,7 @@
 </pb-dialog>
 
 <pb-dialog [(open)]="filterBuilderOpen" title="Filter builder">
-  <div class="pb-grid__filter-builder pb-grid__dialog-body pb-grid__dialog-body--wide">
+  <div class="pb-data-grid__filter-builder pb-data-grid__dialog-body pb-data-grid__dialog-body--wide">
     @let version = fbVersion();
     <ng-container [ngTemplateOutlet]="filterGroup" [ngTemplateOutletContext]="{ $implicit: filterBuilderRoot(), parent: null, version }" />
   </div>
@@ -286,7 +286,7 @@
 </pb-dialog>
 
 <pb-dialog [open]="popupEditOpen()" (openChange)="onPopupEditOpenChange($event)" [title]="editIsNew() ? 'New row' : popupEditFormTitle()">
-  <div class="pb-grid__dialog-body pb-grid__dialog-body--wide">
+  <div class="pb-data-grid__dialog-body pb-data-grid__dialog-body--wide">
     @if (popupEditOpen() && editModel()) {
       <ng-container [ngTemplateOutlet]="editForm" [ngTemplateOutletContext]="{ actions: false }" />
     }
@@ -309,7 +309,7 @@
 
 <ng-template #pager>
   <pb-paginator
-    class="pb-grid__pager"
+    class="pb-data-grid__pager"
     [length]="view().rowCount"
     [pageIndex]="safePageIndex()"
     [pageSize]="pageSize()"
@@ -326,9 +326,9 @@
   @let custom = customize('headerCell', undefined, column, undefined, -1);
   <th
     [class]="
-      'pb-grid__header-cell ' +
-      (cell.leaf ? alignClass(column) : 'pb-grid__band-cell') +
-      (sortable ? ' pb-grid__header-cell--sortable ' : ' ') +
+      'pb-data-grid__header-cell ' +
+      (cell.leaf ? alignClass(column) : 'pb-data-grid__band-cell') +
+      (sortable ? ' pb-data-grid__header-cell--sortable ' : ' ') +
       (cell.leaf ? fixedClass(cell.position, column) : '') +
       ' ' +
       custom.cssClass
@@ -346,12 +346,12 @@
     (keydown)="onHeaderKeyDown(column, $event)"
     (contextmenu)="onHeaderContextMenu(column, $event)"
   >
-    <div class="pb-grid__header-content">
+    <div class="pb-data-grid__header-content">
       @switch (column.kind) {
         @case ('selection') {
           @if (selectionMode() === 'multiple' && column.allowSelectAll()) {
             <mat-checkbox
-              class="pb-grid__select"
+              class="pb-data-grid__select"
               [checked]="selectAllState() === true"
               [indeterminate]="selectAllState() === null"
               aria-label="Select all rows"
@@ -368,7 +368,7 @@
           }
         }
         @default {
-          <span class="pb-grid__header-text">
+          <span class="pb-data-grid__header-text">
             @if (column.headerTemplate(); as header) {
               <ng-container [ngTemplateOutlet]="header.template" />
             } @else {
@@ -376,18 +376,18 @@
             }
           </span>
           @if (sortable && column.currentSort() !== 'none') {
-            <span class="pb-grid__sort-indicator" aria-hidden="true">
-              <span class="material-icons pb-grid__sort-icon">{{ column.currentSort() === 'desc' ? 'arrow_downward' : 'arrow_upward' }}</span>
+            <span class="pb-data-grid__sort-indicator" aria-hidden="true">
+              <span class="material-icons pb-data-grid__sort-icon">{{ column.currentSort() === 'desc' ? 'arrow_downward' : 'arrow_upward' }}</span>
               @if (sortedCount() > 1 && column.currentGroupIndex() < 0) {
-                <span class="pb-grid__sort-index">{{ column.currentSortIndex() + 1 }}</span>
+                <span class="pb-data-grid__sort-index">{{ column.currentSortIndex() + 1 }}</span>
               }
             </span>
           }
           @if (cell.leaf && showFilterMenuButtons() && column.canFilter) {
             <button
               type="button"
-              class="pb-grid__icon-button pb-grid__filter-button"
-              [class.pb-grid__filter-button--active]="column.filterValues()"
+              class="pb-data-grid__icon-button pb-data-grid__filter-button"
+              [class.pb-data-grid__filter-button--active]="column.filterValues()"
               [attr.aria-label]="'Filter ' + column.displayCaption"
               aria-haspopup="dialog"
               (click)="openFilterMenu(column, $event)"
@@ -400,7 +400,7 @@
       }
     </div>
     @if (cell.leaf && columnResizeMode() !== 'disabled') {
-      <span class="pb-grid__resizer" aria-hidden="true" [attr.data-col-key]="column.key" (click)="$event.stopPropagation()"></span>
+      <span class="pb-data-grid__resizer" aria-hidden="true" [attr.data-col-key]="column.key" (click)="$event.stopPropagation()"></span>
     }
   </th>
 </ng-template>
@@ -409,24 +409,24 @@
   @let op = column.filterRowOperator() ?? defaultOperator(column);
   @let editor = editorType(column);
   @let label = 'Filter ' + column.displayCaption;
-  <div class="pb-grid__filter-editor">
+  <div class="pb-data-grid__filter-editor">
     <button
       type="button"
-      class="pb-grid__icon-button pb-grid__operator-button"
+      class="pb-data-grid__icon-button pb-data-grid__operator-button"
       aria-haspopup="menu"
       [attr.aria-label]="label + ': ' + operatorLabel(op)"
       [title]="operatorLabel(op)"
       (click)="openOperatorMenu(column, $event)"
     >
-      <span class="pb-grid__operator-symbol" aria-hidden="true">{{ operatorSymbol(op) }}</span>
+      <span class="pb-data-grid__operator-symbol" aria-hidden="true">{{ operatorSymbol(op) }}</span>
       <span class="pb-touch-target" aria-hidden="true"></span>
     </button>
     @if (op === 'blank' || op === 'notBlank') {
-      <span class="pb-grid__filter-blank">{{ operatorLabel(op) }}</span>
+      <span class="pb-data-grid__filter-blank">{{ operatorLabel(op) }}</span>
     } @else if (editor === 'checkbox' || editor === 'select') {
-      <label class="pb-grid__filter-field">
+      <label class="pb-data-grid__filter-field">
         <span class="pb-touch-target" aria-hidden="true"></span>
-        <select class="pb-grid__editor pb-grid__filter-input" [attr.aria-label]="label" (change)="onFilterRowInput(column, $any($event.target).value, true)">
+        <select class="pb-data-grid__editor pb-data-grid__filter-input" [attr.aria-label]="label" (change)="onFilterRowInput(column, $any($event.target).value, true)">
           <option value="" [selected]="!column.filterRowText()">(All)</option>
           @if (editor === 'checkbox') {
             <option value="true" [selected]="column.filterRowText() === 'true'">Yes</option>
@@ -440,10 +440,10 @@
       </label>
     } @else {
       <!-- The label makes the filter cell's full 48px height focus the editor (the touch target). -->
-      <label class="pb-grid__filter-field">
+      <label class="pb-data-grid__filter-field">
         <span class="pb-touch-target" aria-hidden="true"></span>
         <input
-          class="pb-grid__editor pb-grid__filter-input"
+          class="pb-data-grid__editor pb-data-grid__filter-input"
           [type]="filterRowInputType(column)"
           [attr.step]="editor === 'number' ? 'any' : null"
           [value]="column.filterRowText() ?? ''"
@@ -460,7 +460,7 @@
   @let expanded = isExpanded(group);
   @let custom = customize('groupRow', undefined, group.column, group.key, row.index);
   <tr
-    [class]="'pb-grid__group-row ' + custom.cssClass"
+    [class]="'pb-data-grid__group-row ' + custom.cssClass"
     [attr.style]="custom.style || null"
     [attr.data-row]="row.index"
     [attr.tabindex]="tabIndexOf(row)"
@@ -469,17 +469,17 @@
     (click)="toggleGroup(group, row)"
   >
     @for (i of indexes(group.level); track i) {
-      <td class="pb-grid__indent-cell" [class]="fixedClass(i, null)" [attr.style]="fixedStyle(i, null)"></td>
+      <td class="pb-data-grid__indent-cell" [class]="fixedClass(i, null)" [attr.style]="fixedStyle(i, null)"></td>
     }
-    <td class="pb-grid__group-cell" [attr.colspan]="totalColumns() - group.level">
-      <div class="pb-grid__group-content">
-        <span class="material-icons pb-grid__expand-icon" aria-hidden="true">{{ expanded ? 'expand_more' : 'chevron_right' }}</span>
+    <td class="pb-data-grid__group-cell" [attr.colspan]="totalColumns() - group.level">
+      <div class="pb-data-grid__group-content">
+        <span class="material-icons pb-data-grid__expand-icon" aria-hidden="true">{{ expanded ? 'expand_more' : 'chevron_right' }}</span>
         @if (groupRowTemplate(); as template) {
           <ng-container [ngTemplateOutlet]="template.template" [ngTemplateOutletContext]="groupContext(group)" />
         } @else {
-          <span class="pb-grid__group-caption">{{ group.column.displayCaption }}:</span>
-          <span class="pb-grid__group-value">{{ group.text }}</span>
-          <span class="pb-grid__group-summary">({{ groupSummaryText(group) }})</span>
+          <span class="pb-data-grid__group-caption">{{ group.column.displayCaption }}:</span>
+          <span class="pb-data-grid__group-value">{{ group.text }}</span>
+          <span class="pb-data-grid__group-summary">({{ groupSummaryText(group) }})</span>
         }
       </div>
     </td>
@@ -487,15 +487,15 @@
 </ng-template>
 
 <ng-template #groupFooterRow let-row>
-  <tr class="pb-grid__group-footer-row">
+  <tr class="pb-data-grid__group-footer-row">
     @for (i of indexes(prefixCount()); track i) {
-      <td class="pb-grid__service-cell"></td>
+      <td class="pb-data-grid__service-cell"></td>
     }
     @for (column of leaves(); track column.key) {
       @let custom = customize('groupFooterCell', undefined, column, row.group.key, row.index);
-      <td [class]="'pb-grid__group-footer-cell ' + alignClass(column) + ' ' + custom.cssClass" [attr.style]="custom.style || null">
+      <td [class]="'pb-data-grid__group-footer-cell ' + alignClass(column) + ' ' + custom.cssClass" [attr.style]="custom.style || null">
         @for (summary of footerSummaries(row.group.footerSummaries, column, groupFooterDefs()); track $index) {
-          <div class="pb-grid__summary">{{ summary.text }}</div>
+          <div class="pb-data-grid__summary">{{ summary.text }}</div>
         }
       </td>
     }
@@ -504,7 +504,7 @@
 
 <ng-template #dataRow let-row>
   @if (!row.item) {
-    <tr class="pb-grid__row pb-grid__row--placeholder" [attr.data-row]="row.index" [style.height.px]="rowHeight()">
+    <tr class="pb-data-grid__row pb-data-grid__row--placeholder" [attr.data-row]="row.index" [style.height.px]="rowHeight()">
       <td [attr.colspan]="totalColumns()"></td>
     </tr>
   } @else {
@@ -526,15 +526,15 @@
       (contextmenu)="onRowContextMenu(row, $event)"
     >
       @for (i of indexes(indentCount()); track i) {
-        <td class="pb-grid__indent-cell" [class]="fixedClass(i, null)" [attr.style]="fixedStyle(i, null)"></td>
+        <td class="pb-data-grid__indent-cell" [class]="fixedClass(i, null)" [attr.style]="fixedStyle(i, null)"></td>
       }
       @for (service of serviceColumns(); track service; let s = $index) {
-        <td class="pb-grid__service-cell" [class]="fixedClass(indentCount() + s, null)" [attr.style]="fixedStyle(indentCount() + s, null)">
+        <td class="pb-data-grid__service-cell" [class]="fixedClass(indentCount() + s, null)" [attr.style]="fixedStyle(indentCount() + s, null)">
           @switch (service) {
             @case ('detail') {
               <button
                 type="button"
-                class="pb-grid__icon-button"
+                class="pb-data-grid__icon-button"
                 [attr.aria-expanded]="detailOpen"
                 [attr.aria-label]="detailOpen ? 'Collapse detail row' : 'Expand detail row'"
                 (click)="$event.stopPropagation(); toggleDetail(item)"
@@ -546,7 +546,7 @@
             @case ('adaptive') {
               <button
                 type="button"
-                class="pb-grid__icon-button"
+                class="pb-data-grid__icon-button"
                 [attr.aria-expanded]="adaptiveOpen"
                 [attr.aria-label]="adaptiveOpen ? 'Hide more columns' : 'Show more columns'"
                 (click)="$event.stopPropagation(); toggleAdaptive(item)"
@@ -556,7 +556,7 @@
               </button>
             }
             @default {
-              <span class="pb-grid__drag-handle" draggable="true" title="Drag to move" aria-label="Drag row. Ctrl+Arrow keys move the focused row.">
+              <span class="pb-data-grid__drag-handle" draggable="true" title="Drag to move" aria-label="Drag row. Ctrl+Arrow keys move the focused row.">
                 <span class="material-icons" aria-hidden="true">drag_indicator</span>
               </span>
             }
@@ -568,9 +568,9 @@
       }
     </tr>
     @if (adaptiveOpen) {
-      <tr class="pb-grid__adaptive-row">
+      <tr class="pb-data-grid__adaptive-row">
         <td [attr.colspan]="totalColumns()">
-          <dl class="pb-grid__adaptive-list">
+          <dl class="pb-data-grid__adaptive-list">
             @for (column of adaptiveColumns(); track column.key) {
               <dt>{{ column.displayCaption }}</dt>
               <dd>
@@ -586,20 +586,20 @@
       </tr>
     }
     @if (previewTemplate(); as preview) {
-      <tr class="pb-grid__preview-row" [class.pb-grid__row--selected]="isSelected(item)">
+      <tr class="pb-data-grid__preview-row" [class.pb-data-grid__row--selected]="isSelected(item)">
         @for (i of indexes(indentCount()); track i) {
-          <td class="pb-grid__indent-cell"></td>
+          <td class="pb-data-grid__indent-cell"></td>
         }
         <td [attr.colspan]="totalColumns() - indentCount()"><ng-container [ngTemplateOutlet]="preview.template" [ngTemplateOutletContext]="{ $implicit: item }" /></td>
       </tr>
     }
     @if (detailOpen) {
-      <tr class="pb-grid__detail-row">
+      <tr class="pb-data-grid__detail-row">
         @for (i of indexes(indentCount()); track i) {
-          <td class="pb-grid__indent-cell"></td>
+          <td class="pb-data-grid__indent-cell"></td>
         }
         <td [attr.colspan]="totalColumns() - indentCount()">
-          <div class="pb-grid__detail-content"><ng-container [ngTemplateOutlet]="detailTemplate()!.template" [ngTemplateOutletContext]="{ $implicit: item }" /></div>
+          <div class="pb-data-grid__detail-content"><ng-container [ngTemplateOutlet]="detailTemplate()!.template" [ngTemplateOutletContext]="{ $implicit: item }" /></div>
         </td>
       </tr>
     }
@@ -610,19 +610,19 @@
   @let item = row.item;
   @switch (column.kind) {
     @case ('selection') {
-      <td [class]="cellClass(row, column, position) + ' pb-grid__cell--center'" [attr.style]="fixedStyle(position, column)" (click)="$event.stopPropagation()">
+      <td [class]="cellClass(row, column, position) + ' pb-data-grid__cell--center'" [attr.style]="fixedStyle(position, column)" (click)="$event.stopPropagation()">
         @if (selectionMode() !== 'none' && !row.inserted) {
           @if (treeRecursiveSelection()) {
             @let state = treeCheckState(item);
-            <mat-checkbox class="pb-grid__select" [checked]="state === true" [indeterminate]="state === null" aria-label="Select row and its children" (change)="toggleRow(item)" />
+            <mat-checkbox class="pb-data-grid__select" [checked]="state === true" [indeterminate]="state === null" aria-label="Select row and its children" (change)="toggleRow(item)" />
           } @else {
-            <mat-checkbox class="pb-grid__select" [checked]="isSelected(item)" aria-label="Select row" (change)="toggleRow(item)" />
+            <mat-checkbox class="pb-data-grid__select" [checked]="isSelected(item)" aria-label="Select row" (change)="toggleRow(item)" />
           }
         }
       </td>
     }
     @case ('command') {
-      <td [class]="cellClass(row, column, position) + ' pb-grid__command-cell'" [attr.style]="fixedStyle(position, column)" (click)="$event.stopPropagation()">
+      <td [class]="cellClass(row, column, position) + ' pb-data-grid__command-cell'" [attr.style]="fixedStyle(position, column)" (click)="$event.stopPropagation()">
         @if (column.cellTemplate(); as template) {
           <ng-container [ngTemplateOutlet]="template.template" [ngTemplateOutletContext]="cellContext(row, column)" />
         } @else if (deleted) {
@@ -647,9 +647,9 @@
       @if (isCellEditor(row, column)) {
         <td [class]="cellClass(row, column, position)" [attr.style]="fixedStyle(position, column)" (click)="$event.stopPropagation()" (focusout)="onCellEditorFocusOut($event)">
           @if (isTreeColumn(column)) {
-            <div class="pb-grid__tree-cell" [style.--pb-tree-level]="row.treeLevel ?? 0">
-              <span class="pb-grid__tree-spacer" aria-hidden="true"></span>
-              <div class="pb-grid__tree-content">
+            <div class="pb-data-grid__tree-cell" [style.--pb-tree-level]="row.treeLevel ?? 0">
+              <span class="pb-data-grid__tree-spacer" aria-hidden="true"></span>
+              <div class="pb-data-grid__tree-content">
                 <ng-container
                   [ngTemplateOutlet]="editorTemplate"
                   [ngTemplateOutletContext]="{ column, model, autofocus: editMode() !== 'editRow' || column === firstEditable(), id: null }"
@@ -668,13 +668,13 @@
         @let message = batchMessage(row, column);
         <td [class]="cellClass(row, column, position)" [attr.style]="cellStyle(row, column, position)" [attr.title]="message" (click)="onCellClick(row, column)">
           @if (isTreeColumn(column)) {
-            <div class="pb-grid__tree-cell" [style.--pb-tree-level]="row.treeLevel ?? 0">
+            <div class="pb-data-grid__tree-cell" [style.--pb-tree-level]="row.treeLevel ?? 0">
               @if (row.treeLoading) {
-                <span class="pb-grid__tree-toggle pb-grid__tree-toggle--loading" role="progressbar" aria-label="Loading children"><span class="pb-grid__tree-spinner"></span></span>
+                <span class="pb-data-grid__tree-toggle pb-data-grid__tree-toggle--loading" role="progressbar" aria-label="Loading children"><span class="pb-data-grid__tree-spinner"></span></span>
               } @else if (row.treeHasChildren) {
                 <button
                   type="button"
-                  class="pb-grid__tree-toggle"
+                  class="pb-data-grid__tree-toggle"
                   tabindex="-1"
                   [attr.aria-expanded]="!!row.treeExpanded"
                   [attr.aria-label]="row.treeExpanded ? 'Collapse' : 'Expand'"
@@ -684,9 +684,9 @@
                   <span class="pb-touch-target" aria-hidden="true"></span>
                 </button>
               } @else {
-                <span class="pb-grid__tree-spacer" aria-hidden="true"></span>
+                <span class="pb-data-grid__tree-spacer" aria-hidden="true"></span>
               }
-              <div class="pb-grid__tree-content"><ng-container [ngTemplateOutlet]="cellContent" [ngTemplateOutletContext]="{ row, column, value }" /></div>
+              <div class="pb-data-grid__tree-content"><ng-container [ngTemplateOutlet]="cellContent" [ngTemplateOutletContext]="{ row, column, value }" /></div>
             </div>
           } @else {
             <ng-container [ngTemplateOutlet]="cellContent" [ngTemplateOutletContext]="{ row, column, value }" />
@@ -701,13 +701,13 @@
           @if (column.cellTemplate(); as template) {
             <ng-container [ngTemplateOutlet]="template.template" [ngTemplateOutletContext]="cellContext(row, column)" />
           } @else if (value === true || value === false) {
-            <span class="material-icons pb-grid__bool" [class.pb-grid__bool--true]="value" role="img" [attr.aria-label]="value ? 'Yes' : 'No'">{{
+            <span class="material-icons pb-data-grid__bool" [class.pb-data-grid__bool--true]="value" role="img" [attr.aria-label]="value ? 'Yes' : 'No'">{{
               value ? 'check_box' : 'check_box_outline_blank'
             }}</span>
           } @else {
             @for (part of highlight(formatCell(column, value)); track $index) {
               @if (part.mark) {
-                <mark class="pb-grid__highlight">{{ part.text }}</mark>
+                <mark class="pb-data-grid__highlight">{{ part.text }}</mark>
               } @else {
                 {{ part.text }}
               }
@@ -721,19 +721,19 @@
       <ng-container [ngTemplateOutlet]="editFormRow" />
     } @else if (editMode() === 'editRow' || editMode() === 'editCell') {
       @let model = editModel();
-      <tr class="pb-grid__row pb-grid__edit-row pb-grid__row--inserted">
+      <tr class="pb-data-grid__row pb-data-grid__edit-row pb-data-grid__row--inserted">
         @for (i of indexes(prefixCount()); track i) {
-          <td class="pb-grid__service-cell"></td>
+          <td class="pb-data-grid__service-cell"></td>
         }
         @for (column of leaves(); track column.key) {
-          <td class="pb-grid__cell pb-grid__cell--editing" [class]="alignClass(column)" [class.pb-grid__command-cell]="column.kind === 'command'">
+          <td class="pb-data-grid__cell pb-data-grid__cell--editing" [class]="alignClass(column)" [class.pb-data-grid__command-cell]="column.kind === 'command'">
             @if (column.kind === 'command') {
               <button mat-icon-button type="button" aria-label="Save" (click)="saveChanges()"><span class="material-icons">check</span></button>
               <button mat-icon-button type="button" aria-label="Cancel" (click)="cancelEdit()"><span class="material-icons">close</span></button>
             } @else if (column.canEdit && isTreeColumn(column)) {
-              <div class="pb-grid__tree-cell" [style.--pb-tree-level]="treeLevel ?? 0">
-                <span class="pb-grid__tree-spacer" aria-hidden="true"></span>
-                <div class="pb-grid__tree-content">
+              <div class="pb-data-grid__tree-cell" [style.--pb-tree-level]="treeLevel ?? 0">
+                <span class="pb-data-grid__tree-spacer" aria-hidden="true"></span>
+                <div class="pb-data-grid__tree-content">
                   <ng-container [ngTemplateOutlet]="editorTemplate" [ngTemplateOutletContext]="{ column, model, autofocus: column === firstEditable(), id: null }" />
                 </div>
               </div>
@@ -744,9 +744,9 @@
         }
       </tr>
       @if (!hasCommandColumn()) {
-        <tr class="pb-grid__edit-actions-row">
+        <tr class="pb-data-grid__edit-actions-row">
           <td [attr.colspan]="totalColumns()">
-            <div class="pb-grid__popup-actions">
+            <div class="pb-data-grid__popup-actions">
               <button mat-button type="button" (click)="cancelEdit()">Cancel</button>
               <button mat-flat-button type="button" (click)="saveChanges()">Save</button>
             </div>
@@ -755,7 +755,7 @@
       }
     }
   } @else if (showNewItemRow()) {
-    <tr class="pb-grid__new-item-row" tabindex="0" (click)="startNewRow()" (keydown)="onNewItemRowKeyDown($event)">
+    <tr class="pb-data-grid__new-item-row" tabindex="0" (click)="startNewRow()" (keydown)="onNewItemRowKeyDown($event)">
       <td [attr.colspan]="totalColumns()">
         <span class="material-icons" aria-hidden="true">add</span>
         <span>Click here to add a new row</span>
@@ -765,7 +765,7 @@
 </ng-template>
 
 <ng-template #editFormRow>
-  <tr class="pb-grid__edit-form-row">
+  <tr class="pb-data-grid__edit-form-row">
     <td [attr.colspan]="totalColumns()">
       <ng-container [ngTemplateOutlet]="editForm" [ngTemplateOutletContext]="{ actions: true }" />
     </td>
@@ -775,14 +775,14 @@
 <ng-template #editForm let-actions="actions">
   @let model = editModel();
   @if (model) {
-    <div class="pb-grid__edit-form">
+    <div class="pb-data-grid__edit-form">
       @if (editFormTemplate(); as template) {
         <ng-container [ngTemplateOutlet]="template.template" [ngTemplateOutletContext]="editFormContext()" />
       } @else {
-        <div class="pb-grid__edit-form-fields">
+        <div class="pb-data-grid__edit-form-fields">
           @for (column of formColumns(); track column.key) {
-            <div class="pb-grid__edit-field">
-              <label class="pb-grid__edit-label" [attr.for]="gridId + '-edit-' + column.key">{{ column.displayCaption }}</label>
+            <div class="pb-data-grid__edit-field">
+              <label class="pb-data-grid__edit-label" [attr.for]="gridId + '-edit-' + column.key">{{ column.displayCaption }}</label>
               <ng-container
                 [ngTemplateOutlet]="editorTemplate"
                 [ngTemplateOutletContext]="{ column, model, autofocus: column === firstFormEditable(), id: gridId + '-edit-' + column.key }"
@@ -792,7 +792,7 @@
         </div>
       }
       @if (actions) {
-        <div class="pb-grid__popup-actions">
+        <div class="pb-data-grid__popup-actions">
           <button mat-button type="button" (click)="cancelEdit()">Cancel</button>
           <button mat-flat-button type="button" (click)="saveChanges()">Save</button>
         </div>
@@ -806,9 +806,9 @@
   @let errors = editErrorsFor(model, column);
   @let invalid = errors.length > 0;
   @let readOnly = !column.canEdit;
-  @let css = 'pb-grid__editor' + (autofocus ? ' pb-grid__editor--autofocus' : '') + (invalid ? ' pb-grid__editor--invalid' : '');
+  @let css = 'pb-data-grid__editor' + (autofocus ? ' pb-data-grid__editor--autofocus' : '') + (invalid ? ' pb-data-grid__editor--invalid' : '');
   @let errorId = gridId + '-error-' + column.key;
-  <div class="pb-grid__editor-host">
+  <div class="pb-data-grid__editor-host">
     @if (column.editTemplate(); as template) {
       <ng-container [ngTemplateOutlet]="template.template" [ngTemplateOutletContext]="editContext(model, column)" />
     } @else {
@@ -848,7 +848,7 @@
           ></textarea>
         }
         @case ('none') {
-          <span class="pb-grid__editor-readonly">{{ formatCell(column, cellValue(model, column)) }}</span>
+          <span class="pb-data-grid__editor-readonly">{{ formatCell(column, cellValue(model, column)) }}</span>
         }
         @default {
           <input
@@ -868,27 +868,27 @@
       }
     }
     @if (invalid) {
-      <div class="pb-grid__editor-error" role="alert" [id]="errorId">{{ errors.join(' ') }}</div>
+      <div class="pb-data-grid__editor-error" role="alert" [id]="errorId">{{ errors.join(' ') }}</div>
     }
   </div>
 </ng-template>
 
 <ng-template #filterGroup let-group let-parent="parent" let-version="version">
-  <div class="pb-grid__fb-group" role="group" [attr.aria-label]="group.or ? 'Any of the following' : 'All of the following'">
-    <div class="pb-grid__fb-group-header">
-      <select class="pb-grid__editor pb-grid__fb-logic" aria-label="Group operator" (change)="setGroupLogic(group, $any($event.target).value)">
+  <div class="pb-data-grid__fb-group" role="group" [attr.aria-label]="group.or ? 'Any of the following' : 'All of the following'">
+    <div class="pb-data-grid__fb-group-header">
+      <select class="pb-data-grid__editor pb-data-grid__fb-logic" aria-label="Group operator" (change)="setGroupLogic(group, $any($event.target).value)">
         <option value="and" [selected]="!group.or">And</option>
         <option value="or" [selected]="group.or">Or</option>
       </select>
       <button mat-button type="button" (click)="addCondition(group)"><span class="material-icons" aria-hidden="true">add</span>Condition</button>
       <button mat-button type="button" (click)="addGroup(group)"><span class="material-icons" aria-hidden="true">add_box</span>Group</button>
       @if (parent) {
-        <button type="button" class="pb-grid__icon-button" aria-label="Remove group" (click)="removeNode(parent, group)"><span class="material-icons" aria-hidden="true">close</span><span class="pb-touch-target" aria-hidden="true"></span></button>
+        <button type="button" class="pb-data-grid__icon-button" aria-label="Remove group" (click)="removeNode(parent, group)"><span class="material-icons" aria-hidden="true">close</span><span class="pb-touch-target" aria-hidden="true"></span></button>
       }
     </div>
-    <div class="pb-grid__fb-children">
+    <div class="pb-data-grid__fb-children">
       @if (!group.children.length) {
-        <div class="pb-grid__fb-empty">No conditions: every row is shown.</div>
+        <div class="pb-data-grid__fb-empty">No conditions: every row is shown.</div>
       }
       @for (node of group.children; track $index) {
         @if (node.group) {
@@ -896,20 +896,20 @@
         } @else {
           @let column = nodeColumn(node);
           @let editor = column ? editorType(column) : 'text';
-          <div class="pb-grid__fb-condition">
-            <select class="pb-grid__editor" aria-label="Field" (change)="setNodeField(node, $any($event.target).value)">
+          <div class="pb-data-grid__fb-condition">
+            <select class="pb-data-grid__editor" aria-label="Field" (change)="setNodeField(node, $any($event.target).value)">
               @for (c of filterableColumns(); track c.key) {
                 <option [value]="c.filterField" [selected]="c.filterField === node.field">{{ c.displayCaption }}</option>
               }
             </select>
-            <select class="pb-grid__editor" aria-label="Operator" (change)="setNodeOperator(node, $any($event.target).value)">
+            <select class="pb-data-grid__editor" aria-label="Operator" (change)="setNodeOperator(node, $any($event.target).value)">
               @for (op of nodeOperators(node); track op) {
                 <option [value]="op" [selected]="op === node.operator">{{ operatorLabel(op) }}</option>
               }
             </select>
             @if (node.operator !== 'blank' && node.operator !== 'notBlank') {
               @if (column && (editor === 'checkbox' || editor === 'select')) {
-                <select class="pb-grid__editor" aria-label="Value" (change)="setNodeValue(node, $any($event.target).value)">
+                <select class="pb-data-grid__editor" aria-label="Value" (change)="setNodeValue(node, $any($event.target).value)">
                   <option value="" [selected]="!node.value"></option>
                   @if (editor === 'checkbox') {
                     <option value="true" [selected]="node.value === 'true'">Yes</option>
@@ -922,7 +922,7 @@
                 </select>
               } @else {
                 <input
-                  class="pb-grid__editor"
+                  class="pb-data-grid__editor"
                   aria-label="Value"
                   [type]="editor === 'date' ? 'date' : editor === 'number' ? 'number' : 'text'"
                   [attr.step]="editor === 'number' ? 'any' : null"
@@ -931,7 +931,7 @@
                 />
               }
             }
-            <button type="button" class="pb-grid__icon-button" aria-label="Remove condition" (click)="removeNode(group, node)"><span class="material-icons" aria-hidden="true">close</span><span class="pb-touch-target" aria-hidden="true"></span></button>
+            <button type="button" class="pb-data-grid__icon-button" aria-label="Remove condition" (click)="removeNode(group, node)"><span class="material-icons" aria-hidden="true">close</span><span class="pb-touch-target" aria-hidden="true"></span></button>
           </div>
         }
       }

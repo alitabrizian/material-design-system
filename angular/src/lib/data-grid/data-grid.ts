@@ -430,11 +430,11 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
       if (this.focusRowAfterRender != null) {
         const index = this.focusRowAfterRender;
         this.focusRowAfterRender = null;
-        (this.host.querySelector(`.pb-grid__scroll > table > tbody > tr[data-row="${index}"]`) as HTMLElement | null)?.focus();
+        (this.host.querySelector(`.pb-data-grid__scroll > table > tbody > tr[data-row="${index}"]`) as HTMLElement | null)?.focus();
       }
       if (this.focusEditorAfterRender) {
         this.focusEditorAfterRender = false;
-        (this.host.querySelector('.pb-grid__editor--autofocus, .pb-grid__edit-row .pb-grid__editor:not([disabled])') as HTMLElement | null)?.focus();
+        (this.host.querySelector('.pb-data-grid__editor--autofocus, .pb-data-grid__edit-row .pb-data-grid__editor:not([disabled])') as HTMLElement | null)?.focus();
       }
     });
 
@@ -618,7 +618,7 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
       const type = column.isData ? this.columnType(column) : 'string';
       align = type === 'number' ? 'end' : type === 'boolean' || column.kind === 'selection' ? 'center' : 'start';
     }
-    return align === 'end' ? 'pb-grid__cell--end' : align === 'center' ? 'pb-grid__cell--center' : '';
+    return align === 'end' ? 'pb-data-grid__cell--end' : align === 'center' ? 'pb-data-grid__cell--center' : '';
   }
 
   protected editorType(column: PbGridColumn): PbGridEditorType {
@@ -1049,13 +1049,13 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
 
   protected readonly rootClass = computed(() =>
     [
-      'pb-grid',
-      `pb-grid--lines-${this.gridLines()}`,
-      this.alternatingRows() ? 'pb-grid--alternating' : '',
-      this.dense() ? 'pb-grid--dense' : '',
-      this.focusedRowEnabled() ? 'pb-grid--focus-row' : '',
-      this.allowSelectRowByClick() ? 'pb-grid--click-select' : '',
-      this.height() ? 'pb-grid--fixed-height' : '',
+      'pb-data-grid',
+      `pb-data-grid--lines-${this.gridLines()}`,
+      this.alternatingRows() ? 'pb-data-grid--alternating' : '',
+      this.dense() ? 'pb-data-grid--dense' : '',
+      this.focusedRowEnabled() ? 'pb-data-grid--focus-row' : '',
+      this.allowSelectRowByClick() ? 'pb-data-grid--click-select' : '',
+      this.height() ? 'pb-data-grid--fixed-height' : '',
     ]
       .filter(Boolean)
       .join(' '),
@@ -1067,10 +1067,10 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
   });
 
   protected fixedClass(position: number, column: PbGridColumn | null): string {
-    if (!column) return this.hasLeftFixed() ? 'pb-grid__cell--fixed-left' : '';
+    if (!column) return this.hasLeftFixed() ? 'pb-data-grid__cell--fixed-left' : '';
     const fixed = column.currentFixed();
-    if (fixed === 'left') return this.leaves().filter((c) => c.currentFixed() === 'left').at(-1) === column ? 'pb-grid__cell--fixed-left pb-grid__cell--fixed-edge' : 'pb-grid__cell--fixed-left';
-    if (fixed === 'right') return this.leaves().find((c) => c.currentFixed() === 'right') === column ? 'pb-grid__cell--fixed-right pb-grid__cell--fixed-edge' : 'pb-grid__cell--fixed-right';
+    if (fixed === 'left') return this.leaves().filter((c) => c.currentFixed() === 'left').at(-1) === column ? 'pb-data-grid__cell--fixed-left pb-data-grid__cell--fixed-edge' : 'pb-data-grid__cell--fixed-left';
+    if (fixed === 'right') return this.leaves().find((c) => c.currentFixed() === 'right') === column ? 'pb-data-grid__cell--fixed-right pb-data-grid__cell--fixed-edge' : 'pb-data-grid__cell--fixed-right';
     return '';
   }
 
@@ -1094,7 +1094,7 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
   }
 
   private syncFixedColumns(): void {
-    const table = this.host.querySelector(':scope > .pb-grid__scroll > .pb-grid__table') as HTMLTableElement | null;
+    const table = this.host.querySelector(':scope > .pb-data-grid__scroll > .pb-data-grid__table') as HTMLTableElement | null;
     const cells = [...(table?.tHead?.rows[0]?.cells ?? [])];
     if (!table) return;
     let start = 0;
@@ -1192,16 +1192,16 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
 
   protected rowClass(row: GridRow<T>): string {
     const item = row.item;
-    if (!item) return 'pb-grid__row pb-grid__row--placeholder';
+    if (!item) return 'pb-data-grid__row pb-data-grid__row--placeholder';
     const custom = this.customize('dataRow', item, undefined, undefined, row.index);
     return [
-      'pb-grid__row',
-      this.isSelected(item) ? 'pb-grid__row--selected' : '',
-      this.isFocused(item) ? 'pb-grid__row--focused' : '',
-      row.dataIndex % 2 === 1 ? 'pb-grid__row--alt' : '',
-      this.editMode() === 'editRow' && this.isEditingRow(item) ? 'pb-grid__edit-row' : '',
-      this.isRowDeleted(row) ? 'pb-grid__row--deleted' : '',
-      row.inserted ? 'pb-grid__row--inserted' : '',
+      'pb-data-grid__row',
+      this.isSelected(item) ? 'pb-data-grid__row--selected' : '',
+      this.isFocused(item) ? 'pb-data-grid__row--focused' : '',
+      row.dataIndex % 2 === 1 ? 'pb-data-grid__row--alt' : '',
+      this.editMode() === 'editRow' && this.isEditingRow(item) ? 'pb-data-grid__edit-row' : '',
+      this.isRowDeleted(row) ? 'pb-data-grid__row--deleted' : '',
+      row.inserted ? 'pb-data-grid__row--inserted' : '',
       custom.cssClass,
     ]
       .filter(Boolean)
@@ -1217,15 +1217,15 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
     const custom = this.customize('dataCell', row.item, column, column.isData ? this.cellValue(model, column) : undefined, row.index);
     const editable = (this.editMode() === 'editCell' || this.editMode() === 'batch') && column.canEdit && !this.isRowDeleted(row);
     return [
-      'pb-grid__cell',
+      'pb-data-grid__cell',
       this.alignClass(column),
       this.fixedClass(position, column),
       column.cssClass() ?? '',
       custom.cssClass,
-      this.isCellModified(row, column) ? 'pb-grid__cell--modified' : '',
-      this.isCellEditor(row, column) ? 'pb-grid__cell--editing' : '',
-      editable ? 'pb-grid__cell--editable' : '',
-      this.batchMessage(row, column) ? 'pb-grid__cell--invalid' : '',
+      this.isCellModified(row, column) ? 'pb-data-grid__cell--modified' : '',
+      this.isCellEditor(row, column) ? 'pb-data-grid__cell--editing' : '',
+      editable ? 'pb-data-grid__cell--editable' : '',
+      this.batchMessage(row, column) ? 'pb-data-grid__cell--invalid' : '',
     ]
       .filter(Boolean)
       .join(' ');
@@ -1630,7 +1630,7 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
     panel.style.left = `${Math.round(left)}px`;
     panel.style.top = `${Math.round(above ? Math.max(8, popup.y - height) : popup.y)}px`;
     panel.style.transformOrigin = `left ${above ? 'bottom' : 'top'}`;
-    panel.classList.remove('pb-grid__popup--pending');
+    panel.classList.remove('pb-data-grid__popup--pending');
     (panel.querySelector(popup.kind === 'menu' ? '[role=menuitem]:not([disabled])' : 'input') as HTMLElement | null)?.focus();
     this.outsideListener = (event: Event) => {
       if (event.type === 'scroll' && panel.contains(event.target as Node)) return;
@@ -1897,7 +1897,7 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
 
   /** Fits every column to its content. */
   autoFitColumns(): void {
-    const table = this.host.querySelector(':scope > .pb-grid__scroll > .pb-grid__table') as HTMLTableElement | null;
+    const table = this.host.querySelector(':scope > .pb-data-grid__scroll > .pb-data-grid__table') as HTMLTableElement | null;
     if (!table) return;
     const cols = [...table.querySelectorAll<HTMLElement>(':scope > colgroup > col')];
     const saved = cols.map((c) => c.style.width);
@@ -1905,14 +1905,14 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
     cols.forEach((c) => {
       if (c.dataset['colKey']) c.style.width = '';
     });
-    this.host.classList.add('pb-grid--measuring');
+    this.host.classList.add('pb-data-grid--measuring');
     table.style.width = 'max-content';
     const widths = new Map<string, number>();
     for (const cell of table.tHead?.rows[0]?.cells ?? []) {
       const key = cell.dataset['colKey'];
       if (key) widths.set(key, Math.max(Number(cell.dataset['minWidth'] || 40), Math.ceil(cell.getBoundingClientRect().width + 1)));
     }
-    this.host.classList.remove('pb-grid--measuring');
+    this.host.classList.remove('pb-data-grid--measuring');
     table.style.width = savedWidth;
     cols.forEach((c, i) => (c.style.width = saved[i]));
     widths.forEach((width, key) => this.getColumn(key)?.currentWidth.set(`${width}px`));
@@ -3029,13 +3029,13 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
   // ================================================================== resize and drag and drop
 
   protected onHostPointerDown(event: PointerEvent): void {
-    const handle = (event.target as HTMLElement).closest?.('.pb-grid__resizer') as HTMLElement | null;
-    if (!handle || handle.closest('.pb-grid') !== this.host || this.columnResizeMode() === 'disabled' || event.button !== 0) return;
+    const handle = (event.target as HTMLElement).closest?.('.pb-data-grid__resizer') as HTMLElement | null;
+    if (!handle || handle.closest('.pb-data-grid') !== this.host || this.columnResizeMode() === 'disabled' || event.button !== 0) return;
     this.startColumnResize(event, handle);
   }
 
   private startColumnResize(event: PointerEvent, handle: HTMLElement): void {
-    const table = this.host.querySelector(':scope > .pb-grid__scroll > .pb-grid__table') as HTMLTableElement;
+    const table = this.host.querySelector(':scope > .pb-data-grid__scroll > .pb-data-grid__table') as HTMLTableElement;
     const cells = [...(table.tHead?.rows[0]?.cells ?? [])];
     const cols = [...table.querySelectorAll<HTMLElement>(':scope > colgroup > col')];
     const index = cells.findIndex((c) => c.dataset['colKey'] === handle.dataset['colKey']);
@@ -3061,7 +3061,7 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
     } catch {
       /* synthetic event */
     }
-    this.host.classList.add('pb-grid--resizing');
+    this.host.classList.add('pb-data-grid--resizing');
     const move = (e: PointerEvent) => {
       let dx = (e.clientX - event.clientX) * direction;
       if (next >= 0) {
@@ -3079,7 +3079,7 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
       window.removeEventListener('pointermove', move);
       window.removeEventListener('pointerup', up);
       window.removeEventListener('pointercancel', up);
-      this.host.classList.remove('pb-grid--resizing');
+      this.host.classList.remove('pb-data-grid--resizing');
       if (draggable != null) header?.setAttribute('draggable', draggable);
       table.style.width = originalWidth;
       this.suppressHeaderClick = true;
@@ -3099,14 +3099,14 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
 
   private clearDropMarks(): void {
     this.host
-      .querySelectorAll('.pb-grid__drop-before, .pb-grid__drop-after, .pb-grid__row--drop-before, .pb-grid__row--drop-after, .pb-grid__row--drop-inside')
-      .forEach((el) => el.classList.remove('pb-grid__drop-before', 'pb-grid__drop-after', 'pb-grid__row--drop-before', 'pb-grid__row--drop-after', 'pb-grid__row--drop-inside'));
-    this.host.querySelectorAll('.pb-grid__group-panel--drop').forEach((el) => el.classList.remove('pb-grid__group-panel--drop'));
-    this.host.classList.remove('pb-grid--drop-target');
+      .querySelectorAll('.pb-data-grid__drop-before, .pb-data-grid__drop-after, .pb-data-grid__row--drop-before, .pb-data-grid__row--drop-after, .pb-data-grid__row--drop-inside')
+      .forEach((el) => el.classList.remove('pb-data-grid__drop-before', 'pb-data-grid__drop-after', 'pb-data-grid__row--drop-before', 'pb-data-grid__row--drop-after', 'pb-data-grid__row--drop-inside'));
+    this.host.querySelectorAll('.pb-data-grid__group-panel--drop').forEach((el) => el.classList.remove('pb-data-grid__group-panel--drop'));
+    this.host.classList.remove('pb-data-grid--drop-target');
   }
 
   private ownsTarget(event: Event): boolean {
-    return (event.target as HTMLElement).closest?.('.pb-grid') === this.host;
+    return (event.target as HTMLElement).closest?.('.pb-data-grid') === this.host;
   }
 
   private rowDropAllowed(): boolean {
@@ -3118,11 +3118,11 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
   protected onDragStart(event: DragEvent): void {
     if (!this.ownsTarget(event)) return;
     const target = event.target as HTMLElement;
-    if (this.host.classList.contains('pb-grid--resizing') || target.closest('.pb-grid__resizer')) {
+    if (this.host.classList.contains('pb-data-grid--resizing') || target.closest('.pb-data-grid__resizer')) {
       event.preventDefault();
       return;
     }
-    const handle = target.closest('.pb-grid__drag-handle');
+    const handle = target.closest('.pb-data-grid__drag-handle');
     if (handle) {
       const row = handle.closest('tr[data-row]') as HTMLElement | null;
       if (!row || !this.dragGroupName()) return;
@@ -3141,15 +3141,15 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
       } catch {
         /* not supported */
       }
-      row.classList.add('pb-grid__row--dragging');
+      row.classList.add('pb-data-grid__row--dragging');
       const item = this.itemAtRow(Number(row.dataset['row']));
       this.draggedItems = !item ? [] : this.isSelected(item) && this.selectedItems().length > 1 ? this.view().rows.filter((r) => r.item && this.isSelected(r.item)).map((r) => r.item!) : [item];
       return;
     }
-    const header = target.closest("th[data-col-key][draggable='true'], .pb-grid__group-chip") as HTMLElement | null;
+    const header = target.closest("th[data-col-key][draggable='true'], .pb-data-grid__group-chip") as HTMLElement | null;
     if (header) {
-      gridDrag = { kind: 'column', gridId: this.gridId, key: header.dataset['colKey'], fromPanel: header.classList.contains('pb-grid__group-chip') };
-      header.classList.add(header.matches('th') ? 'pb-grid__header-cell--dragging' : 'pb-grid__group-chip--dragging');
+      gridDrag = { kind: 'column', gridId: this.gridId, key: header.dataset['colKey'], fromPanel: header.classList.contains('pb-data-grid__group-chip') };
+      header.classList.add(header.matches('th') ? 'pb-data-grid__header-cell--dragging' : 'pb-data-grid__group-chip--dragging');
       event.dataTransfer!.effectAllowed = 'move';
       event.dataTransfer!.setData('text/plain', header.dataset['colKey'] ?? '');
     }
@@ -3158,11 +3158,11 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
   private columnDropTarget(event: DragEvent): { panel?: HTMLElement; th?: HTMLElement; head?: HTMLElement } | null {
     const target = event.target as HTMLElement;
     const panel = target.closest('[data-pb-group-panel]') as HTMLElement | null;
-    if (panel && panel.closest('.pb-grid') === this.host) return { panel };
+    if (panel && panel.closest('.pb-data-grid') === this.host) return { panel };
     const th = target.closest('th[data-col-key]') as HTMLElement | null;
-    if (th && th.closest('.pb-grid') === this.host) return { th };
+    if (th && th.closest('.pb-data-grid') === this.host) return { th };
     const head = target.closest('thead') as HTMLElement | null;
-    if (head && head.closest('.pb-grid') === this.host) return { head };
+    if (head && head.closest('.pb-data-grid') === this.host) return { head };
     return null;
   }
 
@@ -3180,12 +3180,12 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
       if (!target) return;
       if (target.panel) {
         event.preventDefault();
-        target.panel.classList.add('pb-grid__group-panel--drop');
+        target.panel.classList.add('pb-data-grid__group-panel--drop');
       } else if ((target.th || target.head) && gridDrag.fromPanel) {
         event.preventDefault();
       } else if (target.th && target.th.dataset['colKey'] !== gridDrag.key) {
         event.preventDefault();
-        target.th.classList.add(this.dropAfter(target.th, event) ? 'pb-grid__drop-after' : 'pb-grid__drop-before');
+        target.th.classList.add(this.dropAfter(target.th, event) ? 'pb-data-grid__drop-after' : 'pb-data-grid__drop-before');
       }
       return;
     }
@@ -3193,9 +3193,9 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
     event.preventDefault();
     event.dataTransfer!.dropEffect = 'move';
     const row = (event.target as HTMLElement).closest('tbody > tr[data-row]') as HTMLElement | null;
-    if (row && row.closest('.pb-grid') === this.host) {
-      row.classList.add('pb-grid__row--drop-' + this.rowDropPosition(row, event.clientY));
-    } else this.host.classList.add('pb-grid--drop-target');
+    if (row && row.closest('.pb-data-grid') === this.host) {
+      row.classList.add('pb-data-grid__row--drop-' + this.rowDropPosition(row, event.clientY));
+    } else this.host.classList.add('pb-data-grid--drop-target');
   }
 
   protected onDragLeave(event: DragEvent): void {
@@ -3212,7 +3212,7 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
       if (!target) return;
       event.preventDefault();
       if (target.panel) {
-        const chips = [...target.panel.querySelectorAll<HTMLElement>('.pb-grid__group-chip')].filter((c) => !c.classList.contains('pb-grid__group-chip--dragging'));
+        const chips = [...target.panel.querySelectorAll<HTMLElement>('.pb-data-grid__group-chip')].filter((c) => !c.classList.contains('pb-data-grid__group-chip--dragging'));
         let index = 0;
         chips.forEach((chip, i) => {
           const r = chip.getBoundingClientRect();
@@ -3233,7 +3233,7 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
     const row = (event.target as HTMLElement).closest('tbody > tr[data-row]') as HTMLElement | null;
     let targetIndex = -1;
     let position: PbGridDropPosition = 'after';
-    if (row && row.closest('.pb-grid') === this.host) {
+    if (row && row.closest('.pb-data-grid') === this.host) {
       targetIndex = Number(row.dataset['row']);
       position = this.rowDropPosition(row, event.clientY);
     }
@@ -3244,8 +3244,8 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
   protected onDragEnd(): void {
     gridDrag = null;
     document
-      .querySelectorAll('.pb-grid__row--dragging, .pb-grid__header-cell--dragging, .pb-grid__group-chip--dragging')
-      .forEach((el) => el.classList.remove('pb-grid__row--dragging', 'pb-grid__header-cell--dragging', 'pb-grid__group-chip--dragging'));
+      .querySelectorAll('.pb-data-grid__row--dragging, .pb-data-grid__header-cell--dragging, .pb-data-grid__group-chip--dragging')
+      .forEach((el) => el.classList.remove('pb-data-grid__row--dragging', 'pb-data-grid__header-cell--dragging', 'pb-data-grid__group-chip--dragging'));
     this.clearDropMarks();
   }
 
