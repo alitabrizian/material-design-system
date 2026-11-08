@@ -5,7 +5,7 @@
  *   height 40, label-large, label padding 0 12px, 1px outline border + outline dividers,
  *   shape corner-extra-large, selected = secondary-container / on-secondary-container,
  *   state layer on-surface (hover 8%, keyboard focus 12%), 18px minimal checkmark that grows in
- *   from the left (150ms, 45ms delay) while the label shifts to padding-left 30px.
+ *   from the left (Figma Motion state transition: 300ms, ease in and out back, no delay) while the label shifts to padding-left 30px.
  */
 
 .pb-button-toggle-group {
@@ -58,7 +58,7 @@
   white-space: nowrap;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  transition: padding 150ms 45ms var(--md-sys-motion-easing-legacy);
+  transition: padding var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
 
 /* Standalone toggle (outside a group) carries the outline itself. */
@@ -98,7 +98,7 @@
   height: 18px;
   overflow: hidden;
   transform: translateY(-50%);
-  transition: width 150ms 45ms var(--md-sys-motion-easing-legacy);
+  transition: width var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
 
 .pb-button-toggle--checked .pb-button-toggle__check {

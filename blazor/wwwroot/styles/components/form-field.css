@@ -128,7 +128,7 @@
 .pb-form-field__infix > :is(input, textarea)::placeholder {
   color: var(--md-sys-color-on-surface-variant);
   opacity: 1;
-  transition: color 67ms var(--md-sys-motion-easing-legacy);
+  transition: color var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
 
 /* With a label, the placeholder only shows once the label has floated out of its way. */
@@ -193,9 +193,9 @@
   pointer-events: none;
   cursor: text;
   transition:
-    transform 150ms var(--md-sys-motion-easing-legacy),
-    color 150ms var(--md-sys-motion-easing-legacy),
-    max-width 150ms var(--md-sys-motion-easing-legacy);
+    transform var(--motion-state-duration) var(--motion-easing-ease-in-out-back),
+    color var(--motion-state-duration) var(--motion-easing-ease-in-out-back),
+    max-width var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
   will-change: transform;
 }
 
@@ -294,8 +294,8 @@
   opacity: 0;
   transform: scaleX(0);
   transition:
-    transform 180ms var(--md-sys-motion-easing-legacy),
-    opacity 180ms var(--md-sys-motion-easing-legacy);
+    transform var(--motion-state-duration) var(--motion-easing-ease-in-out-back),
+    opacity var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
 
 .pb-form-field--fill .pb-form-field__wrapper:hover .pb-form-field__line::before {
@@ -340,7 +340,7 @@
   visibility: hidden;
   font-size: 0.75em;
   white-space: nowrap;
-  transition: max-width 50ms var(--md-sys-motion-easing-legacy);
+  transition: max-width var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
 
 .pb-form-field__outline > legend > span {
@@ -354,7 +354,7 @@
 .pb-form-field--outline:has(.pb-form-field__infix > :is(input, textarea):not(:placeholder-shown)) .pb-form-field__outline > legend,
 .pb-form-field--outline:has(.pb-form-field__infix > select) .pb-form-field__outline > legend {
   max-width: 100%;
-  transition: max-width 100ms 50ms var(--md-sys-motion-easing-legacy);
+  transition: max-width var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
 
 .pb-form-field--outline .pb-form-field__wrapper:hover > .pb-form-field__outline {
@@ -394,7 +394,7 @@
 
 .pb-form-field__subscript > * {
   display: block;
-  animation: pb-form-field-subscript-in 300ms var(--md-sys-motion-easing-legacy);
+  animation: pb-form-field-subscript-in var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
 
 @keyframes pb-form-field-subscript-in {

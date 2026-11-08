@@ -4,7 +4,7 @@
  *   panel: surface-container, corner-extra-small, z2 shadow, min-width 112px, max-width 280px,
  *     content padding 8px 0. Motion follows the Figma Motion page instead of mat-menu: the panel sits
  *     12px from its trigger and moves in downwards (upwards when placed above) over 300ms with ease in
- *     and out back
+ *     and out back; it closes with the same motion reversed (--closing) before PBMenu removes it
  *   item: min-height 48px, padding 0 12px, label-large on-surface; icon 24px on-surface-variant,
  *     12px spacing; hover on-surface 8%, keyboard focus 12%; disabled 38%
  *   divider inside the menu: surface-variant with 8px spacing
@@ -29,6 +29,15 @@
 
 .pb-menu__panel.pb-overlay--above {
   animation-name: pb-menu-enter-above;
+}
+
+.pb-menu__panel--closing {
+  pointer-events: none;
+  animation: pb-menu-exit var(--motion-menu-duration) var(--motion-easing-ease-in-out-back) forwards;
+}
+
+.pb-menu__panel--closing.pb-overlay--above {
+  animation-name: pb-menu-exit-above;
 }
 
 .pb-menu__content {
@@ -172,5 +181,17 @@
   }
   to {
     transform: none;
+  }
+}
+
+@keyframes pb-menu-exit {
+  to {
+    transform: translateY(calc(-1 * var(--motion-menu-offset)));
+  }
+}
+
+@keyframes pb-menu-exit-above {
+  to {
+    transform: translateY(var(--motion-menu-offset));
   }
 }

@@ -17,6 +17,8 @@
   vertical-align: middle;
   -webkit-user-select: none;
   user-select: none;
+  /* Figma Motion state transition: an icon's colour change (hover, press, any state) animates too. */
+  transition: color var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
 
 .pb-icon--custom {

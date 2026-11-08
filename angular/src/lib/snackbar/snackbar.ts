@@ -20,8 +20,9 @@ import {
   MatSnackBarRef,
 } from '@angular/material/snack-bar';
 import { PbLayerOrder } from '../core/layer-order';
+import { playExit } from '../core/motion';
 
-/** Material 3 snackbar (PBSnackbar) shown through [(open)]; the content is the message. Placed and moved as the Figma Motion page specifies. */
+/** Material 3 snackbar (PBSnackbar) shown through [(open)]; the content is the message. Placed, opened and closed as the Figma Motion page specifies. */
 @Component({
   selector: 'pb-snackbar',
   imports: [MatSnackBarLabel, MatSnackBarActions, MatSnackBarAction, MatButton],
@@ -57,13 +58,23 @@ export class PbSnackbar {
   private show(): void {
     if (this.ref) return;
     const duration = this.duration();
-    // Figma Motion: always 40px from the top and inline-end edges, moving in downwards (styles/material-motion.css).
+    // Figma Motion: always 40px from the top and right edges (in RTL too), moving in downwards
+    // (styles/material-motion.css).
     this.ref = this.snackBar.openFromTemplate(this.message(), {
       ...(duration > 0 ? { duration } : {}),
-      horizontalPosition: 'end',
+      horizontalPosition: 'right',
       verticalPosition: 'top',
       panelClass: ['pb-snackbar-panel', 'pb-layer--snackbar'],
     });
+    // Figma Motion: it closes with the move in reversed (500ms, back up out of the screen). MatSnackBar
+    // gives an exit animation 200ms at most, so the container's exit waits for this one first. Its
+    // callers don't subscribe to exit(); they wait for _onExit, which the real exit completes.
+    const container = this.ref.containerInstance;
+    const exit = container.exit.bind(container);
+    container.exit = () => {
+      void playExit(document.querySelector('.pb-snackbar-panel'), 'pb-snackbar-panel--closing').then(() => exit());
+      return container._onExit;
+    };
     this.ref.afterDismissed().subscribe(() => {
       this.ref = null;
       this.open.set(false);

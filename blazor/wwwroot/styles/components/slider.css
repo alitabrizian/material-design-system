@@ -69,7 +69,7 @@
   box-shadow: var(--md-sys-elevation-level-1);
   -webkit-appearance: none;
   appearance: none;
-  transition: box-shadow 150ms var(--md-sys-motion-easing-legacy);
+  transition: box-shadow var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
 
 .pb-slider__input::-moz-range-thumb {
@@ -80,7 +80,7 @@
   border-radius: var(--md-sys-shape-corner-full);
   background: var(--pb-slider-handle);
   box-shadow: var(--md-sys-elevation-level-1);
-  transition: box-shadow 150ms var(--md-sys-motion-easing-legacy);
+  transition: box-shadow var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
 
 .pb-slider__input:hover::-webkit-slider-thumb {

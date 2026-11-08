@@ -428,7 +428,7 @@
 
 .pb-date-range__separator {
   color: var(--md-sys-color-on-surface-variant);
-  transition: opacity 150ms;
+  transition: opacity var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
 
 .pb-form-field:not(.pb-form-field--floating) .pb-date-range__separator {

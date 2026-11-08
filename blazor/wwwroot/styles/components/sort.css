@@ -2,7 +2,7 @@
  * PBSortHeader: mat-sort-header. Reference: sort/_m3-sort.scss + structural styles.
  *
  *   label + 12px arrow box (24px arrow glyph, on-surface); the arrow previews at 54% on hover/focus,
- *   is fully visible when sorted, rotates 180deg for descending (225ms)
+ *   is fully visible when sorted, rotates 180deg for descending (Figma Motion state transition: 300ms, ease in and out back)
  */
 
 .pb-sort-header {
@@ -42,8 +42,8 @@
   color: var(--md-sys-color-on-surface);
   opacity: 0;
   transition:
-    transform 225ms var(--md-sys-motion-easing-legacy),
-    opacity 225ms var(--md-sys-motion-easing-legacy);
+    transform var(--motion-state-duration) var(--motion-easing-ease-in-out-back),
+    opacity var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
 
 .pb-sort-header--before .pb-sort-header__arrow {

@@ -201,6 +201,18 @@ export function unposition(panel) {
   }
 }
 
+/**
+ * Figma Motion close: adds className (if given) to element and resolves once the CSS animations it starts
+ * have finished, so the caller removes the element after its closing motion. Resolves at once when there is
+ * nothing to wait for (no element, or prefers-reduced-motion made the duration 0ms); a cancelled
+ * animation (e.g. the element opened again) also resolves it.
+ */
+export async function playExit(element, className) {
+  if (!element?.isConnected) return;
+  if (className) element.classList.add(className);
+  const animations = element.getAnimations();
+  await Promise.all(animations.map((animation) => animation.finished.catch(() => undefined)));
+}
 // ---------------------------------------------------------------------------------- focus
 
 export function focus(element, options) {

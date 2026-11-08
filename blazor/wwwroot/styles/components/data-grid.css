@@ -146,7 +146,7 @@
   padding: 8px 16px;
   border-bottom: 1px solid var(--pb-data-grid-divider);
   background-color: var(--md-sys-color-surface-container-low);
-  transition: background-color 120ms;
+  transition: background-color var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
 
 .pb-data-grid__group-panel--drop {
