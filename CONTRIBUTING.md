@@ -121,10 +121,15 @@ selects its brand with `data-product="<id>"` on `<html>` (any element may carry 
 
 Motion follows the design team's Figma Motion page, not Angular Material (decided 2026-10-27; it is the one
 foundation where Figma overrides constitution principle I). Durations and easing come from the `--motion-*`
-tokens (`tokens/src/motion-tokens.css`): state changes 300ms and accordions 700ms with ease in and out back,
-snackbars and menus move in (500ms / 300ms), and dialogs, modals, popovers, spotlights and tooltips are
-instant. Component CSS uses the pattern tokens, so `prefers-reduced-motion` makes everything instant. In
-Angular, `angular/src/styles/material-motion.css` retimes the Angular Material inside the `pb-` components.
+tokens (`tokens/src/motion-tokens.css`): every state change (hover, press, focus, selection, in every
+component) 300ms and accordions 700ms with ease in and out back, no delay; snackbars and menus move in
+(500ms / 300ms) and close with that motion reversed; the snackbar sits 40px from the top and right edges in
+both directions; dialogs, modals, popovers, spotlights and tooltips are instant. Don't leave Material's own
+timings (67-250ms, standard or legacy easing) in a component's state changes. Component CSS uses the pattern
+tokens, so `prefers-reduced-motion` makes everything instant. In Angular,
+`angular/src/styles/material-motion.css` retimes the Angular Material inside the `pb-` components, and
+`PbMenu`/`PbSnackbar` hold Material's close until the reversed motion has played (`lib/core/motion.ts`;
+Blazor uses `playExit` in `design-system.js`).
 
 ### Layout
 
