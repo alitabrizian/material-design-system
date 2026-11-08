@@ -39,6 +39,7 @@ public partial class PBMenu : WorkspaceComponentBase
     private ElementReference content;
     private DotNetObjectReference<PBMenu>? selfReference;
     private bool positioned;
+    private bool closing;
     private string? focusOnOpen = "first";
 
     private Task ToggleAsync() => SetOpenAsync(!IsOpen);
@@ -50,7 +51,23 @@ public partial class PBMenu : WorkspaceComponentBase
 
     private async Task SetOpenAsync(bool value, bool restoreFocus = false)
     {
-        if (IsOpen == value) return;
+        if (IsOpen == value || closing) return;
+        if (!value && positioned)
+        {
+            // Figma Motion: the menu closes with its open motion reversed (pb-menu__panel--closing, 300ms)
+            // before it is removed. IsOpen and positioned stay true meanwhile, so a render while this
+            // waits leaves the panel as it is; a second close or an open waits for this one.
+            closing = true;
+            try
+            {
+                await DesignSystemJs.InvokeVoidAsync(JS, "playExit", panel, "pb-menu__panel--closing");
+            }
+            finally
+            {
+                closing = false;
+            }
+            if (!IsOpen) return;
+        }
         // Update state before the first await: Blazor re-renders an event handler's component when it
         // yields, and a render that still saw IsOpen with positioned = false would position the closing
         // panel again, leaving positioned stuck at true so the next open never shows the panel.

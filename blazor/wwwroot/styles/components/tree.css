@@ -50,7 +50,7 @@
 }
 
 .pb-tree-node__toggle .material-icons {
-  transition: transform 150ms var(--md-sys-motion-easing-legacy);
+  transition: transform var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
 
 .pb-tree-node__spacer {

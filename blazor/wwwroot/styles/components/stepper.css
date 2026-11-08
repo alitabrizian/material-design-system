@@ -136,7 +136,7 @@
   padding: 0 24px 24px;
   overflow: hidden;
   outline: 0;
-  animation: pb-fade-in 250ms var(--md-sys-motion-easing-legacy);
+  animation: pb-fade-in var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
 
 /* Vertical */
@@ -160,7 +160,7 @@
   grid-template-rows: 0fr;
   grid-template-columns: 100%;
   margin-left: 36px;
-  transition: grid-template-rows 225ms var(--md-sys-motion-easing-legacy);
+  transition: grid-template-rows var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
 
 .pb-stepper__vertical-content-container--active {

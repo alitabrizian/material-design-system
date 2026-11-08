@@ -3,7 +3,7 @@
  *
  *   tab 48px tall, min-width 90px, padding 0 24px, title-small, label on-surface (active and
  *   inactive, as Angular's M3 tokens specify); tabs stretch to fill the header by default
- *   active indicator 2px primary, square, slides between tabs over 250ms
+ *   active indicator 2px primary, square, slides between tabs over 300ms with ease in and out back (Figma Motion state transition)
  *   1px surface-variant divider under the header; state layer on-surface (hover 8%, focus 12%)
  *   disabled tab 38% opacity
  */
@@ -91,7 +91,7 @@
 .pb-tab__label {
   display: inline-block;
   line-height: 1;
-  transition: color 150ms linear;
+  transition: color var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
 
 .pb-tab__icon {
@@ -115,15 +115,11 @@
   border-radius: 0;
   opacity: 0;
   transform-origin: left;
-  transition: transform 250ms var(--md-sys-motion-easing-legacy);
+  transition: transform var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
 
 .pb-tab--active .pb-tab__indicator-content {
   opacity: 1;
-}
-
-.pb-tab--active .pb-tab__label {
-  transition-delay: 100ms;
 }
 
 .pb-tab:disabled {
@@ -141,7 +137,7 @@
   flex: 1 1 auto;
   min-width: 0;
   outline: none;
-  animation: pb-fade-in 250ms var(--md-sys-motion-easing-legacy);
+  animation: pb-fade-in var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
 
 @media (prefers-reduced-motion: reduce) {

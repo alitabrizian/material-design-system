@@ -8,9 +8,10 @@
 else
 {
     <div @ref="container" class="pb-snackbar-container" popover="manual" aria-live="polite">
-        @if (Open)
+        @if (shown)
         {
-            <div class="pb-snackbar @UserClass" role="status" @attributes="Attrs">@Surface</div>
+            @* Figma Motion: after Open turns false it stays for its closing motion (--closing), then goes. *@
+            <div @ref="surface" class="pb-snackbar @(Open ? null : "pb-snackbar--closing") @UserClass" role="status" @attributes="Attrs">@Surface</div>
         }
     </div>
 }

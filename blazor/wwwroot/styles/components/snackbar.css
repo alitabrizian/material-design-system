@@ -4,7 +4,8 @@
  *   level 3 shadow; label body-medium inverse-on-surface, padding 14px 8px 14px 16px;
  *   action = text button in inverse-primary; full width below 600px.
  *   Placement and motion follow the Figma Motion page instead of MatSnackBar: always 40px from the top
- *   and inline-end edges, moving in downwards from above the screen over 500ms with ease in and out back.
+ *   and right edges (the same place in RTL and LTR), moving in downwards from above the screen over 500ms
+ *   with ease in and out back, and back up out of the screen the same way when it closes (--closing).
  *   Layer follows the Figma Layering page: the container is an always-open manual popover (top layer) on
  *   the snackbar layer, so a snackbar shows above menus, modals, dialogs, popovers and tooltips; the
  *   popover rules reset the UA defaults (centered, bordered, Canvas).
@@ -15,10 +16,10 @@
   position: fixed;
   inset: auto;
   top: var(--motion-snackbar-inset);
-  inset-inline: var(--motion-snackbar-inset);
+  right: var(--motion-snackbar-inset);
+  left: var(--motion-snackbar-inset);
   z-index: var(--pb-layer);
-  display: flex;
-  justify-content: flex-end;
+  display: block;
   box-sizing: border-box;
   width: auto;
   height: auto;
@@ -44,6 +45,19 @@
   box-shadow: var(--md-sys-elevation-level-3);
   pointer-events: auto;
   animation: pb-snackbar-enter var(--motion-snackbar-duration) var(--motion-easing-ease-in-out-back);
+}
+
+/* Physical margins, so it hugs the right edge whatever the direction (Figma: 40px from the right). */
+.pb-snackbar-container .pb-snackbar {
+  width: fit-content;
+  margin-right: 0;
+  margin-left: auto;
+}
+
+/* Closing: the open motion reversed, then PBSnackbar removes it. */
+.pb-snackbar--closing {
+  pointer-events: none;
+  animation: pb-snackbar-exit var(--motion-snackbar-duration) var(--motion-easing-ease-in-out-back) forwards;
 }
 
 .pb-snackbar--inline {
@@ -83,6 +97,15 @@
   }
   to {
     transform: none;
+  }
+}
+
+@keyframes pb-snackbar-exit {
+  from {
+    transform: none;
+  }
+  to {
+    transform: translateY(calc(-100% - var(--motion-snackbar-inset)));
   }
 }
 

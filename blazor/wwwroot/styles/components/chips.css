@@ -6,7 +6,7 @@
  *   primary action padding 12px; with a leading graphic: graphic 18px + 6px each side, action
  *   padding-left 0; trailing remove action 18px icon, 8px each side
  *   selected (filter/highlighted): secondary-container, no border, on-secondary-container,
- *   20px checkmark drawn in as the graphic grows 0 -> 18px (150ms)
+ *   20px checkmark drawn in as the graphic grows 0 -> 18px (Figma Motion state transition: 300ms, ease in and out back)
  *   state layer on-surface-variant (on-secondary-container when selected): hover 8%, focus 12%
  *   disabled: label on-surface 38%, border on-surface 12%, icons 38%
  *   chip set: 8px gaps, 4px vertical margins
@@ -90,7 +90,7 @@ button.pb-chip__action {
   background-color: var(--pb-state-layer-color);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 150ms linear;
+  transition: opacity var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
 
 .pb-chip:has(button.pb-chip__action):hover .pb-chip__focus-overlay {
@@ -128,7 +128,7 @@ button.pb-chip__action {
   height: 18px;
   font-size: 18px;
   color: var(--md-sys-color-on-surface-variant);
-  transition: opacity 75ms;
+  transition: opacity var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
 
 .pb-chip--selected .pb-chip__icon {
@@ -152,7 +152,7 @@ button.pb-chip__action {
   stroke-width: 2px;
   stroke-dasharray: 29.7833385;
   stroke-dashoffset: 29.7833385;
-  transition: stroke-dashoffset 150ms 45ms var(--md-sys-motion-easing-legacy);
+  transition: stroke-dashoffset var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
 
 .pb-chip--selected .pb-chip__checkmark {
@@ -175,7 +175,7 @@ button.pb-chip__action {
 
 .pb-chip--filter .pb-chip__graphic,
 .pb-chip--filter .pb-chip__action {
-  transition: width 150ms var(--md-sys-motion-easing-legacy), padding 150ms var(--md-sys-motion-easing-legacy);
+  transition: width var(--motion-state-duration) var(--motion-easing-ease-in-out-back), padding var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
 
 .pb-chip__label {
@@ -271,7 +271,7 @@ button.pb-chip__action {
   height: 18px;
   border-radius: 50%;
   object-fit: cover;
-  transition: opacity 75ms;
+  transition: opacity var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
 
 .pb-chip--selected .pb-chip__avatar {
@@ -376,7 +376,7 @@ button.pb-chip__action {
 }
 
 .pb-chips__toggle .material-icons {
-  transition: transform 150ms var(--md-sys-motion-easing-standard, ease);
+  transition: transform var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
 
 .pb-chips__toggle--open .material-icons {

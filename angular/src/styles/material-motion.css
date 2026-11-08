@@ -5,39 +5,43 @@
  * panel classes. Only timing, placement offsets and the dialog backdrop live here: no other visual
  * values. !important because Material's component styles are added after this stylesheet.
  *
- *   state transition  button, checkbox, radio, switch, paginator, calendar day: 300ms, ease in and out back
+ *   state transition  every state change (hover, press, focus, selection) in the pb- components: 300ms,
+ *                     ease in and out back, no delay
  *   accordion         expansion panel header, indicator and body: 700ms, ease in and out back
- *   menu              12px from the trigger, moves in downwards over 300ms
- *   snackbar          40px from the top and inline-end edges, moves in downwards over 500ms; closes instantly
+ *   menu              12px from the trigger, moves in downwards over 300ms and closes with that motion
+ *                     reversed (pb-menu__panel--closing, added by PbMenu)
+ *   snackbar          40px from the top and right edges, moves in downwards over 500ms and closes with that
+ *                     motion reversed (pb-snackbar-panel--closing, added by PbSnackbar)
  *   dialog, tooltip   instant; the dialog backdrop is alpha/black/600
  */
 
-/* State transitions on elements, ::before (the state layers) and ::after. Pseudo-elements can't go
-   inside :is(), so the selectors are spelled out. */
-.pb-button *:not(.mat-ripple-element),
-.pb-checkbox *:not(.mat-ripple-element),
-.pb-radio-group *:not(.mat-ripple-element),
-.pb-slide-toggle *:not(.mat-ripple-element),
-.pb-paginator .mat-mdc-icon-button *:not(.mat-ripple-element),
-.pb-datepicker-panel .mat-calendar-body-cell *:not(.mat-ripple-element),
-.pb-calendar-card .mat-calendar-body-cell *:not(.mat-ripple-element),
-.pb-button *::before,
-.pb-checkbox *::before,
-.pb-radio-group *::before,
-.pb-slide-toggle *::before,
-.pb-paginator .mat-mdc-icon-button *::before,
-.pb-datepicker-panel .mat-calendar-body-cell *::before,
-.pb-calendar-card .mat-calendar-body-cell *::before,
-.pb-button *::after,
-.pb-checkbox *::after,
-.pb-radio-group *::after,
-.pb-slide-toggle *::after,
-.pb-paginator .mat-mdc-icon-button *::after,
-.pb-datepicker-panel .mat-calendar-body-cell *::after,
-.pb-calendar-card .mat-calendar-body-cell *::after {
+/* State transitions on elements, ::before (the state layers) and ::after: Figma's "any transition from one
+   state to another". The first group is retimed whole, as before; in the other components and in the menu
+   and option panels only Material's own elements are, so an app's content inside them keeps its timing.
+   Pseudo-elements can't go inside :is(), so they are spelled out. */
+:is(.pb-button, .pb-checkbox, .pb-radio-group, .pb-slide-toggle, .pb-paginator .mat-mdc-icon-button,
+    .pb-datepicker-panel .mat-calendar-body-cell, .pb-calendar-card .mat-calendar-body-cell) *:not(.mat-ripple-element),
+:is(.pb-button, .pb-checkbox, .pb-radio-group, .pb-slide-toggle, .pb-paginator .mat-mdc-icon-button,
+    .pb-datepicker-panel .mat-calendar-body-cell, .pb-calendar-card .mat-calendar-body-cell) *::before,
+:is(.pb-button, .pb-checkbox, .pb-radio-group, .pb-slide-toggle, .pb-paginator .mat-mdc-icon-button,
+    .pb-datepicker-panel .mat-calendar-body-cell, .pb-calendar-card .mat-calendar-body-cell) *::after,
+:is(.pb-paginator, pb-button-toggle-group, pb-button-toggle, pb-chip, pb-chips, pb-input, pb-select,
+    pb-autocomplete, pb-datepicker, pb-date-range-picker, pb-timepicker, pb-tabs, pb-tree, pb-table,
+    pb-list, pb-stepper, .pb-layer--menu) :is([class*="mat-"], [class*="mdc-"]):not(.mat-ripple-element),
+:is(.pb-paginator, pb-button-toggle-group, pb-button-toggle, pb-chip, pb-chips, pb-input, pb-select,
+    pb-autocomplete, pb-datepicker, pb-date-range-picker, pb-timepicker, pb-tabs, pb-tree, pb-table,
+    pb-list, pb-stepper, .pb-layer--menu) :is([class*="mat-"], [class*="mdc-"])::before,
+:is(.pb-paginator, pb-button-toggle-group, pb-button-toggle, pb-chip, pb-chips, pb-input, pb-select,
+    pb-autocomplete, pb-datepicker, pb-date-range-picker, pb-timepicker, pb-tabs, pb-tree, pb-table,
+    pb-list, pb-stepper, .pb-layer--menu) :is([class*="mat-"], [class*="mdc-"])::after {
   transition-duration: var(--motion-state-duration) !important;
   transition-timing-function: var(--motion-easing-ease-in-out-back) !important;
   transition-delay: 0s !important;
+}
+
+/* Figma lists Icon too: its colour change animates with the element it sits in. */
+.pb-icon {
+  transition: color var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
 
 /* The checkbox draws its check and dash marks with keyframe animations rather than transitions. */
@@ -63,12 +67,28 @@
   animation: pb-material-menu-enter var(--motion-menu-duration) var(--motion-easing-ease-in-out-back) !important;
 }
 
+.pb-menu__panel.pb-menu__panel--closing {
+  pointer-events: none;
+  animation: pb-material-menu-exit var(--motion-menu-duration) var(--motion-easing-ease-in-out-back) forwards !important;
+}
+
+/* After the closing motion MatMenu runs its own exit; a 0s run of it ends at once and removes the panel. */
+.pb-menu__panel.mat-menu-panel-exit-animation {
+  animation: _mat-menu-exit 0s forwards !important;
+}
+
 @keyframes pb-material-menu-enter {
   from {
     transform: translateY(calc(-1 * var(--motion-menu-offset)));
   }
   to {
     transform: none;
+  }
+}
+
+@keyframes pb-material-menu-exit {
+  to {
+    transform: translateY(calc(-1 * var(--motion-menu-offset)));
   }
 }
 
@@ -82,8 +102,14 @@
   animation: pb-material-snackbar-enter var(--motion-snackbar-duration) var(--motion-easing-ease-in-out-back) !important;
 }
 
+.pb-snackbar-panel.pb-snackbar-panel--closing {
+  pointer-events: none;
+  animation: pb-material-snackbar-exit var(--motion-snackbar-duration) var(--motion-easing-ease-in-out-back) forwards !important;
+}
+
+/* After the closing motion MatSnackBar runs its own exit; a 0s run of it ends at once and removes it. */
 .pb-snackbar-panel.mat-snack-bar-container-exit {
-  animation: none !important;
+  animation: _mat-snack-bar-exit 0s forwards !important;
   opacity: 0 !important;
 }
 
@@ -94,6 +120,12 @@
   }
   to {
     transform: none;
+  }
+}
+
+@keyframes pb-material-snackbar-exit {
+  to {
+    transform: translateY(calc(-100% - var(--motion-snackbar-inset)));
   }
 }
 

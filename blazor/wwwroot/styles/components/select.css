@@ -149,7 +149,7 @@
 
 .pb-select__placeholder {
   color: var(--md-sys-color-on-surface-variant);
-  transition: color 150ms var(--md-sys-motion-easing-legacy);
+  transition: color var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
 
 .pb-form-field--has-label:not(.pb-form-field--floating) .pb-select__placeholder {
