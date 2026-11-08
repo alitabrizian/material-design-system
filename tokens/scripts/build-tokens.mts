@@ -34,18 +34,22 @@
  *   - css/angular-material.css  every --mat-sys-* Angular Material reads, bound to its --md-sys-* token,
  *                               so Angular Material components follow these tokens (and data-theme)
  *   - css/roboto.css            self-hosted Roboto @font-face rules (from @fontsource-variable/roboto)
- *   - css/icons.css             self-hosted Material Icons + Material Symbols Outlined + class rules
+ *   - css/icons.css             self-hosted Material Icons + Material Symbols Outlined + PartoBita Icons + class rules
  *   - css/yekan-bakh.css        @font-face rules for the five Yekan Bakh FaNum weights (fonts/yekan-bakh/)
  *   - css/fonts.css             roboto.css + yekan-bakh.css + icons.css in one file
  *   - fonts/*.woff2, OFL.txt, Apache-2.0.txt
  *   - data/palettes.json        theme and product metadata (name, mode, key colors) for non-CSS consumers
  *   - css/icon-tokens.css       copy of src/icon-tokens.css (icon sizes, icon-button states; also in tokens.css)
  *   - icons/*.svg, data/icons.json  the PartoBita icon set (see build-icons.mts)
+ *   - fonts/partobita-icons.{woff2,woff,ttf,eot}, css/partobita-icons.css, css/partobita-icon-classes.css,
+ *     data/icon-codepoints.json   the icon set as a font (see build-icon-font.mts); its @font-face and .pb-icons
+ *                                 class are also in icons.css and fonts.css
  */
 
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { iconFontCss } from "./build-icon-font.mts";
 import { buildIcons } from "./build-icons.mts";
 import { buildProducts } from "./build-products.mts";
 
@@ -352,7 +356,7 @@ write(
     `from Angular Material ${angularVersion}'s theme generator, as light-dark() pairs that follow the data-theme.`,
   ]) + products.css
 );
-console.log(`Wrote ${buildIcons(packageRoot, distRoot, fail)} icons to dist/icons and dist/data/icons.json`);
+console.log(`Wrote ${await buildIcons(packageRoot, distRoot, fail)} icons to dist/icons, dist/data/icons.json and the PartoBita Icons font`);
 write(
   "css/angular-material.css",
   [
@@ -374,7 +378,9 @@ write(
   ].join("\n")
 );
 const robotoOut = header(["Self-hosted Roboto (variable 100-900, normal + italic), SIL OFL 1.1 (../fonts/OFL.txt)."]) + "\n" + robotoCss.trim();
-const iconsOut = header(["Self-hosted Material Icons + Material Symbols Outlined, Apache 2.0 (../fonts/Apache-2.0.txt)."]) + "\n" + iconsCss.trim();
+const iconsOut =
+  header(["Self-hosted Material Icons + Material Symbols Outlined, Apache 2.0 (../fonts/Apache-2.0.txt), and PartoBita Icons."]) +
+  "\n" + iconsCss.trim() + "\n\n" + iconFontCss();
 const yekanBakhOut = header(["Self-hosted Yekan Bakh FaNum (Light, Regular, SemiBold, Bold, ExtraBold), commercial license (fontiran.com)."]) + "\n" + yekanBakhCss;
 write("css/roboto.css", robotoOut);
 write("css/yekan-bakh.css", yekanBakhOut);
