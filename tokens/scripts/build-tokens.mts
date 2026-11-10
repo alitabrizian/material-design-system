@@ -265,21 +265,37 @@ fs.copyFileSync(path.join(roboto, "LICENSE"), path.join(distRoot, "fonts/OFL.txt
 // Yekan Bakh FaNum (fontiran.com, commercial license), the product font --font-family-mainfont names:
 // one static file per weight of the --font-weight-* scale, from fonts/yekan-bakh/.
 const YEKAN_BAKH_WEIGHTS: [number, string][] = [[300, "Light"], [400, "Regular"], [600, "SemiBold"], [700, "Bold"], [800, "ExtraBold"]];
+// Digits follow the language: Yekan Bakh FaNum draws the ASCII digits 0-9 as Persian digits and has no feature that
+// switches them back, so two families are declared from the same files:
+//   'Yekan Bakh FaNum'                  (--font-family-mainfont) 0-9 come from Roboto's Latin digits, so English
+//                                       and other left-to-right text shows 1, 2, 3
+//   'Yekan Bakh FaNum Persian Digits'   the font as it is: 0-9 drawn as Persian digits, used for right-to-left and
+//                                       Persian text (the [dir="rtl"] / [lang|="fa"] block in tokens.css)
+// Persian digit characters (U+06F0-06F9) are Persian in both.
+const LATIN_DIGITS_FILE = "roboto-latin-wght-normal.woff2";
+if (!fs.existsSync(path.join(distRoot, "fonts", LATIN_DIGITS_FILE))) fail(`${LATIN_DIGITS_FILE} was not copied from Roboto`);
 const yekanBakhCss = YEKAN_BAKH_WEIGHTS.map(([weight, name]) => {
   const file = `YekanBakhFaNum-${name}.woff2`;
   const source = path.join(packageRoot, "fonts/yekan-bakh", file);
   if (!fs.existsSync(source)) fail(`font file ${source} not found`);
   fs.copyFileSync(source, path.join(distRoot, "fonts", file));
   fontFiles.add(file);
-  return [
+  const face = (family: string, src: string, extra: string[] = []) => [
     "@font-face {",
-    "  font-family: 'Yekan Bakh FaNum';",
+    `  font-family: '${family}';`,
     "  font-style: normal;",
     "  font-display: swap;",
     `  font-weight: ${weight};`,
-    `  src: url(../fonts/${file}) format('woff2');`,
+    `  src: ${src};`,
+    ...extra,
     "}",
   ].join("\n");
+  return [
+    face("Yekan Bakh FaNum", `url(../fonts/${file}) format('woff2')`),
+    // Declared after the face above, so it wins for the characters in its unicode-range.
+    face("Yekan Bakh FaNum", `url(../fonts/${LATIN_DIGITS_FILE}) format('woff2-variations')`, ["  unicode-range: U+0030-0039;"]),
+    face("Yekan Bakh FaNum Persian Digits", `url(../fonts/${file}) format('woff2')`),
+  ].join("\n\n");
 }).join("\n\n");
 
 // Material Icons (the font mat-icon uses by default) and Material Symbols Outlined (variable weight).
@@ -344,6 +360,41 @@ const write = (rel: string, content: string) => {
   console.log(`Wrote ${path.relative(repoRoot, path.join(distRoot, rel))}`);
 };
 
+const LATIN_DIGITS_STACK = '"Yekan Bakh FaNum", Tahoma, Arial, sans-serif';
+const PERSIAN_DIGITS_STACK = '"Yekan Bakh FaNum Persian Digits", "Yekan Bakh FaNum", Tahoma, Arial, sans-serif';
+/** The custom properties of `css` (last declaration wins) that reference one of `seeds`, directly or through others. */
+const dependents = (css: string, seeds: Set<string>): [string, string][] => {
+  const decls = new Map<string, string>();
+  for (const m of css.matchAll(/(--[\w-]+)\s*:\s*([^;{}]+);/g)) decls.set(m[1], m[2].trim());
+  const found = new Set(seeds);
+  for (let grew = true; grew; ) {
+    grew = false;
+    for (const [name, value] of decls) {
+      if (found.has(name)) continue;
+      if ([...value.matchAll(/var\((--[\w-]+)/g)].some((v) => found.has(v[1]))) { found.add(name); grew = true; }
+    }
+  }
+  return [...decls].filter(([name]) => found.has(name) && !seeds.has(name));
+};
+// Digits follow the language: Persian text gets Persian digits, English text Latin digits (see css/yekan-bakh.css).
+// The lang attribute decides; where no lang says otherwise, the direction does (right-to-left = Persian). The lang
+// blocks come last, so on an element with both (<html lang="en" dir="rtl">) the language wins.
+const languageBlocks = (deps: [string, string][], withFamily: boolean) =>
+  ([
+    ['[dir="rtl"]', PERSIAN_DIGITS_STACK],
+    ['[dir="ltr"]', LATIN_DIGITS_STACK],
+    ['[lang|="fa"]', PERSIAN_DIGITS_STACK],
+    ['[lang|="en"]', LATIN_DIGITS_STACK],
+  ] as const).flatMap(([selector, stack]) => [
+    `${selector} {`,
+    ...(withFamily ? [`  --font-family-mainfont: ${stack};`] : []),
+    ...deps.map(([name, value]) => `  ${name}: ${value};`),
+    "}",
+    "",
+  ]);
+const fontDeps = dependents(tokensCss.join("\n"), new Set(["--font-family-mainfont"]));
+if (!fontDeps.some(([name]) => name === "--md-sys-typescale-body-large")) fail("the typescale no longer depends on --font-family-mainfont");
+tokensCss.push(...languageBlocks(fontDeps, true));
 write("css/tokens.css", tokensCss.join("\n"));
 write("css/material-tokens.css", handAuthored);
 write("css/typography-tokens.css", typography);
@@ -383,6 +434,11 @@ write(
     ":root {",
     ...matSysSystem.map(([mat, md]) => `  ${mat}: var(${md});`),
     "}",
+    "",
+    ...languageBlocks(
+      matSysSystem.filter(([, md]) => fontDeps.some(([name]) => name === md)).map(([mat, md]) => [mat, `var(${md})`]),
+      false
+    ),
   ].join("\n")
 );
 const robotoOut = header(["Self-hosted Roboto (variable 100-900, normal + italic), SIL OFL 1.1 (../fonts/OFL.txt)."]) + "\n" + robotoCss.trim();
