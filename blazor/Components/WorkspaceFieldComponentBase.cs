@@ -15,7 +15,7 @@ public abstract class WorkspaceFieldComponentBase : WorkspaceComponentBase
     /// <summary><c>Fill</c> (default, like mat-form-field) or <c>Outline</c>.</summary>
     [Parameter] public PBFormFieldAppearance Appearance { get; set; } = PBFormFieldAppearance.Fill;
 
-    /// <summary>Leading icon (matIconPrefix), e.g. <c>&lt;span class="material-icons"&gt;search&lt;/span&gt;</c>.</summary>
+    /// <summary>Leading icon (matIconPrefix), e.g. <c>&lt;PBIcon&gt;search-md&lt;/PBIcon&gt;</c>.</summary>
     [Parameter] public RenderFragment? Prefix { get; set; }
 
     /// <summary>Trailing icon or icon button (matIconSuffix).</summary>

@@ -15,7 +15,7 @@
   >
     @if (hasChildren(node)) {
       <button matIconButton matTreeNodeToggle [attr.aria-label]="'Toggle ' + labelOf(node)">
-        <mat-icon>{{ tree.isExpanded(node) ? 'expand_more' : 'chevron_right' }}</mat-icon>
+        <mat-icon fontSet="pb-icons">{{ tree.isExpanded(node) ? 'chevron-down' : 'chevron-right' }}</mat-icon>
       </button>
     } @else {
       <span class="pb-tree__spacer"></span>
@@ -24,7 +24,7 @@
       <ng-container [ngTemplateOutlet]="custom.template" [ngTemplateOutletContext]="{ $implicit: node }" />
     } @else {
       @if (iconOf(node); as icon) {
-        <mat-icon class="pb-tree__icon">{{ icon }}</mat-icon>
+        <mat-icon class="pb-tree__icon" fontSet="pb-icons">{{ icon }}</mat-icon>
       }
       {{ labelOf(node) }}
     }

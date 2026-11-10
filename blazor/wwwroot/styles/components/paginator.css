@@ -26,24 +26,24 @@
   box-sizing: border-box;
   width: 100%;
   min-height: 56px;
-  padding: 0 8px;
+  padding: 0 var(--space-150);
 }
 
 .pb-paginator__page-size {
   display: flex;
   align-items: baseline;
-  margin-right: 8px;
+  margin-inline-end: var(--space-150);
 }
 
 .pb-paginator__page-size-label {
-  margin: 0 4px;
+  margin: 0 var(--space-100);
 }
 
 .pb-paginator__page-size .pb-form-field {
   --pb-form-field-height: 40px;
   --pb-form-field-vertical-padding: 8px;
   width: 84px;
-  margin: 0 4px;
+  margin: 0 var(--space-100);
 }
 
 .pb-paginator__page-size .pb-form-field__infix {
@@ -60,7 +60,7 @@
 }
 
 .pb-paginator__range-label {
-  margin: 0 32px 0 24px;
+  margin: 0 var(--space-350) 0 var(--space-300);
 }
 
 /* Wraps only when the paginator is narrower than the label and buttons (a narrow grid), so the buttons
@@ -74,7 +74,7 @@
 
 /* Each line of buttons is the 48px touch target tall (the 56px row is unchanged). */
 .pb-paginator__range-actions > .pb-button {
-  margin-block: calc((var(--touch-target-min) - 40px) / 2);
+  margin-block: calc((var(--touch-target-min) - var(--space-400)) / 2);
 }
 
 .pb-paginator__icon {

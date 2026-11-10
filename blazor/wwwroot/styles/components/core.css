@@ -11,43 +11,43 @@
 }
 
 .pb-core h1 {
-  margin: 0 0 16px;
+  margin: 0 0 var(--space-250);
   font: var(--md-sys-typescale-headline-large);
   letter-spacing: var(--md-sys-typescale-headline-large-tracking);
 }
 
 .pb-core h2 {
-  margin: 0 0 16px;
+  margin: 0 0 var(--space-250);
   font: var(--md-sys-typescale-headline-medium);
   letter-spacing: var(--md-sys-typescale-headline-medium-tracking);
 }
 
 .pb-core h3 {
-  margin: 0 0 16px;
+  margin: 0 0 var(--space-250);
   font: var(--md-sys-typescale-headline-small);
   letter-spacing: var(--md-sys-typescale-headline-small-tracking);
 }
 
 .pb-core h4 {
-  margin: 0 0 16px;
+  margin: 0 0 var(--space-250);
   font: var(--md-sys-typescale-title-large);
   letter-spacing: var(--md-sys-typescale-title-large-tracking);
 }
 
 .pb-core h5 {
-  margin: 0 0 12px;
+  margin: 0 0 var(--space-200);
   font: var(--md-sys-typescale-title-medium);
   letter-spacing: var(--md-sys-typescale-title-medium-tracking);
 }
 
 .pb-core h6 {
-  margin: 0 0 12px;
+  margin: 0 0 var(--space-200);
   font: var(--md-sys-typescale-title-small);
   letter-spacing: var(--md-sys-typescale-title-small-tracking);
 }
 
 .pb-core p {
-  margin: 0 0 12px;
+  margin: 0 0 var(--space-200);
 }
 
 .pb-core small {

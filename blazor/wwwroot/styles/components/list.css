@@ -16,7 +16,7 @@
 .pb-list {
   display: block;
   margin: 0;
-  padding: 8px 0;
+  padding: var(--space-150) 0;
   list-style-type: none;
 }
 
@@ -31,7 +31,7 @@
   width: 100%;
   height: 48px;
   margin: 0;
-  padding: 0 16px;
+  padding: 0 var(--space-250);
   overflow: hidden;
   border: none;
   border-radius: var(--md-sys-shape-corner-none);
@@ -43,7 +43,7 @@
   line-height: var(--md-sys-typescale-body-large-line-height);
   font-weight: var(--md-sys-typescale-body-large-weight);
   letter-spacing: var(--md-sys-typescale-body-large-tracking);
-  text-align: left;
+  text-align: start;
   text-decoration: none;
   -webkit-tap-highlight-color: transparent;
 }
@@ -65,20 +65,20 @@
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  margin: 0 32px 0 0;
+  margin: 0 var(--space-350) 0 0;
   color: var(--md-sys-color-on-surface-variant);
 }
 
 .pb-list-item__start--icon {
   width: 24px;
   height: 24px;
-  font-size: 24px;
+  font-size: var(--icon-size-24);
 }
 
 .pb-list-item__start--avatar {
   width: 40px;
   height: 40px;
-  margin-right: 16px;
+  margin-inline-end: var(--space-250);
   overflow: hidden;
   border-radius: 50%;
   background-color: var(--md-sys-color-primary-container);
@@ -94,7 +94,7 @@
 .pb-list-item--two-lines .pb-list-item__start,
 .pb-list-item--three-lines .pb-list-item__start {
   align-self: flex-start;
-  margin-top: 16px;
+  margin-top: var(--space-250);
 }
 
 .pb-list-item--two-lines .pb-list-item__start--icon {
@@ -138,13 +138,13 @@
   display: inline-flex;
   flex-shrink: 0;
   align-items: center;
-  margin: 0 0 0 16px;
+  margin: 0 0 0 var(--space-250);
   color: var(--md-sys-color-on-surface-variant);
-  font-size: 24px;
+  font-size: var(--font-size-600);
 }
 
 .pb-list-item__end--meta {
-  margin-left: 28px;
+  margin-inline-start: 28px;
   font-family: var(--md-sys-typescale-label-small-font);
   font-size: var(--md-sys-typescale-label-small-size);
   line-height: var(--md-sys-typescale-label-small-line-height);
@@ -155,7 +155,7 @@
 
 .pb-list-item--three-lines .pb-list-item__end {
   align-self: flex-start;
-  margin-top: 16px;
+  margin-top: var(--space-250);
 }
 
 /* mat-nav-list: every item is a pill (the hover/focus state layer too); the activated item
@@ -184,7 +184,7 @@ a.pb-list-item,
 }
 
 .pb-list-subheader {
-  margin: 0.75rem 16px;
+  margin: 0.75rem var(--space-250);
   color: var(--md-sys-color-on-surface-variant);
   font-family: var(--md-sys-typescale-title-small-font);
   font-size: var(--md-sys-typescale-title-small-size);

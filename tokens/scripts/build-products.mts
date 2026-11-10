@@ -166,8 +166,17 @@ export function buildProducts(
     css.push(`/* ${p.name}${p.default ? " (default brand)" : ""} */`);
     css.push(`${(p.default ? [":root", ...selectors] : selectors).join(",\n")} {`);
     for (const [alias, step] of ALIASES) css.push(`  ${alias}: var(--${p.palette}-${step});`);
-    css.push("}", "", `${selectors.join(",\n")} {`);
-    for (const role of ROLES) css.push(`  --md-sys-color-${role}: light-dark(${light.get(role)}, ${dark.get(role)});`);
+    // The default brand also sets the Material roles of a page with neither data-product nor data-theme, so an
+    // app that sets no attribute gets its brand rather than the rose-red theme. A data-theme keeps its colors.
+    const roleSelectors = p.default ? [":root:not([data-product]):not([data-theme])", ...selectors] : selectors;
+    css.push("}", "", `${roleSelectors.join(",\n")} {`);
+    // Light primary is the exact Figma brand color (the seed), not the generator's tone 40, so filled
+    // components match the brand aliases (--background-brand-default). Dark keeps the generated tone.
+    const lightPrimary = p.primary.startsWith("#") ? p.primary : `var(--${p.primary.replace(/^--/, "")})`;
+    for (const role of ROLES) {
+      const lightValue = role === "primary" || role === "surface-tint" ? lightPrimary : light.get(role);
+      css.push(`  --md-sys-color-${role}: light-dark(${lightValue}, ${dark.get(role)});`);
+    }
     css.push("}", "");
 
     info.push({
@@ -180,7 +189,7 @@ export function buildProducts(
         ...(p.secondary && { secondary: hex(p.secondary, where) }),
         ...(p.tertiary && { tertiary: hex(p.tertiary, where) }),
       },
-      primary: { light: light.get("primary")!, dark: dark.get("primary")! },
+      primary: { light: hex(p.primary, where), dark: dark.get("primary")! },
     });
   }
   return { css: css.join("\n"), products: info };

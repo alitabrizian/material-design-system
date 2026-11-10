@@ -3,5 +3,5 @@
 }
 
 .pb-tab__icon {
-  margin-inline-end: 8px;
+  margin-inline-end: var(--space-150);
 }

@@ -11,13 +11,13 @@
     @if (href(); as url) {
       <a matIconButton [href]="url" [disabled]="disabled()" [disabledInteractive]="disabledInteractive()"
          [showProgress]="showProgress()" [attr.aria-label]="ariaLabel()">
-        <mat-icon>{{ icon() }}</mat-icon>
+        <mat-icon fontSet="pb-icons">{{ icon() }}</mat-icon>
         <ng-container progressIndicator [ngTemplateOutlet]="progress" />
       </a>
     } @else {
       <button matIconButton [type]="type()" [disabled]="disabled()" [disabledInteractive]="disabledInteractive()"
               [showProgress]="showProgress()" [attr.aria-label]="ariaLabel()">
-        <mat-icon>{{ icon() }}</mat-icon>
+        <mat-icon fontSet="pb-icons">{{ icon() }}</mat-icon>
         <ng-container progressIndicator [ngTemplateOutlet]="progress" />
       </button>
     }
@@ -26,13 +26,13 @@
     @if (href(); as url) {
       <a matFab [extended]="extended()" [href]="url" [disabled]="disabled()"
          [disabledInteractive]="disabledInteractive()" [attr.aria-label]="ariaLabel()">
-        @if (icon(); as name) { <mat-icon>{{ name }}</mat-icon> }
+        @if (icon(); as name) { <mat-icon fontSet="pb-icons">{{ name }}</mat-icon> }
         @if (extended()) { <ng-container [ngTemplateOutlet]="label" /> }
       </a>
     } @else {
       <button matFab [extended]="extended()" [type]="type()" [disabled]="disabled()"
               [disabledInteractive]="disabledInteractive()" [attr.aria-label]="ariaLabel()">
-        @if (icon(); as name) { <mat-icon>{{ name }}</mat-icon> }
+        @if (icon(); as name) { <mat-icon fontSet="pb-icons">{{ name }}</mat-icon> }
         @if (extended()) { <ng-container [ngTemplateOutlet]="label" /> }
       </button>
     }
@@ -41,12 +41,12 @@
     @if (href(); as url) {
       <a matMiniFab [href]="url" [disabled]="disabled()" [disabledInteractive]="disabledInteractive()"
          [attr.aria-label]="ariaLabel()">
-        <mat-icon>{{ icon() }}</mat-icon>
+        <mat-icon fontSet="pb-icons">{{ icon() }}</mat-icon>
       </a>
     } @else {
       <button matMiniFab [type]="type()" [disabled]="disabled()" [disabledInteractive]="disabledInteractive()"
               [attr.aria-label]="ariaLabel()">
-        <mat-icon>{{ icon() }}</mat-icon>
+        <mat-icon fontSet="pb-icons">{{ icon() }}</mat-icon>
       </button>
     }
   }
@@ -54,17 +54,17 @@
     @if (href(); as url) {
       <a [matButton]="appearance()" [href]="url" [disabled]="disabled()"
          [disabledInteractive]="disabledInteractive()" [showProgress]="showProgress()">
-        @if (iconStart(); as name) { <mat-icon>{{ name }}</mat-icon> }
+        @if (iconStart(); as name) { <mat-icon fontSet="pb-icons">{{ name }}</mat-icon> }
         <ng-container [ngTemplateOutlet]="label" />
-        @if (iconEnd(); as name) { <mat-icon iconPositionEnd>{{ name }}</mat-icon> }
+        @if (iconEnd(); as name) { <mat-icon iconPositionEnd fontSet="pb-icons">{{ name }}</mat-icon> }
         <ng-container progressIndicator [ngTemplateOutlet]="progress" />
       </a>
     } @else {
       <button [matButton]="appearance()" [type]="type()" [disabled]="disabled()"
               [disabledInteractive]="disabledInteractive()" [showProgress]="showProgress()">
-        @if (iconStart(); as name) { <mat-icon>{{ name }}</mat-icon> }
+        @if (iconStart(); as name) { <mat-icon fontSet="pb-icons">{{ name }}</mat-icon> }
         <ng-container [ngTemplateOutlet]="label" />
-        @if (iconEnd(); as name) { <mat-icon iconPositionEnd>{{ name }}</mat-icon> }
+        @if (iconEnd(); as name) { <mat-icon iconPositionEnd fontSet="pb-icons">{{ name }}</mat-icon> }
         <ng-container progressIndicator [ngTemplateOutlet]="progress" />
       </button>
     }

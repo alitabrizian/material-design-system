@@ -37,7 +37,7 @@
   align-items: center;
   box-sizing: border-box;
   min-height: 48px;
-  padding-left: calc(var(--pb-tree-level, 0) * 40px);
+  padding-inline-start: calc(var(--pb-tree-level, 0) * var(--space-400));
   word-wrap: break-word;
 }
 
@@ -49,7 +49,7 @@
   flex-shrink: 0;
 }
 
-.pb-tree-node__toggle .material-icons {
+.pb-tree-node__toggle :is(.material-icons, .pb-icons) {
   transition: transform var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
 
@@ -60,9 +60,9 @@
 }
 
 .pb-tree-node__icon {
-  margin-right: 8px;
+  margin-inline-end: var(--space-150);
   color: var(--md-sys-color-on-surface-variant);
-  font-size: 24px;
+  font-size: var(--icon-size-24);
 }
 
 .pb-tree-node__label {
@@ -72,5 +72,5 @@
 
 /* Tree with dynamic data: a progress bar under the node while its children load. */
 .pb-tree-node__progress {
-  margin-left: calc(var(--pb-tree-level, 0) * 40px + 40px);
+  margin-inline-start: calc(var(--pb-tree-level, 0) * var(--space-400) + var(--space-400));
 }

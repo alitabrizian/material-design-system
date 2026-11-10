@@ -24,19 +24,19 @@
   />
   @if (showClear() && !inputDisabled()) {
     <button matIconButton matSuffix type="button" class="pb-date-edit__clear" aria-label="Clear" (click)="clear()">
-      <span class="material-icons" aria-hidden="true">close</span>
+      <span class="pb-icons" aria-hidden="true">x-close</span>
     </button>
   }
   <!-- One root element per block: matSuffix is only projected from a control-flow block with a single root. -->
   @if (showDropDownButton() && usesScrollPicker()) {
     <button matIconButton matSuffix type="button" aria-label="Open calendar" aria-haspopup="dialog" [disabled]="isDisabled() || readOnly() || pickerDisabled()" (click)="toggleFromButton()">
-      <span class="material-icons" aria-hidden="true">{{ toggleIcon() ?? 'calendar_today' }}</span>
+      <span class="pb-icons" aria-hidden="true">{{ toggleIcon() ?? 'calendar' }}</span>
     </button>
   }
   @if (showDropDownButton() && !usesScrollPicker()) {
     <mat-datepicker-toggle matSuffix [for]="picker" [disabled]="isDisabled() || readOnly() || pickerDisabled()">
       @if (toggleIcon(); as icon) {
-        <span class="material-icons" matDatepickerToggleIcon>{{ icon }}</span>
+        <span class="pb-icons" matDatepickerToggleIcon>{{ icon }}</span>
       }
     </mat-datepicker-toggle>
   }

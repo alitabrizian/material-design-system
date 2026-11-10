@@ -41,20 +41,20 @@
 
 .pb-table :is(td, th) {
   box-sizing: border-box;
-  padding: 0 16px;
+  padding: 0 var(--space-250);
   overflow: hidden;
-  border-bottom: 1px solid var(--md-sys-color-outline);
+  border-bottom: var(--stroke-100) solid var(--md-sys-color-outline);
   text-align: start;
   text-overflow: ellipsis;
   vertical-align: middle;
 }
 
 .pb-table :is(td, th):first-child {
-  padding-left: 24px;
+  padding-inline-start: var(--space-300);
 }
 
 .pb-table :is(td, th):last-child {
-  padding-right: 24px;
+  padding-inline-end: var(--space-300);
 }
 
 .pb-table th {

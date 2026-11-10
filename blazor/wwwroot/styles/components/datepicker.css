@@ -37,16 +37,16 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 8px;
-  padding: 0 8px 8px;
+  gap: var(--space-150);
+  padding: 0 var(--space-150) var(--space-150);
 }
 
 .pb-date-edit__spacer {
   flex: 1 1 auto;
 }
 
-.pb-date-edit__clear .material-icons {
-  font-size: 20px;
+.pb-date-edit__clear :is(.material-icons, .pb-icons) {
+  font-size: var(--icon-size-20);
 }
 
 /* ------------------------------------------------------------------ time section */
@@ -54,10 +54,10 @@
 .pb-date-edit__time {
   display: flex;
   align-items: center;
-  gap: 4px;
-  margin: 0 16px 8px;
-  padding-top: 12px;
-  border-top: 1px solid var(--md-sys-color-outline-variant);
+  gap: var(--space-100);
+  margin: 0 var(--space-250) var(--space-150);
+  padding-top: var(--space-200);
+  border-top: var(--stroke-100) solid var(--md-sys-color-outline-variant);
 }
 
 .pb-date-edit__time-label {
@@ -73,7 +73,7 @@
   height: 40px;
   box-sizing: border-box;
   padding: 0;
-  border: 1px solid transparent;
+  border: var(--stroke-100) solid transparent;
   border-radius: var(--md-sys-shape-corner-small);
   outline: none;
   background-color: var(--md-sys-color-surface-container-highest);
@@ -106,15 +106,15 @@
 .pb-date-edit__period {
   display: inline-flex;
   flex-direction: column;
-  margin-inline-start: 8px;
+  margin-inline-start: var(--space-150);
   overflow: hidden;
-  border: 1px solid var(--md-sys-color-outline);
+  border: var(--stroke-100) solid var(--md-sys-color-outline);
   border-radius: var(--md-sys-shape-corner-small);
 }
 
 .pb-date-edit__period-button {
   height: 20px;
-  padding: 0 8px;
+  padding: 0 var(--space-150);
   border: 0;
   background: none;
   color: var(--md-sys-color-on-surface-variant);
@@ -125,7 +125,7 @@
 }
 
 .pb-date-edit__period-button + .pb-date-edit__period-button {
-  border-top: 1px solid var(--md-sys-color-outline);
+  border-top: var(--stroke-100) solid var(--md-sys-color-outline);
 }
 
 .pb-date-edit__period-button[aria-checked="true"] {
@@ -143,7 +143,7 @@
 }
 
 .pb-calendar__header {
-  padding: 8px 8px 0;
+  padding: var(--space-150) var(--space-150) 0;
 }
 
 .pb-calendar__controls {
@@ -162,8 +162,8 @@
   display: inline-flex;
   align-items: center;
   height: 40px;
-  margin: 0 8px;
-  padding: 0 12px;
+  margin: 0 var(--space-150);
+  padding: 0 var(--space-200);
   border: 0;
   border-radius: var(--md-sys-shape-corner-full);
   outline: none;
@@ -222,7 +222,7 @@
 }
 
 .pb-calendar__content {
-  padding: 0 8px 8px;
+  padding: 0 var(--space-150) var(--space-150);
   outline: none;
 }
 
@@ -234,7 +234,7 @@
 
 .pb-calendar__table-header th {
   height: 25px;
-  padding: 0 0 8px;
+  padding: 0 0 var(--space-150);
   color: var(--md-sys-color-on-surface-variant);
   font-family: var(--md-sys-typescale-title-small-font);
   font-size: var(--md-sys-typescale-title-small-size);
@@ -245,7 +245,7 @@
 .pb-calendar__table-header .pb-calendar__table-header-divider {
   position: relative;
   height: 1px;
-  padding: 0 0 8px;
+  padding: 0 0 var(--space-150);
 }
 
 .pb-calendar__visually-hidden {
@@ -314,8 +314,8 @@
   box-sizing: border-box;
   width: 36px;
   height: 36px;
-  border: 1px solid transparent;
-  border-radius: 999px;
+  border: var(--stroke-100) solid transparent;
+  border-radius: var(--radius-600);
   color: var(--md-sys-color-on-surface);
   font-size: var(--md-sys-typescale-body-medium-size);
   line-height: 1;
@@ -356,7 +356,7 @@
   z-index: 0;
   width: 36px;
   height: 36px;
-  border-radius: 999px;
+  border-radius: var(--radius-600);
   transform: translate(-50%, -50%);
   transition: background-color var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
@@ -392,8 +392,8 @@
 }
 
 .pb-calendar__cell--in-preview::before {
-  border-top: 1px dashed var(--md-sys-color-on-surface-variant);
-  border-bottom: 1px dashed var(--md-sys-color-on-surface-variant);
+  border-top: var(--stroke-100) dashed var(--md-sys-color-on-surface-variant);
+  border-bottom: var(--stroke-100) dashed var(--md-sys-color-on-surface-variant);
 }
 
 .pb-calendar__cell--range-start::before {
@@ -417,7 +417,7 @@
 .pb-date-range__inputs {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-100);
   width: 100%;
 }
 
@@ -441,9 +441,9 @@
   --pb-scroll-item-height: 40px;
   position: relative;
   display: flex;
-  gap: 4px;
+  gap: var(--space-100);
   height: calc(var(--pb-scroll-item-height) * 5);
-  margin: 8px;
+  margin: var(--space-150);
   overflow: hidden;
   font-family: var(--md-sys-typescale-body-large-font);
   font-size: var(--md-sys-typescale-body-large-size);
@@ -479,7 +479,7 @@
   align-items: center;
   justify-content: center;
   height: var(--pb-scroll-item-height);
-  padding: 0 8px;
+  padding: 0 var(--space-150);
   color: var(--md-sys-color-on-surface-variant);
   white-space: nowrap;
   cursor: pointer;
@@ -489,7 +489,7 @@
 
 .pb-scroll-picker__item--selected {
   color: var(--md-sys-color-on-surface);
-  font-weight: 500;
+  font-weight: var(--font-weight-300);
 }
 
 .pb-scroll-picker__item--disabled {
@@ -500,8 +500,8 @@
 .pb-scroll-picker__band {
   position: absolute;
   top: calc(var(--pb-scroll-item-height) * 2);
-  right: 0;
-  left: 0;
+  inset-inline-end: 0;
+  inset-inline-start: 0;
   height: var(--pb-scroll-item-height);
   border-radius: var(--md-sys-shape-corner-medium);
   background-color: var(--md-sys-color-secondary-container);
@@ -549,9 +549,9 @@
 .pb-calendar__header--custom {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-100);
   min-height: 40px;
-  padding: 8px 8px 8px;
+  padding: var(--space-150) var(--space-150) var(--space-150);
 }
 
 /* The date and time dialogs stay on the menu layer (Figma Layering: "Menu (Date&Time Menu - Field Menu)"). */

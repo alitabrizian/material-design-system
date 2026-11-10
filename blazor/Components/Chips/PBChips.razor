@@ -54,7 +54,7 @@ else
                                     {
                                         <button type="button" class="pb-chip__graphic pb-chip__edit" tabindex="-1" aria-label="@($"Edit {tag.Text}")"
                                                 @onclick="() => StartEdit(index)">
-                                            <span class="material-icons pb-chip__icon" aria-hidden="true">edit</span>
+                                            <span class="pb-icons pb-chip__icon" aria-hidden="true">edit-02</span>
                                             <span class="pb-touch-target" aria-hidden="true"></span>
                                         </button>
                                     }
@@ -65,7 +65,7 @@ else
                                     <span role="gridcell">
                                         <button type="button" class="pb-chip__remove" tabindex="-1" aria-label="@($"Remove {tag.Text}")"
                                                 @onclick="() => RemoveTagAsync(index)">
-                                            <span class="material-icons" aria-hidden="true">cancel</span>
+                                            <span class="pb-icons" aria-hidden="true">x-circle</span>
                                             <span class="pb-touch-target" aria-hidden="true"></span>
                                         </button>
                                     </span>
@@ -148,7 +148,7 @@ else
         @if (ClearVisible)
         {
             <PBButton Variant="PBButtonVariant.Icon" class="pb-chips__clear" aria-label="Clear" @onclick="ClearAsync">
-                <span class="material-icons" aria-hidden="true">close</span>
+                <span class="pb-icons" aria-hidden="true">x-close</span>
             </PBButton>
         }
         @if (DropDownButtonVisible)
@@ -157,7 +157,7 @@ else
                 <PBButton Variant="PBButtonVariant.Icon" class="@($"pb-chips__toggle {(PanelVisible ? "pb-chips__toggle--open" : null)}")"
                           Disabled="!Interactive" aria-label="Show suggestions" aria-expanded="@(PanelVisible ? "true" : "false")"
                           aria-controls="@(PanelVisible ? PanelId : null)" tabindex="-1" @onclick="ToggleFromButtonAsync">
-                    <span class="material-icons" aria-hidden="true">arrow_drop_down</span>
+                    <span class="pb-icons" aria-hidden="true">chevron-down</span>
                 </PBButton>
             </span>
         }

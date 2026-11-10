@@ -23,7 +23,7 @@
               @if (chip.avatar(); as src) {
                 <img matChipAvatar [src]="src" [alt]="chip.avatarAlt()" />
               } @else if (chip.icon(); as name) {
-                <mat-icon matChipAvatar>{{ name }}</mat-icon>
+                <mat-icon matChipAvatar fontSet="pb-icons">{{ name }}</mat-icon>
               }
               <ng-container [ngTemplateOutlet]="chip.template()" />
             </mat-chip-option>
@@ -33,10 +33,10 @@
               @if (chip.avatar(); as src) {
                 <img matChipAvatar [src]="src" [alt]="chip.avatarAlt()" />
               } @else if (chip.icon(); as name) {
-                <mat-icon matChipAvatar>{{ name }}</mat-icon>
+                <mat-icon matChipAvatar fontSet="pb-icons">{{ name }}</mat-icon>
               }
               <ng-container [ngTemplateOutlet]="chip.template()" />
-              <button matChipRemove aria-label="Remove"><mat-icon>cancel</mat-icon><span class="pb-touch-target" aria-hidden="true"></span></button>
+              <button matChipRemove aria-label="Remove"><mat-icon fontSet="pb-icons">x-circle</mat-icon><span class="pb-touch-target" aria-hidden="true"></span></button>
             </mat-chip>
           }
           @default {
@@ -50,7 +50,7 @@
               @if (chip.avatar(); as src) {
                 <img matChipAvatar [src]="src" [alt]="chip.avatarAlt()" />
               } @else if (chip.icon(); as name) {
-                <mat-icon matChipAvatar>{{ name }}</mat-icon>
+                <mat-icon matChipAvatar fontSet="pb-icons">{{ name }}</mat-icon>
               }
               <ng-container [ngTemplateOutlet]="chip.template()" />
             </mat-chip>
@@ -81,7 +81,7 @@
               @if (chip.avatar(); as src) {
                 <img matChipAvatar [src]="src" [alt]="chip.avatarAlt()" />
               } @else if (chip.icon(); as name) {
-                <mat-icon matChipAvatar>{{ name }}</mat-icon>
+                <mat-icon matChipAvatar fontSet="pb-icons">{{ name }}</mat-icon>
               }
               <ng-container [ngTemplateOutlet]="chip.template()" />
             </mat-chip-option>
@@ -91,10 +91,10 @@
               @if (chip.avatar(); as src) {
                 <img matChipAvatar [src]="src" [alt]="chip.avatarAlt()" />
               } @else if (chip.icon(); as name) {
-                <mat-icon matChipAvatar>{{ name }}</mat-icon>
+                <mat-icon matChipAvatar fontSet="pb-icons">{{ name }}</mat-icon>
               }
               <ng-container [ngTemplateOutlet]="chip.template()" />
-              <button matChipRemove aria-label="Remove"><mat-icon>cancel</mat-icon><span class="pb-touch-target" aria-hidden="true"></span></button>
+              <button matChipRemove aria-label="Remove"><mat-icon fontSet="pb-icons">x-circle</mat-icon><span class="pb-touch-target" aria-hidden="true"></span></button>
             </mat-chip>
           }
           @default {
@@ -108,7 +108,7 @@
               @if (chip.avatar(); as src) {
                 <img matChipAvatar [src]="src" [alt]="chip.avatarAlt()" />
               } @else if (chip.icon(); as name) {
-                <mat-icon matChipAvatar>{{ name }}</mat-icon>
+                <mat-icon matChipAvatar fontSet="pb-icons">{{ name }}</mat-icon>
               }
               <ng-container [ngTemplateOutlet]="chip.template()" />
             </mat-chip>
@@ -155,11 +155,11 @@
             (edited)="onEdited(i, $event.value)"
           >
             @if (canEdit(tag)) {
-              <button matChipEdit [attr.aria-label]="'Edit ' + tag.text"><mat-icon>edit</mat-icon><span class="pb-touch-target" aria-hidden="true"></span></button>
+              <button matChipEdit [attr.aria-label]="'Edit ' + tag.text"><mat-icon fontSet="pb-icons">edit-02</mat-icon><span class="pb-touch-target" aria-hidden="true"></span></button>
             }
             {{ tag.text }}
             @if (interactive()) {
-              <button matChipRemove [attr.aria-label]="'Remove ' + tag.text"><mat-icon>cancel</mat-icon><span class="pb-touch-target" aria-hidden="true"></span></button>
+              <button matChipRemove [attr.aria-label]="'Remove ' + tag.text"><mat-icon fontSet="pb-icons">x-circle</mat-icon><span class="pb-touch-target" aria-hidden="true"></span></button>
             }
           </mat-chip-row>
         }
@@ -187,7 +187,7 @@
     </mat-chip-grid>
     @if (clearVisible()) {
       <button matIconButton matSuffix type="button" class="pb-chips__clear" aria-label="Clear" (click)="clear()">
-        <mat-icon>close</mat-icon>
+        <mat-icon fontSet="pb-icons">x-close</mat-icon>
       </button>
     }
     @if (dropDownButtonVisible()) {
@@ -204,7 +204,7 @@
         (mousedown)="$event.preventDefault()"
         (click)="toggleFromButton()"
       >
-        <mat-icon>arrow_drop_down</mat-icon>
+        <mat-icon fontSet="pb-icons">chevron-down</mat-icon>
       </button>
     }
     @if (errorText(); as text) {

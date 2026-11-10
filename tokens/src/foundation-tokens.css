@@ -1,0 +1,187 @@
+/**
+ * Hand-authored: binds the Material 3 system tokens the components read (--md-sys-typescale-*,
+ * --md-sys-shape-corner-*, --md-sys-elevation-*, --md-sys-spacing-* and the neutral and error color roles)
+ * to the PartoBita Figma foundations, so every Blazor and Angular component (and, through
+ * css/angular-material.css, every Angular Material internal) uses the Figma values. build-tokens.mts appends
+ * it to tokens.css after the generated M3 tokens and before the per-product brand blocks.
+ *
+ * Where Figma has no exact step for an M3 value, the nearest smaller Figma step is used (noted inline).
+ * Figma defines light colors only, so the color roles are bound in the two light themes; the dark themes keep
+ * Angular Material's dark roles until Figma has a dark palette.
+ */
+
+:root {
+  /* Typography (Figma 127-2): every M3 type role uses a Figma text style and the Yekan Bakh main font. */
+  --md-sys-typescale-font-family: var(--font-family-mainfont);
+  /* display-large -> display-1 */
+  --md-sys-typescale-display-large: var(--typography-display-1);
+  --md-sys-typescale-display-large-font: var(--typography-display-1-font-family);
+  --md-sys-typescale-display-large-size: var(--typography-display-1-font-size);
+  --md-sys-typescale-display-large-line-height: var(--typography-display-1-line-height);
+  --md-sys-typescale-display-large-weight: var(--typography-display-1-font-weight);
+  --md-sys-typescale-display-large-tracking: 0;
+  /* display-medium -> display-2 */
+  --md-sys-typescale-display-medium: var(--typography-display-2);
+  --md-sys-typescale-display-medium-font: var(--typography-display-2-font-family);
+  --md-sys-typescale-display-medium-size: var(--typography-display-2-font-size);
+  --md-sys-typescale-display-medium-line-height: var(--typography-display-2-line-height);
+  --md-sys-typescale-display-medium-weight: var(--typography-display-2-font-weight);
+  --md-sys-typescale-display-medium-tracking: 0;
+  /* display-small -> heading-1 */
+  --md-sys-typescale-display-small: var(--typography-heading-1);
+  --md-sys-typescale-display-small-font: var(--typography-heading-1-font-family);
+  --md-sys-typescale-display-small-size: var(--typography-heading-1-font-size);
+  --md-sys-typescale-display-small-line-height: var(--typography-heading-1-line-height);
+  --md-sys-typescale-display-small-weight: var(--typography-heading-1-font-weight);
+  --md-sys-typescale-display-small-tracking: 0;
+  /* headline-large -> heading-2 */
+  --md-sys-typescale-headline-large: var(--typography-heading-2);
+  --md-sys-typescale-headline-large-font: var(--typography-heading-2-font-family);
+  --md-sys-typescale-headline-large-size: var(--typography-heading-2-font-size);
+  --md-sys-typescale-headline-large-line-height: var(--typography-heading-2-line-height);
+  --md-sys-typescale-headline-large-weight: var(--typography-heading-2-font-weight);
+  --md-sys-typescale-headline-large-tracking: 0;
+  /* headline-medium -> heading-3 */
+  --md-sys-typescale-headline-medium: var(--typography-heading-3);
+  --md-sys-typescale-headline-medium-font: var(--typography-heading-3-font-family);
+  --md-sys-typescale-headline-medium-size: var(--typography-heading-3-font-size);
+  --md-sys-typescale-headline-medium-line-height: var(--typography-heading-3-line-height);
+  --md-sys-typescale-headline-medium-weight: var(--typography-heading-3-font-weight);
+  --md-sys-typescale-headline-medium-tracking: 0;
+  /* headline-small -> heading-4 */
+  --md-sys-typescale-headline-small: var(--typography-heading-4);
+  --md-sys-typescale-headline-small-font: var(--typography-heading-4-font-family);
+  --md-sys-typescale-headline-small-size: var(--typography-heading-4-font-size);
+  --md-sys-typescale-headline-small-line-height: var(--typography-heading-4-line-height);
+  --md-sys-typescale-headline-small-weight: var(--typography-heading-4-font-weight);
+  --md-sys-typescale-headline-small-tracking: 0;
+  /* title-large -> heading-5 */
+  --md-sys-typescale-title-large: var(--typography-heading-5);
+  --md-sys-typescale-title-large-font: var(--typography-heading-5-font-family);
+  --md-sys-typescale-title-large-size: var(--typography-heading-5-font-size);
+  --md-sys-typescale-title-large-line-height: var(--typography-heading-5-line-height);
+  --md-sys-typescale-title-large-weight: var(--typography-heading-5-font-weight);
+  --md-sys-typescale-title-large-tracking: 0;
+  /* title-medium -> body-2 */
+  --md-sys-typescale-title-medium: var(--typography-body-2);
+  --md-sys-typescale-title-medium-font: var(--typography-body-2-font-family);
+  --md-sys-typescale-title-medium-size: var(--typography-body-2-font-size);
+  --md-sys-typescale-title-medium-line-height: var(--typography-body-2-line-height);
+  --md-sys-typescale-title-medium-weight: var(--typography-body-2-font-weight);
+  --md-sys-typescale-title-medium-tracking: 0;
+  /* title-small -> body-5 */
+  --md-sys-typescale-title-small: var(--typography-body-5);
+  --md-sys-typescale-title-small-font: var(--typography-body-5-font-family);
+  --md-sys-typescale-title-small-size: var(--typography-body-5-font-size);
+  --md-sys-typescale-title-small-line-height: var(--typography-body-5-line-height);
+  --md-sys-typescale-title-small-weight: var(--typography-body-5-font-weight);
+  --md-sys-typescale-title-small-tracking: 0;
+  /* body-large -> body-3 */
+  --md-sys-typescale-body-large: var(--typography-body-3);
+  --md-sys-typescale-body-large-font: var(--typography-body-3-font-family);
+  --md-sys-typescale-body-large-size: var(--typography-body-3-font-size);
+  --md-sys-typescale-body-large-line-height: var(--typography-body-3-line-height);
+  --md-sys-typescale-body-large-weight: var(--typography-body-3-font-weight);
+  --md-sys-typescale-body-large-tracking: 0;
+  /* body-medium -> body-6 */
+  --md-sys-typescale-body-medium: var(--typography-body-6);
+  --md-sys-typescale-body-medium-font: var(--typography-body-6-font-family);
+  --md-sys-typescale-body-medium-size: var(--typography-body-6-font-size);
+  --md-sys-typescale-body-medium-line-height: var(--typography-body-6-line-height);
+  --md-sys-typescale-body-medium-weight: var(--typography-body-6-font-weight);
+  --md-sys-typescale-body-medium-tracking: 0;
+  /* body-small -> caption-3 */
+  --md-sys-typescale-body-small: var(--typography-caption-3);
+  --md-sys-typescale-body-small-font: var(--typography-caption-3-font-family);
+  --md-sys-typescale-body-small-size: var(--typography-caption-3-font-size);
+  --md-sys-typescale-body-small-line-height: var(--typography-caption-3-line-height);
+  --md-sys-typescale-body-small-weight: var(--typography-caption-3-font-weight);
+  --md-sys-typescale-body-small-tracking: 0;
+  /* label-large -> body-5 */
+  --md-sys-typescale-label-large: var(--typography-body-5);
+  --md-sys-typescale-label-large-font: var(--typography-body-5-font-family);
+  --md-sys-typescale-label-large-size: var(--typography-body-5-font-size);
+  --md-sys-typescale-label-large-line-height: var(--typography-body-5-line-height);
+  --md-sys-typescale-label-large-weight: var(--typography-body-5-font-weight);
+  --md-sys-typescale-label-large-tracking: 0;
+  /* label-medium -> caption-2 */
+  --md-sys-typescale-label-medium: var(--typography-caption-2);
+  --md-sys-typescale-label-medium-font: var(--typography-caption-2-font-family);
+  --md-sys-typescale-label-medium-size: var(--typography-caption-2-font-size);
+  --md-sys-typescale-label-medium-line-height: var(--typography-caption-2-line-height);
+  --md-sys-typescale-label-medium-weight: var(--typography-caption-2-font-weight);
+  --md-sys-typescale-label-medium-tracking: 0;
+  /* label-small -> caption-2 */
+  --md-sys-typescale-label-small: var(--typography-caption-2);
+  --md-sys-typescale-label-small-font: var(--typography-caption-2-font-family);
+  --md-sys-typescale-label-small-size: var(--typography-caption-2-font-size);
+  --md-sys-typescale-label-small-line-height: var(--typography-caption-2-line-height);
+  --md-sys-typescale-label-small-weight: var(--typography-caption-2-font-weight);
+  --md-sys-typescale-label-small-tracking: 0;
+  --md-sys-typescale-label-large-weight-prominent: var(--font-weight-500);
+  --md-sys-typescale-label-medium-weight-prominent: var(--font-weight-500);
+
+  /* Shape (Figma Scales 211-7658, radius). */
+  --md-sys-shape-corner-none: 0;
+  --md-sys-shape-corner-extra-small: var(--radius-100);
+  --md-sys-shape-corner-small: var(--radius-200);
+  --md-sys-shape-corner-medium: var(--radius-200); /* M3 12px; nearest smaller Figma step 8px */
+  --md-sys-shape-corner-large: var(--radius-300);
+  --md-sys-shape-corner-large-increased: var(--radius-300); /* M3 20px */
+  --md-sys-shape-corner-extra-large: var(--radius-400); /* M3 28px */
+  --md-sys-shape-corner-extra-large-increased: var(--radius-500);
+  --md-sys-shape-corner-extra-extra-large: var(--radius-500); /* M3 48px */
+  --md-sys-shape-corner-full: var(--radius-600);
+  --md-sys-shape-corner-extra-small-top: var(--radius-100) var(--radius-100) 0 0;
+  --md-sys-shape-corner-extra-large-top: var(--radius-400) var(--radius-400) 0 0;
+  --md-sys-shape-corner-large-top: var(--radius-300) var(--radius-300) 0 0;
+  --md-sys-shape-corner-large-start: var(--radius-300) 0 0 var(--radius-300);
+  --md-sys-shape-corner-large-end: 0 var(--radius-300) var(--radius-300) 0;
+
+  /* Elevation (Figma Shadow 227-9304): 1 = drag, tooltip; 2 = navigation, menu, snackbar; 3 = dialog, sheet, drawer, FAB. */
+  --md-sys-elevation-level-0: none;
+  --md-sys-elevation-level-1: var(--basic-shadow-1);
+  --md-sys-elevation-level-2: var(--basic-shadow-2);
+  --md-sys-elevation-level-3: var(--basic-shadow-3);
+  --md-sys-elevation-level-4: var(--basic-shadow-3);
+  --md-sys-elevation-level-5: var(--basic-shadow-3);
+  --md-sys-elevation-z2: var(--basic-shadow-2); /* menu, select, autocomplete, expansion panel */
+  --md-sys-elevation-z16: var(--basic-shadow-3); /* bottom sheet */
+
+  /* Spacing (Figma Scales, space). */
+  --md-sys-spacing-none: var(--space-0);
+  --md-sys-spacing-extra-small: var(--space-100);
+  --md-sys-spacing-small: var(--space-150);
+  --md-sys-spacing-medium: var(--space-200);
+  --md-sys-spacing-large: var(--space-250);
+  --md-sys-spacing-extra-large: var(--space-300);
+}
+
+/* Neutral and error color roles (Figma Colors 127-3), light themes. Brand roles come from [data-product]. */
+:root:not([data-theme]),
+[data-theme="rose-red"],
+[data-theme="azure-blue"] {
+  --md-sys-color-background: var(--background-white-default);
+  --md-sys-color-on-background: var(--text-primary-primary);
+  --md-sys-color-surface: var(--background-white-default);
+  --md-sys-color-surface-bright: var(--background-white-default);
+  --md-sys-color-surface-container-lowest: var(--background-white-default);
+  --md-sys-color-surface-container-low: var(--background-primary-default);
+  --md-sys-color-surface-container: var(--background-secondary-default);
+  --md-sys-color-surface-container-high: var(--background-secondary-hover);
+  --md-sys-color-surface-container-highest: var(--background-secondary-hover);
+  --md-sys-color-surface-dim: var(--background-secondary-hover);
+  --md-sys-color-surface-variant: var(--background-secondary-default);
+  --md-sys-color-on-surface: var(--text-primary-primary);
+  --md-sys-color-on-surface-variant: var(--text-primary-secondary);
+  --md-sys-color-inverse-surface: var(--background-dark-gray);
+  --md-sys-color-inverse-on-surface: var(--text-on-brand-default);
+  --md-sys-color-outline: var(--border-state-default);
+  --md-sys-color-outline-variant: var(--gray-300);
+  --md-sys-color-error: var(--text-semantic-danger);
+  --md-sys-color-on-error: var(--text-on-brand-default);
+  --md-sys-color-error-container: var(--background-subtle-red-default);
+  --md-sys-color-on-error-container: var(--semantic-red-800);
+  --md-sys-color-scrim: var(--gray-black);
+  --md-sys-color-shadow: var(--gray-black);
+}
