@@ -61,7 +61,7 @@
   position: fixed;
   top: 0;
   bottom: 0;
-  left: 0;
+  inset-inline-start: 0;
   z-index: var(--layer-modal);
   height: 100dvh;
   transform: translate3d(-100%, 0, 0);
@@ -72,9 +72,18 @@
 }
 
 .pb-sidenav--over.pb-sidenav--end {
-  right: 0;
-  left: auto;
+  inset-inline-end: 0;
+  inset-inline-start: auto;
   transform: translate3d(100%, 0, 0);
+}
+
+/* Right-to-left: the start drawer slides in from the right, the end drawer from the left. */
+.pb-sidenav--over:not(.pb-sidenav--opened):dir(rtl) {
+  transform: translate3d(100%, 0, 0);
+}
+
+.pb-sidenav--over.pb-sidenav--end:not(.pb-sidenav--opened):dir(rtl) {
+  transform: translate3d(-100%, 0, 0);
 }
 
 .pb-sidenav--over.pb-sidenav--opened {

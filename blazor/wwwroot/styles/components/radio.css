@@ -83,7 +83,7 @@
 .pb-radio__outer {
   position: absolute;
   top: 10px;
-  left: 10px;
+  inset-inline-start: 10px;
   box-sizing: border-box;
   width: 20px;
   height: 20px;
@@ -96,7 +96,7 @@
 .pb-radio__inner {
   position: absolute;
   top: 10px;
-  left: 10px;
+  inset-inline-start: 10px;
   box-sizing: border-box;
   width: 20px;
   height: 20px;
@@ -128,7 +128,7 @@
 }
 
 .pb-radio__label {
-  padding-left: var(--space-100);
+  padding-inline-start: var(--space-100);
   cursor: pointer;
 }
 

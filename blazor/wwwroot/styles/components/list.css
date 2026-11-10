@@ -43,7 +43,7 @@
   line-height: var(--md-sys-typescale-body-large-line-height);
   font-weight: var(--md-sys-typescale-body-large-weight);
   letter-spacing: var(--md-sys-typescale-body-large-tracking);
-  text-align: left;
+  text-align: start;
   text-decoration: none;
   -webkit-tap-highlight-color: transparent;
 }
@@ -78,7 +78,7 @@
 .pb-list-item__start--avatar {
   width: 40px;
   height: 40px;
-  margin-right: var(--space-250);
+  margin-inline-end: var(--space-250);
   overflow: hidden;
   border-radius: 50%;
   background-color: var(--md-sys-color-primary-container);
@@ -144,7 +144,7 @@
 }
 
 .pb-list-item__end--meta {
-  margin-left: 28px;
+  margin-inline-start: 28px;
   font-family: var(--md-sys-typescale-label-small-font);
   font-size: var(--md-sys-typescale-label-small-size);
   line-height: var(--md-sys-typescale-label-small-line-height);

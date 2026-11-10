@@ -71,11 +71,11 @@
 }
 
 .pb-badge--after .pb-badge__content {
-  left: 100%;
+  inset-inline-start: 100%;
 }
 
 .pb-badge--before .pb-badge__content {
-  right: 100%;
+  inset-inline-end: 100%;
 }
 
 .pb-badge--hidden .pb-badge__content {

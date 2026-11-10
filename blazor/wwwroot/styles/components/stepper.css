@@ -39,7 +39,7 @@
   background: none;
   color: inherit;
   font: inherit;
-  text-align: left;
+  text-align: start;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
@@ -61,7 +61,7 @@
   flex-shrink: 0;
   width: 24px;
   height: 24px;
-  margin-right: var(--space-150);
+  margin-inline-end: var(--space-150);
   border-radius: 50%;
   background-color: var(--md-sys-color-on-surface-variant);
   color: var(--md-sys-color-surface);
@@ -147,7 +147,7 @@
 }
 
 .pb-stepper--vertical .pb-step-icon {
-  margin-right: var(--space-200);
+  margin-inline-end: var(--space-200);
 }
 
 .pb-stepper__vertical-step {
@@ -159,7 +159,7 @@
   display: grid;
   grid-template-rows: 0fr;
   grid-template-columns: 100%;
-  margin-left: 36px;
+  margin-inline-start: 36px;
   transition: grid-template-rows var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
 
@@ -172,8 +172,8 @@
   position: absolute;
   top: -16px;
   bottom: -16px;
-  left: 0;
-  border-left: var(--stroke-100) solid var(--md-sys-color-outline);
+  inset-inline-start: 0;
+  border-inline-start: var(--stroke-100) solid var(--md-sys-color-outline);
 }
 
 .pb-stepper__vertical-content {

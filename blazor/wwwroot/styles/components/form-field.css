@@ -165,8 +165,8 @@
   width: 0;
   height: 0;
   margin-top: -2.5px;
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
+  border-inline-start: 5px solid transparent;
+  border-inline-end: 5px solid transparent;
   border-top: 5px solid var(--md-sys-color-on-surface-variant);
   pointer-events: none;
 }
@@ -266,7 +266,7 @@
 .pb-form-field__line {
   position: absolute;
   bottom: 0;
-  left: 0;
+  inset-inline-start: 0;
   width: 100%;
   pointer-events: none;
 }
@@ -276,7 +276,7 @@
   content: "";
   position: absolute;
   bottom: 0;
-  left: 0;
+  inset-inline-start: 0;
   width: 100%;
   border-bottom-style: solid;
 }

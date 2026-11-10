@@ -204,8 +204,8 @@ pb-date-range-picker.pb-field--block mat-form-field {
 .pb-scroll-picker__band {
   position: absolute;
   top: calc(var(--pb-scroll-item-height) * 2);
-  right: 0;
-  left: 0;
+  inset-inline-end: 0;
+  inset-inline-start: 0;
   height: var(--pb-scroll-item-height);
   border-radius: var(--md-sys-shape-corner-medium);
   background-color: var(--md-sys-color-secondary-container);

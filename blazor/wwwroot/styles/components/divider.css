@@ -10,14 +10,9 @@
   align-self: stretch;
   height: auto;
   border-top: 0;
-  border-right: var(--stroke-100) solid var(--md-sys-color-outline-variant);
+  border-inline-end: var(--stroke-100) solid var(--md-sys-color-outline-variant);
 }
 
 .pb-divider--inset {
-  margin-left: var(--space-600);
-}
-
-[dir="rtl"] .pb-divider--inset {
-  margin-right: var(--space-600);
-  margin-left: auto;
+  margin-inline-start: var(--space-600);
 }

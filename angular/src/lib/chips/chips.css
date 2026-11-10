@@ -154,11 +154,11 @@
 }
 
 .pb-chips__option--grouped {
-  padding-left: var(--space-350);
+  padding-inline-start: var(--space-350);
 }
 
 .pb-chips__option-text {
-  margin-right: auto;
+  margin-inline-end: auto;
   white-space: nowrap;
 }
 
@@ -175,7 +175,7 @@
   flex-shrink: 0;
   width: 18px;
   height: 18px;
-  margin-left: var(--space-250);
+  margin-inline-start: var(--space-250);
 }
 
 .pb-chips__check::after {

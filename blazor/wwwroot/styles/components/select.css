@@ -65,7 +65,7 @@
 }
 
 .pb-option__text {
-  margin-right: auto;
+  margin-inline-end: auto;
   white-space: normal;
 }
 
@@ -88,7 +88,7 @@
   flex-shrink: 0;
   width: 18px;
   height: 18px;
-  margin-left: var(--space-250);
+  margin-inline-start: var(--space-250);
 }
 
 .pb-option__check::after {

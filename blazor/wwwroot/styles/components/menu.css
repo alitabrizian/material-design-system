@@ -67,7 +67,7 @@
   line-height: var(--md-sys-typescale-label-large-line-height);
   font-weight: var(--md-sys-typescale-label-large-weight);
   letter-spacing: var(--md-sys-typescale-label-large-tracking);
-  text-align: left;
+  text-align: start;
   text-decoration: none;
   white-space: nowrap;
   cursor: pointer;
@@ -91,7 +91,7 @@
   justify-content: center;
   width: 24px;
   height: 24px;
-  margin-right: var(--space-200);
+  margin-inline-end: var(--space-200);
   color: var(--md-sys-color-on-surface-variant);
   font-size: var(--icon-size-24);
 }
@@ -105,7 +105,7 @@
   display: inline-flex;
   flex-shrink: 0;
   align-items: center;
-  padding-left: var(--space-200);
+  padding-inline-start: var(--space-200);
   color: var(--md-sys-color-on-surface-variant);
 }
 
@@ -156,7 +156,7 @@
 .pb-menu-item__check {
   flex-shrink: 0;
   width: 24px;
-  margin-right: var(--space-200);
+  margin-inline-end: var(--space-200);
   color: var(--md-sys-color-on-surface-variant);
   font-size: var(--font-size-600);
   visibility: hidden;

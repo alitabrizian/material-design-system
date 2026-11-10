@@ -32,7 +32,7 @@
 .pb-paginator__page-size {
   display: flex;
   align-items: baseline;
-  margin-right: var(--space-150);
+  margin-inline-end: var(--space-150);
 }
 
 .pb-paginator__page-size-label {

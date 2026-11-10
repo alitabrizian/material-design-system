@@ -50,11 +50,11 @@
 }
 
 .pb-table :is(td, th):first-child {
-  padding-left: var(--space-300);
+  padding-inline-start: var(--space-300);
 }
 
 .pb-table :is(td, th):last-child {
-  padding-right: var(--space-300);
+  padding-inline-end: var(--space-300);
 }
 
 .pb-table th {

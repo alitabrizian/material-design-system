@@ -18,8 +18,8 @@ mat-tree-node {
 
 .pb-tree__progress {
   position: absolute;
-  right: 0;
+  inset-inline-end: 0;
   bottom: 0;
-  left: 48px;
+  inset-inline-start: 48px;
   width: auto;
 }

@@ -77,7 +77,7 @@
   line-height: var(--md-sys-typescale-title-medium-line-height);
   font-weight: var(--md-sys-typescale-title-medium-weight);
   letter-spacing: var(--md-sys-typescale-title-medium-tracking);
-  text-align: left;
+  text-align: start;
   cursor: pointer;
   transition: height var(--motion-expand-duration) var(--motion-easing-ease-in-out-back);
 }
@@ -99,7 +99,7 @@
   flex: 1;
   flex-direction: row;
   overflow: hidden;
-  margin-right: var(--space-250);
+  margin-inline-end: var(--space-250);
 }
 
 .pb-expansion-panel__title,
@@ -108,7 +108,7 @@
   flex-grow: 1;
   flex-basis: 0;
   align-items: center;
-  margin-right: var(--space-250);
+  margin-inline-end: var(--space-250);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

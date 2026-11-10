@@ -49,7 +49,7 @@
 .pb-slide-toggle__input {
   position: absolute;
   top: 50%;
-  left: 0;
+  inset-inline-start: 0;
   z-index: 2;
   width: 100%;
   height: 48px;
@@ -75,7 +75,7 @@
 .pb-slide-toggle__handle {
   position: absolute;
   top: 50%;
-  left: var(--pb-switch-handle-center);
+  inset-inline-start: var(--pb-switch-handle-center);
   z-index: 1;
   display: flex;
   align-items: center;
@@ -88,10 +88,15 @@
   transform: translate(-50%, -50%);
   pointer-events: none;
   transition:
-    left var(--motion-state-duration) var(--motion-easing-ease-in-out-back),
+    inset-inline-start var(--motion-state-duration) var(--motion-easing-ease-in-out-back),
     width var(--motion-state-duration) var(--motion-easing-ease-in-out-back),
     height var(--motion-state-duration) var(--motion-easing-ease-in-out-back),
     background-color var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
+}
+
+/* translate is physical: in right-to-left the handle is measured from the right edge. */
+.pb-slide-toggle__handle:dir(rtl) {
+  transform: translate(50%, -50%);
 }
 
 .pb-slide-toggle__state-layer {
@@ -171,7 +176,7 @@
 
 .pb-slide-toggle__input:checked ~ .pb-slide-toggle__handle {
   --pb-switch-handle-size: 24px;
-  left: 36px;
+  inset-inline-start: 36px;
   background-color: var(--md-sys-color-on-primary);
 }
 
@@ -190,7 +195,7 @@
 }
 
 .pb-slide-toggle__label {
-  padding-left: var(--space-100);
+  padding-inline-start: var(--space-100);
   cursor: pointer;
 }
 

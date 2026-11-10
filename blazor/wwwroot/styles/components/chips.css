@@ -116,11 +116,11 @@ button.pb-chip__action {
 }
 
 .pb-chip--with-graphic .pb-chip__action {
-  padding-left: 0;
+  padding-inline-start: 0;
 }
 
 .pb-chip--with-trailing .pb-chip__action {
-  padding-right: 0;
+  padding-inline-end: 0;
 }
 
 .pb-chip__icon {
@@ -170,7 +170,7 @@ button.pb-chip__action {
 }
 
 .pb-chip--filter:not(.pb-chip--selected):not(.pb-chip--with-icon) .pb-chip__action {
-  padding-left: var(--space-200);
+  padding-inline-start: var(--space-200);
 }
 
 .pb-chip--filter .pb-chip__graphic,
@@ -211,8 +211,8 @@ button.pb-chip__action {
   position: absolute;
   top: 4px;
   bottom: 4px;
-  left: 5px;
-  right: 5px;
+  inset-inline-start: 5px;
+  inset-inline-end: 5px;
   border-radius: 50%;
   background-color: var(--pb-state-layer-color);
   opacity: 0;
@@ -426,7 +426,7 @@ button.pb-chip__action {
 }
 
 .pb-chips__option--grouped {
-  padding-left: var(--space-350);
+  padding-inline-start: var(--space-350);
 }
 
 /* Multi-column lists: a sticky caption row and cells in the same grid columns. */
@@ -526,17 +526,17 @@ button.pb-chip__action {
 }
 
 .pb-chip--drop-before::before {
-  left: -6px;
+  inset-inline-start: -6px;
 }
 
 .pb-chip--drop-after::after {
-  right: -6px;
+  inset-inline-end: -6px;
 }
 
 .pb-chip-set--stacked > .pb-chip--drop-before::before,
 .pb-chip-set--stacked > .pb-chip--drop-after::after {
-  left: 0;
-  right: 0;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
   width: auto;
   height: 2px;
 }

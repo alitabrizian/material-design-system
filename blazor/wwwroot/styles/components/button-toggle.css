@@ -68,7 +68,7 @@
 }
 
 .pb-button-toggle-group > .pb-button-toggle + .pb-button-toggle {
-  border-left: var(--stroke-100) solid var(--md-sys-color-outline);
+  border-inline-start: var(--stroke-100) solid var(--md-sys-color-outline);
 }
 
 .pb-button-toggle__label {
@@ -86,14 +86,14 @@
 }
 
 .pb-button-toggle--checked.pb-button-toggle--indicator {
-  padding-left: 30px;
+  padding-inline-start: 30px;
 }
 
 /* 18px checkmark box, width animates 0 -> 18px to reveal the mark left-to-right. */
 .pb-button-toggle__check {
   position: absolute;
   top: 50%;
-  left: 12px;
+  inset-inline-start: 12px;
   width: 0;
   height: 18px;
   overflow: hidden;
