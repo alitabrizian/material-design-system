@@ -200,7 +200,7 @@ button.pb-chip__action {
   cursor: pointer;
 }
 
-.pb-chip__remove .material-icons {
+.pb-chip__remove :is(.material-icons, .pb-icons) {
   width: 18px;
   height: 18px;
   font-size: var(--icon-size-16);
@@ -375,11 +375,11 @@ button.pb-chip__action {
   display: inline-flex;
 }
 
-.pb-chips__toggle .material-icons {
+.pb-chips__toggle :is(.material-icons, .pb-icons) {
   transition: transform var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
 
-.pb-chips__toggle--open .material-icons {
+.pb-chips__toggle--open :is(.material-icons, .pb-icons) {
   transform: rotate(180deg);
 }
 

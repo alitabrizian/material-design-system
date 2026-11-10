@@ -21,7 +21,7 @@
             @if (ClearButtonDisplayMode == PBClearButtonDisplayMode.Auto && HasValue && !ReadOnly && !IsDisabled && !InputDisabled)
             {
                 <PBButton Variant="PBButtonVariant.Icon" class="pb-date-edit__clear" aria-label="Clear" @onclick="ClearAsync">
-                    <span class="material-icons" aria-hidden="true">close</span>
+                    <span class="pb-icons" aria-hidden="true">x-close</span>
                 </PBButton>
             }
             @if (ShowDropDownButton)
@@ -34,7 +34,7 @@
                     }
                     else
                     {
-                        <span class="material-icons" aria-hidden="true">@DropDownIcon(TimeSectionVisible ? "event" : "calendar_today")</span>
+                        <span class="@DropDownIconClass" aria-hidden="true">@DropDownIcon(TimeSectionVisible ? "calendar-date" : "calendar")</span>
                     }
                 </PBButton>
             }

@@ -51,7 +51,7 @@ pb-date-range-picker.pb-field--block mat-form-field {
   flex: 1 1 auto;
 }
 
-.pb-date-edit__clear .material-icons {
+.pb-date-edit__clear :is(.material-icons, .pb-icons) {
   font-size: var(--icon-size-20);
 }
 

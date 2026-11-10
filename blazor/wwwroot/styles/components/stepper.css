@@ -79,7 +79,7 @@
   transform: translate(-50%, -50%);
 }
 
-.pb-step-icon .material-icons {
+.pb-step-icon :is(.material-icons, .pb-icons) {
   font-size: var(--icon-size-16);
 }
 
@@ -95,7 +95,7 @@
   color: var(--md-sys-color-error);
 }
 
-.pb-step-icon--error .material-icons {
+.pb-step-icon--error :is(.material-icons, .pb-icons) {
   font-size: var(--icon-size-24);
 }
 

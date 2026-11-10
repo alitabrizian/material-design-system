@@ -236,6 +236,9 @@ public abstract class DateEditorBase<TValue> : WorkspaceFieldComponentBase, IAsy
 
     protected string DropDownIcon(string fallback) => ToggleIcon ?? fallback;
 
+    /// <summary>The icon font of the dropdown icon: Material Icons for a ToggleIcon, otherwise PartoBita Icons.</summary>
+    protected string DropDownIconClass => ToggleIcon is null ? "pb-icons" : "material-icons";
+
     /// <summary>False when the dropdown is a modal dialog (scroll picker on touch devices).</summary>
     protected virtual bool UsesPopover => !DialogMode;
 

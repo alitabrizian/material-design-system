@@ -9,7 +9,7 @@
         @if (HasChildren)
         {
             <PBButton Variant="PBButtonVariant.Icon" class="pb-tree-node__toggle" tabindex="-1" aria-label="@($"Toggle {Label}")" @onclick="ToggleAsync">
-                <span class="material-icons" aria-hidden="true">@(Expanded ? "expand_more" : "chevron_right")</span>
+                <span class="pb-icons" aria-hidden="true">@(Expanded ? "chevron-down" : "chevron-right")</span>
             </PBButton>
         }
         else

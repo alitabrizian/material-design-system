@@ -96,7 +96,7 @@
   line-height: 1;
 }
 
-.pb-icon-slot > .material-icons,
+.pb-icon-slot > :is(.material-icons, .pb-icons),
 .pb-icon-slot > .material-symbols-outlined,
 .pb-icon-slot > .pb-icon {
   font-size: inherit;

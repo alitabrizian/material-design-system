@@ -34,7 +34,7 @@
   --pb-data-grid-header-height: 44px;
 }
 
-.pb-data-grid .material-icons {
+.pb-data-grid :is(.material-icons, .pb-icons) {
   font-size: var(--icon-size-20);
   line-height: 1;
 }
@@ -205,7 +205,7 @@
   cursor: pointer;
 }
 
-.pb-data-grid__chip-remove .material-icons {
+.pb-data-grid__chip-remove :is(.material-icons, .pb-icons) {
   font-size: var(--icon-size-16);
 }
 
@@ -455,7 +455,7 @@
   margin-inline: 0 auto;
 }
 
-.pb-data-grid__filter-button .material-icons {
+.pb-data-grid__filter-button :is(.material-icons, .pb-icons) {
   font-size: var(--icon-size-16);
 }
 
@@ -1210,7 +1210,7 @@ pb-data-grid {
   flex: 1;
 }
 
-.pb-data-grid__popup .material-icons {
+.pb-data-grid__popup :is(.material-icons, .pb-icons) {
   font-size: var(--icon-size-20);
   line-height: 1;
 }
@@ -1237,13 +1237,13 @@ pb-paginator.pb-data-grid__pager {
   vertical-align: middle;
 }
 
-.pb-data-grid__header-content .mat-mdc-button .material-icons,
-.pb-data-grid__fb-group-header .mat-mdc-button .material-icons {
+.pb-data-grid__header-content .mat-mdc-button :is(.material-icons, .pb-icons),
+.pb-data-grid__fb-group-header .mat-mdc-button :is(.material-icons, .pb-icons) {
   margin-inline-end: var(--space-100);
   font-size: var(--icon-size-16);
 }
 
-.pb-data-grid__command-cell .mat-mdc-icon-button .material-icons {
+.pb-data-grid__command-cell .mat-mdc-icon-button :is(.material-icons, .pb-icons) {
   font-size: var(--icon-size-20);
 }
 

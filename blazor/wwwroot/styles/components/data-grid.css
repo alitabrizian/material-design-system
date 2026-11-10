@@ -36,7 +36,7 @@
   --pb-data-grid-header-height: 44px;
 }
 
-.pb-data-grid .material-icons {
+.pb-data-grid :is(.material-icons, .pb-icons) {
   font-size: var(--icon-size-20);
   line-height: 1;
 }
@@ -207,7 +207,7 @@
   cursor: pointer;
 }
 
-.pb-data-grid__chip-remove .material-icons {
+.pb-data-grid__chip-remove :is(.material-icons, .pb-icons) {
   font-size: var(--icon-size-16);
 }
 
@@ -457,7 +457,7 @@
   margin-inline: 0 auto;
 }
 
-.pb-data-grid__filter-button .material-icons {
+.pb-data-grid__filter-button :is(.material-icons, .pb-icons) {
   font-size: var(--icon-size-16);
 }
 

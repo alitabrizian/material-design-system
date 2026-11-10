@@ -619,27 +619,27 @@ public partial class PBDataGrid<TItem>
         var items = new List<PBGridContextMenuItem>();
         if (column.CanSort && AllowSort)
         {
-            items.Add(new("Sort Ascending", () => SortAndSaveAsync(column, PBGridSortOrder.Ascending), "arrow_upward") { Disabled = column.CurrentSortOrder == PBGridSortOrder.Ascending });
-            items.Add(new("Sort Descending", () => SortAndSaveAsync(column, PBGridSortOrder.Descending), "arrow_downward") { Disabled = column.CurrentSortOrder == PBGridSortOrder.Descending });
+            items.Add(new("Sort Ascending", () => SortAndSaveAsync(column, PBGridSortOrder.Ascending), "arrow-up") { Disabled = column.CurrentSortOrder == PBGridSortOrder.Ascending });
+            items.Add(new("Sort Descending", () => SortAndSaveAsync(column, PBGridSortOrder.Descending), "arrow-down") { Disabled = column.CurrentSortOrder == PBGridSortOrder.Descending });
             items.Add(new("Clear Sorting", () => SortAndSaveAsync(column, PBGridSortOrder.None)) { Disabled = column.CurrentSortOrder == PBGridSortOrder.None || column.CurrentGroupIndex >= 0 });
         }
         if (column.CanGroup && AllowGroup)
         {
             items.Add(column.CurrentGroupIndex >= 0
-                ? new("Ungroup", () => Run(() => Ungroup(column.Key)), "layers_clear") { BeginGroup = true }
-                : new("Group by This Column", () => Run(() => GroupBy(column.Key)), "layers") { BeginGroup = true });
+                ? new("Ungroup", () => Run(() => Ungroup(column.Key)), "layer-single") { BeginGroup = true }
+                : new("Group by This Column", () => Run(() => GroupBy(column.Key)), "layers-three-01") { BeginGroup = true });
             items.Add(new(groupPanelVisible ? "Hide Group Panel" : "Show Group Panel", () => Run(() => groupPanelVisible = !groupPanelVisible)));
         }
-        items.Add(new("Hide Column", () => Run(() => SetColumnVisible(column.Key, false)), "visibility_off") { BeginGroup = true, Disabled = VisibleLeaves().Count <= 1 });
-        items.Add(new("Column Chooser", () => Run(ShowColumnChooser), "view_column"));
+        items.Add(new("Hide Column", () => Run(() => SetColumnVisible(column.Key, false)), "eye-off") { BeginGroup = true, Disabled = VisibleLeaves().Count <= 1 });
+        items.Add(new("Column Chooser", () => Run(ShowColumnChooser), "columns-03"));
         items.Add(column.CurrentFixedPosition == PBGridFixedPosition.None
-            ? new("Fix Column to the Left", () => Run(() => SetColumnFixed(column.Key, PBGridFixedPosition.Left)), "push_pin")
-            : new("Unfix Column", () => Run(() => SetColumnFixed(column.Key, PBGridFixedPosition.None)), "push_pin"));
+            ? new("Fix Column to the Left", () => Run(() => SetColumnFixed(column.Key, PBGridFixedPosition.Left)), "pin-02")
+            : new("Unfix Column", () => Run(() => SetColumnFixed(column.Key, PBGridFixedPosition.None)), "pin-02"));
         if (column.CurrentFixedPosition == PBGridFixedPosition.None)
             items.Add(new("Fix Column to the Right", () => Run(() => SetColumnFixed(column.Key, PBGridFixedPosition.Right))));
         if (column.CanFilter)
         {
-            items.Add(new("Clear Filter", () => Run(() => ClearColumnFilter(column)), "filter_alt_off") { BeginGroup = true, Disabled = !HasColumnFilter(column) });
+            items.Add(new("Clear Filter", () => Run(() => ClearColumnFilter(column)), "filter-funnel-02") { BeginGroup = true, Disabled = !HasColumnFilter(column) });
             items.Add(new(filterRowVisible ? "Hide Filter Row" : "Show Filter Row", () => Run(() => filterRowVisible = !filterRowVisible)));
         }
         OpenContextMenu(PBGridContextMenuTarget.Header, column, null, items, e);
@@ -652,37 +652,37 @@ public partial class PBDataGrid<TItem>
         var items = new List<PBGridContextMenuItem>();
         if (CanEditRows)
         {
-            items.Add(new("New Row", StartEditNewRowAsync, "add"));
-            items.Add(new("Edit Row", () => StartEditDataItemAsync(item), "edit") { Disabled = row.IsInserted });
-            items.Add(new("Delete Row", () => ShowDataItemDeleteConfirmationAsync(item), "delete"));
+            items.Add(new("New Row", StartEditNewRowAsync, "plus"));
+            items.Add(new("Edit Row", () => StartEditDataItemAsync(item), "edit-02") { Disabled = row.IsInserted });
+            items.Add(new("Delete Row", () => ShowDataItemDeleteConfirmationAsync(item), "trash-01"));
         }
         if (DetailRowTemplate is not null && DetailRowDisplayMode == PBGridDetailRowDisplayMode.Auto)
         {
             items.Add(IsDetailExpanded(item)
-                ? new("Collapse Detail Row", () => Run(() => CollapseDetailRow(item)), "expand_less") { BeginGroup = items.Count > 0 }
-                : new("Expand Detail Row", () => Run(() => ExpandDetailRow(item)), "expand_more") { BeginGroup = items.Count > 0 });
+                ? new("Collapse Detail Row", () => Run(() => CollapseDetailRow(item)), "chevron-up") { BeginGroup = items.Count > 0 }
+                : new("Expand Detail Row", () => Run(() => ExpandDetailRow(item)), "chevron-down") { BeginGroup = items.Count > 0 });
         }
         if (SelectionMode != PBGridSelectionMode.None)
         {
-            items.Add(new(IsSelected(item) ? "Deselect Row" : "Select Row", () => ToggleRowSelectionAsync(item), "check_box") { BeginGroup = items.Count > 0 });
+            items.Add(new(IsSelected(item) ? "Deselect Row" : "Select Row", () => ToggleRowSelectionAsync(item), "check-square") { BeginGroup = items.Count > 0 });
         }
         if (IsTree)
         {
             var treeRow = allRows.FirstOrDefault(r => r.Kind == GridRowKind.Data && Equals(KeyOf(r.Item!), KeyOf(item)));
-            if (CanEditRows && !row.IsInserted) items.Insert(Math.Min(1, items.Count), new("New Child Row", () => StartEditNewChildRowAsync(item), "subdirectory_arrow_right"));
+            if (CanEditRows && !row.IsInserted) items.Insert(Math.Min(1, items.Count), new("New Child Row", () => StartEditNewChildRowAsync(item), "corner-down-right"));
             if (treeRow is { TreeHasChildren: true })
             {
                 items.Add(treeRow.TreeExpanded
-                    ? new("Collapse", () => CollapseRowAsync(item), "expand_less") { BeginGroup = true }
-                    : new("Expand", () => ExpandRowAsync(item), "expand_more") { BeginGroup = true });
+                    ? new("Collapse", () => CollapseRowAsync(item), "chevron-up") { BeginGroup = true }
+                    : new("Expand", () => ExpandRowAsync(item), "chevron-down") { BeginGroup = true });
             }
-            items.Add(new("Expand All", () => Run(ExpandAllRows), "unfold_more") { BeginGroup = treeRow is not { TreeHasChildren: true } });
-            items.Add(new("Collapse All", () => Run(CollapseAllRows), "unfold_less"));
+            items.Add(new("Expand All", () => Run(ExpandAllRows), "chevron-selector-vertical") { BeginGroup = treeRow is not { TreeHasChildren: true } });
+            items.Add(new("Collapse All", () => Run(CollapseAllRows), "chevron-selector-vertical"));
         }
         if (groupedColumns.Count > 0)
         {
-            items.Add(new("Expand All Groups", () => Run(ExpandAllGroups), "unfold_more") { BeginGroup = true });
-            items.Add(new("Collapse All Groups", () => Run(CollapseAllGroups), "unfold_less"));
+            items.Add(new("Expand All Groups", () => Run(ExpandAllGroups), "chevron-selector-vertical") { BeginGroup = true });
+            items.Add(new("Collapse All Groups", () => Run(CollapseAllGroups), "chevron-selector-vertical"));
         }
         OpenContextMenu(PBGridContextMenuTarget.DataRow, null, item, items, e);
     }
@@ -692,9 +692,9 @@ public partial class PBDataGrid<TItem>
         if (!ContextMenus.HasFlag(PBGridContextMenus.GroupPanel)) return;
         var items = new List<PBGridContextMenuItem>
         {
-            new("Expand All", () => Run(ExpandAllGroups), "unfold_more") { Disabled = groupedColumns.Count == 0 },
-            new("Collapse All", () => Run(CollapseAllGroups), "unfold_less") { Disabled = groupedColumns.Count == 0 },
-            new("Clear Grouping", () => Run(ClearGrouping), "layers_clear") { BeginGroup = true, Disabled = groupedColumns.Count == 0 },
+            new("Expand All", () => Run(ExpandAllGroups), "chevron-selector-vertical") { Disabled = groupedColumns.Count == 0 },
+            new("Collapse All", () => Run(CollapseAllGroups), "chevron-selector-vertical") { Disabled = groupedColumns.Count == 0 },
+            new("Clear Grouping", () => Run(ClearGrouping), "layer-single") { BeginGroup = true, Disabled = groupedColumns.Count == 0 },
             new("Hide Group Panel", () => Run(() => groupPanelVisible = false)),
         };
         OpenContextMenu(PBGridContextMenuTarget.GroupPanel, null, null, items, e);
@@ -713,7 +713,7 @@ public partial class PBDataGrid<TItem>
             var on = userSummaries.Any(s => s.FieldName == field && s.Type == type);
             return new PBGridContextMenuItem(type == PBGridSummaryType.Average ? "Average" : type.ToString(), () => Run(() => ToggleUserSummary(field, column.Key, type)), on ? "check" : null);
         }).ToList();
-        items.Add(new("Clear Summary", () => Run(() => { userSummaries.RemoveAll(s => s.FieldName == field); Invalidate(); }), "clear") { BeginGroup = true, Disabled = !userSummaries.Any(s => s.FieldName == field) });
+        items.Add(new("Clear Summary", () => Run(() => { userSummaries.RemoveAll(s => s.FieldName == field); Invalidate(); }), "x-close") { BeginGroup = true, Disabled = !userSummaries.Any(s => s.FieldName == field) });
         OpenContextMenu(PBGridContextMenuTarget.Footer, column, null, items, e);
     }
 

@@ -49,7 +49,7 @@
   flex-shrink: 0;
 }
 
-.pb-tree-node__toggle .material-icons {
+.pb-tree-node__toggle :is(.material-icons, .pb-icons) {
   transition: transform var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
 

@@ -149,7 +149,7 @@ export class PbRangeSelectionStrategyAdapter implements MatDateRangeSelectionStr
       </mat-date-range-input>
       @if (clearButtonDisplayMode() === 'auto' && (start() || end()) && !isDisabled()) {
         <button matIconButton matSuffix type="button" class="pb-date-edit__clear" aria-label="Clear" (click)="clear()">
-          <span class="material-icons" aria-hidden="true">close</span>
+          <span class="pb-icons" aria-hidden="true">x-close</span>
         </button>
       }
       <mat-datepicker-toggle matSuffix [for]="picker">

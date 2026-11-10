@@ -1,7 +1,7 @@
 @if (triggerVariant() === 'icon') {
   <button matIconButton [matMenuTriggerFor]="menu" [attr.aria-label]="ariaLabel()"
           (menuOpened)="isOpen.set(true)" (menuClosed)="isOpen.set(false)">
-    <mat-icon>{{ triggerIcon() ?? 'more_vert' }}</mat-icon>
+    <mat-icon [fontSet]="triggerIcon() ? 'material-icons' : 'pb-icons'">{{ triggerIcon() ?? 'dots-vertical' }}</mat-icon>
   </button>
 } @else {
   <button [matButton]="triggerAppearance()" [matMenuTriggerFor]="menu" [attr.aria-label]="ariaLabel()"

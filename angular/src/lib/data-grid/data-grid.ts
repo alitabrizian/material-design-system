@@ -1751,28 +1751,28 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
       this.emitLayout();
     };
     if (column.canSort && this.allowSort()) {
-      items.push({ text: 'Sort Ascending', icon: 'arrow_upward', disabled: column.currentSort() === 'asc', action: run(() => this.sortBy(column.key, 'asc')) });
-      items.push({ text: 'Sort Descending', icon: 'arrow_downward', disabled: column.currentSort() === 'desc', action: run(() => this.sortBy(column.key, 'desc')) });
+      items.push({ text: 'Sort Ascending', icon: 'arrow-up', disabled: column.currentSort() === 'asc', action: run(() => this.sortBy(column.key, 'asc')) });
+      items.push({ text: 'Sort Descending', icon: 'arrow-down', disabled: column.currentSort() === 'desc', action: run(() => this.sortBy(column.key, 'desc')) });
       items.push({ text: 'Clear Sorting', disabled: column.currentSort() === 'none' || column.currentGroupIndex() >= 0, action: run(() => this.sortBy(column.key, 'none')) });
     }
     if (column.canGroup && this.allowGroup()) {
       items.push(
         column.currentGroupIndex() >= 0
-          ? { text: 'Ungroup', icon: 'layers_clear', beginGroup: true, action: run(() => this.ungroup(column.key)) }
-          : { text: 'Group by This Column', icon: 'layers', beginGroup: true, action: run(() => this.groupBy(column.key)) },
+          ? { text: 'Ungroup', icon: 'layer-single', beginGroup: true, action: run(() => this.ungroup(column.key)) }
+          : { text: 'Group by This Column', icon: 'layers-three-01', beginGroup: true, action: run(() => this.groupBy(column.key)) },
       );
       items.push({ text: this.groupPanelVisible() ? 'Hide Group Panel' : 'Show Group Panel', action: run(() => this.groupPanelVisible.update((v) => !v)) });
     }
-    items.push({ text: 'Hide Column', icon: 'visibility_off', beginGroup: true, disabled: this.leaves().length <= 1, action: run(() => this.setColumnVisible(column.key, false)) });
-    items.push({ text: 'Column Chooser', icon: 'view_column', action: () => this.showColumnChooser() });
+    items.push({ text: 'Hide Column', icon: 'eye-off', beginGroup: true, disabled: this.leaves().length <= 1, action: run(() => this.setColumnVisible(column.key, false)) });
+    items.push({ text: 'Column Chooser', icon: 'columns-03', action: () => this.showColumnChooser() });
     if (column.currentFixed() === 'none') {
-      items.push({ text: 'Fix Column to the Left', icon: 'push_pin', action: run(() => this.setColumnFixed(column.key, 'left')) });
+      items.push({ text: 'Fix Column to the Left', icon: 'pin-02', action: run(() => this.setColumnFixed(column.key, 'left')) });
       items.push({ text: 'Fix Column to the Right', action: run(() => this.setColumnFixed(column.key, 'right')) });
     } else {
-      items.push({ text: 'Unfix Column', icon: 'push_pin', action: run(() => this.setColumnFixed(column.key, 'none')) });
+      items.push({ text: 'Unfix Column', icon: 'pin-02', action: run(() => this.setColumnFixed(column.key, 'none')) });
     }
     if (column.canFilter) {
-      items.push({ text: 'Clear Filter', icon: 'filter_alt_off', beginGroup: true, disabled: !this.hasColumnFilter(column), action: run(() => this.clearColumnFilter(column)) });
+      items.push({ text: 'Clear Filter', icon: 'filter-funnel-02', beginGroup: true, disabled: !this.hasColumnFilter(column), action: run(() => this.clearColumnFilter(column)) });
       items.push({ text: this.filterRowVisible() ? 'Hide Filter Row' : 'Show Filter Row', action: run(() => this.filterRowVisible.update((v) => !v)) });
     }
     this.openContextMenu('header', column, undefined, items, event);
@@ -1784,35 +1784,35 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
     const item = row.item;
     const items: PbGridContextMenuItem[] = [];
     if (this.canEditRows()) {
-      items.push({ text: 'New Row', icon: 'add', action: () => this.startNewRow() });
-      items.push({ text: 'Edit Row', icon: 'edit', disabled: !!row.inserted, action: () => this.startEdit(item) });
-      items.push({ text: 'Delete Row', icon: 'delete', action: () => this.showDeleteConfirmation(item) });
+      items.push({ text: 'New Row', icon: 'plus', action: () => this.startNewRow() });
+      items.push({ text: 'Edit Row', icon: 'edit-02', disabled: !!row.inserted, action: () => this.startEdit(item) });
+      items.push({ text: 'Delete Row', icon: 'trash-01', action: () => this.showDeleteConfirmation(item) });
     }
     if (this.detailTemplate() && this.detailRowDisplayMode() === 'auto') {
       items.push(
         this.isDetailExpanded(item)
-          ? { text: 'Collapse Detail Row', icon: 'expand_less', beginGroup: items.length > 0, action: () => this.collapseDetailRow(item) }
-          : { text: 'Expand Detail Row', icon: 'expand_more', beginGroup: items.length > 0, action: () => this.expandDetailRow(item) },
+          ? { text: 'Collapse Detail Row', icon: 'chevron-up', beginGroup: items.length > 0, action: () => this.collapseDetailRow(item) }
+          : { text: 'Expand Detail Row', icon: 'chevron-down', beginGroup: items.length > 0, action: () => this.expandDetailRow(item) },
       );
     }
     if (this.selectionMode() !== 'none') {
-      items.push({ text: this.isSelected(item) ? 'Deselect Row' : 'Select Row', icon: 'check_box', beginGroup: items.length > 0, action: () => this.toggleRow(item) });
+      items.push({ text: this.isSelected(item) ? 'Deselect Row' : 'Select Row', icon: 'check-square', beginGroup: items.length > 0, action: () => this.toggleRow(item) });
     }
     if (this.isTree()) {
-      if (this.canEditRows() && !row.inserted) items.splice(Math.min(1, items.length), 0, { text: 'New Child Row', icon: 'subdirectory_arrow_right', action: () => this.startNewChildRow(item) });
+      if (this.canEditRows() && !row.inserted) items.splice(Math.min(1, items.length), 0, { text: 'New Child Row', icon: 'corner-down-right', action: () => this.startNewChildRow(item) });
       if (row.treeHasChildren) {
         items.push(
           row.treeExpanded
-            ? { text: 'Collapse', icon: 'expand_less', beginGroup: true, action: () => this.collapseRow(item) }
-            : { text: 'Expand', icon: 'expand_more', beginGroup: true, action: () => this.expandRow(item) },
+            ? { text: 'Collapse', icon: 'chevron-up', beginGroup: true, action: () => this.collapseRow(item) }
+            : { text: 'Expand', icon: 'chevron-down', beginGroup: true, action: () => this.expandRow(item) },
         );
       }
-      items.push({ text: 'Expand All', icon: 'unfold_more', beginGroup: !row.treeHasChildren, action: () => this.expandAllRows() });
-      items.push({ text: 'Collapse All', icon: 'unfold_less', action: () => this.collapseAllRows() });
+      items.push({ text: 'Expand All', icon: 'chevron-selector-vertical', beginGroup: !row.treeHasChildren, action: () => this.expandAllRows() });
+      items.push({ text: 'Collapse All', icon: 'chevron-selector-vertical', action: () => this.collapseAllRows() });
     }
     if (this.groupedColumns().length) {
-      items.push({ text: 'Expand All Groups', icon: 'unfold_more', beginGroup: true, action: () => this.expandAllGroups() });
-      items.push({ text: 'Collapse All Groups', icon: 'unfold_less', action: () => this.collapseAllGroups() });
+      items.push({ text: 'Expand All Groups', icon: 'chevron-selector-vertical', beginGroup: true, action: () => this.expandAllGroups() });
+      items.push({ text: 'Collapse All Groups', icon: 'chevron-selector-vertical', action: () => this.collapseAllGroups() });
     }
     this.openContextMenu('dataRow', undefined, item, items, event);
   }
@@ -1826,9 +1826,9 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
       undefined,
       undefined,
       [
-        { text: 'Expand All', icon: 'unfold_more', disabled: none, action: () => this.expandAllGroups() },
-        { text: 'Collapse All', icon: 'unfold_less', disabled: none, action: () => this.collapseAllGroups() },
-        { text: 'Clear Grouping', icon: 'layers_clear', beginGroup: true, disabled: none, action: () => (this.clearGrouping(), this.emitLayout()) },
+        { text: 'Expand All', icon: 'chevron-selector-vertical', disabled: none, action: () => this.expandAllGroups() },
+        { text: 'Collapse All', icon: 'chevron-selector-vertical', disabled: none, action: () => this.collapseAllGroups() },
+        { text: 'Clear Grouping', icon: 'layer-single', beginGroup: true, disabled: none, action: () => (this.clearGrouping(), this.emitLayout()) },
         { text: 'Hide Group Panel', action: () => this.groupPanelVisible.set(false) },
       ],
       event,
@@ -1847,7 +1847,7 @@ export class PbDataGrid<T = any> implements PbGridFieldSource {
     }));
     items.push({
       text: 'Clear Summary',
-      icon: 'clear',
+      icon: 'x-close',
       beginGroup: true,
       disabled: !this.userSummaries().some((s) => s.field === field),
       action: () => this.userSummaries.update((list) => list.filter((s) => s.field !== field)),

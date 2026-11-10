@@ -15,7 +15,7 @@
   >
     @if (hasChildren(node)) {
       <button matIconButton matTreeNodeToggle [attr.aria-label]="'Toggle ' + labelOf(node)">
-        <mat-icon>{{ tree.isExpanded(node) ? 'expand_more' : 'chevron_right' }}</mat-icon>
+        <mat-icon fontSet="pb-icons">{{ tree.isExpanded(node) ? 'chevron-down' : 'chevron-right' }}</mat-icon>
       </button>
     } @else {
       <span class="pb-tree__spacer"></span>
