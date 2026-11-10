@@ -3,21 +3,21 @@
 .pb-divider {
   display: block;
   margin: 0;
-  border-top: 1px solid var(--md-sys-color-outline-variant);
+  border-top: var(--stroke-100) solid var(--md-sys-color-outline-variant);
 }
 
 .pb-divider--vertical {
   align-self: stretch;
   height: auto;
   border-top: 0;
-  border-right: 1px solid var(--md-sys-color-outline-variant);
+  border-right: var(--stroke-100) solid var(--md-sys-color-outline-variant);
 }
 
 .pb-divider--inset {
-  margin-left: 80px;
+  margin-left: var(--space-600);
 }
 
 [dir="rtl"] .pb-divider--inset {
-  margin-right: 80px;
+  margin-right: var(--space-600);
   margin-left: auto;
 }

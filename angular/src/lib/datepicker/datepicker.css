@@ -43,8 +43,8 @@ pb-date-range-picker.pb-field--block mat-form-field {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 8px;
-  padding: 0 8px 8px;
+  gap: var(--space-150);
+  padding: 0 var(--space-150) var(--space-150);
 }
 
 .pb-date-edit__spacer {
@@ -52,7 +52,7 @@ pb-date-range-picker.pb-field--block mat-form-field {
 }
 
 .pb-date-edit__clear .material-icons {
-  font-size: 20px;
+  font-size: var(--icon-size-20);
 }
 
 /* ------------------------------------------------------------------ time section */
@@ -60,10 +60,10 @@ pb-date-range-picker.pb-field--block mat-form-field {
 .pb-date-edit__time {
   display: flex;
   align-items: center;
-  gap: 4px;
-  margin: 0 16px 8px;
-  padding-top: 12px;
-  border-top: 1px solid var(--md-sys-color-outline-variant);
+  gap: var(--space-100);
+  margin: 0 var(--space-250) var(--space-150);
+  padding-top: var(--space-200);
+  border-top: var(--stroke-100) solid var(--md-sys-color-outline-variant);
 }
 
 .pb-date-edit__time-label {
@@ -79,7 +79,7 @@ pb-date-range-picker.pb-field--block mat-form-field {
   height: 40px;
   box-sizing: border-box;
   padding: 0;
-  border: 1px solid transparent;
+  border: var(--stroke-100) solid transparent;
   border-radius: var(--md-sys-shape-corner-small);
   outline: none;
   background-color: var(--md-sys-color-surface-container-highest);
@@ -112,15 +112,15 @@ pb-date-range-picker.pb-field--block mat-form-field {
 .pb-date-edit__period {
   display: inline-flex;
   flex-direction: column;
-  margin-inline-start: 8px;
+  margin-inline-start: var(--space-150);
   overflow: hidden;
-  border: 1px solid var(--md-sys-color-outline);
+  border: var(--stroke-100) solid var(--md-sys-color-outline);
   border-radius: var(--md-sys-shape-corner-small);
 }
 
 .pb-date-edit__period-button {
   height: 20px;
-  padding: 0 8px;
+  padding: 0 var(--space-150);
   border: 0;
   background: none;
   color: var(--md-sys-color-on-surface-variant);
@@ -131,7 +131,7 @@ pb-date-range-picker.pb-field--block mat-form-field {
 }
 
 .pb-date-edit__period-button + .pb-date-edit__period-button {
-  border-top: 1px solid var(--md-sys-color-outline);
+  border-top: var(--stroke-100) solid var(--md-sys-color-outline);
 }
 
 .pb-date-edit__period-button[aria-checked="true"] {
@@ -145,9 +145,9 @@ pb-date-range-picker.pb-field--block mat-form-field {
   --pb-scroll-item-height: 40px;
   position: relative;
   display: flex;
-  gap: 4px;
+  gap: var(--space-100);
   height: calc(var(--pb-scroll-item-height) * 5);
-  margin: 8px;
+  margin: var(--space-150);
   overflow: hidden;
   font-family: var(--md-sys-typescale-body-large-font);
   font-size: var(--md-sys-typescale-body-large-size);
@@ -183,7 +183,7 @@ pb-date-range-picker.pb-field--block mat-form-field {
   align-items: center;
   justify-content: center;
   height: var(--pb-scroll-item-height);
-  padding: 0 8px;
+  padding: 0 var(--space-150);
   color: var(--md-sys-color-on-surface-variant);
   white-space: nowrap;
   cursor: pointer;
@@ -193,7 +193,7 @@ pb-date-range-picker.pb-field--block mat-form-field {
 
 .pb-scroll-picker__item--selected {
   color: var(--md-sys-color-on-surface);
-  font-weight: 500;
+  font-weight: var(--font-weight-300);
 }
 
 .pb-scroll-picker__item--disabled {
@@ -214,7 +214,7 @@ pb-date-range-picker.pb-field--block mat-form-field {
 
 
 .pb-date-edit__dialog .mat-mdc-dialog-surface {
-  padding: 8px 0 0;
+  padding: var(--space-150) 0 0;
 }
 
 /* Right to left: a date's digits and offset read left to right (1405/07/22 16:41 +03:30) while month

@@ -31,7 +31,7 @@
   box-sizing: content-box;
   height: 72px;
   margin: 0;
-  padding: 0 24px;
+  padding: 0 var(--space-300);
   overflow: hidden;
   border: none;
   border-radius: var(--md-sys-shape-corner-medium);
@@ -61,14 +61,14 @@
   flex-shrink: 0;
   width: 24px;
   height: 24px;
-  margin-right: 8px;
+  margin-right: var(--space-150);
   border-radius: 50%;
   background-color: var(--md-sys-color-on-surface-variant);
   color: var(--md-sys-color-surface);
   font-family: var(--md-sys-typescale-label-medium-font);
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 24px;
+  font-size: var(--font-size-200);
+  font-weight: var(--font-weight-300);
+  line-height: var(--line-height-200);
 }
 
 .pb-step-icon__content {
@@ -80,7 +80,7 @@
 }
 
 .pb-step-icon .material-icons {
-  font-size: 16px;
+  font-size: var(--icon-size-16);
 }
 
 .pb-step-icon--selected,
@@ -96,7 +96,7 @@
 }
 
 .pb-step-icon--error .material-icons {
-  font-size: 24px;
+  font-size: var(--icon-size-24);
 }
 
 .pb-step-label {
@@ -120,8 +120,8 @@
 .pb-step-optional {
   display: block;
   color: var(--md-sys-color-on-surface-variant);
-  font-size: 12px;
-  font-weight: 400;
+  font-size: var(--font-size-200);
+  font-weight: var(--font-weight-200);
 }
 
 .pb-stepper__line {
@@ -129,11 +129,11 @@
   min-width: 32px;
   height: 0;
   margin: 0 -16px;
-  border-top: 1px solid var(--md-sys-color-outline);
+  border-top: var(--stroke-100) solid var(--md-sys-color-outline);
 }
 
 .pb-stepper__content {
-  padding: 0 24px 24px;
+  padding: 0 var(--space-300) var(--space-300);
   overflow: hidden;
   outline: 0;
   animation: pb-fade-in var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
@@ -143,11 +143,11 @@
 .pb-stepper--vertical .pb-step-header {
   width: calc(100% - 48px);
   height: 24px;
-  padding: 24px;
+  padding: var(--space-300);
 }
 
 .pb-stepper--vertical .pb-step-icon {
-  margin-right: 12px;
+  margin-right: var(--space-200);
 }
 
 .pb-stepper__vertical-step {
@@ -173,7 +173,7 @@
   top: -16px;
   bottom: -16px;
   left: 0;
-  border-left: 1px solid var(--md-sys-color-outline);
+  border-left: var(--stroke-100) solid var(--md-sys-color-outline);
 }
 
 .pb-stepper__vertical-content {
@@ -187,7 +187,7 @@
 }
 
 .pb-stepper__vertical-content-inner {
-  padding: 0 24px 24px;
+  padding: 0 var(--space-300) var(--space-300);
 }
 
 /* Narrow screens: horizontal labels collapse under their icons. */
@@ -196,11 +196,11 @@
     flex-direction: column;
     justify-content: center;
     height: 72px;
-    padding: 0 12px;
+    padding: 0 var(--space-200);
   }
 
   .pb-stepper--horizontal .pb-step-icon {
-    margin: 0 0 8px;
+    margin: 0 0 var(--space-150);
   }
 
   .pb-stepper--horizontal .pb-step-label {

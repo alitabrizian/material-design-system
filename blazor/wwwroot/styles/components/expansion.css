@@ -15,7 +15,7 @@
   display: block;
   margin: 0;
   overflow: hidden;
-  border-radius: 12px;
+  border-radius: var(--radius-200);
   background-color: var(--md-sys-color-surface);
   color: var(--md-sys-color-on-surface);
   box-shadow: var(--md-sys-elevation-z2);
@@ -35,18 +35,18 @@
 }
 
 .pb-accordion .pb-expansion-panel:first-of-type {
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
+  border-top-left-radius: var(--radius-200);
+  border-top-right-radius: var(--radius-200);
 }
 
 .pb-accordion .pb-expansion-panel:last-of-type {
-  border-bottom-left-radius: 12px;
-  border-bottom-right-radius: 12px;
+  border-bottom-left-radius: var(--radius-200);
+  border-bottom-right-radius: var(--radius-200);
 }
 
 .pb-accordion .pb-expansion-panel--expanded {
-  margin: 16px 0;
-  border-radius: 12px;
+  margin: var(--space-250) 0;
+  border-radius: var(--radius-200);
 }
 
 .pb-accordion > .pb-expansion-panel--expanded:first-child {
@@ -66,7 +66,7 @@
   width: 100%;
   height: 48px;
   margin: 0;
-  padding: 0 24px;
+  padding: 0 var(--space-300);
   border: none;
   border-radius: inherit;
   outline: none;
@@ -99,7 +99,7 @@
   flex: 1;
   flex-direction: row;
   overflow: hidden;
-  margin-right: 16px;
+  margin-right: var(--space-250);
 }
 
 .pb-expansion-panel__title,
@@ -108,7 +108,7 @@
   flex-grow: 1;
   flex-basis: 0;
   align-items: center;
-  margin-right: 16px;
+  margin-right: var(--space-250);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -134,7 +134,7 @@
   display: inline-block;
   padding: 3px;
   border-style: solid;
-  border-width: 0 2px 2px 0;
+  border-width: 0 var(--stroke-300) var(--stroke-300) 0;
   vertical-align: middle;
   transform: rotate(45deg);
 }
@@ -174,7 +174,7 @@
 }
 
 .pb-expansion-panel__body {
-  padding: 0 24px 16px;
+  padding: 0 var(--space-300) var(--space-250);
 }
 
 .pb-expansion-panel__body > :first-child {
@@ -189,9 +189,9 @@
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
-  gap: 8px;
-  padding: 16px 8px 16px 24px;
-  border-top: 1px solid var(--md-sys-color-outline);
+  gap: var(--space-150);
+  padding: var(--space-250) var(--space-150) var(--space-250) var(--space-300);
+  border-top: var(--stroke-100) solid var(--md-sys-color-outline);
 }
 
 @media (prefers-reduced-motion: reduce) {

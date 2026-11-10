@@ -21,7 +21,7 @@
 }
 
 .pb-sort-header:focus-visible {
-  border-bottom: 1px solid currentColor;
+  border-bottom: var(--stroke-100) solid currentColor;
 }
 
 .pb-sort-header--before {

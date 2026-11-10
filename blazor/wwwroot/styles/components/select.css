@@ -17,7 +17,7 @@
 .pb-option-panel {
   box-sizing: border-box;
   max-height: 275px;
-  padding: 8px 0;
+  padding: var(--space-150) 0;
   overflow: auto;
   border-radius: 0 0 var(--md-sys-shape-corner-extra-small) var(--md-sys-shape-corner-extra-small);
   outline: 0;
@@ -51,7 +51,7 @@
   justify-content: flex-start;
   box-sizing: border-box;
   min-height: 48px;
-  padding: 0 16px;
+  padding: 0 var(--space-250);
   overflow: hidden;
   color: var(--md-sys-color-on-surface);
   font-family: var(--md-sys-typescale-body-large-font);
@@ -88,7 +88,7 @@
   flex-shrink: 0;
   width: 18px;
   height: 18px;
-  margin-left: 16px;
+  margin-left: var(--space-250);
 }
 
 .pb-option__check::after {
@@ -99,8 +99,8 @@
   width: 14px;
   height: 6px;
   margin: auto;
-  border-left: 2px solid currentColor;
-  border-bottom: 2px solid currentColor;
+  border-left: var(--stroke-300) solid currentColor;
+  border-bottom: var(--stroke-300) solid currentColor;
   transform: rotate(-45deg);
   transform-origin: center;
 }
@@ -171,7 +171,7 @@
   position: relative;
   width: 10px;
   height: 5px;
-  margin: 0 4px;
+  margin: 0 var(--space-100);
   color: var(--md-sys-color-on-surface-variant);
 }
 

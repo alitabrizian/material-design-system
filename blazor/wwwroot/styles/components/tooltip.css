@@ -29,7 +29,7 @@
   max-width: 200px;
   min-height: 24px;
   max-height: 40vh;
-  padding: 4px 8px;
+  padding: var(--space-100) var(--space-150);
   overflow: hidden;
   border-radius: var(--md-sys-shape-corner-extra-small);
   background-color: var(--md-sys-color-inverse-surface);

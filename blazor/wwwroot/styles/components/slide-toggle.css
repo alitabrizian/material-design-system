@@ -64,7 +64,7 @@
   position: absolute;
   inset: 0;
   box-sizing: border-box;
-  border: 2px solid var(--md-sys-color-outline);
+  border: var(--stroke-300) solid var(--md-sys-color-outline);
   border-radius: var(--md-sys-shape-corner-full);
   background-color: var(--md-sys-color-surface-variant);
   transition:
@@ -190,7 +190,7 @@
 }
 
 .pb-slide-toggle__label {
-  padding-left: 4px;
+  padding-left: var(--space-100);
   cursor: pointer;
 }
 

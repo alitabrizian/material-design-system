@@ -22,7 +22,7 @@
   min-width: 64px;
   height: 40px;
   margin: 0;
-  padding: 0 24px;
+  padding: 0 var(--space-300);
   border: none;
   border-radius: var(--md-sys-shape-corner-full);
   outline: none;
@@ -52,25 +52,25 @@
 
 .pb-button__icon {
   position: relative;
-  font-size: 18px;
+  font-size: var(--icon-size-16);
 }
 
 .pb-button__icon--start {
-  margin-inline: var(--pb-button-icon-offset) 8px;
+  margin-inline: var(--pb-button-icon-offset) var(--space-150);
 }
 
 .pb-button__icon--end {
-  margin-inline: 8px var(--pb-button-icon-offset);
+  margin-inline: var(--space-150) var(--pb-button-icon-offset);
 }
 
 /* Text: lowest emphasis. */
 .pb-button--text {
   --pb-button-icon-offset: -4px;
-  padding: 0 12px;
+  padding: 0 var(--space-200);
 }
 
 .pb-button--text:has(> .pb-button__icon) {
-  padding: 0 16px;
+  padding: 0 var(--space-250);
 }
 
 /* Filled (matButton="filled"). */
@@ -89,7 +89,7 @@
 
 /* Outlined (matButton="outlined"): the 1px outline sits inside the 24px padding box. */
 .pb-button--outlined {
-  border: 1px solid var(--md-sys-color-outline);
+  border: var(--stroke-100) solid var(--md-sys-color-outline);
   transition: border var(--motion-state-duration) var(--motion-easing-ease-in-out-back);
 }
 
@@ -120,15 +120,15 @@
   width: 40px;
   min-width: 0;
   height: 40px;
-  padding: 8px;
+  padding: var(--space-150);
   color: var(--md-sys-color-on-surface-variant);
-  font-size: 24px;
+  font-size: var(--icon-size-24);
 }
 
 .pb-button--icon .pb-button__icon,
 .pb-button--icon .pb-button__label {
   margin: 0;
-  font-size: 24px;
+  font-size: var(--icon-size-24);
 }
 
 /* FABs (matFab / matMiniFab / extended): primary-container, level 3, level 4 on hover. */
@@ -169,15 +169,15 @@
 .pb-button--fab-mini .pb-button__icon,
 .pb-button--fab-extended .pb-button__icon {
   margin: 0;
-  font-size: 24px;
+  font-size: var(--icon-size-24);
 }
 
 .pb-button--fab-extended .pb-button__icon--start {
-  margin-inline: -8px 12px;
+  margin-inline: -8px var(--space-200);
 }
 
 .pb-button--fab-extended .pb-button__icon--end {
-  margin-inline: 12px -8px;
+  margin-inline: var(--space-200) -8px;
 }
 
 @media (hover: hover) {

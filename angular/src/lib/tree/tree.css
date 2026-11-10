@@ -8,7 +8,7 @@
 }
 
 mat-icon.pb-tree__icon {
-  margin-inline-end: 8px;
+  margin-inline-end: var(--space-150);
 }
 
 /* Tree with dynamic data: a progress bar along the bottom of the node while its children load. */

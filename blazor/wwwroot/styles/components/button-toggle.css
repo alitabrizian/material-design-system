@@ -13,7 +13,7 @@
   display: inline-flex;
   flex-direction: row;
   box-sizing: border-box;
-  border: 1px solid var(--md-sys-color-outline);
+  border: var(--stroke-100) solid var(--md-sys-color-outline);
   border-radius: var(--md-sys-shape-corner-extra-large);
   white-space: nowrap;
   vertical-align: middle;
@@ -63,19 +63,19 @@
 
 /* Standalone toggle (outside a group) carries the outline itself. */
 :not(.pb-button-toggle-group) > .pb-button-toggle {
-  border: 1px solid var(--md-sys-color-outline);
+  border: var(--stroke-100) solid var(--md-sys-color-outline);
   border-radius: var(--md-sys-shape-corner-extra-large);
 }
 
 .pb-button-toggle-group > .pb-button-toggle + .pb-button-toggle {
-  border-left: 1px solid var(--md-sys-color-outline);
+  border-left: var(--stroke-100) solid var(--md-sys-color-outline);
 }
 
 .pb-button-toggle__label {
   position: relative;
   display: inline-block;
-  padding: 0 12px;
-  line-height: 40px;
+  padding: 0 var(--space-200);
+  line-height: var(--line-height-400);
   user-select: none;
 }
 
@@ -114,8 +114,8 @@
   width: 14px;
   height: 6px;
   margin: auto 0;
-  border-left: 2px solid currentColor;
-  border-bottom: 2px solid currentColor;
+  border-left: var(--stroke-300) solid currentColor;
+  border-bottom: var(--stroke-300) solid currentColor;
   transform: rotate(-45deg);
   transform-origin: center;
 }

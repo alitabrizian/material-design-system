@@ -21,7 +21,7 @@
   width: calc(100% - 16px);
   min-width: 112px;
   height: 48px;
-  margin: 0 8px;
+  margin: 0 var(--space-150);
   vertical-align: middle;
 }
 

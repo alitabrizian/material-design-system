@@ -41,7 +41,7 @@
   flex-shrink: 0;
   box-sizing: border-box;
   margin: 0 0 1px;
-  padding: 6px 24px 13px;
+  padding: 6px var(--space-300) 13px;
   color: var(--md-sys-color-on-surface);
   font-family: var(--md-sys-typescale-headline-small-font);
   font-size: var(--md-sys-typescale-headline-small-size);
@@ -64,7 +64,7 @@
   box-sizing: border-box;
   max-height: 65vh;
   margin: 0;
-  padding: 20px 24px;
+  padding: 20px var(--space-300);
   overflow: auto;
   color: var(--md-sys-color-on-surface-variant);
   font-family: var(--md-sys-typescale-body-medium-font);
@@ -96,9 +96,9 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: flex-end;
-  gap: 8px;
+  gap: var(--space-150);
   box-sizing: border-box;
   min-height: 52px;
   margin: 0;
-  padding: 16px 24px;
+  padding: var(--space-250) var(--space-300);
 }
