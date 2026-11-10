@@ -167,8 +167,8 @@
   --md-sys-color-surface-bright: var(--background-white-default);
   --md-sys-color-surface-container-lowest: var(--background-white-default);
   --md-sys-color-surface-container-low: var(--background-primary-default);
-  --md-sys-color-surface-container: var(--background-primary-default);
-  --md-sys-color-surface-container-high: var(--background-secondary-default);
+  --md-sys-color-surface-container: var(--background-secondary-default);
+  --md-sys-color-surface-container-high: var(--background-secondary-hover);
   --md-sys-color-surface-container-highest: var(--background-secondary-hover);
   --md-sys-color-surface-dim: var(--background-secondary-hover);
   --md-sys-color-surface-variant: var(--background-secondary-default);
