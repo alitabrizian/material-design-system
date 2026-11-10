@@ -19,6 +19,7 @@
  *                               + src/typography-tokens.css + src/scale-tokens.css + src/shadow-tokens.css
  *                               + src/motion-tokens.css + src/layout-tokens.css + src/layer-tokens.css
  *                               + src/touch-target-tokens.css
+ *                               + src/foundation-tokens.css (binds the M3 system tokens to the Figma foundations)
  *                               + the per-product brand blocks generated from src/products.json (last, so a
  *                               [data-product] overrides the theme's primary/secondary/tertiary roles)
  *   - css/product-tokens.css    the generated [data-product] blocks on their own (see build-products.mts)
@@ -31,6 +32,7 @@
  *   - css/layout-tokens.css     copy of src/layout-tokens.css (PartoBita breakpoints, margins, sidebar)
  *   - css/layer-tokens.css      copy of src/layer-tokens.css (PartoBita layers, the Figma stacking order)
  *   - css/touch-target-tokens.css copy of src/touch-target-tokens.css (PartoBita 48px minimum hit area)
+ *   - css/foundation-tokens.css copy of src/foundation-tokens.css (M3 system tokens bound to the Figma foundations)
  *   - css/angular-material.css  every --mat-sys-* Angular Material reads, bound to its --md-sys-* token,
  *                               so Angular Material components follow these tokens (and data-theme)
  *   - css/roboto.css            self-hosted Roboto @font-face rules (from @fontsource-variable/roboto)
@@ -216,6 +218,11 @@ tokensCss.push("/* ---- src/scale-tokens.css (space, stroke, radius, opacity) --
 const iconTokens = fs.readFileSync(path.join(packageRoot, "src/icon-tokens.css"), "utf8");
 tokensCss.push("/* ---- src/icon-tokens.css (icon sizes, icon-button states) ---- */", iconTokens.trim(), "");
 
+// After every M3 and Figma token, before the product blocks: binds the M3 system tokens the components read
+// to the Figma foundations (typography, radius, shadow, space, neutral and error colors).
+const foundation = fs.readFileSync(path.join(packageRoot, "src/foundation-tokens.css"), "utf8");
+tokensCss.push("/* ---- src/foundation-tokens.css (M3 system tokens bound to the Figma foundations) ---- */", foundation.trim(), "");
+
 // Last, so a [data-product] block wins over the [data-theme] blocks and the :root aliases above.
 const products = buildProducts(packageRoot, repoRoot, colors, fail);
 tokensCss.push("/* ---- per-product brand colors (src/products.json, scripts/build-products.mts) ---- */", products.css.trim(), "");
@@ -346,6 +353,7 @@ write("css/shadow-tokens.css", shadows);
 write("css/motion-tokens.css", motion);
 write("css/layout-tokens.css", layout);
 write("css/layer-tokens.css", layers);
+write("css/foundation-tokens.css", foundation);
 write("css/touch-target-tokens.css", touchTarget);
 write("css/icon-tokens.css", iconTokens);
 write(
