@@ -3,7 +3,7 @@
     @for (item of items(); track item) {
       <a mat-list-item [attr.href]="item.href()" [activated]="item.selected()" [disabled]="item.disabled()"
          (click)="item.clicked.emit()">
-        @if (item.icon(); as name) { <mat-icon matListItemIcon>{{ name }}</mat-icon> }
+        @if (item.icon(); as name) { <mat-icon matListItemIcon fontSet="pb-icons">{{ name }}</mat-icon> }
         @if (item.avatar(); as src) { <img matListItemAvatar class="pb-list-item__avatar" [src]="src" alt="" /> }
         <span matListItemTitle>{{ item.title() }}</span>
         @if (item.subtitle(); as text) { <span matListItemLine>{{ text }}</span> }
@@ -16,7 +16,7 @@
   <mat-list>
     @for (item of items(); track item) {
       <mat-list-item [activated]="item.selected()" [disabled]="item.disabled()" (click)="item.clicked.emit()">
-        @if (item.icon(); as name) { <mat-icon matListItemIcon>{{ name }}</mat-icon> }
+        @if (item.icon(); as name) { <mat-icon matListItemIcon fontSet="pb-icons">{{ name }}</mat-icon> }
         @if (item.avatar(); as src) { <img matListItemAvatar class="pb-list-item__avatar" [src]="src" alt="" /> }
         <span matListItemTitle>{{ item.title() }}</span>
         @if (item.subtitle(); as text) { <span matListItemLine>{{ text }}</span> }

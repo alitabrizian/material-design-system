@@ -8,7 +8,7 @@ export type PbBadgePosition = 'above after' | 'above before' | 'below after' | '
  * Material 3 badge on any element (PBBadge). An empty pbBadge ("") with pbBadgeSize="small" is the
  * dot badge.
  *
- *   <pb-icon pbBadge="4">mail</pb-icon>
+ *   <pb-icon pbBadge="4">mail-01</pb-icon>
  */
 @Directive({
   selector: '[pbBadge]',

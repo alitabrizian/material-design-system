@@ -154,7 +154,7 @@ export class PbRangeSelectionStrategyAdapter implements MatDateRangeSelectionStr
       }
       <mat-datepicker-toggle matSuffix [for]="picker">
         @if (toggleIcon(); as icon) {
-          <span class="material-icons" matDatepickerToggleIcon>{{ icon }}</span>
+          <span class="pb-icons" matDatepickerToggleIcon>{{ icon }}</span>
         }
       </mat-datepicker-toggle>
       <mat-date-range-picker

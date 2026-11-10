@@ -273,7 +273,7 @@
                             <div class="pb-data-grid__menu-divider" role="separator"></div>
                         }
                         <button type="button" class="pb-menu-item pb-ripple-host" role="menuitem" tabindex="-1" disabled="@menuItem.Disabled" @onclick="() => RunMenuItemAsync(menuItem)">
-                            <span class="pb-menu-item__icon @(menuItem.Icon?.Contains('-') == true ? "pb-icons" : "material-icons")" aria-hidden="true">@menuItem.Icon</span>
+                            <span class="pb-menu-item__icon pb-icons" aria-hidden="true">@menuItem.Icon</span>
                             <span class="pb-menu-item__text">@menuItem.Text</span>
                         </button>
                     }

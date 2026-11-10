@@ -8,7 +8,7 @@ import { PbPrefix, PbSuffix } from './affixes';
  * Material 3 text field (PBInput): mat-form-field + matInput.
  *
  *   <pb-input label="Email" type="email" [(value)]="email" supportingText="We never share it">
- *     <pb-icon pbPrefix>mail</pb-icon>
+ *     <pb-icon pbPrefix>mail-01</pb-icon>
  *   </pb-input>
  */
 @Component({

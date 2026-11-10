@@ -3,13 +3,13 @@ namespace PartoBita.DesignSystem.Blazor.Components;
 /// <summary>Which icon font renders a ligature name (mat-icon <c>fontSet</c>).</summary>
 public enum PBIconFontSet
 {
-    /// <summary>"Material Icons" (mat-icon's default).</summary>
+    /// <summary>"Material Icons". Kept for compatibility; components use PartoBita Icons.</summary>
     Icons,
 
     /// <summary>"Material Symbols Outlined" (variable weight).</summary>
     Symbols,
 
-    /// <summary>"PartoBita Icons": the design system's own icon set (the Icons page) as a font.</summary>
+    /// <summary>"PartoBita Icons" (the default): the design system's own icon set (the Icons page) as a font.</summary>
     PartoBita,
 
     /// <summary>No icon font: child content is an SVG, image or text.</summary>
@@ -17,14 +17,14 @@ public enum PBIconFontSet
 }
 
 /// <summary>
-/// mat-icon: a 24px icon from a ligature name (<c>&lt;PBIcon&gt;home&lt;/PBIcon&gt;</c>) or custom SVG content.
-/// With <c>FontSet="PBIconFontSet.PartoBita"</c> the name is one of the PartoBita icons (<c>home-line</c>).
+/// mat-icon: a 24px icon from a PartoBita icon name (<c>&lt;PBIcon&gt;home-line&lt;/PBIcon&gt;</c>, the names on the
+/// Icons page) or custom SVG content. PartoBita Icons is the default font set.
 /// With a <c>Label</c> it is announced as an image; without one it is decorative (aria-hidden), like mat-icon.
 /// All three icon fonts ship with the design system (no CDN).
 /// </summary>
 public partial class PBIcon : WorkspaceComponentBase
 {
-    [Parameter] public PBIconFontSet FontSet { get; set; } = PBIconFontSet.Icons;
+    [Parameter] public PBIconFontSet FontSet { get; set; } = PBIconFontSet.PartoBita;
 
     /// <summary>Icon color role: inherits the text color by default (mat-icon <c>color</c>).</summary>
     [Parameter] public PBIconColor Color { get; set; } = PBIconColor.Inherit;

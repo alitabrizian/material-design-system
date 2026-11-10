@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 import { MatIcon } from '@angular/material/icon';
 
 /**
- * icons = "Material Icons" (mat-icon's default), symbols = "Material Symbols Outlined",
- * partobita = "PartoBita Icons": the design system's own icon set (the Icons page) as a font.
+ * partobita = "PartoBita Icons" (the default): the design system's own icon set (the Icons page) as a font.
+ * icons = "Material Icons" and symbols = "Material Symbols Outlined" are kept for compatibility.
  */
 export type PbIconFontSet = 'icons' | 'symbols' | 'partobita';
 
@@ -17,9 +17,8 @@ export type PbIconColor = 'inherit' | 'primary' | 'secondary' | 'tertiary' | 'er
 /**
  * Ligature icon from the self-hosted icon fonts in @partobita/design-tokens (PBIcon).
  *
- *   <pb-icon>home</pb-icon>
- *   <pb-icon fontSet="symbols" color="primary">settings</pb-icon>
- *   <pb-icon fontSet="partobita">home-line</pb-icon>
+ *   <pb-icon>home-line</pb-icon>
+ *   <pb-icon color="primary">settings-01</pb-icon>
  */
 @Component({
   selector: 'pb-icon',
@@ -30,7 +29,7 @@ export type PbIconColor = 'inherit' | 'primary' | 'secondary' | 'tertiary' | 'er
   styleUrl: './icon.css',
 })
 export class PbIcon {
-  readonly fontSet = input<PbIconFontSet>('icons');
+  readonly fontSet = input<PbIconFontSet>('partobita');
   readonly color = input<PbIconColor>('inherit');
 
   protected readonly fontSetClass = computed(() => FONT_SET_CLASSES[this.fontSet()]);

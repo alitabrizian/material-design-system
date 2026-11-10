@@ -2,7 +2,7 @@
   @for (tab of tabs(); track tab) {
     <mat-tab [disabled]="tab.disabled()">
       <ng-template mat-tab-label>
-        @if (tab.icon(); as name) { <mat-icon class="pb-tab__icon">{{ name }}</mat-icon> }
+        @if (tab.icon(); as name) { <mat-icon class="pb-tab__icon" fontSet="pb-icons">{{ name }}</mat-icon> }
         {{ tab.label() }}
       </ng-template>
       <ng-container [ngTemplateOutlet]="tab.template()" />

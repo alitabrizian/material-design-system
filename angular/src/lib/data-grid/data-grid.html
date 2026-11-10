@@ -217,7 +217,7 @@
             <div class="pb-data-grid__menu-divider" role="separator"></div>
           }
           <button type="button" class="pb-data-grid__menu-item" role="menuitem" tabindex="-1" [disabled]="item.disabled" (click)="runMenuItem(item)">
-            <span class="pb-data-grid__menu-icon" [class.pb-icons]="!!item.icon?.includes('-')" [class.material-icons]="!item.icon?.includes('-')" aria-hidden="true">{{ item.icon }}</span>
+            <span class="pb-data-grid__menu-icon pb-icons" aria-hidden="true">{{ item.icon }}</span>
             <span class="pb-data-grid__menu-text">{{ item.text }}</span>
           </button>
         }
