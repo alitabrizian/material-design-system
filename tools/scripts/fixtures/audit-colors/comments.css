@@ -1,0 +1,7 @@
+/*
+ * Documentation may name colors: #ff0000 is a hex, rgb(0 0 0) is a function and white is a named color.
+ * None of them is code, so the audit must stay silent.
+ */
+.pb-ok {
+  color: var(--md-sys-color-on-surface);
+}

@@ -1,0 +1,7 @@
+/* Four literal colors, one per rule. The audit must report every line. */
+.pb-bad {
+  color: #ff0000;
+  background: rgba(0, 0, 0, 0.5);
+  border-color: white;
+  box-shadow: 0 1px 2px var(--md-sys-color-shadow), 0 0 0 1px #000;
+}
