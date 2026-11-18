@@ -330,7 +330,7 @@ Angular (`pages/button/button-page.html`):
 - Keep the demo and its code sample identical. In Blazor, update `RazorCode` whenever the live markup
   changes; in Angular the code comes from the page file, so nothing is copied by hand.
 - Example card titles are the same in both apps, so the sidebars match.
-- Docs CSS follows the same color rule as the library; the color audit scans the Blazor docs too.
+- Docs CSS follows the same color rule as the library; the color audit scans both docs apps.
 
 ## Checklist: a new component
 
@@ -391,6 +391,53 @@ specs in `specs/NNN-name/`).
       ancestor): it must take the brand from the color roles, in a light and a dark theme.
 - [ ] Review the screenshots in all four themes, and exercise keyboard and pointer behavior in a real
       browser, in both docs apps.
+
+## Build quality gates
+
+Two gates run on every library build, and both fail the build instead of warning.
+
+### Warnings are errors
+
+`Directory.Build.props` sets `TreatWarningsAsErrors`, so any compiler or analyzer warning fails
+`dotnet build DesignSystem.sln`. There is no per-project opt-out: fix the warning, or suppress it
+narrowly with `<NoWarn>` beside the package reference that causes it. The submodule apps
+(`apps/samamat`, `apps/pb.chain`) carry their own `Directory.Build.props` and are not covered.
+
+### No literal colors
+
+`tools/scripts/audit-colors.mts` fails on any literal color outside the generated tokens. It scans
+`libs/material-design-system/blazor/{Components,wwwroot}`, `libs/material-design-system/angular/src`,
+both docs apps and `apps/design-system-landing/src`, in `.css`, `.html`, `.ts`, `.js`, `.razor` and
+`.cs` files. Four rules:
+
+| Rule | Example |
+| --- | --- |
+| hex color | `color: #ff0000` |
+| color function | `rgba(0, 0, 0, .5)`, `oklch(…)` |
+| named color | `border-color: white` |
+| SVG paint attribute | `<path fill="#fff">`; a component's own `color="primary"` input is not a paint |
+
+Allowed: the tokens themselves (`var(--md-sys-color-*)`, `--space-*`, …), `color-mix()` over
+tokens, `currentColor`, `transparent`, `inherit` and `none`. Comments are ignored, so documentation
+may name colors. Generated files are the one place literals may live: the copied token stylesheets
+under `blazor/wwwroot/{css,fonts,data}` and the Angular docs' `src/generated-assets`.
+
+```bash
+node tools/scripts/audit-colors.mts            # exit 1, one file:line per violation
+node tools/scripts/audit-colors.mts --report   # print them, always exit 0
+npx nx run design-system-blazor:lint           # the same audit as the lint target
+```
+
+It also runs on every Blazor library build, through the `AuditColors` MSBuild target; skip that one
+occurrence with `dotnet build -p:SkipColorAudit=true`. When it fires, swap the value for the
+`--md-sys-color-*` role or the matching PartoBita token — never for a hex that happens to look the same.
+
+The rules are pinned by `tools/scripts/audit-colors.test.mts`, with a clean and a dirty fixture per
+rule under `tools/scripts/fixtures/audit-colors/`:
+
+```bash
+npx nx run tools:test        # or: npm run test:scripts
+```
 
 ## Commits and branches
 

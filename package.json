@@ -12,6 +12,7 @@
     "landing": "nx run design-system-landing:serve",
     "test:ui": "node tools/scripts/test-ui.mts",
     "test:ui:update": "node tools/scripts/test-ui.mts --update",
+    "test:scripts": "node --test tools/scripts/audit-colors.test.mts",
     "remotion:studio": "nx run design-system-remotion-videos:studio",
     "remotion:render": "nx run design-system-remotion-videos:render",
     "registry:up": "docker compose -f tools/registry/docker-compose.yml up -d",

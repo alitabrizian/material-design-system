@@ -4,37 +4,46 @@
  *   node tools/scripts/audit-colors.mts            -> exit 1 and print file:line on any violation
  *   node tools/scripts/audit-colors.mts --report   -> print, but always exit 0
  *
- * Scans the Blazor library (components + wwwroot) and the demo app (pages, shared, layout, wwwroot)
- * for:
+ * Scans both framework libraries and both docs apps (plus the landing page) for:
  *   - hex colors (#rgb, #rgba, #rrggbb, #rrggbbaa) in CSS or markup
  *   - rgb()/rgba()/hsl()/hsla()/hwb()/lab()/lch()/oklab()/oklch() literals
  *   - CSS named colors used as values of color-bearing properties or SVG fill/stroke attributes
  * Allowed: var(--md-sys-*), color-mix() over tokens, currentColor, transparent, inherit, none.
  * Generated token files (wwwroot/css/*, copied from libs/material-design-system/tokens/dist) are the only
- * place literal colors may live, so they are excluded. Comments are ignored.
+ * place literal color values may live, so they are excluded. Generated docs assets are excluded too.
+ * Comments are ignored.
+ *
+ * The rules are exported so tests/ can pin them (tools/scripts/audit-colors.test.mts); importing this
+ * module does not run the audit.
  */
 
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
-const reportOnly = process.argv.includes("--report");
-
-const ROOTS = [
+export const ROOTS = [
   "libs/material-design-system/blazor/Components",
   "libs/material-design-system/blazor/wwwroot",
+  "libs/material-design-system/angular/src",
   "apps/blazor-design-system-docs/Pages",
   "apps/blazor-design-system-docs/Shared",
   "apps/blazor-design-system-docs/Layout",
   "apps/blazor-design-system-docs/wwwroot",
   "apps/blazor-design-system-docs/App.razor",
+  "apps/angular-design-system-docs/src",
   "apps/design-system-landing/src",
 ];
 
 // Generated/copied token files: the one sanctioned home of literal color values.
-const EXCLUDED_DIRS = ["libs/material-design-system/blazor/wwwroot/css", "libs/material-design-system/blazor/wwwroot/fonts", "libs/material-design-system/blazor/wwwroot/data"];
-const EXTENSIONS = new Set([".css", ".razor", ".cs", ".js", ".html"]);
+export const EXCLUDED_DIRS = [
+  "libs/material-design-system/blazor/wwwroot/css",
+  "libs/material-design-system/blazor/wwwroot/fonts",
+  "libs/material-design-system/blazor/wwwroot/data",
+  // Copied from the tokens package at build time; same values, same exemption.
+  "apps/angular-design-system-docs/src/generated-assets",
+];
+
+export const EXTENSIONS = new Set([".css", ".razor", ".cs", ".js", ".html", ".ts"]);
 
 const NAMED_COLORS = [
   "aliceblue", "antiquewhite", "aqua", "aquamarine", "azure", "beige", "bisque", "black", "blanchedalmond", "blue",
@@ -60,7 +69,10 @@ const NAMED_COLORS = [
 const COLOR_PROPERTIES =
   "color|background|background-color|background-image|border|border-(?:top|right|bottom|left|block|inline)(?:-(?:start|end))?(?:-color)?|border-color|outline|outline-color|fill|stroke|box-shadow|text-shadow|caret-color|accent-color|column-rule(?:-color)?|text-decoration(?:-color)?|scrollbar-color|stop-color|flood-color|lighting-color";
 
-const RULES: { name: string; re: RegExp }[] = [
+/** Tag names a component library owns: `color="primary"` there is an input, not an SVG paint. */
+const COMPONENT_TAG_PREFIXES = ["pb-", "mat-", "app-"];
+
+export const RULES: { name: string; re: RegExp; accepts?: (line: string, match: RegExpExecArray) => boolean }[] = [
   { name: "hex color", re: /(?<![\w&])#(?:[0-9a-fA-F]{8}|[0-9a-fA-F]{6}|[0-9a-fA-F]{3,4})\b(?![\w-])/g },
   { name: "color function", re: /\b(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch)\(\s*[\d.]/gi },
   {
@@ -72,11 +84,18 @@ const RULES: { name: string; re: RegExp }[] = [
     name: "SVG color attribute",
     // Case-sensitive: HTML/SVG attributes are lowercase; Razor component parameters (Color=...) are not.
     re: new RegExp(`(?<![\\w-])(?:fill|stroke|stop-color|color)\\s*=\\s*["'](?!none|currentColor|transparent|inherit|@)[^"']+["']`, "g"),
+    // A component's own color input (<pb-icon color="primary">, <mat-icon color="...">) is not a paint.
+    accepts(line, match) {
+      const tag = /<([a-zA-Z][\w:-]*)[^<>]*$/.exec(line.slice(0, match.index));
+      if (!tag) return true;
+      const name = tag[1].toLowerCase();
+      return !COMPONENT_TAG_PREFIXES.some((prefix) => name.startsWith(prefix));
+    },
   },
 ];
 
 /** Blanks out comments (keeping line numbers) so documentation may mention colors. */
-function stripComments(text: string, ext: string): string {
+export function stripComments(text: string, ext: string): string {
   const blank = (m: string) => m.replace(/[^\n]/g, " ");
   let out = text.replace(/\/\*[\s\S]*?\*\//g, blank);
   if (ext === ".razor") out = out.replace(/@\*[\s\S]*?\*@/g, blank).replace(/<!--[\s\S]*?-->/g, blank);
@@ -84,7 +103,7 @@ function stripComments(text: string, ext: string): string {
   return out;
 }
 
-function* walk(target: string): Generator<string> {
+function* walk(repoRoot: string, target: string): Generator<string> {
   const abs = path.join(repoRoot, target);
   if (!fs.existsSync(abs)) return;
   if (EXCLUDED_DIRS.some((dir) => abs.startsWith(path.join(repoRoot, dir)))) return;
@@ -95,33 +114,55 @@ function* walk(target: string): Generator<string> {
   }
   for (const entry of fs.readdirSync(abs)) {
     if (entry === "bin" || entry === "obj" || entry === "node_modules") continue;
-    yield* walk(path.join(target, entry));
+    yield* walk(repoRoot, path.join(target, entry));
   }
 }
 
-const violations: string[] = [];
-for (const root of ROOTS) {
-  for (const file of walk(root)) {
-    const ext = path.extname(file);
-    const lines = stripComments(fs.readFileSync(file, "utf8"), ext).split("\n");
-    lines.forEach((line, i) => {
-      for (const rule of RULES) {
-        rule.re.lastIndex = 0;
-        const match = rule.re.exec(line);
-        if (match) {
-          violations.push(`${path.relative(repoRoot, file)}:${i + 1}: ${rule.name}: ${line.trim().slice(0, 140)}`);
-          break;
-        }
+/** Audits one file and returns `path:line: rule: line` entries. */
+export function auditFile(file: string, repoRoot: string): string[] {
+  const found: string[] = [];
+  const ext = path.extname(file);
+  const lines = stripComments(fs.readFileSync(file, "utf8"), ext).split("\n");
+  lines.forEach((line, i) => {
+    for (const rule of RULES) {
+      rule.re.lastIndex = 0;
+      const match = rule.re.exec(line);
+      if (match && (!rule.accepts || rule.accepts(line, match))) {
+        found.push(`${path.relative(repoRoot, file)}:${i + 1}: ${rule.name}: ${line.trim().slice(0, 140)}`);
+        break;
       }
-    });
+    }
+  });
+  return found;
+}
+
+/** Audits every root below `repoRoot` (defaults to this repository) and returns all violations. */
+export function auditRoots(roots: string[] = ROOTS, { repoRoot }: { repoRoot?: string } = {}): string[] {
+  const base = repoRoot ?? path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
+  const violations: string[] = [];
+  for (const root of roots) {
+    for (const file of walk(base, root)) {
+      violations.push(...auditFile(file, base));
+    }
   }
+  return violations;
 }
 
-if (violations.length === 0) {
-  console.log("audit-colors: 0 violations (every color comes from --md-sys-* tokens).");
-  process.exit(0);
+export function report(violations: string[]): void {
+  if (violations.length === 0) {
+    console.log("audit-colors: 0 violations (every color comes from --md-sys-* tokens).");
+    return;
+  }
+  console.error(`audit-colors: ${violations.length} violation(s) -- use a --md-sys-color-* token instead:`);
+  for (const v of violations) console.error("  " + v);
 }
 
-console.error(`audit-colors: ${violations.length} violation(s) -- use a --md-sys-color-* token instead:`);
-for (const v of violations) console.error("  " + v);
-process.exit(reportOnly ? 0 : 1);
+const entry = process.argv[1] ? path.resolve(process.argv[1]) : "";
+const isMain = entry === fileURLToPath(import.meta.url) || entry.endsWith(path.join("tools", "scripts", "audit-colors.mts"));
+
+if (isMain) {
+  const reportOnly = process.argv.includes("--report");
+  const violations = auditRoots();
+  report(violations);
+  process.exit(violations.length === 0 || reportOnly ? 0 : 1);
+}
