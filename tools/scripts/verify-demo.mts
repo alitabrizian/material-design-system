@@ -59,6 +59,49 @@ function referenceColors(theme: string): Map<string, string> {
   return colors;
 }
 
+/** Every hand-authored token declaration, so a `var()` chain can be followed to its final value. */
+function tokenValues(): Map<string, string> {
+  const values = new Map<string, string>();
+  for (const file of ["color-tokens.css", "scale-tokens.css", "shadow-tokens.css"]) {
+    const css = fs.readFileSync(path.join(repoRoot, `libs/material-design-system/tokens/src/${file}`), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+    for (const m of css.matchAll(/(--[a-z0-9-]+):\s*([^;]+);/gi)) values.set(m[1], m[2].trim());
+  }
+  return values;
+}
+
+function resolveToken(name: string, values: Map<string, string>, seen = new Set<string>()): string | undefined {
+  if (!name || seen.has(name)) return undefined;
+  seen.add(name);
+  const value = values.get(name);
+  if (!value) return undefined;
+  const varref = /^var\((--[a-z0-9-]+)\)$/i.exec(value);
+  if (varref) return resolveToken(varref[1], values, seen);
+  return /^#[0-9a-f]{3,8}$/i.test(value) ? value.toLowerCase() : undefined;
+}
+
+/**
+ * Roles the Figma foundation tokens re-bind for a theme. The design system deliberately replaces
+ * Angular Material's neutral and error roles in the two light themes with the Figma foundations
+ * (tokens/src/foundation-tokens.css), so the effective value is the foundation's, not the prebuilt
+ * theme's. Dark themes are not re-bound and keep Angular Material's values.
+ */
+function foundationColors(theme: string): Map<string, string> {
+  const css = fs
+    .readFileSync(path.join(repoRoot, "libs/material-design-system/tokens/src/foundation-tokens.css"), "utf8")
+    .replace(/\/\*[\s\S]*?\*\//g, "");
+  const values = tokenValues();
+  const colors = new Map<string, string>();
+  for (const block of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+    if (!block[1].includes(`[data-theme="${theme}"]`)) continue;
+    for (const decl of block[2].matchAll(/--md-sys-color-([a-z0-9-]+):\s*([^;]+);/gi)) {
+      const reference = /var\((--[a-z0-9-]+)\)/i.exec(decl[2]);
+      const hex = resolveToken(reference?.[1] ?? "", values);
+      if (hex) colors.set(decl[1], hex);
+    }
+  }
+  return colors;
+}
+
 const failures: string[] = [];
 const fail = (message: string) => {
   failures.push(message);
@@ -106,13 +149,20 @@ for (const theme of THEMES) {
     return out;
   });
   let mismatches = 0;
-  for (const [role, expected] of referenceColors(theme)) {
+  const reference = referenceColors(theme);
+  const foundation = foundationColors(theme);
+  // The effective value: the Figma foundation where it re-binds a role for this theme, the prebuilt
+  // Angular Material theme everywhere else.
+  const roles = new Set([...reference.keys(), ...foundation.keys()]);
+  for (const role of roles) {
+    const expected = foundation.get(role) ?? reference.get(role);
     if (computed[role] !== expected) {
       mismatches++;
-      fail(`${theme}: --md-sys-color-${role} is ${computed[role] ?? "missing"}, Angular Material has ${expected}`);
+      const source = foundation.has(role) ? "the Figma foundation" : "Angular Material";
+      fail(`${theme}: --md-sys-color-${role} is ${computed[role] ?? "missing"}, ${source} has ${expected}`);
     }
   }
-  console.log(`  ${theme}: ${referenceColors(theme).size - mismatches}/${referenceColors(theme).size} roles match, switch ${elapsed.toFixed(1)} ms`);
+  console.log(`  ${theme}: ${roles.size - mismatches}/${roles.size} roles match, switch ${elapsed.toFixed(1)} ms`);
 }
 
 // ---------------------------------------------------------------- 3 + 5: every page x theme
