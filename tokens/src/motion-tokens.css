@@ -30,7 +30,7 @@
   --motion-overlay-duration: var(--motion-duration-instant);
 
   /* Where the patterns place their surfaces (Figma's positioning notes). */
-  --motion-snackbar-inset: var(--space-400); /* 40px from the top and right edges */
+  --motion-snackbar-inset: var(--space-400); /* 40px from the top and the inline-end edge (mirrored in RTL) */
   --motion-menu-offset: var(--space-200); /* 12px from the trigger */
   --motion-tooltip-gap: var(--space-150); /* 8px between tooltip and trigger */
 }

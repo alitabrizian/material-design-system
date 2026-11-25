@@ -47,11 +47,17 @@
   animation: pb-snackbar-enter var(--motion-snackbar-duration) var(--motion-easing-ease-in-out-back);
 }
 
-/* Physical margins, so it hugs the right edge whatever the direction (Figma: 40px from the right). */
+/* Physical margins, so it hugs the right edge whatever the direction (Figma: 40px from the right).
+   A right-to-left page mirrors it to the left edge. */
 .pb-snackbar-container .pb-snackbar {
   width: fit-content;
   margin-right: 0;
   margin-left: auto;
+}
+
+[dir="rtl"] .pb-snackbar-container .pb-snackbar {
+  margin-right: auto;
+  margin-left: 0;
 }
 
 /* Closing: the open motion reversed, then PBSnackbar removes it. */

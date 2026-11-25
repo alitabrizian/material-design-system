@@ -10,8 +10,8 @@
  *   accordion         expansion panel header, indicator and body: 700ms, ease in and out back
  *   menu              12px from the trigger, moves in downwards over 300ms and closes with that motion
  *                     reversed (pb-menu__panel--closing, added by PbMenu)
- *   snackbar          40px from the top and right edges, moves in downwards over 500ms and closes with that
- *                     motion reversed (pb-snackbar-panel--closing, added by PbSnackbar)
+ *   snackbar          40px from the top and the inline-end edge (mirrored in RTL), moves in downwards over
+ *                     500ms and closes with that motion reversed (pb-snackbar-panel--closing, added by PbSnackbar)
  *   dialog, tooltip   instant; the dialog backdrop is alpha/black/600
  */
 
@@ -96,6 +96,23 @@
   max-width: calc(100vw - 2 * var(--motion-snackbar-inset));
   margin: var(--motion-snackbar-inset) !important;
   opacity: 1 !important;
+}
+
+/* It hugs the right edge like the Blazor snackbar (Figma: 40px from the right); a right-to-left
+   page mirrors it to the left edge. */
+[dir="ltr"] .pb-snackbar-panel,
+[dir="rtl"] .pb-snackbar-panel {
+  width: fit-content;
+}
+
+[dir="ltr"] .pb-snackbar-panel {
+  margin-right: var(--motion-snackbar-inset) !important;
+  margin-left: auto !important;
+}
+
+[dir="rtl"] .pb-snackbar-panel {
+  margin-right: auto !important;
+  margin-left: var(--motion-snackbar-inset) !important;
 }
 
 .pb-snackbar-panel.mat-snack-bar-container-enter {
